@@ -1,4 +1,4 @@
-function Duration(timestamp: string): number | "permanent" | undefined {
+export default function timestampToDuration(timestamp: string): number | "permanent" | undefined {
     if (timestamp == "permanent") return "permanent";
     const SYMBOLS = {
         'm': 60 * 1000,
@@ -13,4 +13,3 @@ function Duration(timestamp: string): number | "permanent" | undefined {
     let [time, stamp] = match;
     return Number(time) * SYMBOLS[stamp as 'm'|'h'|'d'|'w'|'M'|'y'];
 }
-export default Duration;

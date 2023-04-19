@@ -1,9 +1,9 @@
 import {ChatInputCommandInteraction, GuildMember, SlashCommandBuilder} from "discord.js";
 import Command from "../../util/templates/Command";
 import Embeds from "../../util/constants/Embeds";
-import Duration from "../../util/Duration";
+import timestampToDuration from "../../util/functions/timestampToDuration";
 import Server from "../../mongo/model/Server";
-import {canExecute} from "../../util/Actions";
+import canExecute from "../../util/functions/canExecute";
 import {LogType} from "../../mongo/schema/Log";
 import {IPunishment, toEmbedField} from "../../mongo/schema/Punishment";
 
@@ -64,7 +64,7 @@ const muteCommand = <Command>{
             noPermissionEmbed.description = `This user has a higher role than you or owns this server!`
             return await interaction.reply({ embeds: [noPermissionEmbed] });
         }
-        let duration = Duration(durationOption);
+        let duration = timestampToDuration(durationOption);
 
         if (!duration) {
             let errorEmbed = Embeds.ERROR_EMBED.toJSON();

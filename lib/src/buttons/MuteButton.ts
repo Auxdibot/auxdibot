@@ -3,7 +3,7 @@ import {
     GuildMember,
     MessageComponentInteraction
 } from "discord.js";
-import {canExecute} from "../util/Actions";
+import canExecute from "../util/functions/canExecute";
 import Embeds from "../util/constants/Embeds";
 import {IPunishment, toEmbedField} from "../mongo/schema/Punishment";
 import {LogType} from "../mongo/schema/Log";

@@ -11,7 +11,7 @@ import Command from "../../util/templates/Command";
 import Embeds from '../../util/constants/Embeds';
 import dotenv from "dotenv";
 import EmbedParameters, {toAPIEmbed} from "../../util/types/EmbedParameters";
-import {getMessage} from "../../util/Actions";
+import {getMessage} from "../../util/functions/getMessage";
 
 dotenv.config();
 const embedCommand = <Command> {

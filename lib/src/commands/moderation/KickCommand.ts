@@ -2,7 +2,7 @@ import {ChatInputCommandInteraction, GuildMember, SlashCommandBuilder} from "dis
 import Command from "../../util/templates/Command";
 import Embeds from "../../util/constants/Embeds";
 import Server from "../../mongo/model/Server";
-import {canExecute} from "../../util/Actions";
+import canExecute from "../../util/functions/canExecute";
 import {LogType} from "../../mongo/schema/Log";
 import {IPunishment} from "../../mongo/schema/Punishment";
 
