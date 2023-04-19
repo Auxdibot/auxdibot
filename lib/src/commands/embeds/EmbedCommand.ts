@@ -4,7 +4,7 @@ import {
     Channel,
     Embed, EmbedAuthorOptions,
     EmbedField,
-    Guild,
+    Guild, GuildMember,
     SlashCommandBuilder,
 } from "discord.js";
 import Command from "../../util/templates/Command";
@@ -12,6 +12,7 @@ import Embeds from '../../util/constants/Embeds';
 import dotenv from "dotenv";
 import EmbedParameters, {toAPIEmbed} from "../../util/types/EmbedParameters";
 import {getMessage} from "../../util/functions/getMessage";
+import parsePlaceholders from "../../util/functions/parsePlaceholder";
 
 dotenv.config();
 const embedCommand = <Command> {
@@ -136,7 +137,7 @@ const embedCommand = <Command> {
                 image_url
             };
             try {
-                await channel.send({ embeds: [toAPIEmbed(parameters)] });
+                await channel.send({ embeds: [JSON.parse(await parsePlaceholders(JSON.stringify(toAPIEmbed(parameters)), interaction.guild, interaction.member as GuildMember | undefined)) as APIEmbed] });
             } catch (x) {
                 let embed = Embeds.ERROR_EMBED.toJSON();
                 embed.description = `There was an error sending that embed!`;
@@ -172,7 +173,7 @@ const embedCommand = <Command> {
             let json = interaction.options.getString("json");
             if (!json) return await interaction.reply({ embeds: [Embeds.ERROR_EMBED.toJSON()] });
             try {
-                await channel.send({ embeds: [JSON.parse(json) as APIEmbed] });
+                await channel.send({ embeds: [JSON.parse(await parsePlaceholders(json, interaction.guild, interaction.member as GuildMember | undefined)) as APIEmbed] });
             } catch (x) {
                 let embed = Embeds.ERROR_EMBED.toJSON();
                 embed.description = `There was an error sending that embed! (Most likely due to malformed JSON.)`;
@@ -238,7 +239,7 @@ const embedCommand = <Command> {
             embed.image = image_url ? { url: image_url } : embed.image;
             embed.thumbnail = thumbnail_url ? { url: thumbnail_url } : embed.thumbnail;
             try {
-                await message.edit({ embeds: [embed] });
+                await message.edit({ embeds: [JSON.parse(await parsePlaceholders(JSON.stringify(embed), interaction.guild, interaction.member  as GuildMember | undefined)) as APIEmbed] });
             } catch (x) {
                 let embed = Embeds.ERROR_EMBED.toJSON();
                 embed.description = `There was an error sending that embed! (Auxdibot cannot edit this!)`;
@@ -278,7 +279,7 @@ const embedCommand = <Command> {
                 return await interaction.reply({embeds: [error]});
             }
             try {
-                await message.edit({ embeds: [JSON.parse(json) as APIEmbed] });
+                await message.edit({ embeds: [JSON.parse(await parsePlaceholders(json, interaction.guild, interaction.member  as GuildMember | undefined)) as APIEmbed] });
             } catch (x) {
                 let embed = Embeds.ERROR_EMBED.toJSON();
                 embed.description = `There was an error sending that embed! (Most likely due to malformed JSON, or this message wasn't made by Auxdibot!)`;

@@ -32,7 +32,7 @@ interface ServerMethods {
     checkExpired(): IPunishment[];
     setMuteRole(mute_role_id: String): boolean;
     setLogChannel(log_channel_id: String): boolean;
-    getPunishment(user_id: String, type: 'warn' | 'kick' | 'mute' | 'ban'): IPunishment | undefined;
+    getPunishment(user_id: String, type?: 'warn' | 'kick' | 'mute' | 'ban'): IPunishment | undefined;
     getPunishmentID(): Promise<number>;
     updateLog(log: ILog): boolean;
     addPermissionOverride(permissionOverride: IPermissionOverride): IPermissionOverride;
@@ -85,11 +85,8 @@ serverSchema.method('checkExpired', function() {
     this.save();
     return expired;
 });
-serverSchema.method('getPunishment', function(user_id: string, type: 'warn' | 'kick' | 'mute' | 'ban') {
-    for (let punishment of this.punishments) {
-        if (punishment.type == type && !punishment.expired && punishment.user_id == user_id) return punishment;
-    }
-    return undefined;
+serverSchema.method('getPunishment', function(user_id: string, type?: 'warn' | 'kick' | 'mute' | 'ban') {
+    return this.punishments.reverse().filter((punishment: IPunishment) => (type ? punishment.type == type : true) && !punishment.expired && (punishment.user_id == user_id))[0];
 })
 serverSchema.method('getPunishmentID', async function() {
     let doc = this;
