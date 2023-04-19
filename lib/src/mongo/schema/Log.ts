@@ -61,6 +61,7 @@ export interface ILog {
 }
 
 const LogSchema = new mongoose.Schema<ILog>({
+    type: { type: Number, default: 0 },
     user_id: { type: String },
     mute_role: { type: ChangeSchema },
     log_channel: { type: ChangeSchema },

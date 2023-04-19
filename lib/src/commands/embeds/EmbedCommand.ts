@@ -131,7 +131,7 @@ const embedCommand = <Command> {
                 title,
                 description,
                 author_text,
-                fields: fields ? fields.split("|s|").map((field) => (<EmbedField>{ name: field.split("|d|")[0].replace(/\\n/g, "\n"), value: field.split("|")[1].replace(/\\n/g, "\n") })) : undefined,
+                fields: fields ? fields.split("|s|").map((field) => (<EmbedField>{ name: field.split("|d|")[0].replace(/\\n/g, "\n"), value: field.split("|d|")[1].replace(/\\n/g, "\n") })) : undefined,
                 footer,
                 thumbnail_url,
                 image_url
@@ -234,7 +234,7 @@ const embedCommand = <Command> {
             embed.author = author_text ? <EmbedAuthorOptions>{
                 name: author_text
             } : embed.author;
-            embed.fields = fields ? fields.split(",").map((field) => (<EmbedField>{ name: field.split("|")[0], value: field.split("|")[1] })) : embed.fields;
+            embed.fields = fields ? fields.split("|s|").map((field) => (<EmbedField>{ name: field.split("|d|")[0], value: field.split("|d|")[1] })) : embed.fields;
             embed.footer = footer ? { text: footer } : embed.footer;
             embed.image = image_url ? { url: image_url } : embed.image;
             embed.thumbnail = thumbnail_url ? { url: thumbnail_url } : embed.thumbnail;
@@ -319,12 +319,19 @@ const embedCommand = <Command> {
                 return await interaction.reply({embeds: [error]});
             }
             let embed = Embeds.SUCCESS_EMBED.toJSON();
-            embed.fields = message.embeds.map((embed: Embed, index: number) => <EmbedField>{
-                name: `Embed #${index + 1}`,
-                value: `\`\`\`${JSON.stringify(embed.toJSON())}\`\`\``
-            });
-            embed.title = "Embed JSON Data";
-            return await interaction.reply({embeds: [embed]});
+            try {
+                embed.fields = message.embeds.map((embed: Embed, index: number) => <EmbedField>{
+                    name: `Embed #${index + 1}`,
+                    value: `\`\`\`${JSON.stringify(embed.toJSON())}\`\`\``
+                });
+                embed.title = "Embed JSON Data";
+                return await interaction.reply({embeds: [embed]});
+            } catch (x) {
+                let error = Embeds.ERROR_EMBED.toJSON();
+                error.description = "Embed is too big!";
+                return await interaction.reply({embeds: [error]});
+            }
+
         }
     }],
     async execute() {
