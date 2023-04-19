@@ -5,7 +5,7 @@ import Server from "../../mongo/model/Server";
 import {IPermissionOverride} from "../../mongo/schema/PermissionOverride";
 import {LogType} from "../../mongo/schema/Log";
 
-const punishmentCommand = <Command>{
+const permissionsCommand = <Command>{
     data: new SlashCommandBuilder()
         .setName('permissions')
         .setDescription('Edit, view, or delete permissions and permission overrides.')
@@ -199,4 +199,4 @@ const punishmentCommand = <Command>{
     },
 
 }
-module.exports = punishmentCommand;
+module.exports = permissionsCommand;
