@@ -35,7 +35,7 @@ const embedCommand = <Command> {
             .addStringOption(option => option.setName("author_text")
                 .setDescription("The author text of the Embed. (Optional)"))
             .addStringOption(option => option.setName("fields")
-                .setDescription("Embed fields. ex. \"Title|Description,Title|Description\" (Optional)"))
+                .setDescription("Embed fields. \"Title|d|Description|s|Title|d|Description\" (Optional)"))
             .addStringOption(option => option.setName("footer")
                 .setDescription("The footer text of the Embed. (Optional)"))
             .addStringOption(option => option.setName("image_url")
@@ -64,7 +64,7 @@ const embedCommand = <Command> {
             .addStringOption(option => option.setName("author_text")
                 .setDescription("The author text of the Embed. (Optional)"))
             .addStringOption(option => option.setName("fields")
-                .setDescription("Embed fields. ex. \"Title|Description,Title|Description\" (Optional)"))
+                .setDescription("Embed fields. ex. \"Title|d|Description|s|Title|d|Description\" (Optional)"))
             .addStringOption(option => option.setName("footer")
                 .setDescription("The footer text of the Embed. (Optional)"))
             .addStringOption(option => option.setName("image_url")
@@ -99,7 +99,7 @@ const embedCommand = <Command> {
             help: {
                 commandCategory: "Embed",
                 name: "/embed create",
-                usageExample: "/embed create (channel) (color) (title) [author_text] [description] [fields (split title and description with `\"|\"``, and seperate fields with `\",\"`)] [footer] [image url] [thumbnail url]",
+                usageExample: "/embed create (channel) (color) (title) [author_text] [description] [fields (split title and description with `\"|d|\"``, and seperate fields with `\"|s|\"`)] [footer] [image url] [thumbnail url]",
                 description: "Create an embed with Auxdibot."
             },
             permission: "embed.create"
@@ -114,11 +114,11 @@ const embedCommand = <Command> {
                 return await interaction.reply({ embeds: [Embeds.ERROR_EMBED.toJSON()] })
             }
             let color = interaction.options.getString("color"),
-                title = interaction.options.getString("title"),
-                description = interaction.options.getString("description") || null,
-                author_text = interaction.options.getString("author_text") || null,
-                fields = interaction.options.getString("fields") || null,
-                footer = interaction.options.getString("footer") || null,
+                title = interaction.options.getString("title")?.replace(/\\n/g, "\n"),
+                description = interaction.options.getString("description")?.replace(/\\n/g, "\n") || null,
+                author_text = interaction.options.getString("author_text")?.replace(/\\n/g, "\n") || null,
+                fields = interaction.options.getString("fields")?.replace(/\\n/g, "\n") || null,
+                footer = interaction.options.getString("footer")?.replace(/\\n/g, "\n") || null,
                 image_url = interaction.options.getString("image_url") || null,
                 thumbnail_url = interaction.options.getString("thumbnail_url") || null;
             if (!color || !/(#|)[0-9a-fA-F]{6}/.test(color)) {
@@ -131,7 +131,7 @@ const embedCommand = <Command> {
                 title,
                 description,
                 author_text,
-                fields: fields ? fields.split(",").map((field) => (<EmbedField>{ name: field.split("|")[0], value: field.split("|")[1] })) : undefined,
+                fields: fields ? fields.split("|s|").map((field) => (<EmbedField>{ name: field.split("|d|")[0].replace(/\\n/g, "\n"), value: field.split("|")[1].replace(/\\n/g, "\n") })) : undefined,
                 footer,
                 thumbnail_url,
                 image_url
@@ -192,7 +192,7 @@ const embedCommand = <Command> {
             help: {
                 commandCategory: "Embed",
                 name: "/embed edit",
-                usageExample: "/embed edit (message_id) [color] [title] [author] [description] [fields (split title and description with `\"|\"``, and seperate fields with `\",\"`)] [footer] [image url] [thumbnail url]",
+                usageExample: "/embed edit (message_id) [color] [title] [author] [description] [fields (split title and description with `\"|d|\"``, and seperate fields with `\"|s|\"`)] [footer] [image url] [thumbnail url]",
                 description: "Edit an existing Embed by Auxdibot."
             },
             permission: "embed.edit"
@@ -204,11 +204,11 @@ const embedCommand = <Command> {
             let guild: Guild = interaction.guild;
             let message = await getMessage(guild, message_id);
             let color = interaction.options.getString("color"),
-                title = interaction.options.getString("title"),
-                description = interaction.options.getString("description") || null,
-                author_text = interaction.options.getString("author_text") || null,
-                fields = interaction.options.getString("fields") || null,
-                footer = interaction.options.getString("footer") || null,
+                title = interaction.options.getString("title")?.replace(/\\n/g, "\n"),
+                description = interaction.options.getString("description")?.replace(/\\n/g, "\n") || null,
+                author_text = interaction.options.getString("author_text")?.replace(/\\n/g, "\n") || null,
+                fields = interaction.options.getString("fields")?.replace(/\\n/g, "\n") || null,
+                footer = interaction.options.getString("footer")?.replace(/\\n/g, "\n") || null,
                 image_url = interaction.options.getString("image_url") || null,
                 thumbnail_url = interaction.options.getString("thumbnail_url") || null;
             if (!message) {
