@@ -42,6 +42,11 @@ interface ServerMethods {
     checkExpired(): IPunishment[];
     setMuteRole(mute_role_id: String): boolean;
     setLogChannel(log_channel_id: String): boolean;
+    setJoinLeaveChannel(join_leave_channel_id: String): boolean;
+    setJoinEmbed(join_embed: APIEmbed): boolean;
+    setJoinText(join_text: String): boolean;
+    setLeaveEmbed(leave_embed: APIEmbed): boolean;
+    setLeaveText(leave_text: String): boolean;
     getPunishment(user_id: String, type?: 'warn' | 'kick' | 'mute' | 'ban'): IPunishment | undefined;
     getPunishmentID(): Promise<number>;
     updateLog(log: ILog): boolean;
@@ -110,6 +115,31 @@ serverSchema.method('setMuteRole', function(mute_role_id: String) {
 });
 serverSchema.method('setLogChannel', function(log_channel_id: String) {
     this.settings.log_channel = log_channel_id;
+    this.save();
+    return true;
+});
+serverSchema.method('setJoinLeaveChannel', function(join_leave_channel_id: String) {
+    this.settings.join_leave_channel = join_leave_channel_id;
+    this.save();
+    return true;
+});
+serverSchema.method('setJoinEmbed', function(join_embed: APIEmbed) {
+    this.settings.join_embed = join_embed;
+    this.save();
+    return true;
+});
+serverSchema.method('setLeaveEmbed', function(leave_embed: APIEmbed) {
+    this.settings.leave_embed = leave_embed;
+    this.save();
+    return true;
+});
+serverSchema.method('setJoinText', function(join_text: String) {
+    this.settings.join_text = join_text;
+    this.save();
+    return true;
+});
+serverSchema.method('setLeaveText', function(leave_text: String) {
+    this.settings.leave_text = leave_text;
     this.save();
     return true;
 });

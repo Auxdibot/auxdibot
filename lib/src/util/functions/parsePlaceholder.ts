@@ -7,7 +7,6 @@ export default async function parsePlaceholders(msg: string, guild?: Guild, memb
 
     let data = guild ? await Server.findOrCreateServer(guild.id) : undefined;
     let latest_punishment = data && member ? data.userRecord(member.user.id).reverse()[0] : undefined;
-    console.log(data?.latest_log?.type);
     const PLACEHOLDERS: any = {
         ...(guild ? {
             "server_members": guild.memberCount,

@@ -52,7 +52,7 @@ const settingsCommand = < Command > {
             let server = await Server.findOrCreateServer(interaction.guild.id);
             let embed = Embeds.INFO_EMBED.toJSON();
             embed.title = "⚙️ Server Settings";
-            embed.description = `🗒️ Log Channel: ${server.settings.log_channel ? `<#${server.settings.log_channel}>` : "None"}\r\n🎤 Mute Role: ${server.settings.mute_role ? `<@&${server.settings.mute_role}>` : "None"}`
+            embed.description = `🗒️ Log Channel: ${server.settings.log_channel ? `<#${server.settings.log_channel}>` : "None"}\r\n📩 Join/Leave Channel: ${server.settings.join_leave_channel ? `<#${server.settings.join_leave_channel}>` : "None"}\r\n🎤 Mute Role: ${server.settings.mute_role ? `<@&${server.settings.mute_role}>` : "None"}`
             return await interaction.reply({
                 embeds: [embed]
             })
@@ -137,8 +137,6 @@ const settingsCommand = < Command > {
                 }
                 let embed = Embeds.SUCCESS_EMBED.toJSON();
                 embed.title = "⚙️ Join/Leave Channel Change";
-                // TODO add in logic for join leave channel and storage
-                /*
                 let formerChannel = interaction.guild.channels.resolve(server.settings.join_leave_channel || "");
                 if (channel.id == server.settings.join_leave_channel) {
                     embed.description = `Nothing changed. Channel is the same as one specified in settings.`;
@@ -157,7 +155,7 @@ const settingsCommand = < Command > {
                         former: formerChannel ? formerChannel.id : undefined,
                         now: channel.id
                     }
-                }, interaction.guild);*/
+                }, interaction.guild);
                 return await interaction.reply({
                     embeds: [embed]
                 })
