@@ -15,7 +15,13 @@ export function toAPIEmbed(parameters: EmbedParameters): APIEmbed {
         name: parameters.author_text
     } : null).setFooter(parameters.footer ? {
         text: parameters.footer
-    } : null).setThumbnail(parameters.thumbnail_url || null).setImage(parameters.image_url || null).toJSON();
+    } : null).toJSON();
     embed.fields = parameters.fields;
+    embed.thumbnail = parameters.thumbnail_url ? {
+        url: parameters.thumbnail_url
+    } : undefined;
+    embed.image = parameters.image_url ? {
+        url: parameters.image_url
+    } : undefined;
     return embed;
 }
