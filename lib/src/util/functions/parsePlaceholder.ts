@@ -13,6 +13,8 @@ export default async function parsePlaceholders(msg: string, guild?: Guild, memb
             "server_members": guild.memberCount,
             "server_name": guild.name,
             "server_id": guild.id,
+            "server_icon_512": guild.iconURL({ size: 512 }),
+            "server_icon_128": guild.iconURL({ size: 128 }),
             "server_acronym": guild.nameAcronym,
             "server_created_date": guild.createdAt.toDateString(),
             "server_created_date_formatted": `<t:${Math.round(guild.createdAt.valueOf() / 1000)}>`,
