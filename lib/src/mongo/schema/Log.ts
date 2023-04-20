@@ -18,7 +18,8 @@ export enum LogType {
     "PERMISSION_CREATED",
     "PERMISSION_DELETED",
     "MESSAGE_EDITED",
-    "MESSAGE_DELETED"
+    "MESSAGE_DELETED",
+    "WELCOME_CHANNEL_CHANGED"
 
 }
 // such a stupid, stupid way to do something so stupidly, stupidly simple.
@@ -39,6 +40,7 @@ export const LogNames = {
     13: "🗑️ Permission Deleted",
     14: "🖊️ Message Edited",
     15: "🗙 Message Deleted",
+    16: "📩 Welcome Channel Changed",
 }
 
 export interface IChangeSchema { former: string | undefined, now: string }
