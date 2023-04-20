@@ -18,9 +18,9 @@ Auxdibot is a multipurpose WIP Discord utility bot, created by Auxdible.
 
 `💻` *Embed Creator*
 
-## Planned Features
-
 `👋` *Welcome & Leave Messages*
+
+## Planned Features
 
 `🏆` *Levels*
 
