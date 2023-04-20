@@ -137,8 +137,9 @@ const embedCommand = <Command> {
                 image_url
             };
             try {
-                await channel.send({ embeds: [JSON.parse(await parsePlaceholders(JSON.stringify(toAPIEmbed(parameters)), interaction.guild, interaction.member as GuildMember | undefined)) as APIEmbed] });
+                await channel.send({ embeds: [toAPIEmbed(JSON.parse(await parsePlaceholders(JSON.stringify(parameters), interaction.guild, interaction.member as GuildMember | undefined))) as APIEmbed] });
             } catch (x) {
+                console.log(x);
                 let embed = Embeds.ERROR_EMBED.toJSON();
                 embed.description = `There was an error sending that embed!`;
                 return await interaction.reply({ embeds: [embed] });
@@ -228,18 +229,18 @@ const embedCommand = <Command> {
                 return await interaction.reply({ embeds: [Embeds.ERROR_EMBED.toJSON()] })
             }
             let embed = message.embeds[0].toJSON();
-            embed.title = title || embed.title;
+            embed.title = title ? await parsePlaceholders(title) : embed.title;
             embed.color = color ? parseInt("0x" + color.replaceAll("#", ""), 16) : embed.color;
-            embed.description = description || embed.description;
+            embed.description = description ? await parsePlaceholders(description) : embed.description;
             embed.author = author_text ? <EmbedAuthorOptions>{
-                name: author_text
+                name: await parsePlaceholders(author_text)
             } : embed.author;
-            embed.fields = fields ? fields.split("|s|").map((field) => (<EmbedField>{ name: field.split("|d|")[0], value: field.split("|d|")[1] })) : embed.fields;
-            embed.footer = footer ? { text: footer } : embed.footer;
-            embed.image = image_url ? { url: image_url } : embed.image;
-            embed.thumbnail = thumbnail_url ? { url: thumbnail_url } : embed.thumbnail;
+            embed.fields = fields ? (await parsePlaceholders(fields)).split("|s|").map((field) => (<EmbedField>{ name: field.split("|d|")[0], value: field.split("|d|")[1] })) : embed.fields;
+            embed.footer = footer ? { text: await parsePlaceholders(footer) } : embed.footer;
+            embed.image = image_url ? { url: await parsePlaceholders(image_url) } : embed.image;
+            embed.thumbnail = thumbnail_url ? { url: await parsePlaceholders(thumbnail_url) } : embed.thumbnail;
             try {
-                await message.edit({ embeds: [JSON.parse(await parsePlaceholders(JSON.stringify(embed), interaction.guild, interaction.member  as GuildMember | undefined)) as APIEmbed] });
+                await message.edit({ embeds: [embed] });
             } catch (x) {
                 let embed = Embeds.ERROR_EMBED.toJSON();
                 embed.description = `There was an error sending that embed! (Auxdibot cannot edit this!)`;
