@@ -49,8 +49,8 @@ export default async function parsePlaceholders(msg: string, guild?: Guild, memb
             "member_highest_role": `<@&${member.roles.highest.id}>`,
             "member_is_owner": member.id == member.guild.ownerId ? "Yes" : "No",
             "member_is_admin": member.permissions.has(PermissionsBitField.Flags.Administrator) ? "Yes" : "No",
-            "member_avatar_512": member.user.avatarURL({ size: 512 }) || "Couldn't find avatar.",
-            "member_avatar_128": member.user.avatarURL({ size: 128 }) || "Couldn't find avatar.",
+            "member_avatar_512": member.user.avatarURL({ size: 512 }) || '',
+            "member_avatar_128": member.user.avatarURL({ size: 128 }) || '',
             ...(data ? {
                 "member_total_punishments": data.userRecord(member.user.id).length,
                 "latest_punishment": latest_punishment ? PunishmentNames[latest_punishment.type].name : "None",
