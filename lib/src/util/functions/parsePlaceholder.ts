@@ -22,15 +22,15 @@ export default async function parsePlaceholders(msg: string, guild?: Guild, memb
         } : {}),
         ...(data ? {
             ...(data.latest_log ? {
-                "latest_log_name": LogNames[data.latest_log.type],
-                "latest_log_description": data.latest_log.description,
-                "latest_log_date": new Date(data.latest_log.date_unix).toDateString(),
-                "latest_log_date_formatted": `<t:${Math.round(data.latest_log.date_unix / 1000)}>`,
-                "latest_log_date_utc": new Date(data.latest_log.date_unix).toUTCString(),
-                "latest_log_date_iso": new Date(data.latest_log.date_unix).toISOString(),
+                "server_latest_log_name": LogNames[data.latest_log.type],
+                "server_latest_log_description": data.latest_log.description,
+                "server_latest_log_date": new Date(data.latest_log.date_unix).toDateString(),
+                "server_latest_log_date_formatted": `<t:${Math.round(data.latest_log.date_unix / 1000)}>`,
+                "server_latest_log_date_utc": new Date(data.latest_log.date_unix).toUTCString(),
+                "server_latest_log_date_iso": new Date(data.latest_log.date_unix).toISOString(),
             } : {}),
             "server_total_punishments": data.punishments.length,
-            "total_permission_overrides": data.permission_overrides.length,
+            "server_total_permission_overrides": data.permission_overrides.length,
         } : undefined),
         ...(member ? {
             "member_id": member.id,
@@ -41,10 +41,10 @@ export default async function parsePlaceholders(msg: string, guild?: Guild, memb
             "member_created_date_utc": member.user.createdAt.toUTCString(),
             "member_created_date_iso": member.user.createdAt.toISOString(),
             ...(member.joinedAt ? {
-                "join_date": member.joinedAt.toDateString(),
-                "join_date_formatted": `<t:${Math.round(member.joinedAt.valueOf() / 1000)}>`,
-                "join_date_utc": member.joinedAt.toUTCString(),
-                "join_date_iso": member.joinedAt.toISOString(),
+                "member_join_date": member.joinedAt.toDateString(),
+                "member_join_date_formatted": `<t:${Math.round(member.joinedAt.valueOf() / 1000)}>`,
+                "member_join_date_utc": member.joinedAt.toUTCString(),
+                "member_join_date_iso": member.joinedAt.toISOString(),
             } : {}),
             "member_highest_role": `<@&${member.roles.highest.id}>`,
             "member_is_owner": member.id == member.guild.ownerId ? "Yes" : "No",
@@ -53,18 +53,18 @@ export default async function parsePlaceholders(msg: string, guild?: Guild, memb
             "member_avatar_128": member.user.avatarURL({ size: 128 }) || '',
             ...(data ? {
                 "member_total_punishments": data.userRecord(member.user.id).length,
-                "latest_punishment": latest_punishment ? PunishmentNames[latest_punishment.type].name : "None",
-                "latest_punishment_id": latest_punishment ? latest_punishment.punishment_id : "None",
-                "latest_punishment_date": latest_punishment ? new Date(latest_punishment.date_unix).toDateString() : "None",
-                "latest_punishment_date_formatted": latest_punishment ? `<t:${Math.round(latest_punishment.date_unix / 1000)}>` : "None",
-                "latest_punishment_date_utc": latest_punishment ? new Date(latest_punishment.date_unix).toUTCString() : "None",
-                "latest_punishment_date_iso": latest_punishment ? new Date(latest_punishment.date_unix).toISOString() : "None",
+                "member_latest_punishment": latest_punishment ? PunishmentNames[latest_punishment.type].name : "None",
+                "member_latest_punishment_id": latest_punishment ? latest_punishment.punishment_id : "None",
+                "member_latest_punishment_date": latest_punishment ? new Date(latest_punishment.date_unix).toDateString() : "None",
+                "member_latest_punishment_date_formatted": latest_punishment ? `<t:${Math.round(latest_punishment.date_unix / 1000)}>` : "None",
+                "member_latest_punishment_date_utc": latest_punishment ? new Date(latest_punishment.date_unix).toUTCString() : "None",
+                "member_latest_punishment_date_iso": latest_punishment ? new Date(latest_punishment.date_unix).toISOString() : "None",
             } : {})
         } : {}),
-        "date": new Date().toDateString(),
-        "date_formatted": `<t:${Math.round(Date.now() / 1000)}>`,
-        "date_utc": new Date().toUTCString(),
-        "date_iso": new Date().toISOString()
+        "message_date": new Date().toDateString(),
+        "message_date_formatted": `<t:${Math.round(Date.now() / 1000)}>`,
+        "message_date_utc": new Date().toUTCString(),
+        "message_date_iso": new Date().toISOString()
     };
     let string = msg;
     for (let placeholder in PLACEHOLDERS) {
