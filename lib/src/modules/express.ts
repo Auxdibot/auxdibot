@@ -63,7 +63,7 @@ export class AuxdibotAPI {
         })
 
         app.use(session({
-            secret: process.env.SESSIONID_NAME || "auxdibot_default_sessionid",
+            secret: process.env.EXPRESS_SESSION_SECRET || crypto.randomUUID(),
             saveUninitialized: true,
             cookie: { maxAge: 1000 * 60 * 60 * 24 },
             resave: false
