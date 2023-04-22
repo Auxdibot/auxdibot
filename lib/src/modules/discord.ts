@@ -172,7 +172,7 @@ export const updateDiscordStatus = async () => {
     if (awaitClient.user) return awaitClient.user.setPresence({
         activities: [{
             type: ActivityType.Listening,
-            name: `to ${awaitClient.guilds.cache.size} servers!`
+            name: `${awaitClient.guilds.cache.size} servers!`
         }]
     });
     return false;
