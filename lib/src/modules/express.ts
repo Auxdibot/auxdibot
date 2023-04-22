@@ -51,8 +51,13 @@ export class AuxdibotAPI {
 
         const app = express();
         const port = process.env.EXPRESS_PORT || 5000;
+        let whitelist = ["https://bot.auxdible.me", "http://localhost:5173"];
+        app.use(cors({
+            optionsSuccessStatus: 200,
+            credentials: true,
+            origin: whitelist
+        }));
 
-        app.use(cors());
         app.use(express.json());
         app.use(express.urlencoded({ extended: true }));
         app.use(cookieParser());

@@ -24,7 +24,7 @@ export default function Index() {
                 />
                 <h1 className={"fw-normal m-2 text-center lh-1"}>Auxdibot <Badge className={"text-bg-danger bg-danger"}>Alpha</Badge></h1>
                 <p className={"fs-3 fw-light m-0 text-center"}>A slash command only multipurpose Discord bot!</p>
-                <Button className={"my-4"} href={"/api/auth/discord"}><BsDiscord className={"d-inline-block align-top mx-1 fs-4"}/> Login with Discord</Button>
+                <Button className={"my-4"} rel={"/api/auth/discord"}><BsDiscord className={"d-inline-block align-top mx-1 fs-4"}/> Login with Discord</Button>
             </div>
             <Container className={"text-bg-body"}>
                 <Container fluid={"md"} className={"w-100 h-100 my-5 d-flex flex-column my-auto"}>
@@ -43,7 +43,7 @@ export default function Index() {
 
                             <h1 className={"h1 fs-3"}><RiDiscordLine className={"d-inline-block align-middle h1 fs-3"} /> Discord</h1>
                             <p className={"fs-6"}>Auxdibot uses the Discord Slash Command system, which allows for simple-to-understand and fast punishments, management, and customization! Just invite Auxdibot to your server and run the setup command and Auxdibot is ready for use!</p>
-                            <Button className={"mt-auto me-auto w-auto mb-5"} href={"https://discord.com/oauth2/authorize?client_id=1099157101978329138&scope=bot&permissions=8"}><GiHand className={"d-inline-block align-top mx-1 fs-4"}/> Invite bot</Button>
+                            <Button className={"mt-auto me-auto w-auto mb-5"} href={"https://discord.com/oauth2/authorize?client_id=776496457867591711&scope=bot&permissions=8"}><GiHand className={"d-inline-block align-top mx-1 fs-4"}/> Invite bot</Button>
                         </Col>
                     </Row>
                 </Container>

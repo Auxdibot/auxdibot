@@ -7,7 +7,19 @@ import Error from "./components/error/Error";
 import Index from "./components";
 import {Route} from "react-router";
 import UnderConstruction from "./components/underconstruction/UnderConstruction";
+import { QueryClient, QueryClientProvider } from 'react-query';
 
+const queryClient = new QueryClient({
+    defaultOptions: {
+        queries: {
+            refetchOnWindowFocus: false,
+            refetchOnmount: false,
+            refetchOnReconnect: false,
+            retry: false,
+
+        }
+    }
+});
 const router = createBrowserRouter(createRoutesFromElements(
     <Route
         path={"/"}
@@ -30,7 +42,9 @@ const router = createBrowserRouter(createRoutesFromElements(
 ))
 ReactDOM.createRoot(document.getElementById('root') as Element).render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+      <QueryClientProvider client={queryClient}>
+          <RouterProvider router={router} />
+      </QueryClientProvider>
   </React.StrictMode>,
 )
 export const changeTheme = (theme?: "dark" | "light") => {
