@@ -2,17 +2,21 @@ import {Container, Nav, Navbar} from "react-bootstrap";
 import {AiOutlineLink, BsDiscord, BsFillMoonStarsFill, BsSunFill, FiGithub} from "react-icons/all";
 import {changeTheme, getTheme} from "../../main";
 import React from "react";
+import axios from "axios";
+import { useQuery } from 'react-query';
 
 export default function NavigationBar() {
     let [theme, setTheme] = React.useState(getTheme());
-
+    let { isLoading, isError, data, error } = useQuery({ queryKey: ['profile'], queryFn: ()=> axios.get(import.meta.env['API_URL'] + '/api/session', { withCredentials: true}).then((res) => res).catch((err) => ({ error: err })) });
     function handleClick() {
         setTheme(getTheme() == "dark" ? "light" : "dark");
         changeTheme();
     }
+    console.log(data);
     return (
         <Navbar expand={"lg"} sticky={"top"} className={"px-2 aux-navbar fs-5"}>
             <Container fluid={"xxl"}>
+
                 <Navbar.Brand href="/" className={"m-0 p-0"}>
                     <img
                         src={'./logo.png'}
@@ -34,11 +38,16 @@ export default function NavigationBar() {
                         <Nav.Link active={false} href={"/dashboard"}>Dashboard</Nav.Link>
                         <Nav.Link active={false} href={"/guide"}>Guide</Nav.Link>
                     </Nav>
-                    <Nav>
+                    <Nav className={"me-4"}>
                         <Nav.Link href={"https://discord.gg/tnsFW9CQEn"} ><BsDiscord className={"m-0 align-middle d-inline-block"}/> Discord</Nav.Link>
                         <Nav.Link href={"https://github.com/Auxdible/auxdibot"} ><FiGithub className={"m-0 align-middle d-inline-block"}/> GitHub</Nav.Link>
                         <Nav.Link href={"https://auxdible.me"}><AiOutlineLink className={"m-0 align-middle d-inline-block"} /> Portfolio</Nav.Link>
                     </Nav>
+                    { isLoading ? <Nav>Loading...</Nav> : isError ? <Nav>Error: {error}</Nav> : data.data && !data.data['error'] ? <Nav className={"flex-row"}>
+                        <img src={`https://cdn.discordapp.com/avatars/${data.data['discord_id']}/${data.data['discord_icon']}.png`}
+                             width={25} height={25} className={"rounded-5 my-auto "} alt={"Discord Icon"}/>
+                        <span className={"ms-2 fs-5 mt-auto text-body"}>{data.data['discord_tag']}</span>
+                    </Nav> : <Nav>Please log in.</Nav > }
                 </Navbar.Collapse>
 
 
