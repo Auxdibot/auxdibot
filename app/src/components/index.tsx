@@ -24,7 +24,7 @@ export default function Index() {
                 />
                 <h1 className={"fw-normal m-2 text-center lh-1"}>Auxdibot <Badge className={"text-bg-danger bg-danger"}>Alpha</Badge></h1>
                 <p className={"fs-3 fw-light m-0 text-center"}>A slash command only multipurpose Discord bot!</p>
-                <Button className={"my-4"} href={"/api/auth/discord"}><BsDiscord className={"d-inline-block align-top mx-1 fs-4"}/> Login with Discord</Button>
+                <Button className={"my-4"} href={import.meta.env['VITE_API_URL'] + "/api/auth/discord"} target="_blank"><BsDiscord className={"d-inline-block align-top mx-1 fs-4"}/> Login with Discord</Button>
             </div>
             <Container className={"text-bg-body"}>
                 <Container fluid={"md"} className={"w-100 h-100 my-5 d-flex flex-column my-auto"}>

@@ -7,12 +7,17 @@ import { useQuery } from 'react-query';
 
 export default function NavigationBar() {
     let [theme, setTheme] = React.useState(getTheme());
-    let { isLoading, isError, data, error } = useQuery({ queryKey: ['profile'], queryFn: ()=> axios.get(import.meta.env['API_URL'] + '/api/session', { withCredentials: true}).then((res) => res).catch((err) => ({ error: err })) });
+    let { isLoading, isError, data, error } = useQuery({ queryKey: ['profile'], queryFn: ()=> axios.get(import.meta.env['VITE_API_URL'] + '/api/session', { withCredentials: true}).then((res) => res).catch((err) => ({ error: err })) });
     function handleClick() {
         setTheme(getTheme() == "dark" ? "light" : "dark");
         changeTheme();
     }
-    console.log(data);
+    async function logout() {
+        axios.get(import.meta.env['VITE_API_URL'] + '/api/session/logout', { withCredentials: true }).then(() => {
+            window.location.reload(false);
+        });
+
+    }
     return (
         <Navbar expand={"lg"} sticky={"top"} className={"px-2 aux-navbar fs-5"}>
             <Container fluid={"xxl"}>
@@ -46,8 +51,10 @@ export default function NavigationBar() {
                     { isLoading ? <Nav>Loading...</Nav> : isError ? <Nav>Error: {error as any}</Nav> : data && data.hasOwnProperty("data") ? <Nav className={"flex-row"}>
                         <img src={`https://cdn.discordapp.com/avatars/${(data as AxiosResponse<any, any>).data['discord_id']}/${(data as AxiosResponse<any, any>).data['discord_icon']}.png`}
                              width={25} height={25} className={"rounded-5 my-auto "} alt={"Discord Icon"}/>
-                        <span className={"ms-2 fs-5 mt-auto text-body"}>{(data as AxiosResponse<any, any>).data['discord_tag']}</span>
+                        <span className={"ms-2 fs-5 mt-auto text-body me-3"}>{(data as AxiosResponse<any, any>).data['discord_tag']}</span>
+                        <a className={"fw-normal text-body"} href={"/"} onClick={async () => await logout()}>Logout</a>
                     </Nav> : <Nav>Please log in.</Nav > }
+
                 </Navbar.Collapse>
 
 
