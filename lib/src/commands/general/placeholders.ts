@@ -8,21 +8,21 @@ import Placeholders from "../../util/types/Placeholders";
 dotenv.config();
 const placeholderCommand = < Command > {
     data: new SlashCommandBuilder()
-        .setName('placeholder')
+        .setName('placeholders')
         .setDescription('View a list of placeholders and what they do.'),
     info: {
         help: {
             commandCategory: "General",
-            name: "/placeholder",
+            name: "/placeholders",
             description: "View a list of placeholders and what they do.",
-            usageExample: "/placeholder"
+            usageExample: "/placeholders"
         },
-        permission: "commands.placeholder"
+        permission: "commands.placeholders"
     },
     async execute(interaction) {
         let placeholdersEmbed = Embeds.DEFAULT_EMBED.toJSON();
         placeholdersEmbed.title = "🔁 Placeholders";
-
+        placeholdersEmbed.description = "Placeholders can be used in **ANY** Auxdibot command that sends a message! Try out /embed /join or /leave!"
         placeholdersEmbed.fields = [{
             name: "Server",
             value: Object.keys(Placeholders).filter((key) => /^server_/.test(key)).reduce((accumulator, key) =>  `${accumulator}\r\n\`%${key}%\``, "")

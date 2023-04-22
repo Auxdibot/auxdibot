@@ -70,10 +70,9 @@ const helpCommand = < Command > {
                     .setURL(process.env.DISCORD_INVITE_LINK || "https://auxdible.me"),
                 new ButtonBuilder()
                     .setStyle(5)
-                    .setLabel("Dashboard")
+                    .setLabel("Website")
                     .setEmoji("🖥️")
-                    // todo add actual dashboard link when that is figured out.
-                    .setURL("https://auxdible.me")
+                    .setURL("https://bot.auxdible.me")
             );
             return await interaction.reply({
                 embeds: [commandListEmbed],
