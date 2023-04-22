@@ -8,6 +8,7 @@ module.exports = {
     async execute(oldMessage: Message, newMessage: Message) {
         let sender = newMessage.member;
         if (!sender || !newMessage.guild) return;
+        if (oldMessage.pinned != newMessage.pinned) return;
         let server = await Server.findOrCreateServer(newMessage.guild.id);
         if (newMessage.member && newMessage.member.user.id == "776496457867591711") return;
         return await server.log({
