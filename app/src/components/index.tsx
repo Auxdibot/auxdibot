@@ -32,7 +32,7 @@ export default function Index() {
                         <BsPersonGear fontSize={100} className={"p-2 rounded-3 img-thumbnail text-center bg-secondary bg-opacity-25"}/>
                         <h1 className={"fw-normal m-2 text-center"}>Customize your way.</h1>
                     </span>
-                    <Row md className={"m-5 gx-5"}>
+                    <Row md={2} className={"m-5 gx-5"}>
                         <Col className={"border-end flex-column d-flex mb-5"}>
 
                             <h1 className={"h1 fs-3 d-block"}><CgWebsite className={"d-inline-block align-middle h1 fs-3"} /> Dashboard <Badge className={"text-bg-warning bg-warning"}>WIP</Badge></h1>

@@ -35,9 +35,9 @@ export default function NavigationBar() {
                         <Nav.Link active={false} href={"/guide"}>Guide</Nav.Link>
                     </Nav>
                     <Nav>
-                        <Nav.Link active={false} href={"https://discord.gg/tnsFW9CQEn"} ><BsDiscord className={"m-0 align-middle d-inline-block"}/></Nav.Link>
-                        <Nav.Link active={false} href={"https://github.com/Auxdible/auxdibot"} ><FiGithub className={"m-0 align-middle d-inline-block"}/></Nav.Link>
-                        <Nav.Link active={false} href={"https://auxdible.me"}><AiOutlineLink className={"m-0 align-middle d-inline-block"} /> Portfolio</Nav.Link>
+                        <Nav.Link href={"https://discord.gg/tnsFW9CQEn"} ><BsDiscord className={"m-0 align-middle d-inline-block"}/> Discord</Nav.Link>
+                        <Nav.Link href={"https://github.com/Auxdible/auxdibot"} ><FiGithub className={"m-0 align-middle d-inline-block"}/> GitHub</Nav.Link>
+                        <Nav.Link href={"https://auxdible.me"}><AiOutlineLink className={"m-0 align-middle d-inline-block"} /> Portfolio</Nav.Link>
                     </Nav>
                 </Navbar.Collapse>
 

@@ -28,7 +28,7 @@ const router = createBrowserRouter(createRoutesFromElements(
 
     </Route>
 ))
-ReactDOM.createRoot(document.getElementById('root')).render(
+ReactDOM.createRoot(document.getElementById('root') as Element).render(
   <React.StrictMode>
     <RouterProvider router={router} />
   </React.StrictMode>,
@@ -40,5 +40,5 @@ export const changeTheme = (theme?: "dark" | "light") => {
 }
 export const getTheme = (): "dark" | "light" => {
     let html = document.getElementsByTagName("html")[0];
-    return html.getAttribute("data-bs-theme") || "light";
+    return html.getAttribute("data-bs-theme") as "dark" | "light" || "light";
 }
