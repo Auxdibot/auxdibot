@@ -8,6 +8,7 @@
     "build": "tsc && vite build",
     "preview": "vite preview"
   },
+  "proxy": "http://localhost:5000",
   "dependencies": {
     "@popperjs/core": "^2.11.7",
     "@types/bootstrap": "^5.2.6",
