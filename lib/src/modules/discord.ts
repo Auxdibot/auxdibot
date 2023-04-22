@@ -128,7 +128,7 @@ export class AuxdibotClient {
                 client.user.setPresence({
                     activities: [{
                         type: ActivityType.Listening,
-                        name: `to ${client.guilds.cache.size} servers!`
+                        name: `${client.guilds.cache.size} servers!`
                     }]
                 })
             }
