@@ -14,7 +14,7 @@ export default function NavigationBar() {
     }
     async function logout() {
         axios.get(import.meta.env['VITE_API_URL'] + '/api/session/logout', { withCredentials: true }).then(() => {
-            window.location.reload(false);
+            window.location.reload();
         });
 
     }
