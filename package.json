@@ -4,7 +4,8 @@
   "description": "A multipurpose discord bot by Auxdible.",
   "main": "index.js",
   "scripts": {
-    "dev": "concurrently \"cd ./lib && npm run dev\" \"cd ./app && npm run dev\""
+    "dev": "concurrently \"cd ./lib && npm run dev\" \"cd ./app && npm run dev\"",
+    "build": "concurrently \"cd ./lib && npm run build\" \"cd ./app && npm run build\""
   },
   "keywords": [],
   "author": "Auxdible",

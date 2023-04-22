@@ -1,0 +1,9 @@
+.feature-carousel {
+  height: 250px !important;
+}
+
+@media (max-width: 769px) {
+  .feature-carousel {
+    height: 450px !important;
+  }
+}
