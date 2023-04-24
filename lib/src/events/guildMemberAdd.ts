@@ -19,6 +19,9 @@ module.exports = {
                 }
             });
         }
+        if (server.settings.join_roles.length > 0) {
+                server.settings.join_roles.forEach((role) => member.roles.add(role).catch(() => undefined));
+        }
         await server.log({
             user_id: member.id,
             description: `<@${member.id}> joined the server! (Total Members: **${member.guild.memberCount}**)`,
