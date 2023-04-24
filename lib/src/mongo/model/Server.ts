@@ -19,7 +19,7 @@ export interface IServerSettings {
     leave_text?: string;
     join_roles: string[];
     sticky_roles: string[];
-    reaction_roles: IReactionRole[];
+
 }
 
 const serverSettingsSchema = new mongoose.Schema<IServerSettings>({
@@ -32,7 +32,7 @@ const serverSettingsSchema = new mongoose.Schema<IServerSettings>({
     leave_text: { type: String, default: "Somebody left the server!" },
     join_roles: { type: [String], default: [] },
     sticky_roles: { type: [String], default: [] },
-    reaction_roles: { type: [ReactionRoleSchema], default: [] }
+
 }, { _id: false });
 
 export interface IServer {
@@ -42,6 +42,7 @@ export interface IServer {
     punishments: IPunishment[];
     permission_overrides: IPermissionOverride[];
     settings: IServerSettings;
+    reaction_roles: IReactionRole[];
 }
 interface ServerMethods {
     userRecord(user_id: String): IPunishment[];
@@ -60,6 +61,12 @@ interface ServerMethods {
     addPermissionOverride(permissionOverride: IPermissionOverride): IPermissionOverride;
     removePermissionOverride(index: number): boolean;
     getPermissionOverride(permission?: string, role_id?: string, user_id?: string): IPermissionOverride[];
+    addJoinRole(role: string): boolean;
+    addStickyRole(role: string): boolean;
+    addReactionRole(reaction_role: IReactionRole): boolean;
+    removeJoinRole(index: number): boolean;
+    removeStickyRole(index: number): boolean;
+    removeReactionRole(index: number): boolean;
     recordAsEmbed(user_id: string): APIEmbed;
     log(log: ILog, guild: Guild): any;
     punish(punishment: IPunishment): Promise<APIEmbed | undefined>;
@@ -75,7 +82,9 @@ const serverSchema = new mongoose.Schema<IServer, ServerModel, ServerMethods>({
     punishments: { type: [punishmentSchema], default: [] },
     permission_overrides: { type: [PermissionOverrideSchema], default: [] },
     latest_log: { type: LogSchema },
+    reaction_roles: { type: [ReactionRoleSchema], default: [] },
     settings: { type: serverSettingsSchema, default: { mute_role: undefined } }
+
 });
 
 serverSchema.static('findOrCreateServer', async function (discord_id: String) {
@@ -173,6 +182,36 @@ serverSchema.method("getPermissionOverride", function(permission?: string, role_
             ((role_id ? override.role_id == role_id : false) ||
                 (user_id ? override.user_id == user_id : false));
     } );
+});
+serverSchema.method("addJoinRole", function(role: string) {
+    this.settings.join_roles.push(role);
+    this.save();
+    return true;
+})
+serverSchema.method("addStickyRole", function(role: string) {
+    this.settings.sticky_roles.push(role);
+    this.save();
+    return true;
+});
+serverSchema.method("addReactionRole", function(reaction_role: IReactionRole) {
+    this.reaction_roles.push(reaction_role);
+    this.save();
+    return true;
+});
+serverSchema.method("removeReactionRole", function(index: number) {
+    this.reaction_roles = this.reaction_roles.splice(index, 1);
+    this.save();
+    return true;
+});
+serverSchema.method("removeJoinRole", function(index: number) {
+    this.settings.join_roles = this.settings.join_roles.splice(index, 1);
+    this.save();
+    return true;
+});
+serverSchema.method("removeStickyRole", function(index: number) {
+    this.settings.sticky_roles = this.settings.sticky_roles.splice(index, 1);
+    this.save();
+    return true;
 });
 serverSchema.method("recordAsEmbed", function (user_id: string) {
     let embed = Embeds.DEFAULT_EMBED.toJSON();
