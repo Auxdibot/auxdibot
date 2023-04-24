@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-type IReaction = { emoji: string, role: string };
+export type IReaction = { emoji: string, role: string };
 let ReactionSchema = new mongoose.Schema<IReaction>({
     emoji: { type: String, required: true },
     role: { type: String, required: true }

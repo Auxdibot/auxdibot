@@ -15,7 +15,8 @@ const Embeds = {
     DENIED_EMBED: new EmbedBuilder().setAuthor(AUTHOR).setColor(Colors.DENIED_COLOR),
     INFO_EMBED: new EmbedBuilder().setAuthor(AUTHOR).setColor(Colors.INFO_COLOR),
     PUNISHED_EMBED: new EmbedBuilder().setAuthor(AUTHOR).setColor(Colors.PUNISHMENT_COLOR),
-    LOG_EMBED: new EmbedBuilder().setAuthor(AUTHOR).setColor(Colors.LOG_COLOR)
+    LOG_EMBED: new EmbedBuilder().setAuthor(AUTHOR).setColor(Colors.LOG_COLOR),
+    REACTION_ROLE_EMBED: new EmbedBuilder().setAuthor(AUTHOR).setColor(Colors.REACTION_ROLE_COLOR)
 }
 export default Embeds;
 

@@ -24,10 +24,12 @@ export class AuxdibotClient {
                 GatewayIntentBits.Guilds,
                 GatewayIntentBits.GuildMembers,
                 GatewayIntentBits.GuildModeration,
+                GatewayIntentBits.GuildMessageReactions,
+                GatewayIntentBits.DirectMessageReactions,
                 GatewayIntentBits.GuildMessages,
                 GatewayIntentBits.MessageContent
             ],
-            partials: [Partials.Channel],
+            partials: [Partials.Channel, Partials.Reaction, Partials.Message, Partials.GuildMember, Partials.User],
             presence: {
                 activities: [{
                     type: ActivityType.Listening,
@@ -50,7 +52,7 @@ export class AuxdibotClient {
         }).setToken(TOKEN);
 
         let commands = [];
-        const PACKAGES = ['general', 'moderation', 'settings', 'permissions', 'embeds'];
+        const PACKAGES = ['general', 'moderation', 'settings', 'permissions', 'embeds', 'roles'];
         let commandFiles = [{
             dir: "",
             files: fs.readdirSync(path.join(__dirname, "..", "commands")).filter(file => file.endsWith('.js'))

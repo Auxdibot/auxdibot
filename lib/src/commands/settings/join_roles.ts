@@ -134,7 +134,7 @@ const joinRolesCommand = <Command>{
             async execute(interaction: ChatInputCommandInteraction) {
                 if (!interaction.guild) return;
                 let server = await Server.findOrCreateServer(interaction.guild.id);
-                let successEmbed = Embeds.SUCCESS_EMBED.toJSON();
+                let successEmbed = Embeds.INFO_EMBED.toJSON();
                 successEmbed.title = "👋 Join Roles"
                 successEmbed.description = server.settings.join_roles.reduce((accumulator, value, index) => `${accumulator}\n**${index+1})** <@&${value}>`, "");
                 return await interaction.reply({ embeds: [successEmbed] });
