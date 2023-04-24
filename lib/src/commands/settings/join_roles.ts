@@ -18,7 +18,7 @@ const joinRolesCommand = <Command>{
             .addRoleOption(argBuilder => argBuilder.setName("role")
                 .setDescription("The role to be kept when a member rejoins the server."))
             .addNumberOption(argBuilder => argBuilder.setName("index")
-                .setDescription("The index of the sticky role to remove.")))
+                .setDescription("The index of the sticky role to remove, which is the placement of the item on /join_roles list")))
         .addSubcommand(builder => builder.setName("list").setDescription("List the roles that are assigned when a member joins the server.")),
     info: {
         help: {
@@ -51,8 +51,8 @@ const joinRolesCommand = <Command>{
                 help: {
                     commandCategory: "Settings",
                     name: "/join_roles remove",
-                    description: "Remove a role that is assigned when a member joins the server. If you've deleted the role, use the index parameter, which is the placement of the item.",
-                    usageExample: "/join_roles remove (role)"
+                    description: "Remove a role that is assigned when a member joins the server. If you've deleted the role, use the index parameter, which is the placement of the item on /join_roles list.",
+                    usageExample: "/join_roles remove [role] [index]"
                 },
                 permission: "settings.join_roles.remove"
             },

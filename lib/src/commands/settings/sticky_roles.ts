@@ -18,7 +18,7 @@ const stickyRolesCommand = <Command>{
             .addRoleOption(argBuilder => argBuilder.setName("role")
                 .setDescription("The role to be kept when a member rejoins the server."))
             .addNumberOption(argBuilder => argBuilder.setName("index")
-                .setDescription("The index of the sticky role to remove.")))
+                .setDescription("The index of the sticky role to remove, which is the placement of the item on /sticky_roles list")))
         .addSubcommand(builder => builder.setName("list").setDescription("List the roles that are kept when a member rejoins the server.")),
     info: {
         help: {
@@ -51,7 +51,7 @@ const stickyRolesCommand = <Command>{
                 help: {
                     commandCategory: "Settings",
                     name: "/sticky_roles remove",
-                    description: "Remove a role that is kept when a member rejoins the server. If you've deleted the role, use the index parameter, which is the placement of the item.",
+                    description: "Remove a role that is kept when a member rejoins the server. If you've deleted the role, use the index parameter, which is the placement of the item on /sticky_roles list.",
                     usageExample: "/sticky_roles remove [role] [index]"
                 },
                 permission: "settings.sticky_roles.remove"
