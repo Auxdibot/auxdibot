@@ -169,7 +169,7 @@ serverSchema.method("addPermissionOverride", function(permissionOverride: IPermi
     return permissionOverride;
 });
 serverSchema.method("removePermissionOverride", function(index: number) {
-    this.permission_overrides = this.permission_overrides.splice(index, 1);
+    this.permission_overrides.splice(index, 1);
     this.save();
     return true;
 });
@@ -199,17 +199,17 @@ serverSchema.method("addReactionRole", function(reaction_role: IReactionRole) {
     return true;
 });
 serverSchema.method("removeReactionRole", function(index: number) {
-    this.reaction_roles = this.reaction_roles.splice(index, 1);
+    this.reaction_roles.splice(index, 1);
     this.save();
     return true;
 });
 serverSchema.method("removeJoinRole", function(index: number) {
-    this.settings.join_roles = this.settings.join_roles.splice(index, 1);
+    this.settings.join_roles.splice(index, 1);
     this.save();
     return true;
 });
 serverSchema.method("removeStickyRole", function(index: number) {
-    this.settings.sticky_roles = this.settings.sticky_roles.splice(index, 1);
+    this.settings.sticky_roles.splice(index, 1);
     this.save();
     return true;
 });
