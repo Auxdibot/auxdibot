@@ -6,6 +6,7 @@ import LogSchema, {ILog, LogNames} from "../schema/Log";
 import PermissionOverrideSchema, {IPermissionOverride} from "../schema/PermissionOverride";
 import {APIEmbed, EmbedField, Guild, GuildMember, PermissionsBitField} from "discord.js";
 import Embeds from "../../util/constants/Embeds";
+import ReactionRoleSchema, {IReactionRole} from "../schema/ReactionRole";
 
 export interface IServerSettings {
     _id?: mongoose.ObjectId;
@@ -16,6 +17,9 @@ export interface IServerSettings {
     leave_embed?: APIEmbed;
     join_text?: string;
     leave_text?: string;
+    join_roles: string[];
+    sticky_roles: string[];
+    reaction_roles: IReactionRole[];
 }
 
 const serverSettingsSchema = new mongoose.Schema<IServerSettings>({
@@ -25,7 +29,10 @@ const serverSettingsSchema = new mongoose.Schema<IServerSettings>({
     join_embed: { type: Object, default: {"type":"rich","title":"👋 Member joined! (%server_members% members.)","thumbnail":{"url":"%member_avatar_128%"},"footer":{"text":"%server_name%"},"description":"%member_mention% joined the server.","color":9159498,"author":{"name":"%message_date%"}} },
     leave_embed: { type: Object, default: {"type":"rich","title":"👋 Member left! (%server_members% members.)","thumbnail":{"url":"%member_avatar_128%"},"footer":{"text":"%server_name%"},"description":"%member_mention% left the server.","color":16007990,"author":{"name":"%message_date%"}}},
     join_text: { type: String, default: "Somebody joined the server!" },
-    leave_text: { type: String, default: "Somebody left the server!" }
+    leave_text: { type: String, default: "Somebody left the server!" },
+    join_roles: { type: [String], default: [] },
+    sticky_roles: { type: [String], default: [] },
+    reaction_roles: { type: [ReactionRoleSchema], default: [] }
 }, { _id: false });
 
 export interface IServer {
