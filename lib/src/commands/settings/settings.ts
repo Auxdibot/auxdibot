@@ -52,7 +52,10 @@ const settingsCommand = < Command > {
             let server = await Server.findOrCreateServer(interaction.guild.id);
             let embed = Embeds.INFO_EMBED.toJSON();
             embed.title = "⚙️ Server Settings";
-            embed.description = `🗒️ Log Channel: ${server.settings.log_channel ? `<#${server.settings.log_channel}>` : "None"}\r\n📩 Join/Leave Channel: ${server.settings.join_leave_channel ? `<#${server.settings.join_leave_channel}>` : "None"}\r\n🎤 Mute Role: ${server.settings.mute_role ? `<@&${server.settings.mute_role}>` : "None"}`
+            embed.description = `🗒️ Log Channel: ${server.settings.log_channel ? `<#${server.settings.log_channel}>` : "None"}
+            \r\n📩 Join/Leave Channel: ${server.settings.join_leave_channel ? `<#${server.settings.join_leave_channel}>` : "None"}
+            \r\n🎤 Mute Role: ${server.settings.mute_role ? `<@&${server.settings.mute_role}>` : "None"}
+            \r\n👋 Join Roles${server.settings.join_roles.reduce((accumulator, val, index) => `${accumulator}\r\n> **${index+1})** <@&${val}>`, "")}`
             return await interaction.reply({
                 embeds: [embed]
             })
