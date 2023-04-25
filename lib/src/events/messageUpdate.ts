@@ -8,15 +8,16 @@ module.exports = {
     async execute(oldMessage: Message, newMessage: Message) {
         let sender = newMessage.member;
         if (!sender || !newMessage.guild) return;
-        if (oldMessage.pinned != newMessage.pinned) return;
+        if (newMessage.member && newMessage.member.user.id == newMessage.client.user.id) return;
         let server = await Server.findOrCreateServer(newMessage.guild.id);
-        if (newMessage.member && newMessage.member.user.id == "776496457867591711") return;
-        return await server.log({
-            type: LogType.MESSAGE_EDITED,
-            date_unix: Date.now(),
-            description: `A message by ${sender.user.tag} was edited.`,
-            message_edit: { former: oldMessage.cleanContent, now: newMessage.cleanContent },
-            user_id: sender.id
-        }, newMessage.guild);
+        if (oldMessage.content != newMessage.content) {
+            return await server.log({
+                type: LogType.MESSAGE_EDITED,
+                date_unix: Date.now(),
+                description: `A message by ${sender.user.tag} was edited.`,
+                message_edit: { former: oldMessage.cleanContent, now: newMessage.cleanContent },
+                user_id: sender.id
+            }, newMessage.guild);
+        }
     }
 }
