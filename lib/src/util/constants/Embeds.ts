@@ -1,7 +1,10 @@
 import {APIEmbed, EmbedAuthorOptions, EmbedBuilder} from "discord.js";
 import Colors from './Colors';
+import dotenv from "dotenv";
+dotenv.config();
 export const AUTHOR: EmbedAuthorOptions = {
-    name: "Auxdibot"
+    name: "Auxdibot",
+    iconURL: process.env.AUTHOR_EMBED_ICON_LINK,
 }
 const Embeds = {
     WELCOME_EMBED: new EmbedBuilder().setAuthor(AUTHOR).setColor(Colors.DEFAULT_COLOR).setTitle("👋 Hello!").setDescription("I am Auxdibot. Thank you for inviting me to your server. I am currently still in development and many of my features are incomplete." +
