@@ -1,9 +1,10 @@
 import {
     ChatInputCommandInteraction,
-    SlashCommandBuilder, APIEmbed
+    SlashCommandBuilder, APIEmbed, Guild, GuildMember, Role, PermissionsBitField
 } from "discord.js";
 import Command from "../../util/templates/Command";
 import Server from "../../mongo/model/Server";
+import Embeds from "../../util/constants/Embeds";
 
 const stickyRolesCommand = <Command>{
     data: new SlashCommandBuilder()
@@ -41,8 +42,36 @@ const stickyRolesCommand = <Command>{
                 permission: "settings.sticky_roles.add"
             },
             async execute(interaction: ChatInputCommandInteraction) {
-                if (!interaction.guild) return;
+                if (!interaction.guild || !interaction.member || !interaction.memberPermissions) return;
+                let guild: Guild = interaction.guild;
+                let member = interaction.member as GuildMember;
+                let role = interaction.options.getRole("role") as Role | null;
+                if (role == null || role.id == guild.roles.everyone.id) {
+                    let errorEmbed = Embeds.ERROR_EMBED.toJSON();
+                    errorEmbed.description = "This is the everyone role or the role doesn't exist!";
+                    return await interaction.reply({ embeds: [errorEmbed] });
+                }
                 let server = await Server.findOrCreateServer(interaction.guild.id);
+                if (server.settings.sticky_roles.find((val) => role != null && val == role.id)) {
+                    let errorEmbed = Embeds.ERROR_EMBED.toJSON();
+                    errorEmbed.description = "This role is already added!";
+                    return await interaction.reply({ embeds: [errorEmbed] });
+                }
+                if (role && (member.id != guild.ownerId  && !interaction.memberPermissions.has(PermissionsBitField.Flags.Administrator)) && role.comparePositionTo(member.roles.highest) <= 0) {
+                    let errorEmbed = Embeds.ERROR_EMBED.toJSON();
+                    errorEmbed.description = "This role is higher than yours!";
+                    return await interaction.reply({ embeds: [errorEmbed] });
+                }
+                if (role && guild.members.me && role.comparePositionTo(guild.members.me.roles.highest) >= 0) {
+                    let errorEmbed = Embeds.ERROR_EMBED.toJSON();
+                    errorEmbed.description = "This role is higher than Auxdibot's highest role!";
+                    return await interaction.reply({ embeds: [errorEmbed] });
+                }
+                server.addStickyRole(role.id);
+                let successEmbed = Embeds.SUCCESS_EMBED.toJSON();
+                successEmbed.title = "📝 Added Sticky Role"
+                successEmbed.description = `Added <@&${role.id}> to the sticky roles.`;
+                return await interaction.reply({ embeds: [successEmbed] });
             }
         },
         {
@@ -57,8 +86,37 @@ const stickyRolesCommand = <Command>{
                 permission: "settings.sticky_roles.remove"
             },
             async execute(interaction: ChatInputCommandInteraction) {
-                if (!interaction.guild) return;
+                if (!interaction.guild || !interaction.member || !interaction.memberPermissions) return;
+                let guild: Guild = interaction.guild;
+                let member = interaction.member as GuildMember;
+                let role = interaction.options.getRole("role") as Role | null, index = interaction.options.getNumber("index");
+                if ((role == null && !index) || (role && role.id == guild.roles.everyone.id)) {
+                    let errorEmbed = Embeds.ERROR_EMBED.toJSON();
+                    errorEmbed.description = "This is the everyone role or the role doesn't exist!";
+                    return await interaction.reply({ embeds: [errorEmbed] });
+                }
+                if (role && (member.id != guild.ownerId  && !interaction.memberPermissions.has(PermissionsBitField.Flags.Administrator)) && role.comparePositionTo(member.roles.highest) <= 0) {
+                    let errorEmbed = Embeds.ERROR_EMBED.toJSON();
+                    errorEmbed.description = "This role is higher than yours!";
+                    return await interaction.reply({ embeds: [errorEmbed] });
+                }
+                if (role && guild.members.me && role.comparePositionTo(guild.members.me.roles.highest) >= 0) {
+                    let errorEmbed = Embeds.ERROR_EMBED.toJSON();
+                    errorEmbed.description = "This role is higher than Auxdibot's highest role!";
+                    return await interaction.reply({ embeds: [errorEmbed] });
+                }
                 let server = await Server.findOrCreateServer(interaction.guild.id);
+                let stickyRole = role != null ? server.settings.sticky_roles.find((val) => role != null && val == role.id) : index ? server.settings.sticky_roles[index-1] : undefined;
+                if (!stickyRole) {
+                    let errorEmbed = Embeds.ERROR_EMBED.toJSON();
+                    errorEmbed.description = "This join role doesn't exist!";
+                    return await interaction.reply({ embeds: [errorEmbed] });
+                }
+                server.removeStickyRole(server.settings.sticky_roles.indexOf(stickyRole));
+                let successEmbed = Embeds.SUCCESS_EMBED.toJSON();
+                successEmbed.title = "📝 Removed Sticky Role"
+                successEmbed.description = `Removed <@&${stickyRole}> from the sticky roles.`;
+                return await interaction.reply({ embeds: [successEmbed] });
             }
         },
         {
@@ -75,6 +133,10 @@ const stickyRolesCommand = <Command>{
             async execute(interaction: ChatInputCommandInteraction) {
                 if (!interaction.guild) return;
                 let server = await Server.findOrCreateServer(interaction.guild.id);
+                let successEmbed = Embeds.INFO_EMBED.toJSON();
+                successEmbed.title = "📝 Sticky Roles"
+                successEmbed.description = server.settings.sticky_roles.reduce((accumulator, value, index) => `${accumulator}\n**${index+1})** <@&${value}>`, "");
+                return await interaction.reply({ embeds: [successEmbed] });
             }
         }],
     async execute() {

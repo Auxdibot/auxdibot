@@ -112,7 +112,6 @@ const joinRolesCommand = <Command>{
                     errorEmbed.description = "This join role doesn't exist!";
                     return await interaction.reply({ embeds: [errorEmbed] });
                 }
-                console.log(server.settings.join_roles.indexOf(joinRole));
                 server.removeJoinRole(server.settings.join_roles.indexOf(joinRole));
                 let successEmbed = Embeds.SUCCESS_EMBED.toJSON();
                 successEmbed.title = "👋 Removed Join Role"

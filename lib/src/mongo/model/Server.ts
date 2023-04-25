@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, {HydratedDocument} from "mongoose";
 
 import punishmentSchema, {IPunishment, PunishmentNames, toEmbedField} from "../schema/Punishment";
 import Counter from "./Counter";
@@ -7,6 +7,7 @@ import PermissionOverrideSchema, {IPermissionOverride} from "../schema/Permissio
 import {APIEmbed, EmbedField, Guild, GuildMember, PermissionsBitField} from "discord.js";
 import Embeds from "../../util/constants/Embeds";
 import ReactionRoleSchema, {IReactionRole} from "../schema/ReactionRole";
+import serverMemberSchema, {IServerMember, IServerMemberMethods} from "../schema/ServerMember";
 
 export interface IServerSettings {
     _id?: mongoose.ObjectId;
@@ -43,8 +44,9 @@ export interface IServer {
     permission_overrides: IPermissionOverride[];
     settings: IServerSettings;
     reaction_roles: IReactionRole[];
+    member_data: IServerMember[];
 }
-interface ServerMethods {
+export interface ServerMethods {
     userRecord(user_id: String): IPunishment[];
     addPunishment(punishment: IPunishment): IPunishment;
     checkExpired(): IPunishment[];
@@ -71,6 +73,7 @@ interface ServerMethods {
     log(log: ILog, guild: Guild): any;
     punish(punishment: IPunishment): Promise<APIEmbed | undefined>;
     testPermission(permission: string | undefined, executor: GuildMember, defaultAllowed: boolean): boolean;
+    createOrFindMemberData(member: GuildMember): HydratedDocument<IServerMember, IServerMemberMethods> | undefined;
 }
 interface ServerModel extends mongoose.Model<IServer, {}, ServerMethods> {
     findOrCreateServer(discord_id: String): Promise<mongoose.HydratedDocument<IServer, ServerMethods>>;
@@ -83,8 +86,8 @@ const serverSchema = new mongoose.Schema<IServer, ServerModel, ServerMethods>({
     permission_overrides: { type: [PermissionOverrideSchema], default: [] },
     latest_log: { type: LogSchema },
     reaction_roles: { type: [ReactionRoleSchema], default: [] },
-    settings: { type: serverSettingsSchema, default: { mute_role: undefined } }
-
+    settings: { type: serverSettingsSchema, default: { mute_role: undefined } },
+    member_data: { type: [serverMemberSchema], default: [] }
 });
 
 serverSchema.static('findOrCreateServer', async function (discord_id: String) {
@@ -213,6 +216,20 @@ serverSchema.method("removeStickyRole", function(index: number) {
     this.save();
     return true;
 });
+serverSchema.method("createOrFindMemberData", function(member: GuildMember) {
+    let data = this.member_data.find((memberData: IServerMember) => memberData.discord_id == member.id);
+    if (!data) {
+        this.member_data.push(<IServerMember>{
+            discord_id: member.user.id,
+            sticky_roles: [],
+            experience: 0,
+            in_server: true
+        });
+        this.save();
+    }
+    return this.member_data.find((memberData: IServerMember) => memberData.discord_id == member.id);
+});
+
 serverSchema.method("recordAsEmbed", function (user_id: string) {
     let embed = Embeds.DEFAULT_EMBED.toJSON();
     let record = this.userRecord(user_id);

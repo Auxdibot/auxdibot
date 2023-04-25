@@ -39,7 +39,6 @@ const massroleCommand = < Command > {
             let executor = interaction.member as GuildMember;
             let role = interaction.options.getRole("role");
             if (!role) return;
-            console.log(guild.members.cache.size);
             let embed = Embeds.SUCCESS_EMBED.toJSON();
             embed.title = "Success!";
             embed.description = `Currently giving the role...`;
@@ -47,12 +46,9 @@ const massroleCommand = < Command > {
             let res = await guild.members.fetch();
             res.forEach((member) => {
                 if (!role) return;
-                console.log(member.roles.resolve(role.id));
-                console.log((guild.members.me && member.roles.highest.comparePositionTo(guild.members.me.roles.highest) < 0) )
-                console.log(member.roles.highest.comparePositionTo(executor.roles.highest) < 0);
                 if (!member.roles.resolve(role.id) && (guild.members.me && member.roles.highest.comparePositionTo(guild.members.me.roles.highest) < 0) && member.roles.highest.comparePositionTo(executor.roles.highest) < 0) {
                     member.roles.add(role.id).catch(() => undefined);
-                    console.log("Working");
+
                 }
             });
     }
@@ -74,7 +70,6 @@ const massroleCommand = < Command > {
                 let executor = interaction.member as GuildMember;
                 let role = interaction.options.getRole("role");
                 if (!role) return;
-                console.log(guild.members.cache.size);
                 let embed = Embeds.SUCCESS_EMBED.toJSON();
                 embed.title = "Success!";
                 embed.description = `Currently removing the role...`;
@@ -82,9 +77,6 @@ const massroleCommand = < Command > {
                 let res = await guild.members.fetch();
                 res.forEach((member) => {
                     if (!role) return;
-                    console.log(member.roles.resolve(role.id));
-                    console.log((guild.members.me && member.roles.highest.comparePositionTo(guild.members.me.roles.highest) < 0) )
-                    console.log(member.roles.highest.comparePositionTo(executor.roles.highest) < 0);
                     if (member.roles.resolve(role.id) && (guild.members.me && member.roles.highest.comparePositionTo(guild.members.me.roles.highest) < 0) && member.roles.highest.comparePositionTo(executor.roles.highest) < 0) {
                         member.roles.remove(role.id).catch(() => undefined);
                     }

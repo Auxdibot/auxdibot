@@ -22,6 +22,10 @@ module.exports = {
         if (server.settings.join_roles.length > 0) {
                 server.settings.join_roles.forEach((role) => member.roles.add(role).catch(() => undefined));
         }
+        let memberData = await server.createOrFindMemberData(member);
+        if (memberData) {
+            memberData.joinServer(member, server);
+        }
         await server.log({
             user_id: member.id,
             description: `<@${member.id}> joined the server! (Total Members: **${member.guild.memberCount}**)`,
