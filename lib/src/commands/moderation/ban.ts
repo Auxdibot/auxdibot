@@ -72,6 +72,7 @@ const banCommand = <Command>{
             deleteMessageDays
         }).then(async () => {
             if (!interaction.guild) return;
+            server = await Server.findOrCreateServer(interaction.guild.id);
             let banData = <IPunishment>{
                 type: "ban",
                 reason,

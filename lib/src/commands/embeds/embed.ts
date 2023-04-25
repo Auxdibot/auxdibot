@@ -139,7 +139,7 @@ const embedCommand = <Command> {
             try {
                 await channel.send({ embeds: [toAPIEmbed(JSON.parse(await parsePlaceholders(JSON.stringify(parameters), interaction.guild, interaction.member as GuildMember | undefined))) as APIEmbed] });
             } catch (x) {
-                console.log(x);
+
                 let embed = Embeds.ERROR_EMBED.toJSON();
                 embed.description = `There was an error sending that embed!`;
                 return await interaction.reply({ embeds: [embed] });

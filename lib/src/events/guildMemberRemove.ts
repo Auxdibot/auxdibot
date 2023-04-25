@@ -7,7 +7,6 @@ module.exports = {
     name: 'guildMemberRemove',
     once: false,
     async execute(member: GuildMember) {
-        console.log(member);
         if (!member) return;
         let server = await Server.findOrCreateServer(member.guild.id);
         if (server.settings.join_leave_channel) {
@@ -20,7 +19,10 @@ module.exports = {
                 }
             });
         }
-
+        let memberData = await server.createOrFindMemberData(member);
+        if (memberData) {
+            memberData.leaveServer(member, server);
+        }
         await server.log({
             user_id: member.id,
             description: `<@${member.id}> left the server! (Total Members: **${member.guild.memberCount}**)`,

@@ -63,19 +63,8 @@ export default function Index() {
                             <p className={"w-50 mx-auto d-block"}>Owners of their server can specify a log channel where all command traffic through Auxdibot and more are displayed!</p>
                         </Carousel.Item>
                         <Carousel.Item className={"mh-100"}>
-
-                            <h1 className={"h2"}><IoMedalOutline className={"h2"} /> Levels <Badge className={"text-bg-warning bg-warning"}>WIP</Badge></h1>
-                            <p className={"w-50 mx-auto d-block"}>Auxdibot has a completely custom leveling system with reward roles, custom XP rates, and more!</p>
-                        </Carousel.Item>
-                        <Carousel.Item className={"mh-100"}>
-
-                            <h1 className={"h2"}><BsPen className={"h2"} /> Role Management <Badge className={"text-bg-warning bg-warning"}>WIP</Badge></h1>
-                            <p className={"w-50 mx-auto d-block"}>With Auxdibot, everything from Reaction Roles to Sticky Roles and Join roles is possible! Make your roles feel like roles with Auxdibot.</p>
-                        </Carousel.Item>
-                        <Carousel.Item className={"mh-100"}>
-
-                            <h1 className={"h2"}><AiOutlineQuestionCircle className={"h2"} /> Suggestions <Badge className={"text-bg-warning bg-warning"}>WIP</Badge></h1>
-                            <p className={"w-50 mx-auto d-block"}>Want feedback from your members? Auxdibot features an easy to setup suggestions system, allowing users to upvote or downvote suggestions, or discuss a suggestion in a Discord thread!</p>
+                            <h1 className={"h2"}><BsShieldExclamation className={"h2"} /> Permissions</h1>
+                            <p className={"w-50 mx-auto d-block"}>Allow and block certain users and roles from running Auxdibot's commands using Auxdibot's expansive permission system.</p>
                         </Carousel.Item>
                         <Carousel.Item className={"mh-100"}>
 
@@ -84,12 +73,24 @@ export default function Index() {
                         </Carousel.Item>
                         <Carousel.Item className={"mh-100"}>
 
-                            <h1 className={"h2"}><AiOutlineStar className={"h2"} /> Starboard <Badge className={"text-bg-warning bg-warning"}>WIP</Badge></h1>
-                            <p className={"w-50 mx-auto d-block"}>Want to highlight the funniest and best posts on your server? Auxdibot makes it easy! Auxdibot's starboard feature allows for users to react to a post enough times to have it show up in a channel of your choice!</p>
+                            <h1 className={"h2"}><BsPen className={"h2"} /> Role Management <Badge className={"text-bg-success bg-success"}>NEW!</Badge></h1>
+                            <p className={"w-50 mx-auto d-block"}>With Auxdibot, everything from Reaction Roles to Sticky Roles and Join roles is possible! Make your roles feel like roles with Auxdibot.</p>
                         </Carousel.Item>
                         <Carousel.Item className={"mh-100"}>
-                            <h1 className={"h2"}><BsShieldExclamation className={"h2"} /> Permissions <Badge className={"text-bg-success bg-success"}>NEW!</Badge></h1>
-                            <p className={"w-50 mx-auto d-block"}>Allow and block certain users and roles from running Auxdibot's commands using Auxdibot's expansive permission system.</p>
+
+                            <h1 className={"h2"}><IoMedalOutline className={"h2"} /> Levels <Badge className={"text-bg-warning bg-warning"}>WIP</Badge></h1>
+                            <p className={"w-50 mx-auto d-block"}>Auxdibot has a completely custom leveling system with reward roles, custom XP rates, and more!</p>
+                        </Carousel.Item>
+                        <Carousel.Item className={"mh-100"}>
+
+                            <h1 className={"h2"}><AiOutlineQuestionCircle className={"h2"} /> Suggestions <Badge className={"text-bg-warning bg-warning"}>WIP</Badge></h1>
+                            <p className={"w-50 mx-auto d-block"}>Want feedback from your members? Auxdibot features an easy to setup suggestions system, allowing users to upvote or downvote suggestions, or discuss a suggestion in a Discord thread!</p>
+                        </Carousel.Item>
+
+                        <Carousel.Item className={"mh-100"}>
+
+                            <h1 className={"h2"}><AiOutlineStar className={"h2"} /> Starboard <Badge className={"text-bg-warning bg-warning"}>WIP</Badge></h1>
+                            <p className={"w-50 mx-auto d-block"}>Want to highlight the funniest and best posts on your server? Auxdibot makes it easy! Auxdibot's starboard feature allows for users to react to a post enough times to have it show up in a channel of your choice!</p>
                         </Carousel.Item>
                     </Carousel>
 

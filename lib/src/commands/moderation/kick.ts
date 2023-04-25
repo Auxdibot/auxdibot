@@ -29,7 +29,7 @@ const kickCommand = <Command>{
         if (!interaction.guild || !interaction.member) return;
         const user = interaction.options.getUser('user'), reason = interaction.options.getString('reason') || "No reason specified.";
         if (!user) return await interaction.reply({ embeds: [Embeds.ERROR_EMBED.toJSON()] });
-        let server = await Server.findOrCreateServer(interaction.guild.id);
+
         let member = interaction.guild.members.resolve(user.id);
         if (!member) {
             let errorEmbed = Embeds.ERROR_EMBED.toJSON();
@@ -44,6 +44,7 @@ const kickCommand = <Command>{
         }
         interaction.guild.members.kick(user, reason).then(async () => {
             if (!interaction.guild) return;
+            let server = await Server.findOrCreateServer(interaction.guild.id);
             let kickData = <IPunishment>{
                 type: "kick",
                 reason,

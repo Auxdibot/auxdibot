@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, {HydratedDocument} from "mongoose";
 
 import punishmentSchema, {IPunishment, PunishmentNames, toEmbedField} from "../schema/Punishment";
 import Counter from "./Counter";
@@ -6,6 +6,8 @@ import LogSchema, {ILog, LogNames} from "../schema/Log";
 import PermissionOverrideSchema, {IPermissionOverride} from "../schema/PermissionOverride";
 import {APIEmbed, EmbedField, Guild, GuildMember, PermissionsBitField} from "discord.js";
 import Embeds from "../../util/constants/Embeds";
+import ReactionRoleSchema, {IReactionRole} from "../schema/ReactionRole";
+import serverMemberSchema, {IServerMember, IServerMemberMethods} from "../schema/ServerMember";
 
 export interface IServerSettings {
     _id?: mongoose.ObjectId;
@@ -16,6 +18,9 @@ export interface IServerSettings {
     leave_embed?: APIEmbed;
     join_text?: string;
     leave_text?: string;
+    join_roles: string[];
+    sticky_roles: string[];
+
 }
 
 const serverSettingsSchema = new mongoose.Schema<IServerSettings>({
@@ -25,7 +30,10 @@ const serverSettingsSchema = new mongoose.Schema<IServerSettings>({
     join_embed: { type: Object, default: {"type":"rich","title":"👋 Member joined! (%server_members% members.)","thumbnail":{"url":"%member_avatar_128%"},"footer":{"text":"%server_name%"},"description":"%member_mention% joined the server.","color":9159498,"author":{"name":"%message_date%"}} },
     leave_embed: { type: Object, default: {"type":"rich","title":"👋 Member left! (%server_members% members.)","thumbnail":{"url":"%member_avatar_128%"},"footer":{"text":"%server_name%"},"description":"%member_mention% left the server.","color":16007990,"author":{"name":"%message_date%"}}},
     join_text: { type: String, default: "Somebody joined the server!" },
-    leave_text: { type: String, default: "Somebody left the server!" }
+    leave_text: { type: String, default: "Somebody left the server!" },
+    join_roles: { type: [String], default: [] },
+    sticky_roles: { type: [String], default: [] },
+
 }, { _id: false });
 
 export interface IServer {
@@ -35,8 +43,10 @@ export interface IServer {
     punishments: IPunishment[];
     permission_overrides: IPermissionOverride[];
     settings: IServerSettings;
+    reaction_roles: IReactionRole[];
+    member_data: IServerMember[];
 }
-interface ServerMethods {
+export interface ServerMethods {
     userRecord(user_id: String): IPunishment[];
     addPunishment(punishment: IPunishment): IPunishment;
     checkExpired(): IPunishment[];
@@ -53,10 +63,17 @@ interface ServerMethods {
     addPermissionOverride(permissionOverride: IPermissionOverride): IPermissionOverride;
     removePermissionOverride(index: number): boolean;
     getPermissionOverride(permission?: string, role_id?: string, user_id?: string): IPermissionOverride[];
+    addJoinRole(role: string): boolean;
+    addStickyRole(role: string): boolean;
+    addReactionRole(reaction_role: IReactionRole): boolean;
+    removeJoinRole(index: number): boolean;
+    removeStickyRole(index: number): boolean;
+    removeReactionRole(index: number): boolean;
     recordAsEmbed(user_id: string): APIEmbed;
     log(log: ILog, guild: Guild): any;
     punish(punishment: IPunishment): Promise<APIEmbed | undefined>;
     testPermission(permission: string | undefined, executor: GuildMember, defaultAllowed: boolean): boolean;
+    createOrFindMemberData(member: GuildMember): HydratedDocument<IServerMember, IServerMemberMethods> | undefined;
 }
 interface ServerModel extends mongoose.Model<IServer, {}, ServerMethods> {
     findOrCreateServer(discord_id: String): Promise<mongoose.HydratedDocument<IServer, ServerMethods>>;
@@ -68,7 +85,9 @@ const serverSchema = new mongoose.Schema<IServer, ServerModel, ServerMethods>({
     punishments: { type: [punishmentSchema], default: [] },
     permission_overrides: { type: [PermissionOverrideSchema], default: [] },
     latest_log: { type: LogSchema },
-    settings: { type: serverSettingsSchema, default: { mute_role: undefined } }
+    reaction_roles: { type: [ReactionRoleSchema], default: [] },
+    settings: { type: serverSettingsSchema, default: { mute_role: undefined } },
+    member_data: { type: [serverMemberSchema], default: [] }
 });
 
 serverSchema.static('findOrCreateServer', async function (discord_id: String) {
@@ -153,7 +172,7 @@ serverSchema.method("addPermissionOverride", function(permissionOverride: IPermi
     return permissionOverride;
 });
 serverSchema.method("removePermissionOverride", function(index: number) {
-    this.permission_overrides = this.permission_overrides.splice(index, 1);
+    this.permission_overrides.splice(index, 1);
     this.save();
     return true;
 });
@@ -167,6 +186,50 @@ serverSchema.method("getPermissionOverride", function(permission?: string, role_
                 (user_id ? override.user_id == user_id : false));
     } );
 });
+serverSchema.method("addJoinRole", function(role: string) {
+    this.settings.join_roles.push(role);
+    this.save();
+    return true;
+})
+serverSchema.method("addStickyRole", function(role: string) {
+    this.settings.sticky_roles.push(role);
+    this.save();
+    return true;
+});
+serverSchema.method("addReactionRole", function(reaction_role: IReactionRole) {
+    this.reaction_roles.push(reaction_role);
+    this.save();
+    return true;
+});
+serverSchema.method("removeReactionRole", function(index: number) {
+    this.reaction_roles.splice(index, 1);
+    this.save();
+    return true;
+});
+serverSchema.method("removeJoinRole", function(index: number) {
+    this.settings.join_roles.splice(index, 1);
+    this.save();
+    return true;
+});
+serverSchema.method("removeStickyRole", function(index: number) {
+    this.settings.sticky_roles.splice(index, 1);
+    this.save();
+    return true;
+});
+serverSchema.method("createOrFindMemberData", function(member: GuildMember) {
+    let data = this.member_data.find((memberData: IServerMember) => memberData.discord_id == member.id);
+    if (!data) {
+        this.member_data.push(<IServerMember>{
+            discord_id: member.user.id,
+            sticky_roles: [],
+            experience: 0,
+            in_server: true
+        });
+        this.save();
+    }
+    return this.member_data.find((memberData: IServerMember) => memberData.discord_id == member.id);
+});
+
 serverSchema.method("recordAsEmbed", function (user_id: string) {
     let embed = Embeds.DEFAULT_EMBED.toJSON();
     let record = this.userRecord(user_id);

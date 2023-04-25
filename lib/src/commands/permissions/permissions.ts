@@ -147,7 +147,7 @@ const permissionsCommand = <Command>{
                 if (override_id) {
                     let permission = server.permission_overrides[override_id - 1];
                     if (permission) {
-                        server.removePermissionOverride(override_id);
+                        server.removePermissionOverride(override_id-1);
                         let embed = Embeds.SUCCESS_EMBED.toJSON();
                         embed.title = "✋ Deleted Permission Override";
                         embed.description = `Deleted permission override with override id \`${override_id}\`.`

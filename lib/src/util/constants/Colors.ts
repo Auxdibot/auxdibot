@@ -4,6 +4,7 @@ enum Colors {
     INFO_COLOR = 0x00bcd4,
     DEFAULT_COLOR = 0xfe8a00,
     PUNISHMENT_COLOR = 0x9c0e11,
-    LOG_COLOR = 0xF9F3D2
+    LOG_COLOR = 0xF9F3D2,
+    REACTION_ROLE_COLOR = 0xF3C810
 }
 export default Colors;

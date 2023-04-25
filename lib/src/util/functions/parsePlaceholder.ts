@@ -35,7 +35,7 @@ export default async function parsePlaceholders(msg: string, guild?: Guild, memb
         ...(member ? {
             "member_id": member.id,
             "member_tag": member.user.tag,
-            "member_mention": `<@${member.id}>`,
+            "member_mention": member.user,
             "member_created_date": member.user.createdAt.toDateString(),
             "member_created_date_formatted": `<t:${Math.round(member.user.createdAt.valueOf() / 1000)}>`,
             "member_created_date_utc": member.user.createdAt.toUTCString(),
