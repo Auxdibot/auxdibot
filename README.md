@@ -63,11 +63,10 @@ If you would like to run Auxdibot on your own machine:
 
 `👋` *Welcome & Leave Messages*
 
+`👈` *Role Management (Join Roles, Sticky Roles, Massrole, Reaction Roles)*
 ## Planned Features
 
 `🏆` *Levels*
-
-`👈` *Reaction Roles*
 
 `⭐` *Starboard*
 

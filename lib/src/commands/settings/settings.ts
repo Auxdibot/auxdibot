@@ -55,7 +55,8 @@ const settingsCommand = < Command > {
             embed.description = `🗒️ Log Channel: ${server.settings.log_channel ? `<#${server.settings.log_channel}>` : "None"}
             \r\n📩 Join/Leave Channel: ${server.settings.join_leave_channel ? `<#${server.settings.join_leave_channel}>` : "None"}
             \r\n🎤 Mute Role: ${server.settings.mute_role ? `<@&${server.settings.mute_role}>` : "None"}
-            \r\n👋 Join Roles${server.settings.join_roles.reduce((accumulator, val, index) => `${accumulator}\r\n> **${index+1})** <@&${val}>`, "")}`
+            \r\n👋 Join Roles${server.settings.join_roles.reduce((accumulator, val, index) => `${accumulator}\r\n> **${index+1})** <@&${val}>`, "")}
+            \r\n📝 Sticky Roles${server.settings.sticky_roles.reduce((accumulator, val, index) => `${accumulator}\r\n> **${index+1})** <@&${val}>`, "")}`
             return await interaction.reply({
                 embeds: [embed]
             })

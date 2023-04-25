@@ -129,8 +129,8 @@ export class AuxdibotClient {
             if (client.user) {
                 client.user.setPresence({
                     activities: [{
-                        type: ActivityType.Listening,
-                        name: `${client.guilds.cache.size} servers!`
+                        type: ActivityType.Watching,
+                        name: `${client.guilds.cache.size} servers! (NEW! Roles)`
                     }]
                 })
             }
@@ -173,8 +173,8 @@ export const updateDiscordStatus = async () => {
     let awaitClient = await client;
     if (awaitClient.user) return awaitClient.user.setPresence({
         activities: [{
-            type: ActivityType.Listening,
-            name: `${awaitClient.guilds.cache.size} servers!`
+            type: ActivityType.Watching,
+            name: `${awaitClient.guilds.cache.size} servers! (NEW! Roles)`
         }]
     });
     return false;
