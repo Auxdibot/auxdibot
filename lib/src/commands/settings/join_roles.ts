@@ -5,6 +5,7 @@ import {
 import Command from "../../util/templates/Command";
 import Server from "../../mongo/model/Server";
 import Embeds from "../../util/constants/Embeds";
+import {LogType} from "../../mongo/schema/Log";
 
 const joinRolesCommand = <Command>{
     data: new SlashCommandBuilder()
@@ -71,6 +72,12 @@ const joinRolesCommand = <Command>{
                 let successEmbed = Embeds.SUCCESS_EMBED.toJSON();
                 successEmbed.title = "👋 Added Join Role"
                 successEmbed.description = `Added <@&${role.id}> to the join roles.`;
+                await server.log({
+                    user_id: member.id,
+                    description: `Added (Role ID: ${role.id}) to the join roles.`,
+                    type: LogType.JOIN_ROLE_ADDED,
+                    date_unix: Date.now()
+                }, interaction.guild)
                 return await interaction.reply({ embeds: [successEmbed] });
             }
         },
@@ -116,6 +123,12 @@ const joinRolesCommand = <Command>{
                 let successEmbed = Embeds.SUCCESS_EMBED.toJSON();
                 successEmbed.title = "👋 Removed Join Role"
                 successEmbed.description = `Removed <@&${joinRole}> from the join roles.`;
+                await server.log({
+                    user_id: member.id,
+                    description: `Removed (Role ID: ${joinRole}) from the sticky roles.`,
+                    type: LogType.JOIN_ROLE_REMOVED,
+                    date_unix: Date.now()
+                }, interaction.guild)
                 return await interaction.reply({ embeds: [successEmbed] });
             }
         },

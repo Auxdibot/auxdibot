@@ -9,6 +9,7 @@ import Embeds from "../../util/constants/Embeds";
 import EmbedParameters, {toAPIEmbed} from "../../util/types/EmbedParameters";
 import parsePlaceholders from "../../util/functions/parsePlaceholder";
 import {getMessage} from "../../util/functions/getMessage";
+import {LogType} from "../../mongo/schema/Log";
 
 const reactionRolesCommand = <Command>{
     data: new SlashCommandBuilder()
@@ -114,8 +115,9 @@ const reactionRolesCommand = <Command>{
                 permission: "rr.add"
             },
             async execute(interaction: ChatInputCommandInteraction) {
-                if (!interaction.guild) return;
+                if (!interaction.guild || !interaction.member) return;
                 let guild: Guild = interaction.guild;
+                let member: GuildMember = interaction.member as GuildMember;
                 let server = await Server.findOrCreateServer(interaction.guild.id);
                 let channel = interaction.options.getChannel("channel"), roles = interaction.options.getString("roles"), title = interaction.options.getString("title") || "React to receive roles!";
                 if (!channel || !roles) return;
@@ -154,6 +156,12 @@ const reactionRolesCommand = <Command>{
                 let successEmbed = Embeds.SUCCESS_EMBED.toJSON();
                 successEmbed.title = "👈 Created Reaction Role"
                 successEmbed.description = `Created a reaction role in ${channel}`;
+                await server.log({
+                    user_id: member.id,
+                    description: `Created a reaction role in ${channel.name}`,
+                    type: LogType.REACTION_ROLE_ADDED,
+                    date_unix: Date.now()
+                }, interaction.guild)
                 return await interaction.reply({ embeds: [successEmbed] });
             }
         },
@@ -169,8 +177,9 @@ const reactionRolesCommand = <Command>{
                 permission: "rr.add.custom"
             },
             async execute(interaction: ChatInputCommandInteraction) {
-                if (!interaction.guild) return;
+                if (!interaction.guild || !interaction.member) return;
                 let guild: Guild = interaction.guild;
+                let member: GuildMember = interaction.member as GuildMember;
                 let server = await Server.findOrCreateServer(interaction.guild.id);
                 let channel = interaction.options.getChannel("channel"), roles = interaction.options.getString("roles"),
                     color = interaction.options.getString("color"),
@@ -234,6 +243,12 @@ const reactionRolesCommand = <Command>{
                 let successEmbed = Embeds.SUCCESS_EMBED.toJSON();
                 successEmbed.title = "👈 Created Reaction Role"
                 successEmbed.description = `Created a reaction role in ${channel}`;
+                await server.log({
+                    user_id: member.id,
+                    description: `Created a reaction role in ${channel.name}`,
+                    type: LogType.REACTION_ROLE_ADDED,
+                    date_unix: Date.now()
+                }, interaction.guild)
                 return await interaction.reply({ embeds: [successEmbed] });
             }
         },
@@ -249,8 +264,9 @@ const reactionRolesCommand = <Command>{
                 permission: "rr.add.json"
             },
             async execute(interaction: ChatInputCommandInteraction) {
-                if (!interaction.guild) return;
+                if (!interaction.guild || !interaction.member) return;
                 let guild: Guild = interaction.guild;
+                let member: GuildMember = interaction.member as GuildMember;
                 let server = await Server.findOrCreateServer(interaction.guild.id);
                 let channel = interaction.options.getChannel("channel"), roles = interaction.options.getString("roles"),
                     json = interaction.options.getString("json");
@@ -291,6 +307,12 @@ const reactionRolesCommand = <Command>{
                 let successEmbed = Embeds.SUCCESS_EMBED.toJSON();
                 successEmbed.title = "👈 Created Reaction Role"
                 successEmbed.description = `Created a reaction role in ${channel}`;
+                await server.log({
+                    user_id: member.id,
+                    description: `Created a reaction role in ${channel.name}`,
+                    type: LogType.REACTION_ROLE_ADDED,
+                    date_unix: Date.now()
+                }, interaction.guild)
                 return await interaction.reply({ embeds: [successEmbed] });
             }
         },
@@ -306,8 +328,9 @@ const reactionRolesCommand = <Command>{
                 permission: "rr.remove"
             },
             async execute(interaction: ChatInputCommandInteraction) {
-                if (!interaction.guild) return;
+                if (!interaction.guild || !interaction.member) return;
                 let server = await Server.findOrCreateServer(interaction.guild.id);
+                let member: GuildMember = interaction.member as GuildMember;
                 let message_id = interaction.options.getString("message_id"), index = interaction.options.getNumber("index");
                 if (!message_id && !index) {
                     let embed = Embeds.ERROR_EMBED.toJSON();
@@ -328,6 +351,12 @@ const reactionRolesCommand = <Command>{
                 let successEmbed = Embeds.SUCCESS_EMBED.toJSON();
                 successEmbed.title = "👈 Deleted Reaction Role"
                 successEmbed.description = `Deleted a reaction role${message ? ` in ${message.channel}` : ""}.`;
+                await server.log({
+                    user_id: member.id,
+                    description: `Deleted a reaction role${message ? ` in ${message.channel || "a channel"}` : ""}.`,
+                    type: LogType.REACTION_ROLE_REMOVED,
+                    date_unix: Date.now()
+                }, interaction.guild)
                 return await interaction.reply({ embeds: [successEmbed] });
             }
         },
@@ -363,8 +392,9 @@ const reactionRolesCommand = <Command>{
                 permission: "rr.edit"
             },
             async execute(interaction: ChatInputCommandInteraction) {
-                if (!interaction.guild) return;
+                if (!interaction.guild || !interaction.member) return;
                 let server = await Server.findOrCreateServer(interaction.guild.id);
+                let member: GuildMember = interaction.member as GuildMember;
                 let message_id = interaction.options.getString("message_id"),
                     index = interaction.options.getNumber("index"),
                     json = interaction.options.getString("json"),
@@ -403,6 +433,12 @@ const reactionRolesCommand = <Command>{
                     let successEmbed = Embeds.SUCCESS_EMBED.toJSON();
                     successEmbed.title = "👈 Edited Reaction Role"
                     successEmbed.description = `Edited a reaction role${message ? ` in ${message.channel}` : ""}.`;
+                    await server.log({
+                        user_id: member.id,
+                        description: `Edited a reaction role.`,
+                        type: LogType.REACTION_ROLE_EDITED,
+                        date_unix: Date.now()
+                    }, interaction.guild)
                     return await interaction.reply({ embeds: [successEmbed] });
                 }
                 if (color && title) {
@@ -430,6 +466,12 @@ const reactionRolesCommand = <Command>{
                     let successEmbed = Embeds.SUCCESS_EMBED.toJSON();
                     successEmbed.title = "👈 Edited Reaction Role"
                     successEmbed.description = `Edited a reaction role${message ? ` in ${message.channel}` : ""}.`;
+                    await server.log({
+                        user_id: member.id,
+                        description: `Edited a reaction role.`,
+                        type: LogType.REACTION_ROLE_EDITED,
+                        date_unix: Date.now()
+                    }, interaction.guild)
                     return await interaction.reply({ embeds: [successEmbed] });
                 }
                 let embed = Embeds.ERROR_EMBED.toJSON();

@@ -12,6 +12,12 @@ module.exports = {
         let rr = server.reaction_roles.find((rr) => rr.message_id == message.id);
         if (rr) {
             server.removeReactionRole(server.reaction_roles.indexOf(rr));
+            await server.log({
+                user_id: sender.id,
+                description: `Deleted a reaction role${message ? ` in ${message.channel || "a channel"}` : ""}.`,
+                type: LogType.REACTION_ROLE_REMOVED,
+                date_unix: Date.now()
+            }, message.guild)
         }
         await server.log({
             type: LogType.MESSAGE_DELETED,

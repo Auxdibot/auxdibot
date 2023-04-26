@@ -4,6 +4,8 @@ import {
 } from "discord.js";
 import Command from "../../util/templates/Command";
 import Embeds from '../../util/constants/Embeds';
+import {LogType} from "../../mongo/schema/Log";
+import Server from "../../mongo/model/Server";
 
 const massroleCommand = < Command > {
     data: new SlashCommandBuilder()
@@ -38,6 +40,7 @@ const massroleCommand = < Command > {
             let guild: Guild = interaction.guild;
             let executor = interaction.member as GuildMember;
             let role = interaction.options.getRole("role");
+            let server = await Server.findOrCreateServer(guild.id);
             if (!role) return;
             let embed = Embeds.SUCCESS_EMBED.toJSON();
             embed.title = "Success!";
@@ -51,6 +54,12 @@ const massroleCommand = < Command > {
 
                 }
             });
+            await server.log({
+                user_id: executor.id,
+                description: `Massrole took ${role} from anyone who had it with lower role hiearchy than Auxdibot.`,
+                type: LogType.MASSROLE_GIVEN,
+                date_unix: Date.now()
+            }, interaction.guild)
     }
     },
         {
@@ -69,6 +78,7 @@ const massroleCommand = < Command > {
                 let guild: Guild = interaction.guild;
                 let executor = interaction.member as GuildMember;
                 let role = interaction.options.getRole("role");
+                let server = await Server.findOrCreateServer(guild.id);
                 if (!role) return;
                 let embed = Embeds.SUCCESS_EMBED.toJSON();
                 embed.title = "Success!";
@@ -81,6 +91,12 @@ const massroleCommand = < Command > {
                         member.roles.remove(role.id).catch(() => undefined);
                     }
                 });
+                await server.log({
+                    user_id: executor.id,
+                    description: `Massrole took ${role} from anyone who had it with lower role hiearchy than Auxdibot.`,
+                    type: LogType.MASSROLE_TAKEN,
+                    date_unix: Date.now()
+                }, interaction.guild)
             }
         }],
     async execute() {
