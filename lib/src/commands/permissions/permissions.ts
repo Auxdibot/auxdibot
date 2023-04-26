@@ -1,11 +1,11 @@
 import {ChatInputCommandInteraction, SlashCommandBuilder} from "discord.js";
-import Command from "../../util/templates/Command";
+import AuxdibotCommand from "../../util/templates/AuxdibotCommand";
 import Embeds from '../../util/constants/Embeds';
 import Server from "../../mongo/model/Server";
 import {IPermissionOverride} from "../../mongo/schema/PermissionOverride";
 import {LogType} from "../../mongo/schema/Log";
 
-const permissionsCommand = <Command>{
+const permissionsCommand = <AuxdibotCommand>{
     data: new SlashCommandBuilder()
         .setName('permissions')
         .setDescription('Edit, view, or delete permissions and permission overrides.')

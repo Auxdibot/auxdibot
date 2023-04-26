@@ -1,12 +1,12 @@
 import {ChatInputCommandInteraction, GuildMember, SlashCommandBuilder} from "discord.js";
-import Command from "../../util/templates/Command";
+import AuxdibotCommand from "../../util/templates/AuxdibotCommand";
 import Embeds from "../../util/constants/Embeds";
 import Server from "../../mongo/model/Server";
 import canExecute from "../../util/functions/canExecute";
 import {LogType} from "../../mongo/schema/Log";
 import {IPunishment} from "../../mongo/schema/Punishment";
 
-const kickCommand = <Command>{
+const kickCommand = <AuxdibotCommand>{
     data: new SlashCommandBuilder()
         .setName('kick')
         .setDescription('Kick a user using Auxdibot.')

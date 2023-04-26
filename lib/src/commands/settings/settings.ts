@@ -6,14 +6,14 @@ import {
     Role,
     SlashCommandBuilder
 } from "discord.js";
-import Command from "../../util/templates/Command";
+import AuxdibotCommand from "../../util/templates/AuxdibotCommand";
 import Embeds from "../../util/constants/Embeds";
 import Server from "../../mongo/model/Server";
 import {
     LogType
 } from "../../mongo/schema/Log";
 
-const settingsCommand = < Command > {
+const settingsCommand = < AuxdibotCommand > {
     data: new SlashCommandBuilder()
         .setName('settings')
         .setDescription('Change settings for the server.')

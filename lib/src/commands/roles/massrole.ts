@@ -2,12 +2,12 @@ import {
     ButtonStyle, ChatInputCommandInteraction, Guild, GuildMember,
     SlashCommandBuilder
 } from "discord.js";
-import Command from "../../util/templates/Command";
+import AuxdibotCommand from "../../util/templates/AuxdibotCommand";
 import Embeds from '../../util/constants/Embeds';
 import {LogType} from "../../mongo/schema/Log";
 import Server from "../../mongo/model/Server";
 
-const massroleCommand = < Command > {
+const massroleCommand = < AuxdibotCommand > {
     data: new SlashCommandBuilder()
         .setName('massrole')
         .setDescription('Give everybody a role, or take a role away from anyone that has it.')

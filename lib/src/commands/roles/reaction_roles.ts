@@ -2,7 +2,7 @@ import {
     ChatInputCommandInteraction,
     SlashCommandBuilder, APIEmbed, Guild, ChannelType, TextChannel, Role, EmbedField, GuildMember
 } from "discord.js";
-import Command from "../../util/templates/Command";
+import AuxdibotCommand from "../../util/templates/AuxdibotCommand";
 import Server from "../../mongo/model/Server";
 import {IReaction} from "../../mongo/schema/ReactionRole";
 import Embeds from "../../util/constants/Embeds";
@@ -11,7 +11,7 @@ import parsePlaceholders from "../../util/functions/parsePlaceholder";
 import {getMessage} from "../../util/functions/getMessage";
 import {LogType} from "../../mongo/schema/Log";
 
-const reactionRolesCommand = <Command>{
+const reactionRolesCommand = <AuxdibotCommand>{
     data: new SlashCommandBuilder()
         .setName('reaction_roles')
         .setDescription('Create, edit, remove, or list the currently active reaction roles.')

@@ -2,12 +2,12 @@ import {
     ChatInputCommandInteraction,
     SlashCommandBuilder, APIEmbed, Guild, GuildMember, Role, PermissionsBitField
 } from "discord.js";
-import Command from "../../util/templates/Command";
+import AuxdibotCommand from "../../util/templates/AuxdibotCommand";
 import Server from "../../mongo/model/Server";
 import Embeds from "../../util/constants/Embeds";
 import {LogType} from "../../mongo/schema/Log";
 
-const stickyRolesCommand = <Command>{
+const stickyRolesCommand = <AuxdibotCommand>{
     data: new SlashCommandBuilder()
         .setName('sticky_roles')
         .setDescription('Change the roles that are kept when a member rejoins the server.')

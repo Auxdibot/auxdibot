@@ -2,13 +2,13 @@ import {
     ChatInputCommandInteraction, EmbedField,
     SlashCommandBuilder, Channel, TextChannel, GuildMember, APIEmbed
 } from "discord.js";
-import Command from "../../util/templates/Command";
+import AuxdibotCommand from "../../util/templates/AuxdibotCommand";
 import Embeds from "../../util/constants/Embeds";
 import EmbedParameters, {toAPIEmbed} from "../../util/types/EmbedParameters";
 import Server from "../../mongo/model/Server";
 import parsePlaceholders from "../../util/functions/parsePlaceholder";
 
-const joinCommand = <Command>{
+const joinCommand = <AuxdibotCommand>{
     data: new SlashCommandBuilder()
         .setName('join')
         .setDescription('Change settings for join messages on the server.')

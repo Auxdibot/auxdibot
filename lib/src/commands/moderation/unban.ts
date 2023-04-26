@@ -1,11 +1,11 @@
 import {ChatInputCommandInteraction, SlashCommandBuilder} from "discord.js";
-import Command from "../../util/templates/Command";
+import AuxdibotCommand from "../../util/templates/AuxdibotCommand";
 import Embeds from '../../util/constants/Embeds';
 import Server from "../../mongo/model/Server";
 import {LogType} from "../../mongo/schema/Log";
 import {toEmbedField} from "../../mongo/schema/Punishment";
 
-const unbanCommand = <Command>{
+const unbanCommand = <AuxdibotCommand>{
     data: new SlashCommandBuilder()
         .setName('unban')
         .setDescription('Unban a user.')

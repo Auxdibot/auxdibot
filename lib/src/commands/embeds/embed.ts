@@ -7,7 +7,7 @@ import {
     Guild, GuildMember,
     SlashCommandBuilder,
 } from "discord.js";
-import Command from "../../util/templates/Command";
+import AuxdibotCommand from "../../util/templates/AuxdibotCommand";
 import Embeds from '../../util/constants/Embeds';
 import dotenv from "dotenv";
 import EmbedParameters, {toAPIEmbed} from "../../util/types/EmbedParameters";
@@ -15,7 +15,7 @@ import {getMessage} from "../../util/functions/getMessage";
 import parsePlaceholders from "../../util/functions/parsePlaceholder";
 
 dotenv.config();
-const embedCommand = <Command> {
+const embedCommand = <AuxdibotCommand> {
     data: new SlashCommandBuilder()
         .setName('embed')
         .setDescription('Create or edit a Discord Embed with Auxdibot, as well as obtain the JSON data of any Embed.')

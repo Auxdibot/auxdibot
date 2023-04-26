@@ -3,13 +3,13 @@ import {
     ChatInputCommandInteraction, EmbedField, GuildMember,
     SlashCommandBuilder, TextChannel
 } from "discord.js";
-import Command from "../../util/templates/Command";
+import AuxdibotCommand from "../../util/templates/AuxdibotCommand";
 import Server from "../../mongo/model/Server";
 import Embeds from "../../util/constants/Embeds";
 import parsePlaceholders from "../../util/functions/parsePlaceholder";
 import EmbedParameters, {toAPIEmbed} from "../../util/types/EmbedParameters";
 
-const leaveCommand = <Command>{
+const leaveCommand = <AuxdibotCommand>{
     data: new SlashCommandBuilder()
         .setName('leave')
         .setDescription('Change settings for leave messages on the server.')

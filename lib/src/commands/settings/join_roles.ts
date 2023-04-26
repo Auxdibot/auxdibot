@@ -2,12 +2,12 @@ import {
     ChatInputCommandInteraction,
     SlashCommandBuilder, APIEmbed, Guild, Role, PermissionsBitField, GuildMember
 } from "discord.js";
-import Command from "../../util/templates/Command";
+import AuxdibotCommand from "../../util/templates/AuxdibotCommand";
 import Server from "../../mongo/model/Server";
 import Embeds from "../../util/constants/Embeds";
 import {LogType} from "../../mongo/schema/Log";
 
-const joinRolesCommand = <Command>{
+const joinRolesCommand = <AuxdibotCommand>{
     data: new SlashCommandBuilder()
         .setName('join_roles')
         .setDescription('Change the roles given when a member joins the server.')

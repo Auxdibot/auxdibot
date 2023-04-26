@@ -5,12 +5,12 @@ import {
     GuildMemberManager,
     SlashCommandBuilder
 } from "discord.js";
-import Command from "../../util/templates/Command";
+import AuxdibotCommand from "../../util/templates/AuxdibotCommand";
 import Embeds from '../../util/constants/Embeds';
 import Server from "../../mongo/model/Server";
 import {PunishmentNames} from "../../mongo/schema/Punishment";
 
-const userCommand = <Command>{
+const userCommand = <AuxdibotCommand>{
     data: new SlashCommandBuilder()
         .setName('user')
         .setDescription("View and edit a user's data.")

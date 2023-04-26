@@ -1,14 +1,16 @@
 import {ChatInputCommandInteraction, SlashCommandBuilder, SlashCommandSubcommandsOnlyBuilder} from "discord.js";
 
 import CommandInfo from "../types/CommandInfo";
-import {Subcommand} from "../types/Subcommand";
+import {AuxdibotSubcommand} from "../types/AuxdibotSubcommand";
 
-interface Command {
+interface AuxdibotCommand {
     data: SlashCommandBuilder | SlashCommandSubcommandsOnlyBuilder | Omit<SlashCommandBuilder, "addSubcommandGroup" | "addSubcommand">;
     execute(interaction: ChatInputCommandInteraction): any;
     info: CommandInfo;
-    subcommands?: Subcommand[];
+    subcommands?: AuxdibotSubcommand[];
 }
 
 
-export default Command;
+
+
+export default AuxdibotCommand;

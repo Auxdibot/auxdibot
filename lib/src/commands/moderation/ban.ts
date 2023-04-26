@@ -1,5 +1,5 @@
 import {ChatInputCommandInteraction, GuildMember, SlashCommandBuilder} from "discord.js";
-import Command from "../../util/templates/Command";
+import AuxdibotCommand from "../../util/templates/AuxdibotCommand";
 import Embeds from "../../util/constants/Embeds";
 import timestampToDuration from "../../util/functions/timestampToDuration";
 import Server from "../../mongo/model/Server";
@@ -7,7 +7,7 @@ import canExecute from "../../util/functions/canExecute";
 import {LogType} from "../../mongo/schema/Log";
 import {IPunishment} from "../../mongo/schema/Punishment";
 
-const banCommand = <Command>{
+const banCommand = <AuxdibotCommand>{
     data: new SlashCommandBuilder()
         .setName('ban')
         .setDescription('Ban a user using Auxdibot.')

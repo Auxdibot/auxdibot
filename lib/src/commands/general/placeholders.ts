@@ -1,12 +1,12 @@
 import {
     SlashCommandBuilder
 } from "discord.js";
-import Command from "../../util/templates/Command";
+import AuxdibotCommand from "../../util/templates/AuxdibotCommand";
 import Embeds from '../../util/constants/Embeds';
 import dotenv from "dotenv";
 import Placeholders from "../../util/types/Placeholders";
 dotenv.config();
-const placeholderCommand = < Command > {
+const placeholderCommand = < AuxdibotCommand > {
     data: new SlashCommandBuilder()
         .setName('placeholders')
         .setDescription('View a list of placeholders and what they do.'),

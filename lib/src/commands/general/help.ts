@@ -2,7 +2,7 @@ import {
     ActionRowBuilder, ButtonBuilder, ButtonStyle,
     SlashCommandBuilder
 } from "discord.js";
-import Command from "../../util/templates/Command";
+import AuxdibotCommand from "../../util/templates/AuxdibotCommand";
 import Embeds from '../../util/constants/Embeds';
 import {
     IAuxdibot
@@ -10,7 +10,7 @@ import {
 import HelpCommandInfo from "../../util/types/HelpCommandInfo";
 import dotenv from "dotenv";
 dotenv.config();
-const helpCommand = < Command > {
+const helpCommand = < AuxdibotCommand > {
     data: new SlashCommandBuilder()
         .setName('help')
         .setDescription('View the help for Auxdibot.')

@@ -1,4 +1,4 @@
-import Button from "../util/types/Button";
+import AuxdibotButton from "../util/types/AuxdibotButton";
 import {
     MessageComponentInteraction
 } from "discord.js";
@@ -7,7 +7,7 @@ import {toEmbedField} from "../mongo/schema/Punishment";
 import {LogType} from "../mongo/schema/Log";
 import Server from "../mongo/model/Server";
 
-module.exports = <Button>{
+module.exports = <AuxdibotButton>{
     name: "unban",
     permission: "moderation.ban.remove",
     async execute(interaction: MessageComponentInteraction) {

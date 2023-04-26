@@ -1,11 +1,11 @@
 import {ChatInputCommandInteraction, SlashCommandBuilder} from "discord.js";
-import Command from "../../util/templates/Command";
+import AuxdibotCommand from "../../util/templates/AuxdibotCommand";
 import Embeds from '../../util/constants/Embeds';
 import Server from "../../mongo/model/Server";
 import punishment, {PunishmentNames, toEmbedField} from "../../mongo/schema/Punishment";
 import {LogType} from "../../mongo/schema/Log";
 
-const punishmentCommand = <Command>{
+const punishmentCommand = <AuxdibotCommand>{
     data: new SlashCommandBuilder()
         .setName('punishment')
         .setDescription('View a users punishment record.')

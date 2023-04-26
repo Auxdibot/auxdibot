@@ -1,9 +1,9 @@
 import {ChatInputCommandInteraction, SlashCommandBuilder} from "discord.js";
-import Command from "../../util/templates/Command";
+import AuxdibotCommand from "../../util/templates/AuxdibotCommand";
 import Server from "../../mongo/model/Server";
 
 
-const recordCommand = <Command>{
+const recordCommand = <AuxdibotCommand>{
     data: new SlashCommandBuilder()
         .setName('record')
         .setDescription('View a users punishment record.')
