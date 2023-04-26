@@ -19,7 +19,17 @@ export enum LogType {
     "PERMISSION_DELETED",
     "MESSAGE_EDITED",
     "MESSAGE_DELETED",
-    "JOIN_LEAVE_CHANNEL_CHANGED"
+    "JOIN_LEAVE_CHANNEL_CHANGED",
+    "JOIN_ROLE_ADDED",
+    "JOIN_ROLE_REMOVED",
+    "STICKY_ROLE_ADDED",
+    "STICKY_ROLE_REMOVED",
+    "REACTION_ROLE_ADDED",
+    "REACTION_ROLE_REMOVED",
+    "REACTION_ROLE_EDITED",
+    "MASSROLE_GIVEN",
+    "MASSROLE_TAKEN",
+
 
 }
 // such a stupid, stupid way to do something so stupidly, stupidly simple.
@@ -41,6 +51,15 @@ export const LogNames = {
     14: "🖊️ Message Edited",
     15: "🗙 Message Deleted",
     16: "📩 Join/Leave Channel Changed",
+    17: "👋 Join Role Added",
+    18: "👋 Join Role Removed",
+    19: "📝 Sticky Role Added",
+    20: "📝 Sticky Role Removed",
+    21: "👈 Reaction Role Added",
+    22: "👈 Reaction Role Removed",
+    23: "👈 Reaction Role Edited",
+    24: "🪪 Massrole Given",
+    25: "🪪 Massrole Taken"
 }
 
 export interface IChangeSchema { former: string | undefined, now: string }
