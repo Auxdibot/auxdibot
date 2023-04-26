@@ -30,6 +30,8 @@ const embedCommand = <Command> {
             .addStringOption(option => option.setName("title")
                 .setDescription("The title of the Embed.")
                 .setRequired(true))
+            .addStringOption(option => option.setName("content")
+                .setDescription("The message content to send with the embed."))
             .addStringOption(option => option.setName("description")
                 .setDescription("The description of the Embed. (Optional)"))
             .addStringOption(option => option.setName("author_text")
@@ -99,7 +101,7 @@ const embedCommand = <Command> {
             help: {
                 commandCategory: "Embed",
                 name: "/embed create",
-                usageExample: "/embed create (channel) (color) (title) [author_text] [description] [fields (split title and description with `\"|d|\"``, and seperate fields with `\"|s|\"`)] [footer] [image url] [thumbnail url]",
+                usageExample: "/embed create (channel) (color) (title) [author_text] [description] [content] [fields (split title and description with `\"|d|\"``, and seperate fields with `\"|s|\"`)] [footer] [image url] [thumbnail url]",
                 description: "Create an embed with Auxdibot."
             },
             permission: "embed.create"
@@ -116,6 +118,7 @@ const embedCommand = <Command> {
             let color = interaction.options.getString("color"),
                 title = interaction.options.getString("title")?.replace(/\\n/g, "\n"),
                 description = interaction.options.getString("description")?.replace(/\\n/g, "\n") || null,
+                content = interaction.options.getString("content")?.replace(/\\n/g, "\n") || "",
                 author_text = interaction.options.getString("author_text")?.replace(/\\n/g, "\n") || null,
                 fields = interaction.options.getString("fields")?.replace(/\\n/g, "\n") || null,
                 footer = interaction.options.getString("footer")?.replace(/\\n/g, "\n") || null,
@@ -137,7 +140,7 @@ const embedCommand = <Command> {
                 image_url
             };
             try {
-                await channel.send({ embeds: [toAPIEmbed(JSON.parse(await parsePlaceholders(JSON.stringify(parameters), interaction.guild, interaction.member as GuildMember | undefined))) as APIEmbed] });
+                await channel.send({ content: content, embeds: [toAPIEmbed(JSON.parse(await parsePlaceholders(JSON.stringify(parameters), interaction.guild, interaction.member as GuildMember | undefined))) as APIEmbed] });
             } catch (x) {
 
                 let embed = Embeds.ERROR_EMBED.toJSON();

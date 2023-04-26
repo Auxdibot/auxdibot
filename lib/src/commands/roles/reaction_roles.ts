@@ -41,6 +41,8 @@ const reactionRolesCommand = <Command>{
                 .setRequired(true))
             .addStringOption(option => option.setName("description")
                 .setDescription("The description of the Embed. (Optional)"))
+            .addStringOption(option => option.setName("content")
+                .setDescription("The message content to send with the embed. (Optional)"))
             .addStringOption(option => option.setName("author_text")
                 .setDescription("The author text of the Embed. (Optional)"))
             .addStringOption(option => option.setName("fields")
@@ -174,6 +176,7 @@ const reactionRolesCommand = <Command>{
                     color = interaction.options.getString("color"),
                     title = interaction.options.getString("title")?.replace(/\\n/g, "\n"),
                     description = interaction.options.getString("description")?.replace(/\\n/g, "\n") || null,
+                    content = interaction.options.getString("content")?.replace(/\\n/g, "\n") || "",
                     author_text = interaction.options.getString("author_text")?.replace(/\\n/g, "\n") || null,
                     fields = interaction.options.getString("fields")?.replace(/\\n/g, "\n") || null,
                     footer = interaction.options.getString("footer")?.replace(/\\n/g, "\n") || null,
@@ -220,7 +223,7 @@ const reactionRolesCommand = <Command>{
                     thumbnail_url,
                     image_url
                 };
-                let message = await channel.send({ embeds: [toAPIEmbed(JSON.parse(await parsePlaceholders(JSON.stringify(parameters), interaction.guild, interaction.member as GuildMember | undefined))) as APIEmbed] }).catch(() => undefined);
+                let message = await channel.send({ content: content, embeds: [toAPIEmbed(JSON.parse(await parsePlaceholders(JSON.stringify(parameters), interaction.guild, interaction.member as GuildMember | undefined))) as APIEmbed] }).catch(() => undefined);
                 if (!message) {
                     let embed = Embeds.ERROR_EMBED.toJSON();
                     embed.description = `There was an error sending that embed!`;

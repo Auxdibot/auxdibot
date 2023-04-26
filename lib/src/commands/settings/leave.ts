@@ -38,8 +38,7 @@ const leaveCommand = <Command>{
             .setRequired(true)))
         .addSubcommand(builder => builder.setName("text").setDescription("Show text (With placeholders!)")
             .addStringOption(option => option.setName("text")
-                .setDescription("The text to use when a member leaves the server")
-                .setRequired(true)))
+                .setDescription("The text to use when a member leaves the server")))
         .addSubcommand(builder => builder.setName('preview').setDescription('Preview the leave embed.')),
     info: {
         help: {
