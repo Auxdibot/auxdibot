@@ -1,14 +1,14 @@
-import {
-    ChatInputCommandInteraction, EmbedField,
-    SlashCommandBuilder, Channel, TextChannel, GuildMember, APIEmbed
+import {EmbedField,
+    SlashCommandBuilder, Channel, TextChannel, APIEmbed
 } from "discord.js";
-import Command from "../../util/templates/Command";
+import AuxdibotCommand from "../../util/templates/AuxdibotCommand";
 import Embeds from "../../util/constants/Embeds";
 import EmbedParameters, {toAPIEmbed} from "../../util/types/EmbedParameters";
-import Server from "../../mongo/model/Server";
 import parsePlaceholders from "../../util/functions/parsePlaceholder";
+import AuxdibotCommandInteraction from "../../util/templates/AuxdibotCommandInteraction";
+import GuildAuxdibotCommandData from "../../util/types/commandData/GuildAuxdibotCommandData";
 
-const joinCommand = <Command>{
+const joinCommand = <AuxdibotCommand>{
     data: new SlashCommandBuilder()
         .setName('join')
         .setDescription('Change settings for join messages on the server.')
@@ -59,8 +59,8 @@ const joinCommand = <Command>{
             },
             permission: "settings.join.embed"
         },
-        async execute(interaction: ChatInputCommandInteraction) {
-            if (!interaction.guild) return;
+        async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+            if (!interaction.data) return;
             let color = interaction.options.getString("color"),
                 title = interaction.options.getString("title")?.replace(/\\n/g, "\n"),
                 description = interaction.options.getString("description")?.replace(/\\n/g, "\n") || null,
@@ -84,8 +84,8 @@ const joinCommand = <Command>{
                 thumbnail_url,
                 image_url
             };
-            let server = await Server.findOrCreateServer(interaction.guild.id);
-            server.setJoinEmbed(toAPIEmbed(parameters));
+
+            interaction.data.guildData.setJoinEmbed(toAPIEmbed(parameters));
             let embed = Embeds.SUCCESS_EMBED.toJSON();
             embed.title = "Success!";
             embed.description = `Set the join embed.`;
@@ -93,7 +93,7 @@ const joinCommand = <Command>{
             if (interaction.channel && (interaction.channel as Channel).isTextBased()) {
                 try {
                     let channel = (interaction.channel) as TextChannel;
-                    await channel.send({ content: "Here's a preview of the new join embed!", embeds: [JSON.parse(await parsePlaceholders(JSON.stringify(server.settings.join_embed), interaction.guild, interaction.member as GuildMember | undefined)) as APIEmbed] });
+                    await channel.send({ content: "Here's a preview of the new join embed!", embeds: [JSON.parse(await parsePlaceholders(JSON.stringify(interaction.data.guildData.settings.join_embed), interaction.data.guild, interaction.data.member)) as APIEmbed] });
                 } catch (x) { }
             }
             return await interaction.reply({ embeds: [embed] });
@@ -110,8 +110,8 @@ const joinCommand = <Command>{
                 },
                 permission: "settings.join.embed.json"
             },
-            async execute(interaction: ChatInputCommandInteraction) {
-                if (!interaction.guild) return;
+            async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+                if (!interaction.data) return;
                 let json = interaction.options.getString('json') || undefined;
                 if (!json) return;
                 let jsonEmbed = JSON.parse(json) as APIEmbed;
@@ -120,8 +120,7 @@ const joinCommand = <Command>{
                     error.description = "This isn't valid Embed JSON!";
                     return await interaction.reply({ embeds: [error] });
                 }
-                let server = await Server.findOrCreateServer(interaction.guild.id);
-                server.setJoinEmbed(jsonEmbed);
+                interaction.data.guildData.setJoinEmbed(jsonEmbed);
                 let embed = Embeds.SUCCESS_EMBED.toJSON();
                 embed.title = "Success!";
                 embed.description = `Set the join embed.`;
@@ -129,7 +128,7 @@ const joinCommand = <Command>{
                 if (interaction.channel && (interaction.channel as Channel).isTextBased()) {
                     try {
                         let channel = (interaction.channel) as TextChannel;
-                        await channel.send({ content: "Here's a preview of the new join embed!", embeds: [JSON.parse(await parsePlaceholders(JSON.stringify(server.settings.join_embed), interaction.guild, interaction.member as GuildMember | undefined)) as APIEmbed] });
+                        await channel.send({ content: "Here's a preview of the new join embed!", embeds: [JSON.parse(await parsePlaceholders(JSON.stringify(interaction.data.guildData.settings.join_embed), interaction.data.guild, interaction.data.member)) as APIEmbed] });
                     } catch (x) { }
                 }
                 return await interaction.reply({ embeds: [embed] });
@@ -146,14 +145,13 @@ const joinCommand = <Command>{
                 },
                 permission: "settings.join.text"
             },
-            async execute(interaction: ChatInputCommandInteraction) {
-                if (!interaction.guild) return;
+            async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+                if (!interaction.data) return;
                 let text = interaction.options.getString('text') || "";
-                let server = await Server.findOrCreateServer(interaction.guild.id);
-                server.setJoinText(text);
+                interaction.data.guildData.setJoinText(text);
                 let embed = Embeds.SUCCESS_EMBED.toJSON();
                 embed.title = "Success!";
-                embed.description = `Set the join message text to "${server.settings.join_text}".`;
+                embed.description = `Set the join message text to "${interaction.data.guildData.settings.join_text}".`;
                 return await interaction.reply({ embeds: [embed] });
             }
         },
@@ -168,11 +166,10 @@ const joinCommand = <Command>{
                 },
                 permission: "settings.join.preview"
             },
-            async execute(interaction: ChatInputCommandInteraction) {
-                if (!interaction.guild) return;
-                let server = await Server.findOrCreateServer(interaction.guild.id);
+            async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+                if (!interaction.data) return;
                 try {
-                    return await interaction.reply({ content: `**EMBED PREVIEW**\r\n${server.settings.join_text || ""}`, embeds: server.settings.join_embed ? [JSON.parse(await parsePlaceholders(JSON.stringify(server.settings.join_embed), interaction.guild, interaction.member as GuildMember | undefined)) as APIEmbed] : [] });
+                    return await interaction.reply({ content: `**EMBED PREVIEW**\r\n${interaction.data.guildData.settings.join_text || ""}`, embeds: interaction.data.guildData.settings.join_embed ? [JSON.parse(await parsePlaceholders(JSON.stringify(interaction.data.guildData.settings.join_embed), interaction.data.guild, interaction.data.member)) as APIEmbed] : [] });
                 } catch (x) {
                     let error = Embeds.ERROR_EMBED.toJSON();
                     error.description = "This isn't valid! Try changing the Join Embed or Join Text.";

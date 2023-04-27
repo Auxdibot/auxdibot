@@ -1,4 +1,4 @@
-import Button from "../util/types/Button";
+import AuxdibotButton from "../util/types/AuxdibotButton";
 import {
     GuildMember,
     MessageComponentInteraction
@@ -9,7 +9,7 @@ import {IPunishment} from "../mongo/schema/Punishment";
 import {LogType} from "../mongo/schema/Log";
 import Server from "../mongo/model/Server";
 
-module.exports = <Button>{
+module.exports = <AuxdibotButton>{
     name: "kick",
     permission: "moderation.kick",
     async execute(interaction: MessageComponentInteraction) {

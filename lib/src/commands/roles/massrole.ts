@@ -1,13 +1,11 @@
-import {
-    ButtonStyle, ChatInputCommandInteraction, Guild, GuildMember,
-    SlashCommandBuilder
-} from "discord.js";
-import Command from "../../util/templates/Command";
+import {ButtonStyle, SlashCommandBuilder} from "discord.js";
+import AuxdibotCommand from "../../util/templates/AuxdibotCommand";
 import Embeds from '../../util/constants/Embeds';
 import {LogType} from "../../mongo/schema/Log";
-import Server from "../../mongo/model/Server";
+import AuxdibotCommandInteraction from "../../util/templates/AuxdibotCommandInteraction";
+import GuildAuxdibotCommandData from "../../util/types/commandData/GuildAuxdibotCommandData";
 
-const massroleCommand = < Command > {
+const massroleCommand = < AuxdibotCommand > {
     data: new SlashCommandBuilder()
         .setName('massrole')
         .setDescription('Give everybody a role, or take a role away from anyone that has it.')
@@ -35,31 +33,29 @@ const massroleCommand = < Command > {
             },
             permission: "massrole.give"
         },
-        async execute(interaction: ChatInputCommandInteraction) {
-            if (!interaction.guild || !interaction.member) return;
-            let guild: Guild = interaction.guild;
-            let executor = interaction.member as GuildMember;
+        async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+            if (!interaction.data) return;
             let role = interaction.options.getRole("role");
-            let server = await Server.findOrCreateServer(guild.id);
             if (!role) return;
             let embed = Embeds.SUCCESS_EMBED.toJSON();
             embed.title = "Success!";
             embed.description = `Currently giving the role...`;
             await interaction.reply({ embeds: [embed] });
-            let res = await guild.members.fetch();
+            let res = await interaction.data.guild.members.fetch();
             res.forEach((member) => {
-                if (!role) return;
-                if (!member.roles.resolve(role.id) && (guild.members.me && member.roles.highest.comparePositionTo(guild.members.me.roles.highest) < 0) && member.roles.highest.comparePositionTo(executor.roles.highest) < 0) {
+                if (!role || !interaction.data) return;
+                if (!member.roles.resolve(role.id) && (interaction.data.guild.members.me && member.roles.highest.comparePositionTo(interaction.data.guild.members.me.roles.highest) < 0) &&
+                    member.roles.highest.comparePositionTo(interaction.data.member.roles.highest) < 0) {
                     member.roles.add(role.id).catch(() => undefined);
 
                 }
             });
-            await server.log({
-                user_id: executor.id,
+            await interaction.data.guildData.log({
+                user_id: interaction.data.member.id,
                 description: `Massrole took ${role} from anyone who had it with lower role hiearchy than Auxdibot.`,
                 type: LogType.MASSROLE_GIVEN,
                 date_unix: Date.now()
-            }, interaction.guild)
+            }, interaction.data.guild)
     }
     },
         {
@@ -73,30 +69,28 @@ const massroleCommand = < Command > {
                 },
                 permission: "massrole.take"
             },
-            async execute(interaction: ChatInputCommandInteraction) {
-                if (!interaction.guild || !interaction.member) return;
-                let guild: Guild = interaction.guild;
-                let executor = interaction.member as GuildMember;
+            async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+                if (!interaction.data) return;
                 let role = interaction.options.getRole("role");
-                let server = await Server.findOrCreateServer(guild.id);
                 if (!role) return;
                 let embed = Embeds.SUCCESS_EMBED.toJSON();
                 embed.title = "Success!";
                 embed.description = `Currently removing the role...`;
                 await interaction.reply({ embeds: [embed] });
-                let res = await guild.members.fetch();
+                let res = await interaction.data.guild.members.fetch();
                 res.forEach((member) => {
-                    if (!role) return;
-                    if (member.roles.resolve(role.id) && (guild.members.me && member.roles.highest.comparePositionTo(guild.members.me.roles.highest) < 0) && member.roles.highest.comparePositionTo(executor.roles.highest) < 0) {
+                    if (!role || !interaction.data) return;
+                    if (!member.roles.resolve(role.id) && (interaction.data.guild.members.me && member.roles.highest.comparePositionTo(interaction.data.guild.members.me.roles.highest) < 0) &&
+                        member.roles.highest.comparePositionTo(interaction.data.member.roles.highest) < 0) {
                         member.roles.remove(role.id).catch(() => undefined);
                     }
                 });
-                await server.log({
-                    user_id: executor.id,
+                await interaction.data.guildData.log({
+                    user_id: interaction.data.member.id,
                     description: `Massrole took ${role} from anyone who had it with lower role hiearchy than Auxdibot.`,
                     type: LogType.MASSROLE_TAKEN,
                     date_unix: Date.now()
-                }, interaction.guild)
+                }, interaction.data.guild)
             }
         }],
     async execute() {

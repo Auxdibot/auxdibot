@@ -1,4 +1,4 @@
-import Button from "../util/types/Button";
+import AuxdibotButton from "../util/types/AuxdibotButton";
 import {
     GuildMember,
     MessageComponentInteraction
@@ -9,7 +9,7 @@ import {LogType} from "../mongo/schema/Log";
 import Server from "../mongo/model/Server";
 import {toEmbedField} from "../mongo/schema/Punishment";
 
-module.exports = <Button>{
+module.exports = <AuxdibotButton>{
     name: "unmute",
     permission: "moderation.mute.remove",
     async execute(interaction: MessageComponentInteraction) {

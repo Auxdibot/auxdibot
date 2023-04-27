@@ -1,9 +1,9 @@
-import Button from "../util/types/Button";
+import AuxdibotButton from "../util/types/AuxdibotButton";
 import {MessageComponentInteraction} from "discord.js";
 import Server from "../mongo/model/Server";
 
 
-module.exports = <Button>{
+module.exports = <AuxdibotButton>{
     name: "record",
     permission: "moderation.record",
     async execute(interaction: MessageComponentInteraction) {

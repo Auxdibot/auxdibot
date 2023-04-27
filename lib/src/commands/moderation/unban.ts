@@ -1,11 +1,12 @@
-import {ChatInputCommandInteraction, SlashCommandBuilder} from "discord.js";
-import Command from "../../util/templates/Command";
+import {SlashCommandBuilder} from "discord.js";
+import AuxdibotCommand from "../../util/templates/AuxdibotCommand";
 import Embeds from '../../util/constants/Embeds';
-import Server from "../../mongo/model/Server";
 import {LogType} from "../../mongo/schema/Log";
 import {toEmbedField} from "../../mongo/schema/Punishment";
+import AuxdibotCommandInteraction from "../../util/templates/AuxdibotCommandInteraction";
+import GuildAuxdibotCommandData from "../../util/types/commandData/GuildAuxdibotCommandData";
 
-const unbanCommand = <Command>{
+const unbanCommand = <AuxdibotCommand>{
     data: new SlashCommandBuilder()
         .setName('unban')
         .setDescription('Unban a user.')
@@ -21,34 +22,32 @@ const unbanCommand = <Command>{
         },
         permission: "moderation.ban.remove"
     },
-    async execute(interaction: ChatInputCommandInteraction ) {
-        if (!interaction.guild) return;
+    async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData> ) {
+        if (!interaction.data) return;
         const user = interaction.options.getUser('user');
-        let server = await Server.findOrCreateServer(interaction.guild.id);
-        if (!server) return;
 
         if (!user) return await interaction.reply({ embeds: [Embeds.ERROR_EMBED.toJSON()] });
-        let banned = server.getPunishment(user.id, 'ban');
+        let banned = interaction.data.guildData.getPunishment(user.id, 'ban');
         if (!banned) {
             let errorEmbed = Embeds.ERROR_EMBED.toJSON();
             errorEmbed.description = "This user isn't banned!";
             return await interaction.reply({ embeds: [errorEmbed] });
         }
-        interaction.guild.bans.remove(user.id).catch(() => undefined);
+        interaction.data.guild.bans.remove(user.id).catch(() => undefined);
         banned.expired = true;
-        await server.save();
+        await interaction.data.guildData.save();
 
         let embed = Embeds.SUCCESS_EMBED.toJSON();
         embed.title = `📥 Unbanned ${user.tag}`
         embed.description = `User was unbanned.`
         embed.fields = [toEmbedField(banned)]
-        await server.log({
+        await interaction.data.guildData.log({
             user_id: interaction.user.id,
             description: "A user was unbanned.",
             date_unix: Date.now(),
             type: LogType.UNBAN,
             punishment: banned
-        }, interaction.guild)
+        }, interaction.data.guild)
         await interaction.reply({ embeds: [embed] });
     },
 
