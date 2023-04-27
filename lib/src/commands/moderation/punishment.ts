@@ -1,9 +1,10 @@
-import {ChatInputCommandInteraction, SlashCommandBuilder} from "discord.js";
+import {SlashCommandBuilder} from "discord.js";
 import AuxdibotCommand from "../../util/templates/AuxdibotCommand";
 import Embeds from '../../util/constants/Embeds';
-import Server from "../../mongo/model/Server";
 import punishment, {PunishmentNames, toEmbedField} from "../../mongo/schema/Punishment";
 import {LogType} from "../../mongo/schema/Log";
+import AuxdibotCommandInteraction from "../../util/templates/AuxdibotCommandInteraction";
+import GuildAuxdibotCommandData from "../../util/types/commandData/GuildAuxdibotCommandData";
 
 const punishmentCommand = <AuxdibotCommand>{
     data: new SlashCommandBuilder()
@@ -44,16 +45,15 @@ const punishmentCommand = <AuxdibotCommand>{
             },
             permission: "moderation.punishments.view"
         },
-        async execute(interaction: ChatInputCommandInteraction) {
-            if (!interaction.guild) return;
+        async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+            if (!interaction.data) return;
             const punishment_id = interaction.options.getNumber('punishment_id') || undefined;
-            let server = await Server.findOrCreateServer(interaction.guild.id);
             if (!punishment_id) {
                 let errorEmbed = Embeds.ERROR_EMBED.toJSON();
                 errorEmbed.description = "This punishment does not exist!";
                 return await interaction.reply({ embeds: [errorEmbed] });
             }
-            let punishment = server.punishments.filter(val => val.punishment_id == punishment_id)[0];
+            let punishment = interaction.data.guildData.punishments.filter(val => val.punishment_id == punishment_id)[0];
             if (!punishment) {
                 let errorEmbed = Embeds.ERROR_EMBED.toJSON();
                 errorEmbed.description = "This punishment does not exist!";
@@ -78,35 +78,34 @@ const punishmentCommand = <AuxdibotCommand>{
                 },
                 permission: "moderation.punishments.delete"
             },
-            async execute(interaction: ChatInputCommandInteraction) {
-                if (!interaction.guild) return;
+            async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+                if (!interaction.data) return;
                 const punishment_id = interaction.options.getNumber('punishment_id') || undefined;
-                let server = await Server.findOrCreateServer(interaction.guild.id);
                 if (!punishment_id) {
                     let errorEmbed = Embeds.ERROR_EMBED.toJSON();
                     errorEmbed.description = "This punishment does not exist!";
                     return await interaction.reply({ embeds: [errorEmbed] });
                 }
-                let punishment = server.punishments.filter(val => val.punishment_id == punishment_id)[0];
+                let punishment = interaction.data.guildData.punishments.filter(val => val.punishment_id == punishment_id)[0];
                 if (!punishment) {
                     let errorEmbed = Embeds.ERROR_EMBED.toJSON();
                     errorEmbed.description = "This punishment does not exist!";
                     return await interaction.reply({ embeds: [errorEmbed] });
                 }
                 let type = PunishmentNames[punishment.type].name;
-                server.punishments.splice(server.punishments.indexOf(punishment), 1);
-                await server.save();
+                interaction.data.guildData.punishments.splice(interaction.data.guildData.punishments.indexOf(punishment), 1);
+                await interaction.data.guildData.save();
                 let embed = Embeds.SUCCESS_EMBED.toJSON();
                 embed.title = `${type} deleted. (PID: ${punishment.punishment_id})`;
                 embed.description = `${interaction.user} deleted a punishment assigned to <@${punishment.user_id}>.`
                 embed.fields = [toEmbedField(punishment)];
-                await server.log({
+                await interaction.data.guildData.log({
                     type: LogType.PUNISHMENT_DELETED,
                     punishment: punishment,
                     date_unix: Date.now(),
                     user_id: interaction.user.id,
                     description: `${interaction.user.tag} deleted a punishment. (PID: ${punishment.punishment_id})`
-                }, interaction.guild)
+                }, interaction.data.guild)
                 await interaction.reply({embeds: [embed]});
             }
         }, {
@@ -120,14 +119,13 @@ const punishmentCommand = <AuxdibotCommand>{
                 },
                 permission: "moderation.punishments.latest"
             },
-        async execute(interaction: ChatInputCommandInteraction) {
-            if (!interaction.guild) return;
-            let server = await Server.findOrCreateServer(interaction.guild.id);
-            let punishments = server.punishments.reverse().slice(0, 10);
+        async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+            if (!interaction.data) return;
+            let punishments = interaction.data.guildData.punishments.reverse().slice(0, 10);
             let embed = Embeds.DEFAULT_EMBED.toJSON();
             embed.title = "🔨 Latest Punishments";
             embed.fields = [{
-                name: `Latest Punishments on ${interaction.guild.name}`,
+                name: `Latest Punishments on ${interaction.data.guild.name}`,
                 value: punishments.reduce((str, punishment) => {
                     let type = PunishmentNames[punishment.type]
                     return str + `\n**${type.name}** - PID: ${punishment.punishment_id} - <t:${Math.round(punishment.date_unix / 1000)}> (<@${punishment.user_id}>)`

@@ -1,14 +1,13 @@
 import {
     ActionRowBuilder, ButtonBuilder,
-    ChatInputCommandInteraction,
     ButtonStyle,
-    GuildMemberManager,
     SlashCommandBuilder
 } from "discord.js";
 import AuxdibotCommand from "../../util/templates/AuxdibotCommand";
 import Embeds from '../../util/constants/Embeds';
-import Server from "../../mongo/model/Server";
 import {PunishmentNames} from "../../mongo/schema/Punishment";
+import AuxdibotCommandInteraction from "../../util/templates/AuxdibotCommandInteraction";
+import GuildAuxdibotCommandData from "../../util/types/commandData/GuildAuxdibotCommandData";
 
 const userCommand = <AuxdibotCommand>{
     data: new SlashCommandBuilder()
@@ -25,20 +24,19 @@ const userCommand = <AuxdibotCommand>{
         },
         permission: "moderation.user"
     },
-    async execute(interaction: ChatInputCommandInteraction ) {
-        if (!interaction.guild || !interaction.channel) return;
+    async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData> ) {
+        if (!interaction.data || !interaction.channel) return;
         const user = interaction.options.getUser('user') || interaction.user;
-        let member = (interaction.guild.members as GuildMemberManager).resolve(user.id);
-        let server = await Server.findOrCreateServer(interaction.guild.id);
-        let record = server.userRecord(user.id),
-            overrides = server.getPermissionOverride(undefined, undefined, user.id),
-            banned = server.getPunishment(user.id, 'ban'),
-            muted = server.getPunishment(user.id, 'mute');
+        let member = interaction.data.guild.members.resolve(user.id);
+        let record = interaction.data.guildData.userRecord(user.id),
+            overrides = interaction.data.guildData.getPermissionOverride(undefined, undefined, user.id),
+            banned = interaction.data.guildData.getPunishment(user.id, 'ban'),
+            muted = interaction.data.guildData.getPunishment(user.id, 'mute');
 
         let embed = Embeds.INFO_EMBED.toJSON();
         if (member) {
             for (let role of member.roles.cache.values()) {
-                overrides = overrides.concat(server.getPermissionOverride(undefined, role.id));
+                overrides = overrides.concat(interaction.data.guildData.getPermissionOverride(undefined, role.id));
             }
         }
         embed.title = `🧍 ${user.tag}`;
@@ -50,7 +48,7 @@ const userCommand = <AuxdibotCommand>{
 
         embed.fields = [member ? {
             name: "Member Data",
-            value: `👋 Join Date: <t:${Math.round((member.joinedTimestamp || Date.now()) / 1000)}>\n📗 Highest Role: <@&${member.roles.highest.id}>\n${member.id == interaction.guild.ownerId ? "👑 Owner" : ""}`,
+            value: `👋 Join Date: <t:${Math.round((member.joinedTimestamp || Date.now()) / 1000)}>\n📗 Highest Role: <@&${member.roles.highest.id}>\n${member.id == interaction.data.guild.ownerId ? "👑 Owner" : ""}`,
         } : { name: "Member Data Not Found", value: "User is not in this server!" }, {
             name: "Latest Punishments",
             value: record.slice(0,10).reduce((str, punishment) => {

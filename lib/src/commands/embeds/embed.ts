@@ -13,6 +13,8 @@ import dotenv from "dotenv";
 import EmbedParameters, {toAPIEmbed} from "../../util/types/EmbedParameters";
 import {getMessage} from "../../util/functions/getMessage";
 import parsePlaceholders from "../../util/functions/parsePlaceholder";
+import AuxdibotCommandInteraction from "../../util/templates/AuxdibotCommandInteraction";
+import GuildAuxdibotCommandData from "../../util/types/commandData/GuildAuxdibotCommandData";
 
 dotenv.config();
 const embedCommand = <AuxdibotCommand> {
@@ -106,8 +108,8 @@ const embedCommand = <AuxdibotCommand> {
             },
             permission: "embed.create"
         },
-        async execute(interaction) {
-            if (!interaction.guild) return;
+        async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+            if (!interaction.data) return;
             let channel: Channel | null = interaction.options.getChannel("channel");
             if (!channel) return await interaction.reply({ embeds: [Embeds.ERROR_EMBED.toJSON()] });
             if (!channel.isTextBased() || channel.isThread() || channel.isVoiceBased() || channel.isDMBased()) {
@@ -140,7 +142,7 @@ const embedCommand = <AuxdibotCommand> {
                 image_url
             };
             try {
-                await channel.send({ content: content, embeds: [toAPIEmbed(JSON.parse(await parsePlaceholders(JSON.stringify(parameters), interaction.guild, interaction.member as GuildMember | undefined))) as APIEmbed] });
+                await channel.send({ content: content, embeds: [toAPIEmbed(JSON.parse(await parsePlaceholders(JSON.stringify(parameters), interaction.data.guild, interaction.data.member))) as APIEmbed] });
             } catch (x) {
 
                 let embed = Embeds.ERROR_EMBED.toJSON();
@@ -165,8 +167,8 @@ const embedCommand = <AuxdibotCommand> {
             },
             permission: "embed.create.json"
         },
-        async execute(interaction) {
-            if (!interaction.guild) return;
+        async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+            if (!interaction.data) return;
             let channel: Channel | null = interaction.options.getChannel("channel");
             if (!channel) return await interaction.reply({ embeds: [Embeds.ERROR_EMBED.toJSON()] });
             if (!channel.isTextBased() || channel.isThread() || channel.isVoiceBased() || channel.isDMBased()) {
@@ -177,7 +179,7 @@ const embedCommand = <AuxdibotCommand> {
             let json = interaction.options.getString("json");
             if (!json) return await interaction.reply({ embeds: [Embeds.ERROR_EMBED.toJSON()] });
             try {
-                await channel.send({ embeds: [JSON.parse(await parsePlaceholders(json, interaction.guild, interaction.member as GuildMember | undefined)) as APIEmbed] });
+                await channel.send({ embeds: [JSON.parse(await parsePlaceholders(json, interaction.data.guild, interaction.member as GuildMember | undefined)) as APIEmbed] });
             } catch (x) {
                 let embed = Embeds.ERROR_EMBED.toJSON();
                 embed.description = `There was an error sending that embed! (Most likely due to malformed JSON.)`;
@@ -201,11 +203,11 @@ const embedCommand = <AuxdibotCommand> {
             },
             permission: "embed.edit"
         },
-        async execute(interaction) {
-            if (!interaction.guild) return;
+        async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+            if (!interaction.data) return;
             let message_id = interaction.options.getString("message_id");
             if (!message_id) return;
-            let guild: Guild = interaction.guild;
+            let guild: Guild = interaction.data.guild;
             let message = await getMessage(guild, message_id);
             let color = interaction.options.getString("color"),
                 title = interaction.options.getString("title")?.replace(/\\n/g, "\n"),
@@ -265,12 +267,12 @@ const embedCommand = <AuxdibotCommand> {
             },
             permission: "embed.edit.json"
         },
-        async execute(interaction) {
-            if (!interaction.guild) return;
+        async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+            if (!interaction.data) return;
             let message_id = interaction.options.getString("message_id");
             let json = interaction.options.getString("json");
             if (!message_id || !json) return;
-            let guild: Guild = interaction.guild;
+            let guild: Guild = interaction.data.guild;
             let message = await getMessage(guild, message_id);
             if (!message) {
                 let error = Embeds.ERROR_EMBED.toJSON();
@@ -283,7 +285,7 @@ const embedCommand = <AuxdibotCommand> {
                 return await interaction.reply({embeds: [error]});
             }
             try {
-                await message.edit({ embeds: [JSON.parse(await parsePlaceholders(json, interaction.guild, interaction.member  as GuildMember | undefined)) as APIEmbed] });
+                await message.edit({ embeds: [JSON.parse(await parsePlaceholders(json, interaction.data.guild, interaction.member  as GuildMember | undefined)) as APIEmbed] });
             } catch (x) {
                 let embed = Embeds.ERROR_EMBED.toJSON();
                 embed.description = `There was an error sending that embed! (Most likely due to malformed JSON, or this message wasn't made by Auxdibot!)`;
@@ -305,12 +307,12 @@ const embedCommand = <AuxdibotCommand> {
             },
             permission: "embed.json"
         },
-        async execute(interaction) {
+        async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
 
-            if (!interaction.guild) return;
+            if (!interaction.data) return;
             let message_id = interaction.options.getString("message_id");
             if (!message_id) return;
-            let guild: Guild = interaction.guild;
+            let guild: Guild = interaction.data.guild;
             let message = await getMessage(guild, message_id);
             if (!message) {
                 let error = Embeds.ERROR_EMBED.toJSON();

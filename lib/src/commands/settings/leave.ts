@@ -1,13 +1,13 @@
 import {
-    APIEmbed, Channel,
-    ChatInputCommandInteraction, EmbedField, GuildMember,
+    APIEmbed, Channel, EmbedField,
     SlashCommandBuilder, TextChannel
 } from "discord.js";
 import AuxdibotCommand from "../../util/templates/AuxdibotCommand";
-import Server from "../../mongo/model/Server";
 import Embeds from "../../util/constants/Embeds";
 import parsePlaceholders from "../../util/functions/parsePlaceholder";
 import EmbedParameters, {toAPIEmbed} from "../../util/types/EmbedParameters";
+import AuxdibotCommandInteraction from "../../util/templates/AuxdibotCommandInteraction";
+import GuildAuxdibotCommandData from "../../util/types/commandData/GuildAuxdibotCommandData";
 
 const leaveCommand = <AuxdibotCommand>{
     data: new SlashCommandBuilder()
@@ -60,8 +60,8 @@ const leaveCommand = <AuxdibotCommand>{
             },
             permission: "settings.leave.embed"
         },
-        async execute(interaction: ChatInputCommandInteraction) {
-            if (!interaction.guild) return;
+        async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+            if (!interaction.data) return;
             let color = interaction.options.getString("color"),
                 title = interaction.options.getString("title")?.replace(/\\n/g, "\n"),
                 description = interaction.options.getString("description")?.replace(/\\n/g, "\n") || null,
@@ -85,8 +85,7 @@ const leaveCommand = <AuxdibotCommand>{
                 thumbnail_url,
                 image_url
             };
-            let server = await Server.findOrCreateServer(interaction.guild.id);
-            server.setLeaveEmbed(toAPIEmbed(parameters));
+            interaction.data.guildData.setLeaveEmbed(toAPIEmbed(parameters));
             let embed = Embeds.SUCCESS_EMBED.toJSON();
             embed.title = "Success!";
             embed.description = `Set the leave embed.`;
@@ -94,7 +93,7 @@ const leaveCommand = <AuxdibotCommand>{
             if (interaction.channel && (interaction.channel as Channel).isTextBased()) {
                 try {
                     let channel = (interaction.channel) as TextChannel;
-                    await channel.send({ content: "Here's a preview of the new leave embed!", embeds: [JSON.parse(await parsePlaceholders(JSON.stringify(server.settings.leave_embed), interaction.guild, interaction.member as GuildMember | undefined)) as APIEmbed] });
+                    await channel.send({ content: "Here's a preview of the new leave embed!", embeds: [JSON.parse(await parsePlaceholders(JSON.stringify(interaction.data.guildData.settings.leave_embed), interaction.data.guild, interaction.data.member)) as APIEmbed] });
                 } catch (x) { }
             }
             return await interaction.reply({ embeds: [embed] });
@@ -111,8 +110,8 @@ const leaveCommand = <AuxdibotCommand>{
                 },
                 permission: "settings.leave.embed.json"
             },
-            async execute(interaction: ChatInputCommandInteraction) {
-                if (!interaction.guild) return;
+            async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+                if (!interaction.data) return;
                 let json = interaction.options.getString('json') || undefined;
                 if (!json) return;
                 let jsonEmbed = JSON.parse(json) as APIEmbed;
@@ -121,8 +120,7 @@ const leaveCommand = <AuxdibotCommand>{
                     error.description = "This isn't valid Embed JSON!";
                     return await interaction.reply({ embeds: [error] });
                 }
-                let server = await Server.findOrCreateServer(interaction.guild.id);
-                server.setLeaveEmbed(jsonEmbed);
+                interaction.data.guildData.setLeaveEmbed(jsonEmbed);
                 let embed = Embeds.SUCCESS_EMBED.toJSON();
                 embed.title = "Success!";
                 embed.description = `Set the leave embed.`;
@@ -130,7 +128,7 @@ const leaveCommand = <AuxdibotCommand>{
                 if (interaction.channel && (interaction.channel as Channel).isTextBased()) {
                     try {
                         let channel = (interaction.channel) as TextChannel;
-                        await channel.send({ content: "Here's a preview of the new leave embed!", embeds: [JSON.parse(await parsePlaceholders(JSON.stringify(server.settings.leave_embed), interaction.guild, interaction.member as GuildMember | undefined)) as APIEmbed] });
+                        await channel.send({ content: "Here's a preview of the new leave embed!", embeds: [JSON.parse(await parsePlaceholders(JSON.stringify(interaction.data.guildData.settings.leave_embed), interaction.data.guild, interaction.data.member)) as APIEmbed] });
                     } catch (x) { }
                 }
                 return await interaction.reply({ embeds: [embed] });
@@ -147,14 +145,13 @@ const leaveCommand = <AuxdibotCommand>{
                 },
                 permission: "settings.leave.text"
             },
-            async execute(interaction: ChatInputCommandInteraction) {
-                if (!interaction.guild) return;
+            async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+                if (!interaction.data) return;
                 let text = interaction.options.getString('text') || "";
-                let server = await Server.findOrCreateServer(interaction.guild.id);
-                server.setLeaveText(text);
+                interaction.data.guildData.setLeaveText(text);
                 let embed = Embeds.SUCCESS_EMBED.toJSON();
                 embed.title = "Success!";
-                embed.description = `Set the leave message text to "${server.settings.leave_text}".`;
+                embed.description = `Set the leave message text to "${interaction.data.guildData.settings.leave_text}".`;
                 return await interaction.reply({ embeds: [embed] });
             }
         },
@@ -169,11 +166,10 @@ const leaveCommand = <AuxdibotCommand>{
                 },
                 permission: "settings.leave.preview"
             },
-            async execute(interaction: ChatInputCommandInteraction) {
-                if (!interaction.guild) return;
-                let server = await Server.findOrCreateServer(interaction.guild.id);
+            async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+                if (!interaction.data) return;
                 try {
-                    return await interaction.reply({ content: `**EMBED PREVIEW**\r\n${server.settings.leave_text || ""}`, embeds: server.settings.leave_embed ? [JSON.parse(await parsePlaceholders(JSON.stringify(server.settings.leave_embed), interaction.guild, interaction.member as GuildMember | undefined)) as APIEmbed] : [] });
+                    return await interaction.reply({ content: `**EMBED PREVIEW**\r\n${interaction.data.guildData.settings.leave_text || ""}`, embeds: interaction.data.guildData.settings.leave_embed ? [JSON.parse(await parsePlaceholders(JSON.stringify(interaction.data.guildData.settings.leave_embed), interaction.data.guild, interaction.data.member)) as APIEmbed] : [] });
                 } catch (x) {
                     let error = Embeds.ERROR_EMBED.toJSON();
                     error.description = "This isn't valid! Try changing the Leave Embed or Leave Text.";

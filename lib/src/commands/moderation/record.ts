@@ -1,6 +1,7 @@
-import {ChatInputCommandInteraction, SlashCommandBuilder} from "discord.js";
+import {SlashCommandBuilder} from "discord.js";
 import AuxdibotCommand from "../../util/templates/AuxdibotCommand";
-import Server from "../../mongo/model/Server";
+import AuxdibotCommandInteraction from "../../util/templates/AuxdibotCommandInteraction";
+import GuildAuxdibotCommandData from "../../util/types/commandData/GuildAuxdibotCommandData";
 
 
 const recordCommand = <AuxdibotCommand>{
@@ -18,11 +19,10 @@ const recordCommand = <AuxdibotCommand>{
         },
         permission: "moderation.record"
     },
-    async execute(interaction: ChatInputCommandInteraction ) {
-        if (!interaction.guild) return;
+    async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+        if (!interaction.data) return;
         const user = interaction.options.getUser('user') || interaction.user;
-        let server = await Server.findOrCreateServer(interaction.guild.id);
-        let embed = await server.recordAsEmbed(user.id);
+        let embed = await interaction.data.guildData.recordAsEmbed(user.id);
         await interaction.reply({ embeds: [embed] });
     },
 

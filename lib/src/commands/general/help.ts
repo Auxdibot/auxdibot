@@ -9,6 +9,8 @@ import {
 } from "../../util/templates/IAuxdibot";
 import HelpCommandInfo from "../../util/types/HelpCommandInfo";
 import dotenv from "dotenv";
+import AuxdibotCommandInteraction from "../../util/templates/AuxdibotCommandInteraction";
+import BaseAuxdibotCommandData from "../../util/types/commandData/BaseAuxdibotCommandData";
 dotenv.config();
 const helpCommand = < AuxdibotCommand > {
     data: new SlashCommandBuilder()
@@ -29,11 +31,12 @@ const helpCommand = < AuxdibotCommand > {
             usageExample: "/help [command_name] [subcommand_name]"
         },
         allowedDefault: true,
-        permission: "commands.help"
+        permission: "commands.help",
+        dmableCommand: true
     },
-    async execute(interaction) {
+    async execute(interaction: AuxdibotCommandInteraction<BaseAuxdibotCommandData>) {
         const client: IAuxdibot = interaction.client;
-        if (!client.commands) return;
+        if (!client || !client.commands) return;
         const command_name = interaction.options.getString('command_name'),
             subcommand_name = interaction.options.getString('subcommand_name');
         if (!command_name) {

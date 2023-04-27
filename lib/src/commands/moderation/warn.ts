@@ -1,10 +1,12 @@
-import {ChatInputCommandInteraction, GuildMember, SlashCommandBuilder} from "discord.js";
+import {SlashCommandBuilder} from "discord.js";
 import AuxdibotCommand from "../../util/templates/AuxdibotCommand";
 import Embeds from '../../util/constants/Embeds';
 import Server from "../../mongo/model/Server";
 import canExecute from "../../util/functions/canExecute";
 import {LogType} from "../../mongo/schema/Log";
 import {IPunishment, toEmbedField} from "../../mongo/schema/Punishment";
+import AuxdibotCommandInteraction from "../../util/templates/AuxdibotCommandInteraction";
+import GuildAuxdibotCommandData from "../../util/types/commandData/GuildAuxdibotCommandData";
 
 const warnCommand = <AuxdibotCommand>{
     data: new SlashCommandBuilder()
@@ -25,24 +27,22 @@ const warnCommand = <AuxdibotCommand>{
         },
         permission: "moderation.warn"
     },
-    async execute(interaction: ChatInputCommandInteraction ) {
-        if (!interaction.guild || !interaction.member) return;
+    async execute(interaction : AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+        if (!interaction.data) return;
         const user = interaction.options.getUser('user'), reason = interaction.options.getString('reason') || "No reason specified.";
-
         if (!user) return await interaction.reply({ embeds: [Embeds.ERROR_EMBED.toJSON()] });
-        let member = interaction.guild.members.resolve(user.id)
+        let member = interaction.data.guild.members.resolve(user.id)
         if (!member) {
             let errorEmbed = Embeds.ERROR_EMBED.toJSON();
             errorEmbed.description = "This user is not on the server!";
             return await interaction.reply({ embeds: [errorEmbed] });
         }
-        if (!await canExecute(interaction.guild, interaction.member as GuildMember, member)) {
+        if (!canExecute(interaction.data.guild, interaction.data.member, member)) {
             let noPermissionEmbed = Embeds.DENIED_EMBED.toJSON();
             noPermissionEmbed.title = "⛔ No Permission!"
             noPermissionEmbed.description = `This user has a higher role than you or owns this server!`
             return await interaction.reply({ embeds: [noPermissionEmbed] });
         }
-        let server = await Server.findOrCreateServer(interaction.guild.id);
         let warnData = <IPunishment>{
             moderator_id: interaction.user.id,
             user_id: user.id,
@@ -52,24 +52,24 @@ const warnCommand = <AuxdibotCommand>{
             expires_date_unix: undefined,
             expired: true,
             type: 'warn',
-            punishment_id: await server.getPunishmentID()
+            punishment_id: await interaction.data.guildData.getPunishmentID()
         };
         let dmEmbed = Embeds.PUNISHED_EMBED.toJSON();
         dmEmbed.title = "⚠ Warn";
-        dmEmbed.description = `You were warned on ${interaction.guild ? interaction.guild.name : "Server"}.`
+        dmEmbed.description = `You were warned on ${interaction.data.guild ? interaction.data.guild.name : "Server"}.`
         dmEmbed.fields = [toEmbedField(warnData)]
         warnData.dmed = await user.send({embeds: [dmEmbed]}).then(() => true).catch(() => false);
 
-        server.punish(warnData).then(async (embed) => {
-            if (!embed || !interaction.guild) return;
+        interaction.data.guildData.punish(warnData).then(async (embed) => {
+            if (!embed || !interaction.data) return;
 
-            await server.log({
+            await interaction.data.guildData.log({
                 user_id: interaction.user.id,
                 description: "A user was warned.",
                 date_unix: Date.now(),
                 type: LogType.WARN,
                 punishment: warnData
-            }, interaction.guild)
+            }, interaction.data.guild)
             return await interaction.reply({embeds: [embed]});
         });
     },

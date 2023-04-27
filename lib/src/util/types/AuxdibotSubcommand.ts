@@ -1,9 +1,10 @@
 import CommandInfo from "./CommandInfo";
-import {ChatInputCommandInteraction} from "discord.js";
+import AuxdibotCommandInteraction from "../templates/AuxdibotCommandInteraction";
+import BaseAuxdibotCommandData from "./commandData/BaseAuxdibotCommandData";
 
 export interface AuxdibotSubcommand {
     name: string;
     info: CommandInfo;
-    execute(interaction: ChatInputCommandInteraction): any;
+    execute(interaction: AuxdibotCommandInteraction<BaseAuxdibotCommandData>): any;
 
 }

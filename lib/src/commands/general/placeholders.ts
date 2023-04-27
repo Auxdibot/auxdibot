@@ -5,6 +5,8 @@ import AuxdibotCommand from "../../util/templates/AuxdibotCommand";
 import Embeds from '../../util/constants/Embeds';
 import dotenv from "dotenv";
 import Placeholders from "../../util/types/Placeholders";
+import AuxdibotCommandInteraction from "../../util/templates/AuxdibotCommandInteraction";
+import BaseAuxdibotCommandData from "../../util/types/commandData/BaseAuxdibotCommandData";
 dotenv.config();
 const placeholderCommand = < AuxdibotCommand > {
     data: new SlashCommandBuilder()
@@ -17,9 +19,10 @@ const placeholderCommand = < AuxdibotCommand > {
             description: "View a list of placeholders and what they do.",
             usageExample: "/placeholders"
         },
-        permission: "commands.placeholders"
+        permission: "commands.placeholders",
+        dmableCommand: true
     },
-    async execute(interaction) {
+    async execute(interaction: AuxdibotCommandInteraction<BaseAuxdibotCommandData>) {
         let placeholdersEmbed = Embeds.DEFAULT_EMBED.toJSON();
         placeholdersEmbed.title = "🔁 Placeholders";
         placeholdersEmbed.description = "Placeholders can be used in **ANY** Auxdibot command that sends a message! Try out /embed /join or /leave!"

@@ -1,11 +1,12 @@
-import {ChatInputCommandInteraction, GuildMember, SlashCommandBuilder} from "discord.js";
+import {SlashCommandBuilder} from "discord.js";
 import AuxdibotCommand from "../../util/templates/AuxdibotCommand";
 import Embeds from "../../util/constants/Embeds";
 import timestampToDuration from "../../util/functions/timestampToDuration";
-import Server from "../../mongo/model/Server";
 import canExecute from "../../util/functions/canExecute";
 import {LogType} from "../../mongo/schema/Log";
 import {IPunishment} from "../../mongo/schema/Punishment";
+import AuxdibotCommandInteraction from "../../util/templates/AuxdibotCommandInteraction";
+import GuildAuxdibotCommandData from "../../util/types/commandData/GuildAuxdibotCommandData";
 
 const banCommand = <AuxdibotCommand>{
     data: new SlashCommandBuilder()
@@ -32,28 +33,27 @@ const banCommand = <AuxdibotCommand>{
         },
         permission: "moderation.ban",
     },
-    async execute(interaction: ChatInputCommandInteraction ) {
-        if (!interaction.guild || !interaction.member) return;
+    async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData> ) {
+        if (!interaction.data) return;
         const user = interaction.options.getUser('user'),
             reason = interaction.options.getString('reason') || "No reason specified.",
             durationOption = interaction.options.getString('duration') || "permanent",
             deleteMessageDays = interaction.options.getNumber('delete_message_days') || 0;
-        let server = await Server.findOrCreateServer(interaction.guild.id);
         if (!user) return await interaction.reply({ embeds: [Embeds.ERROR_EMBED.toJSON()] });
 
-        let member = interaction.guild.members.resolve(user.id)
+        let member = interaction.data.guild.members.resolve(user.id)
         if (!member) {
             let errorEmbed = Embeds.ERROR_EMBED.toJSON();
             errorEmbed.description = "This user is not on the server!";
             return await interaction.reply({ embeds: [errorEmbed] });
         }
-        if (!await canExecute(interaction.guild, interaction.member as GuildMember, member)) {
+        if (!canExecute(interaction.data.guild, interaction.data.member, member)) {
             let noPermissionEmbed = Embeds.DENIED_EMBED.toJSON();
             noPermissionEmbed.title = "⛔ No Permission!"
             noPermissionEmbed.description = `This user has a higher role than you or owns this server!`
             return await interaction.reply({ embeds: [noPermissionEmbed] });
         }
-        if (server.getPunishment(user.id, 'ban')) {
+        if (interaction.data.guildData.getPunishment(user.id, 'ban')) {
             let errorEmbed = Embeds.ERROR_EMBED.toJSON();
             errorEmbed.description = "This user is already banned!";
             return await interaction.reply({ embeds: [errorEmbed] });
@@ -67,12 +67,11 @@ const banCommand = <AuxdibotCommand>{
             return await interaction.reply({ embeds: [errorEmbed] });
         }
         let expires = duration == "permanent" ? "permanent" : duration + Date.now();
-        interaction.guild.members.ban(user, {
+        interaction.data.guild.members.ban(user, {
             reason,
-            deleteMessageDays
+            deleteMessageSeconds: deleteMessageDays*24*60*60
         }).then(async () => {
-            if (!interaction.guild) return;
-            server = await Server.findOrCreateServer(interaction.guild.id);
+            if (!interaction.data) return;
             let banData = <IPunishment>{
                 type: "ban",
                 reason,
@@ -82,17 +81,17 @@ const banCommand = <AuxdibotCommand>{
                 expires_date_unix: expires && typeof expires != "string" ? expires : undefined,
                 user_id: user.id,
                 moderator_id: interaction.user.id,
-                punishment_id: await server.getPunishmentID(),
+                punishment_id: await interaction.data.guildData.getPunishmentID(),
             };
-            server.punish(banData).then(async (embed) => {
-                if (!embed || !interaction.guild) return;
-                await server.log({
+            interaction.data.guildData.punish(banData).then(async (embed) => {
+                if (!embed || !interaction.data) return;
+                await interaction.data.guildData.log({
                     user_id: interaction.user.id,
                     description: "A user was banned.",
                     date_unix: Date.now(),
                     type: LogType.BAN,
                     punishment: banData
-                }, interaction.guild);
+                }, interaction.data.guild);
                 return await interaction.reply({embeds: [embed]});
             });
         }).catch(async () => {
