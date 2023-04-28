@@ -15,8 +15,10 @@ export interface IServerSettings {
     log_channel?: string;
     join_leave_channel?: string;
     join_embed?: APIEmbed;
+    join_dm_embed?: APIEmbed;
     leave_embed?: APIEmbed;
     join_text?: string;
+    join_dm_text?: string;
     leave_text?: string;
     join_roles: string[];
     sticky_roles: string[];
@@ -28,8 +30,10 @@ const serverSettingsSchema = new mongoose.Schema<IServerSettings>({
     log_channel: { type: String },
     join_leave_channel: { type: String },
     join_embed: { type: Object, default: {"type":"rich","title":"👋 Member joined! (%server_members% members.)","thumbnail":{"url":"%member_avatar_128%"},"footer":{"text":"%server_name%"},"description":"%member_mention% joined the server.","color":9159498,"author":{"name":"%message_date%"}} },
+    join_dm_embed: { type: Object, default: {"type":"rich","title":"👋 Welcome to %server_name%!","thumbnail":{"url":"%server_icon_128%"},"footer":{"text":"%server_name%"},"description":"Welcome, %member_mention%! We hope you enjoy our server.","color":9159498,"author":{"name":"%message_date%"}} },
     leave_embed: { type: Object, default: {"type":"rich","title":"👋 Member left! (%server_members% members.)","thumbnail":{"url":"%member_avatar_128%"},"footer":{"text":"%server_name%"},"description":"%member_mention% left the server.","color":16007990,"author":{"name":"%message_date%"}}},
     join_text: { type: String, default: "Somebody joined the server!" },
+    join_dm_text: { type: String, default: "Welcome!" },
     leave_text: { type: String, default: "Somebody left the server!" },
     join_roles: { type: [String], default: [] },
     sticky_roles: { type: [String], default: [] },
