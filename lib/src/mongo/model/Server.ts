@@ -59,6 +59,8 @@ export interface ServerMethods {
     setJoinLeaveChannel(join_leave_channel_id: String): boolean;
     setJoinEmbed(join_embed: APIEmbed): boolean;
     setJoinText(join_text: String): boolean;
+    setJoinDMEmbed(join_dm_embed: APIEmbed): boolean;
+    setJoinDMText(join_dm_text: String): boolean;
     setLeaveEmbed(leave_embed: APIEmbed): boolean;
     setLeaveText(leave_text: String): boolean;
     getPunishment(user_id: String, type?: 'warn' | 'kick' | 'mute' | 'ban'): IPunishment | undefined;
@@ -151,6 +153,11 @@ serverSchema.method('setJoinEmbed', function(join_embed: APIEmbed) {
     this.save();
     return true;
 });
+serverSchema.method('setJoinDMEmbed', function(join_dm_embed: APIEmbed) {
+    this.settings.join_dm_embed = join_dm_embed;
+    this.save();
+    return true;
+});
 serverSchema.method('setLeaveEmbed', function(leave_embed: APIEmbed) {
     this.settings.leave_embed = leave_embed;
     this.save();
@@ -158,6 +165,11 @@ serverSchema.method('setLeaveEmbed', function(leave_embed: APIEmbed) {
 });
 serverSchema.method('setJoinText', function(join_text: String) {
     this.settings.join_text = join_text;
+    this.save();
+    return true;
+});
+serverSchema.method('setJoinDMText', function(join_dm_text: String) {
+    this.settings.join_dm_text = join_dm_text;
     this.save();
     return true;
 });
