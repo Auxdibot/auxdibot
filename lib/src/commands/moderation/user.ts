@@ -5,7 +5,7 @@ import {
 } from "discord.js";
 import AuxdibotCommand from "../../util/templates/AuxdibotCommand";
 import Embeds from '../../util/constants/Embeds';
-import {PunishmentNames} from "../../mongo/schema/Punishment";
+import {PunishmentNames} from "../../mongo/schema/PunishmentSchema";
 import AuxdibotCommandInteraction from "../../util/templates/AuxdibotCommandInteraction";
 import GuildAuxdibotCommandData from "../../util/types/commandData/GuildAuxdibotCommandData";
 

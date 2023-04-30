@@ -1,10 +1,10 @@
 import {SlashCommandBuilder} from "discord.js";
 import AuxdibotCommand from "../../util/templates/AuxdibotCommand";
 import Embeds from '../../util/constants/Embeds';
-import punishment, {PunishmentNames, toEmbedField} from "../../mongo/schema/Punishment";
-import {LogType} from "../../mongo/schema/Log";
+import punishment, {PunishmentNames, toEmbedField} from "../../mongo/schema/PunishmentSchema";
 import AuxdibotCommandInteraction from "../../util/templates/AuxdibotCommandInteraction";
 import GuildAuxdibotCommandData from "../../util/types/commandData/GuildAuxdibotCommandData";
+import {LogType} from "../../util/types/Log";
 
 const punishmentCommand = <AuxdibotCommand>{
     data: new SlashCommandBuilder()

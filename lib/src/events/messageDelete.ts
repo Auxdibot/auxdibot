@@ -1,6 +1,6 @@
 import {Message} from "discord.js";
-import {LogType} from "../mongo/schema/Log";
 import Server from "../mongo/model/Server";
+import {LogType} from "../util/types/Log";
 
 module.exports = {
     name: 'messageDelete',

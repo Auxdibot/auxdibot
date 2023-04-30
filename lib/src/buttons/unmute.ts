@@ -5,9 +5,9 @@ import {
 } from "discord.js";
 import canExecute from "../util/functions/canExecute";
 import Embeds from "../util/constants/Embeds";
-import {LogType} from "../mongo/schema/Log";
 import Server from "../mongo/model/Server";
-import {toEmbedField} from "../mongo/schema/Punishment";
+import {toEmbedField} from "../mongo/schema/PunishmentSchema";
+import {LogType} from "../util/types/Log";
 
 module.exports = <AuxdibotButton>{
     name: "unmute",

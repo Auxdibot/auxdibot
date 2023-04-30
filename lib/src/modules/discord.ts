@@ -3,9 +3,9 @@ import fs from "fs";
 import path from "path";
 import dotenv from "dotenv";
 import Server from "../mongo/model/Server";
-import {LogType} from "../mongo/schema/Log";
 import {IAuxdibot} from "../util/templates/IAuxdibot";
 import {client} from "../index";
+import {LogType} from "../util/types/Log";
 
 // Configure .env
 dotenv.config();

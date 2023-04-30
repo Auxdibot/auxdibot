@@ -3,9 +3,9 @@ import {
     MessageComponentInteraction
 } from "discord.js";
 import Embeds from "../util/constants/Embeds";
-import {toEmbedField} from "../mongo/schema/Punishment";
-import {LogType} from "../mongo/schema/Log";
+import {toEmbedField} from "../mongo/schema/PunishmentSchema";
 import Server from "../mongo/model/Server";
+import {LogType} from "../util/types/Log";
 
 module.exports = <AuxdibotButton>{
     name: "unban",

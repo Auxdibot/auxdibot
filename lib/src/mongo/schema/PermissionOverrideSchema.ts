@@ -12,5 +12,5 @@ const PermissionOverrideSchema = new mongoose.Schema<IPermissionOverride>({
     user_id: { type: String },
     permission: { type: String, required: true },
     allowed: { type: Boolean, default: true }
-})
+}, { _id: false })
 export default PermissionOverrideSchema;

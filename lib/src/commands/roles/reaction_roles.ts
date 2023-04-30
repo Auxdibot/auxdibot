@@ -1,13 +1,13 @@
 import {SlashCommandBuilder, APIEmbed, ChannelType, TextChannel, Role, EmbedField, GuildMember} from "discord.js";
 import AuxdibotCommand from "../../util/templates/AuxdibotCommand";
-import {IReaction} from "../../mongo/schema/ReactionRole";
+import {IReaction} from "../../mongo/schema/ReactionRoleSchema";
 import Embeds from "../../util/constants/Embeds";
 import EmbedParameters, {toAPIEmbed} from "../../util/types/EmbedParameters";
 import parsePlaceholders from "../../util/functions/parsePlaceholder";
 import {getMessage} from "../../util/functions/getMessage";
-import {LogType} from "../../mongo/schema/Log";
 import AuxdibotCommandInteraction from "../../util/templates/AuxdibotCommandInteraction";
 import GuildAuxdibotCommandData from "../../util/types/commandData/GuildAuxdibotCommandData";
+import {LogType} from "../../util/types/Log";
 
 const reactionRolesCommand = <AuxdibotCommand>{
     data: new SlashCommandBuilder()

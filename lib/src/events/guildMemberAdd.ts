@@ -1,7 +1,7 @@
 import {APIEmbed, GuildMember, TextChannel} from "discord.js";
-import {LogType} from "../mongo/schema/Log";
 import Server from "../mongo/model/Server";
 import parsePlaceholders from "../util/functions/parsePlaceholder";
+import {LogType} from "../util/types/Log";
 
 module.exports = {
     name: 'guildMemberAdd',

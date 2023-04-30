@@ -3,10 +3,10 @@ import AuxdibotCommand from "../../util/templates/AuxdibotCommand";
 import Embeds from '../../util/constants/Embeds';
 import Server from "../../mongo/model/Server";
 import canExecute from "../../util/functions/canExecute";
-import {LogType} from "../../mongo/schema/Log";
-import {IPunishment, toEmbedField} from "../../mongo/schema/Punishment";
+import {IPunishment, toEmbedField} from "../../mongo/schema/PunishmentSchema";
 import AuxdibotCommandInteraction from "../../util/templates/AuxdibotCommandInteraction";
 import GuildAuxdibotCommandData from "../../util/types/commandData/GuildAuxdibotCommandData";
+import {LogType} from "../../util/types/Log";
 
 const warnCommand = <AuxdibotCommand>{
     data: new SlashCommandBuilder()

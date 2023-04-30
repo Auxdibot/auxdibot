@@ -1,9 +1,9 @@
 import {ButtonStyle, SlashCommandBuilder} from "discord.js";
 import AuxdibotCommand from "../../util/templates/AuxdibotCommand";
 import Embeds from '../../util/constants/Embeds';
-import {LogType} from "../../mongo/schema/Log";
 import AuxdibotCommandInteraction from "../../util/templates/AuxdibotCommandInteraction";
 import GuildAuxdibotCommandData from "../../util/types/commandData/GuildAuxdibotCommandData";
+import {LogType} from "../../util/types/Log";
 
 const massroleCommand = < AuxdibotCommand > {
     data: new SlashCommandBuilder()

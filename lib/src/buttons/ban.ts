@@ -5,9 +5,9 @@ import {
 } from "discord.js";
 import canExecute from "../util/functions/canExecute";
 import Embeds from "../util/constants/Embeds";
-import {IPunishment} from "../mongo/schema/Punishment";
-import {LogType} from "../mongo/schema/Log";
+import {IPunishment} from "../mongo/schema/PunishmentSchema";
 import Server from "../mongo/model/Server";
+import {LogType} from "../util/types/Log";
 
 module.exports = <AuxdibotButton>{
     name: "ban",

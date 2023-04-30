@@ -10,15 +10,15 @@ export interface IServerMember {
     experience: number;
 }
 export interface IServerMemberMethods {
-    leaveServer(member: GuildMember, server: IServer): boolean;
-    joinServer(member: GuildMember, server: IServer): boolean;
+    leaveServer(member: GuildMember, server: IServer): Promise<boolean>;
+    joinServer(member: GuildMember, server: IServer): Promise<boolean>;
 }
 const serverMemberSchema = new Schema<IServerMember, IServerMemberMethods>({
     discord_id: { type: String, required: true },
     experience: { type: Number, default: 0 },
     sticky_roles: { type: [String], default: [] },
     in_server: { type: Boolean, default: true }
-});
+}, { _id: false });
 serverMemberSchema.method("leaveServer", async function(member: GuildMember, server: HydratedDocument<IServer, ServerMethods>) {
     if (member.roles) {
         this.sticky_roles = [];
@@ -27,7 +27,7 @@ serverMemberSchema.method("leaveServer", async function(member: GuildMember, ser
     this.in_server = false;
     return true;
 });
-serverMemberSchema.method("joinServer", async function(member: GuildMember, server: HydratedDocument<IServer, ServerMethods>) {
+serverMemberSchema.method("joinServer", async function(member: GuildMember, server: HydratedDocument<IServer, ServerMethods>): Promise<boolean> {
     this.in_server = true;
     this.sticky_roles.forEach((role: string) => server && server.settings.sticky_roles.indexOf(role) != -1 ? member.roles.add(role).catch(() => undefined) : undefined);
     await server.save();

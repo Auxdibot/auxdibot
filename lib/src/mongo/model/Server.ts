@@ -1,13 +1,14 @@
 import mongoose, {HydratedDocument} from "mongoose";
 
-import punishmentSchema, {IPunishment, PunishmentNames, toEmbedField} from "../schema/Punishment";
+import punishmentSchema, {IPunishment, PunishmentNames, toEmbedField} from "../schema/PunishmentSchema";
 import Counter from "./Counter";
-import LogSchema, {ILog, LogNames} from "../schema/Log";
-import PermissionOverrideSchema, {IPermissionOverride} from "../schema/PermissionOverride";
+import LogSchema, {ILog} from "../schema/LogSchema";
+import PermissionOverrideSchema, {IPermissionOverride} from "../schema/PermissionOverrideSchema";
 import {APIEmbed, EmbedField, Guild, GuildMember, PermissionsBitField} from "discord.js";
 import Embeds from "../../util/constants/Embeds";
-import ReactionRoleSchema, {IReactionRole} from "../schema/ReactionRole";
-import serverMemberSchema, {IServerMember, IServerMemberMethods} from "../schema/ServerMember";
+import ReactionRoleSchema, {IReactionRole} from "../schema/ReactionRoleSchema";
+import serverMemberSchema, {IServerMember, IServerMemberMethods} from "../schema/ServerMemberSchema";
+import {LogNames} from "../../util/types/Log";
 
 export interface IServerSettings {
     _id?: mongoose.ObjectId;
