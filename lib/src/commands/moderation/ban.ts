@@ -40,7 +40,7 @@ const banCommand = <AuxdibotCommand>{
             durationOption = interaction.options.getString('duration') || "permanent",
             deleteMessageDays = interaction.options.getNumber('delete_message_days') || 0;
         if (!user) return await interaction.reply({ embeds: [Embeds.ERROR_EMBED.toJSON()] });
-
+        let data = await interaction.data.guildData.fetchData(), counter = await interaction.data.guildData.fetchCounter();
         let member = interaction.data.guild.members.resolve(user.id)
         if (!member) {
             let errorEmbed = Embeds.ERROR_EMBED.toJSON();
@@ -53,7 +53,7 @@ const banCommand = <AuxdibotCommand>{
             noPermissionEmbed.description = `This user has a higher role than you or owns this server!`
             return await interaction.reply({ embeds: [noPermissionEmbed] });
         }
-        if (interaction.data.guildData.getPunishment(user.id, 'ban')) {
+        if (data.getPunishment(user.id, 'ban')) {
             let errorEmbed = Embeds.ERROR_EMBED.toJSON();
             errorEmbed.description = "This user is already banned!";
             return await interaction.reply({ embeds: [errorEmbed] });
@@ -81,7 +81,7 @@ const banCommand = <AuxdibotCommand>{
                 expires_date_unix: expires && typeof expires != "string" ? expires : undefined,
                 user_id: user.id,
                 moderator_id: interaction.user.id,
-                punishment_id: await interaction.data.guildData.getPunishmentID(),
+                punishment_id: counter.incrementPunishmentID(),
             };
             interaction.data.guildData.punish(banData).then(async (embed) => {
                 if (!embed || !interaction.data) return;
@@ -91,7 +91,7 @@ const banCommand = <AuxdibotCommand>{
                     date_unix: Date.now(),
                     type: LogType.BAN,
                     punishment: banData
-                }, interaction.data.guild);
+                });
                 return await interaction.reply({embeds: [embed]});
             });
         }).catch(async () => {

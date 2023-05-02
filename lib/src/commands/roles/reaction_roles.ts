@@ -114,6 +114,7 @@ const reactionRolesCommand = <AuxdibotCommand>{
             },
             async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
                 if (!interaction.data) return;
+                let data = await interaction.data.guildData.fetchData();
                 let channel = interaction.options.getChannel("channel"), roles = interaction.options.getString("roles"), title = interaction.options.getString("title") || "React to receive roles!";
                 if (!channel || !roles) return;
                 if (channel.type != ChannelType.GuildText) {
@@ -137,7 +138,7 @@ const reactionRolesCommand = <AuxdibotCommand>{
                         arr.push({ emoji: item[0], role });
                     }
                     return arr;
-                }, []);
+                }, [] as Promise<IReactionAndRole[]> | IReactionAndRole[]);
                 if (reactionsAndRoles.length <= 0) {
                     let errorEmbed = Embeds.ERROR_EMBED.toJSON();
                     errorEmbed.description = "No reactions and roles found! Please use spaces between reactions and roles. (ex. [emoji] [role] [emoji2] [role2] ...)";
@@ -149,7 +150,7 @@ const reactionRolesCommand = <AuxdibotCommand>{
                 let message = await channel.send({ embeds: [embed] });
 
                 reactionsAndRoles.forEach((item) => message.react(item.emoji));
-                interaction.data.guildData.addReactionRole({ message_id: message.id, reactions: reactionsAndRoles.map((item) => <IReaction>{ role: item.role.id, emoji: item.emoji }) });
+                data.addReactionRole({ message_id: message.id, reactions: reactionsAndRoles.map((item) => <IReaction>{ role: item.role.id, emoji: item.emoji }) });
                 let successEmbed = Embeds.SUCCESS_EMBED.toJSON();
                 successEmbed.title = "👈 Created Reaction Role"
                 successEmbed.description = `Created a reaction role in ${channel}`;
@@ -158,7 +159,7 @@ const reactionRolesCommand = <AuxdibotCommand>{
                     description: `Created a reaction role in ${channel.name}`,
                     type: LogType.REACTION_ROLE_ADDED,
                     date_unix: Date.now()
-                }, interaction.data.guild)
+                })
                 return await interaction.reply({ embeds: [successEmbed] });
             }
         },
@@ -185,6 +186,7 @@ const reactionRolesCommand = <AuxdibotCommand>{
                     footer = interaction.options.getString("footer")?.replace(/\\n/g, "\n") || null,
                     image_url = interaction.options.getString("image_url") || null,
                     thumbnail_url = interaction.options.getString("thumbnail_url") || null;
+                let data = await interaction.data.guildData.fetchData();
                 if (!color || !/(#|)[0-9a-fA-F]{6}/.test(color)) {
                     let error = Embeds.ERROR_EMBED.toJSON();
                     error.description = "Invalid hex color code!";
@@ -211,7 +213,7 @@ const reactionRolesCommand = <AuxdibotCommand>{
                         arr.push({ emoji: item[0], role: role.id });
                     }
                     return arr;
-                }, []);
+                }, [] as Promise<IReaction[]> | IReaction[]);
                 if (reactionsAndRoles.length <= 0) {
                     let errorEmbed = Embeds.ERROR_EMBED.toJSON();
                     errorEmbed.description = "No reactions and roles found! Please use spaces between reactions and roles. (ex. [emoji] [role] [emoji2] [role2] ...)";
@@ -235,7 +237,7 @@ const reactionRolesCommand = <AuxdibotCommand>{
                     return await interaction.reply({ embeds: [embed] });
                 }
                 reactionsAndRoles.forEach((item) => message ? message.react(item.emoji) : undefined);
-                interaction.data.guildData.addReactionRole({ message_id: message.id, reactions: reactionsAndRoles });
+                data.addReactionRole({ message_id: message.id, reactions: reactionsAndRoles });
                 let successEmbed = Embeds.SUCCESS_EMBED.toJSON();
                 successEmbed.title = "👈 Created Reaction Role"
                 successEmbed.description = `Created a reaction role in ${channel}`;
@@ -244,7 +246,7 @@ const reactionRolesCommand = <AuxdibotCommand>{
                     description: `Created a reaction role in ${channel.name}`,
                     type: LogType.REACTION_ROLE_ADDED,
                     date_unix: Date.now()
-                }, interaction.data.guild)
+                })
                 return await interaction.reply({ embeds: [successEmbed] });
             }
         },
@@ -263,6 +265,7 @@ const reactionRolesCommand = <AuxdibotCommand>{
                 if (!interaction.data) return;
                 let channel = interaction.options.getChannel("channel"), roles = interaction.options.getString("roles"),
                     json = interaction.options.getString("json");
+                let data = await interaction.data.guildData.fetchData();
                 if (!channel || !roles) return;
                 if (channel.type != ChannelType.GuildText) {
                     let errorEmbed = Embeds.ERROR_EMBED.toJSON();
@@ -284,7 +287,7 @@ const reactionRolesCommand = <AuxdibotCommand>{
                         arr.push({ emoji: item[0], role: role.id });
                     }
                     return arr;
-                }, []);
+                }, [] as Promise<IReaction[]> | IReaction[]);
                 if (reactionsAndRoles.length <= 0) {
                     let errorEmbed = Embeds.ERROR_EMBED.toJSON();
                     errorEmbed.description = "No reactions and roles found! Please use spaces between reactions and roles. (ex. [emoji] [role] [emoji2] [role2] ...)";
@@ -298,7 +301,7 @@ const reactionRolesCommand = <AuxdibotCommand>{
                     return await interaction.reply({ embeds: [embed] });
                 }
                 reactionsAndRoles.forEach((item) => message ? message.react(item.emoji) : undefined);
-                interaction.data.guildData.addReactionRole({ message_id: message.id, reactions: reactionsAndRoles });
+                data.addReactionRole({ message_id: message.id, reactions: reactionsAndRoles });
                 let successEmbed = Embeds.SUCCESS_EMBED.toJSON();
                 successEmbed.title = "👈 Created Reaction Role"
                 successEmbed.description = `Created a reaction role in ${channel}`;
@@ -307,7 +310,7 @@ const reactionRolesCommand = <AuxdibotCommand>{
                     description: `Created a reaction role in ${channel.name}`,
                     type: LogType.REACTION_ROLE_ADDED,
                     date_unix: Date.now()
-                }, interaction.data.guild)
+                })
                 return await interaction.reply({ embeds: [successEmbed] });
             }
         },
@@ -325,12 +328,13 @@ const reactionRolesCommand = <AuxdibotCommand>{
             async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
                 if (!interaction.data) return;
                 let message_id = interaction.options.getString("message_id"), index = interaction.options.getNumber("index");
+                let data = await interaction.data.guildData.fetchData();
                 if (!message_id && !index) {
                     let embed = Embeds.ERROR_EMBED.toJSON();
                     embed.description = `Please include a message_id or index!`;
                     return await interaction.reply({ embeds: [embed] });
                 }
-                let rr = interaction.data.guildData.reaction_roles.find((val, valIndex) => message_id ? (val.message_id == message_id) : index ? (valIndex == index-1) : undefined);
+                let rr = data.reaction_roles.find((val, valIndex) => message_id ? (val.message_id == message_id) : index ? (valIndex == index-1) : undefined);
                 if (!rr) {
                     let embed = Embeds.ERROR_EMBED.toJSON();
                     embed.description = `Couldn't find that reaction role!`;
@@ -340,7 +344,7 @@ const reactionRolesCommand = <AuxdibotCommand>{
                 if (message) {
                     await message.delete();
                 }
-                interaction.data.guildData.removeReactionRole(interaction.data.guildData.reaction_roles.indexOf(rr));
+                data.removeReactionRole(data.reaction_roles.indexOf(rr));
                 let successEmbed = Embeds.SUCCESS_EMBED.toJSON();
                 successEmbed.title = "👈 Deleted Reaction Role"
                 successEmbed.description = `Deleted a reaction role${message ? ` in ${message.channel}` : ""}.`;
@@ -349,7 +353,7 @@ const reactionRolesCommand = <AuxdibotCommand>{
                     description: `Deleted a reaction role${message ? ` in ${message.channel || "a channel"}` : ""}.`,
                     type: LogType.REACTION_ROLE_REMOVED,
                     date_unix: Date.now()
-                }, interaction.data.guild)
+                })
                 return await interaction.reply({ embeds: [successEmbed] });
             }
         },
@@ -367,8 +371,9 @@ const reactionRolesCommand = <AuxdibotCommand>{
             async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
                 if (!interaction.data) return;
                 let successEmbed = Embeds.INFO_EMBED.toJSON();
+                let data = await interaction.data.guildData.fetchData();
                 successEmbed.title = "👈 Reaction Roles"
-                successEmbed.description = interaction.data.guildData.reaction_roles.reduce((accumulator: string, value, index) => `${accumulator}\r\n\r\n**${index+1})** Message ID: *${value.message_id}* \r\n(${value.reactions.reduce((acc: string, val2, index) => index == 0 ? `${val2.emoji}` : `${acc}, ${val2.emoji}`, "")})`, "");
+                successEmbed.description = data.reaction_roles.reduce((accumulator: string, value, index) => `${accumulator}\r\n\r\n**${index+1})** Message ID: *${value.message_id}* \r\n(${value.reactions.reduce((acc: string, val2, index) => index == 0 ? `${val2.emoji}` : `${acc}, ${val2.emoji}`, "")})`, "");
                 return await interaction.reply({ embeds: [successEmbed] });
             }
         },
@@ -396,12 +401,13 @@ const reactionRolesCommand = <AuxdibotCommand>{
                     footer = interaction.options.getString("footer")?.replace(/\\n/g, "\n") || null,
                     image_url = interaction.options.getString("image_url") || null,
                     thumbnail_url = interaction.options.getString("thumbnail_url") || null;
+                let data = await interaction.data.guildData.fetchData();
                 if (!message_id && !index) {
                     let embed = Embeds.ERROR_EMBED.toJSON();
                     embed.description = `Please include a message_id or index!`;
                     return await interaction.reply({ embeds: [embed] });
                 }
-                let rr = interaction.data.guildData.reaction_roles.find((val, valIndex) => message_id ? (val.message_id == message_id) : index ? (valIndex == index-1) : undefined);
+                let rr = data.reaction_roles.find((val, valIndex) => message_id ? (val.message_id == message_id) : index ? (valIndex == index-1) : undefined);
                 if (!rr) {
                     let embed = Embeds.ERROR_EMBED.toJSON();
                     embed.description = `Couldn't find that reaction role!`;
@@ -428,7 +434,7 @@ const reactionRolesCommand = <AuxdibotCommand>{
                         description: `Edited a reaction role.`,
                         type: LogType.REACTION_ROLE_EDITED,
                         date_unix: Date.now()
-                    }, interaction.data.guild)
+                    })
                     return await interaction.reply({ embeds: [successEmbed] });
                 }
                 if (color && title) {
@@ -461,7 +467,7 @@ const reactionRolesCommand = <AuxdibotCommand>{
                         description: `Edited a reaction role.`,
                         type: LogType.REACTION_ROLE_EDITED,
                         date_unix: Date.now()
-                    }, interaction.data.guild)
+                    })
                     return await interaction.reply({ embeds: [successEmbed] });
                 }
                 let embed = Embeds.ERROR_EMBED.toJSON();

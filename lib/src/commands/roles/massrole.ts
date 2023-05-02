@@ -55,7 +55,7 @@ const massroleCommand = < AuxdibotCommand > {
                 description: `Massrole took ${role} from anyone who had it with lower role hiearchy than Auxdibot.`,
                 type: LogType.MASSROLE_GIVEN,
                 date_unix: Date.now()
-            }, interaction.data.guild)
+            })
     }
     },
         {
@@ -90,7 +90,7 @@ const massroleCommand = < AuxdibotCommand > {
                     description: `Massrole took ${role} from anyone who had it with lower role hiearchy than Auxdibot.`,
                     type: LogType.MASSROLE_TAKEN,
                     date_unix: Date.now()
-                }, interaction.data.guild)
+                })
             }
         }],
     async execute() {

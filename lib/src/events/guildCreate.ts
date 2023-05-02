@@ -1,6 +1,6 @@
 import {Guild} from "discord.js";
 import Embeds from '../util/constants/Embeds';
-import Server from "../mongo/model/Server";
+import Server from "../mongo/model/server/Server";
 import {updateDiscordStatus} from "../modules/discord";
 
 module.exports = {

@@ -6,7 +6,7 @@ import {
     IAuxdibot
 } from "../util/templates/IAuxdibot";
 import Embeds from "../util/constants/Embeds";
-import Server from "../mongo/model/Server";
+import Server from "../mongo/model/server/Server";
 import DMAuxdibotCommandData from "../util/types/commandData/DMAuxdibotCommandData";
 import AuxdibotCommandInteraction from "../util/templates/AuxdibotCommandInteraction";
 import GuildAuxdibotCommandData from "../util/types/commandData/GuildAuxdibotCommandData";

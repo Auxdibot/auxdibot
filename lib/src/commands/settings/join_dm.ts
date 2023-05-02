@@ -69,6 +69,7 @@ const joinCommand = <AuxdibotCommand>{
                 footer = interaction.options.getString("footer")?.replace(/\\n/g, "\n") || null,
                 image_url = interaction.options.getString("image_url") || null,
                 thumbnail_url = interaction.options.getString("thumbnail_url") || null;
+            let settings = await interaction.data.guildData.fetchSettings();
             if (!color || !/(#|)[0-9a-fA-F]{6}/.test(color)) {
                 let error = Embeds.ERROR_EMBED.toJSON();
                 error.description = "Invalid hex color code!";
@@ -85,7 +86,7 @@ const joinCommand = <AuxdibotCommand>{
                 image_url
             };
 
-            interaction.data.guildData.setJoinDMEmbed(toAPIEmbed(parameters));
+            settings.setJoinDMEmbed(toAPIEmbed(parameters));
             let embed = Embeds.SUCCESS_EMBED.toJSON();
             embed.title = "Success!";
             embed.description = `Set the join DM embed.`;
@@ -93,7 +94,7 @@ const joinCommand = <AuxdibotCommand>{
             if (interaction.channel && (interaction.channel as Channel).isTextBased()) {
                 try {
                     let channel = (interaction.channel) as TextChannel;
-                    await channel.send({ content: "Here's a preview of the new join DM embed!", embeds: [JSON.parse(await parsePlaceholders(JSON.stringify(interaction.data.guildData.settings.join_dm_embed), interaction.data.guild, interaction.data.member)) as APIEmbed] });
+                    await channel.send({ content: "Here's a preview of the new join DM embed!", embeds: [JSON.parse(await parsePlaceholders(JSON.stringify(settings.join_dm_embed), interaction.data.guild, interaction.data.member)) as APIEmbed] });
                 } catch (x) { }
             }
             return await interaction.reply({ embeds: [embed] });
@@ -113,6 +114,7 @@ const joinCommand = <AuxdibotCommand>{
             async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
                 if (!interaction.data) return;
                 let json = interaction.options.getString('json') || undefined;
+                let settings = await interaction.data.guildData.fetchSettings();
                 if (!json) return;
                 let jsonEmbed = JSON.parse(json) as APIEmbed;
                 if (!jsonEmbed['type'] || jsonEmbed['type'] != "rich") {
@@ -120,7 +122,7 @@ const joinCommand = <AuxdibotCommand>{
                     error.description = "This isn't valid Embed JSON!";
                     return await interaction.reply({ embeds: [error] });
                 }
-                interaction.data.guildData.setJoinDMEmbed(jsonEmbed);
+                settings.setJoinDMEmbed(jsonEmbed);
                 let embed = Embeds.SUCCESS_EMBED.toJSON();
                 embed.title = "Success!";
                 embed.description = `Set the join DM embed.`;
@@ -128,7 +130,7 @@ const joinCommand = <AuxdibotCommand>{
                 if (interaction.channel && (interaction.channel as Channel).isTextBased()) {
                     try {
                         let channel = (interaction.channel) as TextChannel;
-                        await channel.send({ content: "Here's a preview of the new join DM embed!", embeds: [JSON.parse(await parsePlaceholders(JSON.stringify(interaction.data.guildData.settings.join_dm_embed), interaction.data.guild, interaction.data.member)) as APIEmbed] });
+                        await channel.send({ content: "Here's a preview of the new join DM embed!", embeds: [JSON.parse(await parsePlaceholders(JSON.stringify(settings.join_dm_embed), interaction.data.guild, interaction.data.member)) as APIEmbed] });
                     } catch (x) { }
                 }
                 return await interaction.reply({ embeds: [embed] });
@@ -148,10 +150,11 @@ const joinCommand = <AuxdibotCommand>{
             async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
                 if (!interaction.data) return;
                 let text = interaction.options.getString('text') || "";
-                interaction.data.guildData.setJoinDMText(text);
+                let settings = await interaction.data.guildData.fetchSettings();
+                settings.setJoinDMText(text);
                 let embed = Embeds.SUCCESS_EMBED.toJSON();
                 embed.title = "Success!";
-                embed.description = `Set the join message text to "${interaction.data.guildData.settings.join_dm_text}".`;
+                embed.description = `Set the join message text to "${settings.join_dm_text}".`;
                 return await interaction.reply({ embeds: [embed] });
             }
         },
@@ -168,8 +171,9 @@ const joinCommand = <AuxdibotCommand>{
             },
             async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
                 if (!interaction.data) return;
+                let settings = await interaction.data.guildData.fetchSettings();
                 try {
-                    return await interaction.reply({ content: `**EMBED PREVIEW**\r\n${interaction.data.guildData.settings.join_dm_text || ""}`, embeds: interaction.data.guildData.settings.join_dm_embed ? [JSON.parse(await parsePlaceholders(JSON.stringify(interaction.data.guildData.settings.join_dm_embed), interaction.data.guild, interaction.data.member)) as APIEmbed] : [] });
+                    return await interaction.reply({ content: `**EMBED PREVIEW**\r\n${settings.join_dm_text || ""}`, embeds: settings.join_dm_embed ? [JSON.parse(await parsePlaceholders(JSON.stringify(settings.join_dm_embed), interaction.data.guild, interaction.data.member)) as APIEmbed] : [] });
                 } catch (x) {
                     let error = Embeds.ERROR_EMBED.toJSON();
                     error.description = "This isn't valid! Try changing the Join Embed or Join Text.";

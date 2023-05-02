@@ -2,6 +2,7 @@ import {SlashCommandBuilder} from "discord.js";
 import AuxdibotCommand from "../../util/templates/AuxdibotCommand";
 import AuxdibotCommandInteraction from "../../util/templates/AuxdibotCommandInteraction";
 import GuildAuxdibotCommandData from "../../util/types/commandData/GuildAuxdibotCommandData";
+import Embeds from "../../util/constants/Embeds";
 
 
 const recordCommand = <AuxdibotCommand>{
@@ -23,6 +24,7 @@ const recordCommand = <AuxdibotCommand>{
         if (!interaction.data) return;
         const user = interaction.options.getUser('user') || interaction.user;
         let embed = await interaction.data.guildData.recordAsEmbed(user.id);
+        if (!embed) return await interaction.reply({ embeds: [Embeds.ERROR_EMBED.toJSON()] });
         await interaction.reply({ embeds: [embed] });
     },
 

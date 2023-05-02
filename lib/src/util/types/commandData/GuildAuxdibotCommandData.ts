@@ -1,5 +1,5 @@
 import {Guild, GuildMember} from "discord.js";
-import {IServer, ServerMethods} from "../../../mongo/model/Server";
+import {IServer, IServerMethods} from "../../../mongo/model/server/Server";
 import BaseAuxdibotCommandData from "./BaseAuxdibotCommandData";
 import {HydratedDocument} from "mongoose";
 
@@ -7,6 +7,6 @@ export default interface GuildAuxdibotCommandData extends BaseAuxdibotCommandDat
     dmCommand?: false;
     date: Date;
     guild: Guild;
-    guildData: HydratedDocument<IServer, ServerMethods>;
+    guildData: HydratedDocument<IServer, IServerMethods>;
     member: GuildMember;
 }

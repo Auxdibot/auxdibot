@@ -1,5 +1,5 @@
 import {APIEmbed, GuildMember, TextChannel} from "discord.js";
-import Server from "../mongo/model/Server";
+import Server from "../mongo/model/server/Server";
 import parsePlaceholders from "../util/functions/parsePlaceholder";
 import {LogType} from "../util/types/Log";
 
@@ -9,27 +9,28 @@ module.exports = {
     async execute(member: GuildMember) {
         if (!member) return;
         let server = await Server.findOrCreateServer(member.guild.id);
-        if (server.settings.join_leave_channel) {
-            member.guild.channels.fetch(server.settings.join_leave_channel).then(async (channel) => {
+        let settings = await server.fetchSettings();
+        if (settings.join_leave_channel) {
+            member.guild.channels.fetch(settings.join_leave_channel).then(async (channel) => {
                 if (channel && channel.isTextBased()) {
-                    if (server.settings.leave_text || server.settings.leave_embed) {
+                    if (settings.leave_text || settings.leave_embed) {
                         await (channel as TextChannel).send({
-                            content: `${server.settings.leave_text || ""}`,
-                            embeds: server.settings.leave_embed ? [JSON.parse(await parsePlaceholders(JSON.stringify(server.settings.leave_embed), member.guild, member as GuildMember | undefined)) as APIEmbed] : []
+                            content: `${settings.leave_text || ""}`,
+                            embeds: settings.leave_embed ? [JSON.parse(await parsePlaceholders(JSON.stringify(settings.leave_embed), member.guild, member as GuildMember | undefined)) as APIEmbed] : []
                         }).catch((x) => console.error(x));
                     }
                 }
             });
         }
-        let memberData = await server.createOrFindMemberData(member);
+        let memberData = await server.findOrCreateMember(member.id);
         if (memberData) {
-           await memberData.leaveServer(member, server);
+           await memberData.leaveServer(member);
         }
         await server.log({
             user_id: member.id,
             description: `<@${member.id}> left the server! (Total Members: **${member.guild.memberCount}**)`,
             type: LogType.MEMBER_LEAVE,
             date_unix: Date.now()
-        }, member.guild)
+        })
     }
 }

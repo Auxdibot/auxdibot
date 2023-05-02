@@ -5,7 +5,7 @@ import {
 } from "discord.js";
 import canExecute from "../util/functions/canExecute";
 import Embeds from "../util/constants/Embeds";
-import Server from "../mongo/model/Server";
+import Server from "../mongo/model/server/Server";
 import {toEmbedField} from "../mongo/schema/PunishmentSchema";
 import {LogType} from "../util/types/Log";
 
@@ -17,13 +17,13 @@ module.exports = <AuxdibotButton>{
         let [,user_id] = interaction.customId.split("-");
         let server = await Server.findOrCreateServer(interaction.guild.id);
         if (!server) return;
-
-        if (!server.settings.mute_role || !interaction.guild.roles.resolve(server.settings.mute_role)) {
+        let data = await server.fetchData(), settings = await server.fetchSettings();
+        if (!settings.mute_role || !interaction.guild.roles.resolve(settings.mute_role)) {
             let errorEmbed = Embeds.ERROR_EMBED.toJSON();
             errorEmbed.description = "There is no mute role assigned for the server! Do `/help muterole` to view the command to add a muterole.";
             return await interaction.reply({ embeds: [errorEmbed] });
         }
-        let muted = server.getPunishment(user_id, 'mute');
+        let muted = data.getPunishment(user_id, 'mute');
         if (!muted) {
             let errorEmbed = Embeds.ERROR_EMBED.toJSON();
             errorEmbed.description = "This user isn't muted!";
@@ -39,7 +39,7 @@ module.exports = <AuxdibotButton>{
                 noPermissionEmbed.description = `This user has a higher role than you or owns this server!`
                 return await interaction.reply({ embeds: [noPermissionEmbed] });
             }
-            member.roles.remove(interaction.guild.roles.resolve(server.settings.mute_role) || "").catch(() => undefined);
+            member.roles.remove(interaction.guild.roles.resolve(settings.mute_role) || "").catch(() => undefined);
             let dmEmbed = Embeds.SUCCESS_EMBED.toJSON();
             dmEmbed.title = "🔊 Unmuted";
             dmEmbed.description = `You were unmuted on ${interaction.guild.name}.`
@@ -59,7 +59,7 @@ module.exports = <AuxdibotButton>{
             date_unix: Date.now(),
             type: LogType.UNMUTE,
             punishment: muted
-        }, interaction.guild)
+        })
         return await interaction.reply({ embeds: [embed] });
     }
 }

@@ -30,7 +30,7 @@ const kickCommand = <AuxdibotCommand>{
         if (!interaction.data) return;
         const user = interaction.options.getUser('user'), reason = interaction.options.getString('reason') || "No reason specified.";
         if (!user) return await interaction.reply({ embeds: [Embeds.ERROR_EMBED.toJSON()] });
-
+        let counter = await interaction.data.guildData.fetchCounter()
         let member = interaction.data.guild.members.resolve(user.id);
         if (!member) {
             let errorEmbed = Embeds.ERROR_EMBED.toJSON();
@@ -54,7 +54,7 @@ const kickCommand = <AuxdibotCommand>{
                 expires_date_unix: undefined,
                 user_id: user.id,
                 moderator_id: interaction.user.id,
-                punishment_id: await interaction.data.guildData.getPunishmentID(),
+                punishment_id: counter.incrementPunishmentID(),
             };
             interaction.data.guildData.punish(kickData).then(async (embed) => {
                 if (!embed || !interaction.data) return;
@@ -64,7 +64,7 @@ const kickCommand = <AuxdibotCommand>{
                     date_unix: Date.now(),
                     type: LogType.KICK,
                     punishment: kickData
-                }, interaction.data.guild)
+                })
                 return await interaction.reply({ embeds: [embed] });
             });
         }).catch(async () => {

@@ -1,5 +1,5 @@
 import {Guild} from "discord.js";
-import Server from "../mongo/model/Server";
+import Server from "../mongo/model/server/Server";
 import {updateDiscordStatus} from "../modules/discord";
 
 module.exports = {

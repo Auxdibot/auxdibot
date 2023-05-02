@@ -1,11 +1,12 @@
 import {Guild, GuildMember, PermissionsBitField} from "discord.js";
-import Server from "../../mongo/model/Server";
+import Server from "../../mongo/model/server/Server";
 import {PunishmentNames} from "../../mongo/schema/PunishmentSchema";
-import {LogNames} from "../types/Log";
+import {LogNames, LogType} from "../types/Log";
 
 export default async function parsePlaceholders(msg: string, guild?: Guild, member?: GuildMember) {
 
-    let data = guild ? await Server.findOrCreateServer(guild.id) : undefined;
+    let server = guild ? await Server.findOrCreateServer(guild.id) : undefined;
+    let data = server ? await server.fetchData() : undefined;
     let latest_punishment = data && member ? data.userRecord(member.user.id).reverse()[0] : undefined;
     const PLACEHOLDERS: any = {
         ...(guild ? {
@@ -22,7 +23,7 @@ export default async function parsePlaceholders(msg: string, guild?: Guild, memb
         } : {}),
         ...(data ? {
             ...(data.latest_log ? {
-                "server_latest_log_name": LogNames[data.latest_log.type],
+                "server_latest_log_name": LogNames[data.latest_log.type as LogType],
                 "server_latest_log_description": data.latest_log.description,
                 "server_latest_log_date": new Date(data.latest_log.date_unix).toDateString(),
                 "server_latest_log_date_formatted": `<t:${Math.round(data.latest_log.date_unix / 1000)}>`,
@@ -53,7 +54,7 @@ export default async function parsePlaceholders(msg: string, guild?: Guild, memb
             "member_avatar_128": member.user.avatarURL({ size: 128 }) || '',
             ...(data ? {
                 "member_total_punishments": data.userRecord(member.user.id).length,
-                "member_latest_punishment": latest_punishment ? PunishmentNames[latest_punishment.type].name : "None",
+                "member_latest_punishment": latest_punishment ? PunishmentNames[latest_punishment.type as "warn" | "kick" | "mute" | "ban"].name : "None",
                 "member_latest_punishment_id": latest_punishment ? latest_punishment.punishment_id : "None",
                 "member_latest_punishment_date": latest_punishment ? new Date(latest_punishment.date_unix).toDateString() : "None",
                 "member_latest_punishment_date_formatted": latest_punishment ? `<t:${Math.round(latest_punishment.date_unix / 1000)}>` : "None",

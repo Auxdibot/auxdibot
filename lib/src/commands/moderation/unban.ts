@@ -25,9 +25,9 @@ const unbanCommand = <AuxdibotCommand>{
     async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData> ) {
         if (!interaction.data) return;
         const user = interaction.options.getUser('user');
-
+        let data = await interaction.data.guildData.fetchData();
         if (!user) return await interaction.reply({ embeds: [Embeds.ERROR_EMBED.toJSON()] });
-        let banned = interaction.data.guildData.getPunishment(user.id, 'ban');
+        let banned = data.getPunishment(user.id, 'ban');
         if (!banned) {
             let errorEmbed = Embeds.ERROR_EMBED.toJSON();
             errorEmbed.description = "This user isn't banned!";
@@ -47,7 +47,7 @@ const unbanCommand = <AuxdibotCommand>{
             date_unix: Date.now(),
             type: LogType.UNBAN,
             punishment: banned
-        }, interaction.data.guild)
+        })
         await interaction.reply({ embeds: [embed] });
     },
 

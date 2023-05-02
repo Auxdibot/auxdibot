@@ -1,7 +1,7 @@
 import {SlashCommandBuilder} from "discord.js";
 import AuxdibotCommand from "../../util/templates/AuxdibotCommand";
 import Embeds from '../../util/constants/Embeds';
-import Server from "../../mongo/model/Server";
+import Server from "../../mongo/model/server/Server";
 import canExecute from "../../util/functions/canExecute";
 import {IPunishment, toEmbedField} from "../../mongo/schema/PunishmentSchema";
 import AuxdibotCommandInteraction from "../../util/templates/AuxdibotCommandInteraction";
@@ -30,6 +30,7 @@ const warnCommand = <AuxdibotCommand>{
     async execute(interaction : AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
         if (!interaction.data) return;
         const user = interaction.options.getUser('user'), reason = interaction.options.getString('reason') || "No reason specified.";
+        let counter = await interaction.data.guildData.fetchCounter();
         if (!user) return await interaction.reply({ embeds: [Embeds.ERROR_EMBED.toJSON()] });
         let member = interaction.data.guild.members.resolve(user.id)
         if (!member) {
@@ -52,7 +53,7 @@ const warnCommand = <AuxdibotCommand>{
             expires_date_unix: undefined,
             expired: true,
             type: 'warn',
-            punishment_id: await interaction.data.guildData.getPunishmentID()
+            punishment_id: counter.incrementPunishmentID()
         };
         let dmEmbed = Embeds.PUNISHED_EMBED.toJSON();
         dmEmbed.title = "⚠ Warn";
@@ -69,7 +70,7 @@ const warnCommand = <AuxdibotCommand>{
                 date_unix: Date.now(),
                 type: LogType.WARN,
                 punishment: warnData
-            }, interaction.data.guild)
+            })
             return await interaction.reply({embeds: [embed]});
         });
     },

@@ -1,13 +1,17 @@
 import express from "express";
 import {validateUser} from "../util/middleware";
-import Server, {IServer} from "../mongo/model/Server";
+import Server from "../mongo/model/server/Server";
 import {GuildInfo} from "passport-discord";
 
 const guildRouter = express.Router();
 
 const getGuildData = async (guild_info: GuildInfo) => {
-    let guildData = await Server.findOne({ discord_id: guild_info.id }, { _id: 0 }).exec() as IServer | undefined;
-    return guildData ? { ...guild_info, punishments: guildData.punishments, settings: guildData.settings, invited: true } : {...guild_info, invited: false };
+    let guildData = await Server.findOne({ discord_id: guild_info.id }, { _id: 0 }).exec().catch(() => undefined);
+    if (guildData) {
+        let data = await guildData.fetchData(), settings = await guildData.fetchSettings();
+        return { ...guild_info, punishments: data.punishments, settings: settings, invited: true };
+    }
+    return {...guild_info, invited: false };
 }
 guildRouter.get('/:guildId', validateUser, async (req: express.Request, res: express.Response) => {
     if (!req.session.passport?.user.discord_guilds) return res.status(400).send("Couldn't find any servers!")
