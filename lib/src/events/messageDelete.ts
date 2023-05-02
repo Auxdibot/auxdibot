@@ -1,6 +1,7 @@
 import {Message} from "discord.js";
-import {LogType} from "../mongo/schema/Log";
-import Server from "../mongo/model/Server";
+import Server from "../mongo/model/server/Server";
+import {LogType} from "../util/types/Log";
+import {IReactionRole} from "../mongo/schema/ReactionRoleSchema";
 
 module.exports = {
     name: 'messageDelete',
@@ -9,15 +10,16 @@ module.exports = {
         let sender = message.member;
         if (!sender || !message.guild) return;
         let server = await Server.findOrCreateServer(message.guild.id);
-        let rr = server.reaction_roles.find((rr) => rr.message_id == message.id);
+        let data = await server.fetchData();
+        let rr = data.reaction_roles.find((rr: IReactionRole) => rr.message_id == message.id);
         if (rr) {
-            server.removeReactionRole(server.reaction_roles.indexOf(rr));
+            data.removeReactionRole(data.reaction_roles.indexOf(rr));
             await server.log({
                 user_id: sender.id,
                 description: `Deleted a reaction role${message ? ` in ${message.channel || "a channel"}` : ""}.`,
                 type: LogType.REACTION_ROLE_REMOVED,
                 date_unix: Date.now()
-            }, message.guild)
+            })
         }
         await server.log({
             type: LogType.MESSAGE_DELETED,
@@ -25,6 +27,6 @@ module.exports = {
             description: `A message by ${sender.user.tag} was deleted.`,
             message_edit: { former: message.cleanContent, now: "[deleted]" },
             user_id: sender.id
-        }, message.guild)
+        })
     }
 }

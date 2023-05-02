@@ -1,5 +1,6 @@
 import {GuildMember, MessageReaction, User} from "discord.js";
-import Server from "../mongo/model/Server";
+import Server from "../mongo/model/server/Server";
+import {IReaction, IReactionRole} from "../mongo/schema/ReactionRoleSchema";
 
 
 module.exports = {
@@ -9,11 +10,12 @@ module.exports = {
         if (user.id == messageReaction.client.user.id) return;
         if (!messageReaction.message.guild) return;
         let server = await Server.findOrCreateServer(messageReaction.message.guild.id);
+        let data = await server.fetchData();
         let member: GuildMember | null = messageReaction.message.guild.members.resolve(user.id);
         if (!member) return;
-        let rrData = server.reaction_roles.find((rr) => messageReaction.message.id == rr.message_id);
+        let rrData = data.reaction_roles.find((rr: IReactionRole) => messageReaction.message.id == rr.message_id);
         if (rrData) {
-            let rr = rrData.reactions.find((react) => react.emoji == messageReaction.emoji.toString());
+            let rr = rrData.reactions.find((react: IReaction) => react.emoji == messageReaction.emoji.toString());
             if (rr) {
                 await messageReaction.users.remove(user.id);
                 if (member.roles.resolve(rr.role)) {

@@ -2,10 +2,10 @@ import {ActivityType, Client, Collection, GatewayIntentBits, Partials, REST, Rou
 import fs from "fs";
 import path from "path";
 import dotenv from "dotenv";
-import Server from "../mongo/model/Server";
-import {LogType} from "../mongo/schema/Log";
+import Server from "../mongo/model/server/Server";
 import {IAuxdibot} from "../util/templates/IAuxdibot";
 import {client} from "../index";
+import {LogType} from "../util/types/Log";
 
 // Configure .env
 dotenv.config();
@@ -135,25 +135,27 @@ export class AuxdibotClient {
                 })
             }
             setInterval(async () => {
-                for (let server of client.guilds.cache.values()) {
-                    let data = await Server.findOrCreateServer(server.id);
-                    let expired = data.checkExpired();
+                for (let guild of client.guilds.cache.values()) {
+                    let server = await Server.findOrCreateServer(guild.id);
+                    let serverData = await server.fetchData(), settings = await server.fetchSettings();
+                    if (!serverData) return;
+                    let expired = serverData.checkExpired();
                     if (expired) {
                         for (let expiredPunishment of expired) {
-                            await data.log({
+                            await server.log({
                                 type: LogType.PUNISHMENT_EXPIRED,
                                 description: `Punishment ID ${expiredPunishment.punishment_id} has expired.`,
                                 date_unix: Date.now(),
                                 punishment: expiredPunishment
-                            }, server);
+                            });
                             switch (expiredPunishment.type) {
                                 case "ban":
-                                    await server.bans.remove(expiredPunishment.user_id, "Punishment expired.");
+                                    await guild.bans.remove(expiredPunishment.user_id, "Punishment expired.");
                                     break;
                                 case "mute":
-                                    let member = server.members.resolve(expiredPunishment.user_id);
-                                    if (!member || !data.settings.mute_role) break;
-                                    await member.roles.remove(data.settings.mute_role);
+                                    let member = guild.members.resolve(expiredPunishment.user_id);
+                                    if (!member || !settings.mute_role) break;
+                                    await member.roles.remove(settings.mute_role);
                                     break;
                             }
                         }

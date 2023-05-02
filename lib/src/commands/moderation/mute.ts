@@ -2,12 +2,12 @@ import {GuildMember, SlashCommandBuilder} from "discord.js";
 import AuxdibotCommand from "../../util/templates/AuxdibotCommand";
 import Embeds from "../../util/constants/Embeds";
 import timestampToDuration from "../../util/functions/timestampToDuration";
-import Server from "../../mongo/model/Server";
+import Server from "../../mongo/model/server/Server";
 import canExecute from "../../util/functions/canExecute";
-import {LogType} from "../../mongo/schema/Log";
-import {IPunishment, toEmbedField} from "../../mongo/schema/Punishment";
+import {IPunishment, toEmbedField} from "../../mongo/schema/PunishmentSchema";
 import AuxdibotCommandInteraction from "../../util/templates/AuxdibotCommandInteraction";
 import GuildAuxdibotCommandData from "../../util/types/commandData/GuildAuxdibotCommandData";
+import {LogType} from "../../util/types/Log";
 
 const muteCommand = <AuxdibotCommand>{
     data: new SlashCommandBuilder()
@@ -36,13 +36,14 @@ const muteCommand = <AuxdibotCommand>{
         const user = interaction.options.getUser('user'),
             reason = interaction.options.getString('reason') || "No reason specified.",
             durationOption = interaction.options.getString('duration') || "permanent";
-        if (!interaction.data.guildData.settings.mute_role || !interaction.data.guild.roles.resolve(interaction.data.guildData.settings.mute_role)) {
+        let data = await interaction.data.guildData.fetchData(), settings = await interaction.data.guildData.fetchSettings(), counter = await interaction.data.guildData.fetchCounter();
+        if (!settings.mute_role || !interaction.data.guild.roles.resolve(settings.mute_role)) {
             let errorEmbed = Embeds.ERROR_EMBED.toJSON();
             errorEmbed.description = "There is no mute role assigned for the server! Do `/help muterole` to view the command to add a muterole.";
             return await interaction.reply({ embeds: [errorEmbed] });
         }
         if (!user) return await interaction.reply({ embeds: [Embeds.ERROR_EMBED.toJSON()] });
-        if (interaction.data.guildData.getPunishment(user.id, 'mute')) {
+        if (data.getPunishment(user.id, 'mute')) {
             let errorEmbed = Embeds.ERROR_EMBED.toJSON();
             errorEmbed.description = "This user is already muted!";
             return await interaction.reply({ embeds: [errorEmbed] });
@@ -66,7 +67,7 @@ const muteCommand = <AuxdibotCommand>{
             errorEmbed.description = "The timestamp provided is invalid! (ex. \"1m\" for 1 minute, \"5d\" for 5 days.)"
             return await interaction.reply({ embeds: [errorEmbed] });
         }
-        member.roles.add(interaction.data.guild.roles.resolve(interaction.data.guildData.settings.mute_role) || "").then(async () => {
+        member.roles.add(interaction.data.guild.roles.resolve(settings.mute_role) || "").then(async () => {
             if (!interaction.data) return;
             let expires = duration == "permanent" || !duration ? "permanent" : duration + Date.now();
             let muteData = <IPunishment>{
@@ -78,7 +79,7 @@ const muteCommand = <AuxdibotCommand>{
                 expires_date_unix: expires && typeof expires != "string" ? expires : undefined,
                 user_id: user.id,
                 moderator_id: interaction.user.id,
-                punishment_id: await interaction.data.guildData.getPunishmentID()
+                punishment_id: counter.incrementPunishmentID()
             };
             let dmEmbed = Embeds.PUNISHED_EMBED.toJSON();
             dmEmbed.title = "🔇 Mute";
@@ -93,13 +94,13 @@ const muteCommand = <AuxdibotCommand>{
                     date_unix: Date.now(),
                     type: LogType.MUTE,
                     punishment: muteData
-                }, interaction.data.guild)
+                })
                 return await interaction.reply({embeds: [embed]});
             });
         }).catch(async () => {
             if (!interaction.data) return;
             let errorEmbed = Embeds.ERROR_EMBED.toJSON();
-            errorEmbed.description = `Could not mute this user! Check and see if Auxdibot has the Manage Roles permission${interaction.data.guildData.settings.mute_role ? `, or if the <@&${interaction.data.guildData.settings.mute_role}> role is above Auxdibot in the role hierarchy` : ""}.`
+            errorEmbed.description = `Could not mute this user! Check and see if Auxdibot has the Manage Roles permission${settings.mute_role ? `, or if the <@&${settings.mute_role}> role is above Auxdibot in the role hierarchy` : ""}.`
             return await interaction.reply({ embeds: [errorEmbed] });
         });
 

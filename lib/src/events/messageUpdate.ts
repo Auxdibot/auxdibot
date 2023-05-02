@@ -1,6 +1,6 @@
 import {Message} from "discord.js";
-import {LogType} from "../mongo/schema/Log";
-import Server from "../mongo/model/Server";
+import Server from "../mongo/model/server/Server";
+import {LogType} from "../util/types/Log";
 
 module.exports = {
     name: 'messageUpdate',
@@ -17,7 +17,7 @@ module.exports = {
                 description: `A message by ${sender.user.tag} was edited.`,
                 message_edit: { former: oldMessage.cleanContent, now: newMessage.cleanContent },
                 user_id: sender.id
-            }, newMessage.guild);
+            });
         }
     }
 }

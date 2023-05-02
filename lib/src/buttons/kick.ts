@@ -5,9 +5,9 @@ import {
 } from "discord.js";
 import canExecute from "../util/functions/canExecute";
 import Embeds from "../util/constants/Embeds";
-import {IPunishment} from "../mongo/schema/Punishment";
-import {LogType} from "../mongo/schema/Log";
-import Server from "../mongo/model/Server";
+import {IPunishment} from "../mongo/schema/PunishmentSchema";
+import Server from "../mongo/model/server/Server";
+import {LogType} from "../util/types/Log";
 
 module.exports = <AuxdibotButton>{
     name: "kick",
@@ -28,6 +28,7 @@ module.exports = <AuxdibotButton>{
             return await interaction.reply({ embeds: [noPermissionEmbed] });
         }
         let server = await Server.findOrCreateServer(interaction.guild.id);
+        let counter = await server.fetchCounter();
         interaction.guild.members.kick(member.user, "No reason given.").then(async () => {
             if (!interaction.guild) return;
             let kickData = <IPunishment>{
@@ -39,7 +40,7 @@ module.exports = <AuxdibotButton>{
                 expires_date_unix: undefined,
                 user_id: user_id,
                 moderator_id: interaction.user.id,
-                punishment_id: await server.getPunishmentID(),
+                punishment_id: counter.incrementPunishmentID(),
             };
             server.punish(kickData).then(async (embed) => {
                 if (!embed || !interaction.guild) return;
@@ -49,7 +50,7 @@ module.exports = <AuxdibotButton>{
                     date_unix: Date.now(),
                     type: LogType.KICK,
                     punishment: kickData
-                }, interaction.guild)
+                })
                 return await interaction.reply({ embeds: [embed] });
             });
         }).catch(async () => {

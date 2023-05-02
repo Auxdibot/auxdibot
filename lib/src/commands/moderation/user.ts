@@ -5,7 +5,7 @@ import {
 } from "discord.js";
 import AuxdibotCommand from "../../util/templates/AuxdibotCommand";
 import Embeds from '../../util/constants/Embeds';
-import {PunishmentNames} from "../../mongo/schema/Punishment";
+import {PunishmentNames} from "../../mongo/schema/PunishmentSchema";
 import AuxdibotCommandInteraction from "../../util/templates/AuxdibotCommandInteraction";
 import GuildAuxdibotCommandData from "../../util/types/commandData/GuildAuxdibotCommandData";
 
@@ -28,15 +28,16 @@ const userCommand = <AuxdibotCommand>{
         if (!interaction.data || !interaction.channel) return;
         const user = interaction.options.getUser('user') || interaction.user;
         let member = interaction.data.guild.members.resolve(user.id);
-        let record = interaction.data.guildData.userRecord(user.id),
-            overrides = interaction.data.guildData.getPermissionOverride(undefined, undefined, user.id),
-            banned = interaction.data.guildData.getPunishment(user.id, 'ban'),
-            muted = interaction.data.guildData.getPunishment(user.id, 'mute');
+        let data = await interaction.data.guildData.fetchData();
+        let record = data.userRecord(user.id),
+            overrides = data.getPermissionOverride(undefined, undefined, user.id),
+            banned = data.getPunishment(user.id, 'ban'),
+            muted = data.getPunishment(user.id, 'mute');
 
         let embed = Embeds.INFO_EMBED.toJSON();
         if (member) {
             for (let role of member.roles.cache.values()) {
-                overrides = overrides.concat(interaction.data.guildData.getPermissionOverride(undefined, role.id));
+                overrides = overrides.concat(data.getPermissionOverride(undefined, role.id));
             }
         }
         embed.title = `🧍 ${user.tag}`;

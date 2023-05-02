@@ -3,9 +3,9 @@ import {
     MessageComponentInteraction
 } from "discord.js";
 import Embeds from "../util/constants/Embeds";
-import {toEmbedField} from "../mongo/schema/Punishment";
-import {LogType} from "../mongo/schema/Log";
-import Server from "../mongo/model/Server";
+import {toEmbedField} from "../mongo/schema/PunishmentSchema";
+import Server from "../mongo/model/server/Server";
+import {LogType} from "../util/types/Log";
 
 module.exports = <AuxdibotButton>{
     name: "unban",
@@ -15,8 +15,8 @@ module.exports = <AuxdibotButton>{
         let [,user_id] = interaction.customId.split("-");
         let server = await Server.findOrCreateServer(interaction.guild.id);
         if (!server) return;
-
-        let banned = server.getPunishment(user_id, 'ban');
+        let data = await server.fetchData();
+        let banned = data.getPunishment(user_id, 'ban');
         if (!banned) {
             let errorEmbed = Embeds.ERROR_EMBED.toJSON();
             errorEmbed.description = "This user isn't banned!";
@@ -36,7 +36,7 @@ module.exports = <AuxdibotButton>{
             date_unix: Date.now(),
             type: LogType.UNBAN,
             punishment: banned
-        }, interaction.guild)
+        })
         return await interaction.reply({ embeds: [embed] });
     }
 }

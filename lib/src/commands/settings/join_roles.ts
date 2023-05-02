@@ -1,9 +1,9 @@
 import {SlashCommandBuilder, APIEmbed, Role, PermissionsBitField} from "discord.js";
 import AuxdibotCommand from "../../util/templates/AuxdibotCommand";
 import Embeds from "../../util/constants/Embeds";
-import {LogType} from "../../mongo/schema/Log";
 import AuxdibotCommandInteraction from "../../util/templates/AuxdibotCommandInteraction";
 import GuildAuxdibotCommandData from "../../util/types/commandData/GuildAuxdibotCommandData";
+import {LogType} from "../../util/types/Log";
 
 const joinRolesCommand = <AuxdibotCommand>{
     data: new SlashCommandBuilder()
@@ -42,13 +42,14 @@ const joinRolesCommand = <AuxdibotCommand>{
             },
             async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
                 if (!interaction.data || !interaction.memberPermissions) return;
+                let settings = await interaction.data.guildData.fetchSettings();
                 let role = interaction.options.getRole("role") as Role | null;
                 if (role == null || role.id == interaction.data.guild.roles.everyone.id) {
                     let errorEmbed = Embeds.ERROR_EMBED.toJSON();
                     errorEmbed.description = "This is the everyone role or the role doesn't exist!";
                     return await interaction.reply({ embeds: [errorEmbed] });
                 }
-                if (interaction.data.guildData.settings.join_roles.find((val) => role != null && val == role.id)) {
+                if (settings.join_roles.find((val) => role != null && val == role.id)) {
                     let errorEmbed = Embeds.ERROR_EMBED.toJSON();
                     errorEmbed.description = "This role is already added!";
                     return await interaction.reply({ embeds: [errorEmbed] });
@@ -63,7 +64,7 @@ const joinRolesCommand = <AuxdibotCommand>{
                     errorEmbed.description = "This role is higher than Auxdibot's highest role!";
                     return await interaction.reply({ embeds: [errorEmbed] });
                 }
-                interaction.data.guildData.addJoinRole(role.id);
+                settings.addJoinRole(role.id);
                 let successEmbed = Embeds.SUCCESS_EMBED.toJSON();
                 successEmbed.title = "👋 Added Join Role"
                 successEmbed.description = `Added <@&${role.id}> to the join roles.`;
@@ -72,7 +73,7 @@ const joinRolesCommand = <AuxdibotCommand>{
                     description: `Added (Role ID: ${role.id}) to the join roles.`,
                     type: LogType.JOIN_ROLE_ADDED,
                     date_unix: Date.now()
-                }, interaction.data.guild)
+                })
                 return await interaction.reply({ embeds: [successEmbed] });
             }
         },
@@ -90,6 +91,7 @@ const joinRolesCommand = <AuxdibotCommand>{
             async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
                 if (!interaction.data || !interaction.memberPermissions) return;
                 let role = interaction.options.getRole("role") as Role | null, index = interaction.options.getNumber("index");
+                let settings = await interaction.data.guildData.fetchSettings();
                 if ((role == null && !index) || (role && role.id == interaction.data.guild.roles.everyone.id)) {
                     let errorEmbed = Embeds.ERROR_EMBED.toJSON();
                     errorEmbed.description = "This is the everyone role or the role doesn't exist!";
@@ -105,13 +107,13 @@ const joinRolesCommand = <AuxdibotCommand>{
                     errorEmbed.description = "This role is higher than Auxdibot's highest role!";
                     return await interaction.reply({ embeds: [errorEmbed] });
                 }
-                let joinRole = role != null ? interaction.data.guildData.settings.join_roles.find((val) => role != null && val == role.id) : index ? interaction.data.guildData.settings.join_roles[index-1] : undefined;
+                let joinRole = role != null ? settings.join_roles.find((val) => role != null && val == role.id) : index ? settings.join_roles[index-1] : undefined;
                 if (!joinRole) {
                     let errorEmbed = Embeds.ERROR_EMBED.toJSON();
                     errorEmbed.description = "This join role doesn't exist!";
                     return await interaction.reply({ embeds: [errorEmbed] });
                 }
-                interaction.data.guildData.removeJoinRole(interaction.data.guildData.settings.join_roles.indexOf(joinRole));
+                settings.removeJoinRole(settings.join_roles.indexOf(joinRole));
                 let successEmbed = Embeds.SUCCESS_EMBED.toJSON();
                 successEmbed.title = "👋 Removed Join Role"
                 successEmbed.description = `Removed <@&${joinRole}> from the join roles.`;
@@ -120,7 +122,7 @@ const joinRolesCommand = <AuxdibotCommand>{
                     description: `Removed (Role ID: ${joinRole}) from the sticky roles.`,
                     type: LogType.JOIN_ROLE_REMOVED,
                     date_unix: Date.now()
-                }, interaction.data.guild)
+                })
                 return await interaction.reply({ embeds: [successEmbed] });
             }
         },
@@ -138,8 +140,9 @@ const joinRolesCommand = <AuxdibotCommand>{
             async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
                 if (!interaction.data) return;
                 let successEmbed = Embeds.INFO_EMBED.toJSON();
+                let settings = await interaction.data.guildData.fetchSettings();
                 successEmbed.title = "👋 Join Roles"
-                successEmbed.description = interaction.data.guildData.settings.join_roles.reduce((accumulator, value, index) => `${accumulator}\n**${index+1})** <@&${value}>`, "");
+                successEmbed.description = settings.join_roles.reduce((accumulator, value, index) => `${accumulator}\n**${index+1})** <@&${value}>`, "");
                 return await interaction.reply({ embeds: [successEmbed] });
             }
         }],
