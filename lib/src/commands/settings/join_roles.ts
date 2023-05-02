@@ -49,7 +49,7 @@ const joinRolesCommand = <AuxdibotCommand>{
                     errorEmbed.description = "This is the everyone role or the role doesn't exist!";
                     return await interaction.reply({ embeds: [errorEmbed] });
                 }
-                if (settings.join_roles.find((val) => role != null && val == role.id)) {
+                if (settings.join_roles.find((val: string) => role != null && val == role.id)) {
                     let errorEmbed = Embeds.ERROR_EMBED.toJSON();
                     errorEmbed.description = "This role is already added!";
                     return await interaction.reply({ embeds: [errorEmbed] });
@@ -107,7 +107,7 @@ const joinRolesCommand = <AuxdibotCommand>{
                     errorEmbed.description = "This role is higher than Auxdibot's highest role!";
                     return await interaction.reply({ embeds: [errorEmbed] });
                 }
-                let joinRole = role != null ? settings.join_roles.find((val) => role != null && val == role.id) : index ? settings.join_roles[index-1] : undefined;
+                let joinRole = role != null ? settings.join_roles.find((val: string) => role != null && val == role.id) : index ? settings.join_roles[index-1] : undefined;
                 if (!joinRole) {
                     let errorEmbed = Embeds.ERROR_EMBED.toJSON();
                     errorEmbed.description = "This join role doesn't exist!";
@@ -142,7 +142,7 @@ const joinRolesCommand = <AuxdibotCommand>{
                 let successEmbed = Embeds.INFO_EMBED.toJSON();
                 let settings = await interaction.data.guildData.fetchSettings();
                 successEmbed.title = "👋 Join Roles"
-                successEmbed.description = settings.join_roles.reduce((accumulator, value, index) => `${accumulator}\n**${index+1})** <@&${value}>`, "");
+                successEmbed.description = settings.join_roles.reduce((accumulator: string, value: string, index: number) => `${accumulator}\n**${index+1})** <@&${value}>`, "");
                 return await interaction.reply({ embeds: [successEmbed] });
             }
         }],

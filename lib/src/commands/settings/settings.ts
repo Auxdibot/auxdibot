@@ -52,8 +52,8 @@ const settingsCommand = < AuxdibotCommand > {
             embed.description = `🗒️ Log Channel: ${settings.log_channel ? `<#${settings.log_channel}>` : "None"}
             \r\n📩 Join/Leave Channel: ${settings.join_leave_channel ? `<#${settings.join_leave_channel}>` : "None"}
             \r\n🎤 Mute Role: ${settings.mute_role ? `<@&${settings.mute_role}>` : "None"}
-            \r\n👋 Join Roles${settings.join_roles.reduce((accumulator, val, index) => `${accumulator}\r\n> **${index+1})** <@&${val}>`, "")}
-            \r\n📝 Sticky Roles${settings.sticky_roles.reduce((accumulator, val, index) => `${accumulator}\r\n> **${index+1})** <@&${val}>`, "")}`
+            \r\n👋 Join Roles${settings.join_roles.reduce((accumulator: string, val: string, index: number) => `${accumulator}\r\n> **${index+1})** <@&${val}>`, "")}
+            \r\n📝 Sticky Roles${settings.sticky_roles.reduce((accumulator: string, val: string, index: number) => `${accumulator}\r\n> **${index+1})** <@&${val}>`, "")}`
             return await interaction.reply({
                 embeds: [embed]
             })

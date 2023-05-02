@@ -2,7 +2,7 @@ import * as mongoose from 'mongoose';
 import ServerData, {IServerData, IServerDataMethods} from "./ServerData";
 import {HydratedDocument} from "mongoose";
 import ServerMember, {IServerMember, IServerMemberMethods} from "./ServerMember";
-import ServerSettings, {IServerSettings, IServerSettingsMethods} from "./ServerSettings";
+import ServerSettings , {IServerSettings, IServerSettingsMethods} from "./ServerSettings";
 import ServerCounter, {IServerCounter, IServerCounterMethods} from "./ServerCounter";
 import {ILog} from "../../schema/LogSchema";
 import Embeds from "../../../util/constants/Embeds";
