@@ -49,7 +49,7 @@ const stickyRolesCommand = <AuxdibotCommand>{
                     errorEmbed.description = "This is the everyone role or the role doesn't exist!";
                     return await interaction.reply({ embeds: [errorEmbed] });
                 }
-                if (settings.sticky_roles.find((val) => role != null && val == role.id)) {
+                if (settings.sticky_roles.find((val: string) => role != null && val == role.id)) {
                     let errorEmbed = Embeds.ERROR_EMBED.toJSON();
                     errorEmbed.description = "This role is already added!";
                     return await interaction.reply({ embeds: [errorEmbed] });
@@ -107,7 +107,7 @@ const stickyRolesCommand = <AuxdibotCommand>{
                     errorEmbed.description = "This role is higher than Auxdibot's highest role!";
                     return await interaction.reply({ embeds: [errorEmbed] });
                 }
-                let stickyRole = role != null ? settings.sticky_roles.find((val) => role != null && val == role.id) : index ? settings.sticky_roles[index-1] : undefined;
+                let stickyRole = role != null ? settings.sticky_roles.find((val: string) => role != null && val == role.id) : index ? settings.sticky_roles[index-1] : undefined;
                 if (!stickyRole) {
                     let errorEmbed = Embeds.ERROR_EMBED.toJSON();
                     errorEmbed.description = "This join role doesn't exist!";
@@ -142,7 +142,7 @@ const stickyRolesCommand = <AuxdibotCommand>{
                 let settings = await interaction.data.guildData.fetchSettings();
                 let successEmbed = Embeds.INFO_EMBED.toJSON();
                 successEmbed.title = "📝 Sticky Roles"
-                successEmbed.description = settings.sticky_roles.reduce((accumulator, value, index) => `${accumulator}\n**${index+1})** <@&${value}>`, "");
+                successEmbed.description = settings.sticky_roles.reduce((accumulator: string, value: string, index: number) => `${accumulator}\n**${index+1})** <@&${value}>`, "");
                 return await interaction.reply({ embeds: [successEmbed] });
             }
         }],
