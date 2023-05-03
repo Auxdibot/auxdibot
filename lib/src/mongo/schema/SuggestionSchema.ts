@@ -1,10 +1,11 @@
 import mongoose from "mongoose";
+import SuggestionState from "../../util/types/SuggestionState";
 
 export interface ISuggestion {
     suggestion_id: number;
     message_id: String;
     creator_id: String;
-    status: 'waiting' | 'approved' | 'denied' | 'considered' | 'added';
+    status: SuggestionState;
     rating: Number;
     content: String;
     discussion_thread_id?: string;
@@ -18,7 +19,7 @@ let SuggestionSchema = new mongoose.Schema<ISuggestion>({
     rating: { type: Number, default: 0 },
     suggestion_id: { type: Number, default: 0, required: true },
     message_id: { type: String, required: true },
-    status: { type: String, required: true },
+    status: { type: Number, required: true },
     date_unix: { type: Number, required: true, default: Date.now() },
     handler_id: { type: String },
     discussion_thread_id: { type: String }
