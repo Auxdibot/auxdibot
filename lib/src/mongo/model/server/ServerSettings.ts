@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import {APIEmbed} from "discord.js";
+import SuggestionReactionSchema, {ISuggestionReaction} from "../../schema/SuggestionReactionSchema";
 
 export interface IServerSettings {
     _id: mongoose.ObjectId;
@@ -15,6 +16,12 @@ export interface IServerSettings {
     leave_text?: string;
     join_roles: string[];
     sticky_roles: string[];
+    suggestions_channel?: string;
+    suggestions_updates_channel?: string;
+    suggestions_auto_delete: boolean;
+    suggestions_reactions: ISuggestionReaction[];
+    suggestions_embed?: APIEmbed;
+    suggestions_discussion_threads: boolean;
 }
 export interface IServerSettingsMethods {
     removeJoinRole(index: number): boolean;
@@ -30,6 +37,11 @@ export interface IServerSettingsMethods {
     setJoinDMText(join_dm_text: String): boolean;
     setLeaveEmbed(leave_embed: APIEmbed): boolean;
     setLeaveText(leave_text: String): boolean;
+    addSuggestionsReaction(reaction: ISuggestionReaction): ISuggestionReaction[];
+    removeSuggestionsReaction(emoji: string): ISuggestionReaction[];
+    removeSuggestionsReaction(index: number): ISuggestionReaction[];
+    getSuggestionsReaction(emoji: string): ISuggestionReaction;
+
 }
 export interface IServerSettingsModel extends mongoose.Model<IServerSettings, {}, IServerSettingsMethods> {
 
@@ -48,6 +60,12 @@ export const ServerSettingsSchema = new mongoose.Schema<IServerSettings, IServer
     leave_text: { type: String, default: "Somebody left the server!" },
     join_roles: { type: [String], default: [] },
     sticky_roles: { type: [String], default: [] },
+    suggestions_channel: { type: String },
+    suggestions_updates_channel: { type: String },
+    suggestions_auto_delete: { type: Boolean, default: false },
+    suggestions_discussion_threads: { type: Boolean, default: true },
+    suggestions_embed: { type: Object, default: {"type":"rich","title":"Suggestion %suggestion_id%","description":"🧍 Created By: %member_mention%\n🕰️ Date: %suggestion_date_formatted%\n\n%suggestion_content%","color":6052956,"author":{"name":"👍 Rating: %suggestion_rating%"}} },
+    suggestions_reactions: { type: [SuggestionReactionSchema] }
 });
 
 ServerSettingsSchema.method("addJoinRole", function(role: string) {
@@ -114,6 +132,26 @@ ServerSettingsSchema.method('setLeaveText', function(leave_text: String) {
     this.leave_text = leave_text;
     this.save();
     return true;
+});
+ServerSettingsSchema.method("addSuggestionsReaction", function(reaction: ISuggestionReaction) {
+    this.suggestions_reactions.push(reaction);
+    this.save().catch(() => undefined);
+    return this.suggestions_reactions;
+});
+ServerSettingsSchema.method("getSuggestionsReaction", function(emoji: string) {
+    return this.suggestions_reactions.find((suggestion_reaction: ISuggestionReaction) => suggestion_reaction.emoji == emoji);
+});
+ServerSettingsSchema.method("removeSuggestionsReaction", function(emoji: string) {
+    let suggestionsReaction = this.suggestions_reactions.find((suggestion_reaction: ISuggestionReaction) => suggestion_reaction.emoji == emoji);
+    if (!suggestionsReaction) return this.suggestions_reactions;
+    this.suggestions_reactions.splice(this.suggestions_reactions.indexOf(suggestionsReaction), 1);
+    this.save();
+    return this.suggestions_reactions;
+});
+ServerSettingsSchema.method("removeSuggestionsReaction", function(index: number) {
+    this.suggestions_reactions.splice(index, 1);
+    this.save();
+    return this.suggestions_reactions;
 });
 const ServerSettings = mongoose.model<IServerSettings, IServerSettingsModel>("server_settings", ServerSettingsSchema);
 export default ServerSettings;

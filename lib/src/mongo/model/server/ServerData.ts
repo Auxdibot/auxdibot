@@ -4,6 +4,7 @@ import PermissionOverrideSchema, {IPermissionOverride} from "../../schema/Permis
 import ReactionRoleSchema, {IReactionRole} from "../../schema/ReactionRoleSchema";
 
 import mongoose from "mongoose";
+import SuggestionSchema, {ISuggestion} from "../../schema/SuggestionSchema";
 
 export interface IServerData {
     server_id: mongoose.ObjectId;
@@ -11,6 +12,7 @@ export interface IServerData {
     punishments: IPunishment[];
     permission_overrides: IPermissionOverride[];
     reaction_roles: IReactionRole[];
+    suggestions: ISuggestion[];
 }
 export interface IServerDataMethods {
     updateLog(log: ILog): boolean;
@@ -23,6 +25,8 @@ export interface IServerDataMethods {
     getPermissionOverride(permission?: string, role_id?: string, user_id?: string): IPermissionOverride[];
     addReactionRole(reaction_role: IReactionRole): boolean;
     removeReactionRole(index: number): boolean;
+    addSuggestion(suggestion: ISuggestion): ISuggestion;
+    removeSuggestion(suggestion_id: number): ISuggestion;
 }
 export interface IServerDataModel extends mongoose.Model<IServerData, {}, IServerDataMethods> {
 
@@ -33,6 +37,7 @@ export const ServerDataSchema = new mongoose.Schema<IServerData, IServerDataMode
     permission_overrides: { type: [PermissionOverrideSchema], default: [] },
     latest_log: { type: LogSchema },
     reaction_roles: { type: [ReactionRoleSchema], default: [] },
+    suggestions: { type: [SuggestionSchema], default: [] },
     server_id: { type: mongoose.Schema.Types.ObjectId, ref: "server", required: true }
 });
 ServerDataSchema.method("updateLog", function (log: ILog) {
@@ -90,6 +95,18 @@ ServerDataSchema.method("getPermissionOverride", function(permission?: string, r
             ((role_id ? override.role_id == role_id : false) ||
                 (user_id ? override.user_id == user_id : false));
     } );
+});
+ServerDataSchema.method("addSuggestion", function(suggestion: ISuggestion) {
+    this.suggestions.push(suggestion);
+    this.save();
+    return suggestion;
+});
+ServerDataSchema.method("removeSuggestion", function(suggestion_id: number) {
+    let findSuggestion = this.suggestions.find((suggestion: ISuggestion) => suggestion.suggestion_id == suggestion_id);
+
+    this.suggestions.splice(this.suggestions.indexOf(findSuggestion), 1);
+    this.save();
+    return findSuggestion;
 });
 const ServerData = mongoose.model<IServerData, IServerDataModel>("server_data", ServerDataSchema);
 export default ServerData;
