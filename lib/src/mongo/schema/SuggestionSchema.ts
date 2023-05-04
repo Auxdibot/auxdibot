@@ -3,14 +3,14 @@ import SuggestionState from "../../util/types/SuggestionState";
 
 export interface ISuggestion {
     suggestion_id: number;
-    message_id: String;
-    creator_id: String;
+    message_id: string;
+    creator_id: string;
     status: SuggestionState;
-    rating: Number;
-    content: String;
+    rating: number;
+    content: string;
     discussion_thread_id?: string;
     handler_id?: string;
-    date_unix: Number;
+    date_unix: number;
 }
 
 let SuggestionSchema = new mongoose.Schema<ISuggestion>({
