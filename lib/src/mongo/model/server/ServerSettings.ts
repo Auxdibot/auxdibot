@@ -38,8 +38,7 @@ export interface IServerSettingsMethods {
     setLeaveEmbed(leave_embed: APIEmbed): boolean;
     setLeaveText(leave_text: String): boolean;
     addSuggestionsReaction(reaction: ISuggestionReaction): ISuggestionReaction[];
-    removeSuggestionsReaction(emoji: string): ISuggestionReaction[];
-    removeSuggestionsReaction(index: number): ISuggestionReaction[];
+    removeSuggestionsReaction(suggestion_reaction: ISuggestionReaction): ISuggestionReaction[];
     getSuggestionsReaction(emoji: string): ISuggestionReaction;
 
 }
@@ -64,8 +63,8 @@ export const ServerSettingsSchema = new mongoose.Schema<IServerSettings, IServer
     suggestions_updates_channel: { type: String },
     suggestions_auto_delete: { type: Boolean, default: false },
     suggestions_discussion_threads: { type: Boolean, default: true },
-    suggestions_embed: { type: Object, default: {"type":"rich","title":"Suggestion %suggestion_id%","description":"🧍 Created By: %member_mention%\n🕰️ Date: %suggestion_date_formatted%\n\n%suggestion_content%","color":6052956,"author":{"name":"👍 Rating: %suggestion_rating%"}} },
-    suggestions_reactions: { type: [SuggestionReactionSchema] }
+    suggestions_embed: { type: Object, default: {"type":"rich","title":"Suggestion #%suggestion_id%","footer":{"text":"👍 Rating: %suggestion_rating%"},"description":"🧍 Created By: %suggestion_creator_mention%\n🕰️ Date: %suggestion_date_formatted%\n\n```%suggestion_content%```","color":6052956,"author":{"name":"%suggestion_state%"}} },
+    suggestions_reactions: { type: [SuggestionReactionSchema], default: [{emoji: "🔼", rating: 1},{emoji: "🟦", rating: 0},{emoji: "🔽", rating: -1}] }
 });
 
 ServerSettingsSchema.method("addJoinRole", function(role: string) {
@@ -141,17 +140,12 @@ ServerSettingsSchema.method("addSuggestionsReaction", function(reaction: ISugges
 ServerSettingsSchema.method("getSuggestionsReaction", function(emoji: string) {
     return this.suggestions_reactions.find((suggestion_reaction: ISuggestionReaction) => suggestion_reaction.emoji == emoji);
 });
-ServerSettingsSchema.method("removeSuggestionsReaction", function(emoji: string) {
-    let suggestionsReaction = this.suggestions_reactions.find((suggestion_reaction: ISuggestionReaction) => suggestion_reaction.emoji == emoji);
-    if (!suggestionsReaction) return this.suggestions_reactions;
-    this.suggestions_reactions.splice(this.suggestions_reactions.indexOf(suggestionsReaction), 1);
+ServerSettingsSchema.method("removeSuggestionsReaction", function(suggestion_reaction: ISuggestionReaction) {
+    if (this.suggestions_reactions.indexOf(suggestion_reaction) == -1) return this.suggestions_reactions;
+    this.suggestions_reactions.splice(this.suggestions_reactions.indexOf(suggestion_reaction), 1);
     this.save();
     return this.suggestions_reactions;
 });
-ServerSettingsSchema.method("removeSuggestionsReaction", function(index: number) {
-    this.suggestions_reactions.splice(index, 1);
-    this.save();
-    return this.suggestions_reactions;
-});
+
 const ServerSettings = mongoose.model<IServerSettings, IServerSettingsModel>("server_settings", ServerSettingsSchema);
 export default ServerSettings;

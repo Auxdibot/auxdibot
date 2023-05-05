@@ -3,7 +3,7 @@ import SuggestionState from "../../util/types/SuggestionState";
 
 export interface ISuggestion {
     suggestion_id: number;
-    message_id: string;
+    message_id?: string;
     creator_id: string;
     status: SuggestionState;
     rating: number;

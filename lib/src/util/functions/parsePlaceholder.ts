@@ -68,7 +68,7 @@ export default async function parsePlaceholders(msg: string, guild?: Guild, memb
             "suggestion_id": suggestion.suggestion_id,
             "suggestion_state": SuggestionStateName[suggestion.status],
             "suggestion_rating": suggestion.rating,
-            "suggestion_creator_mention": `<@${suggestion.creator_id}`,
+            "suggestion_creator_mention": `<@${suggestion.creator_id}>`,
             "suggestion_handler_mention": suggestion.handler_id ? `<@${suggestion.handler_id}>` : "None",
             "suggestion_content": suggestion.content,
             "suggestion_date": new Date(suggestion.date_unix).toDateString(),

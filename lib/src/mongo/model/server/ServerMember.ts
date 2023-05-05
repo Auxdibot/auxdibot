@@ -7,6 +7,7 @@ export interface IServerMember {
     in_server: boolean;
     sticky_roles: string[];
     experience: number;
+    suggestions_banned: boolean;
 }
 export interface IServerMemberMethods {
     leaveServer(member: GuildMember): Promise<boolean>;
@@ -20,7 +21,8 @@ export const ServerMemberSchema = new Schema<IServerMember, IServerMemberModel>(
     server_id: { type: mongoose.Schema.Types.ObjectId, ref: "server", required: true },
     experience: { type: Number, default: 0 },
     sticky_roles: { type: [String], default: [] },
-    in_server: { type: Boolean, default: true }
+    in_server: { type: Boolean, default: true },
+    suggestions_banned: { type: Boolean, default: false }
 });
 ServerMemberSchema.method("leaveServer", async function(member: GuildMember) {
     let server = await this.populate('server_id').then((doc: any) => doc.server_id).catch(() => undefined);
