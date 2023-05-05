@@ -12,10 +12,11 @@ import emojiRegex from "emoji-regex";
 import {getMessage} from "../../util/functions/getMessage";
 import user from "../../mongo/model/User";
 import canExecute from "../../util/functions/canExecute";
+import {SuggestionsColors} from "../../util/constants/Colors";
 async function stateCommand(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>, state: SuggestionState) {
     if (!interaction.data) return;
     let server = interaction.data.guildData;
-    let data = await server.fetchData();
+    let data = await server.fetchData(), settings = await server.fetchSettings();
     let id = interaction.options.getNumber("id");
     let suggestion = data.suggestions.find((sugg) => sugg.suggestion_id == id);
     if (!suggestion) {
@@ -23,6 +24,7 @@ async function stateCommand(interaction: AuxdibotCommandInteraction<GuildAuxdibo
         errorEmbed.description = "Couldn't find that suggestion!";
         return await interaction.reply({ embeds: [errorEmbed] });
     }
+
     suggestion.status = state;
     let message = suggestion.message_id ? await getMessage(interaction.data.guild, suggestion.message_id) : undefined;
     if (!message) {
@@ -31,13 +33,32 @@ async function stateCommand(interaction: AuxdibotCommandInteraction<GuildAuxdibo
         errorEmbed.description = "Couldn't find the message for the suggestion!";
         return await interaction.reply({ embeds: [errorEmbed] });
     }
-    await data.save();
 
-    let edit = await data.updateSuggestion(interaction.data.guild, suggestion);
-    if (!edit) {
-        let errorEmbed = Embeds.ERROR_EMBED.toJSON();
-        errorEmbed.description = "Couldn't edit that suggestion!";
-        return await interaction.reply({ embeds: [errorEmbed] });
+    await data.save();
+    if (settings.suggestions_auto_delete) {
+        data.removeSuggestion(suggestion.suggestion_id);
+        await message.delete().catch(() => undefined);
+        await server.log({
+            user_id: interaction.data.member.id,
+            description: `${interaction.data.member.user.tag} deleted Suggestion #${suggestion.suggestion_id}`,
+            type: LogType.SUGGESTION_DELETED,
+            date_unix: Date.now()
+        });
+    } else {
+        let edit = await data.updateSuggestion(interaction.data.guild, suggestion);
+        if (!edit) {
+            let errorEmbed = Embeds.ERROR_EMBED.toJSON();
+            errorEmbed.description = "Couldn't edit that suggestion!";
+            return await interaction.reply({embeds: [errorEmbed]});
+        }
+    }
+    if (settings.suggestions_updates_channel) {
+        let channel = interaction.data.guild.channels.cache.get(settings.suggestions_updates_channel);
+        if (channel && channel.isTextBased()) {
+            let embed = JSON.parse(await parsePlaceholders(JSON.stringify(settings.suggestions_embed), interaction.data.guild, interaction.data.member, suggestion)) as APIEmbed;
+            embed.color = SuggestionsColors[suggestion.status];
+            await channel.send({ content: "A suggestion has been updated.", embeds: [embed] });
+        }
     }
     let successEmbed = Embeds.SUCCESS_EMBED.toJSON();
     successEmbed.title = "Successfully edited suggestion.";
@@ -125,7 +146,7 @@ const suggestionsCommand = < AuxdibotCommand > {
                 return await interaction.reply({ embeds: [errorEmbed] });
             }
             let suggestion = <ISuggestion>{
-                suggestion_id: await counter.incrementSuggestionID(),
+                suggestion_id: counter.incrementSuggestionID(),
                 creator_id: interaction.data.member.id,
                 content,
                 status: SuggestionState.WAITING,
@@ -133,7 +154,10 @@ const suggestionsCommand = < AuxdibotCommand > {
                 date_unix: Date.now(),
             }
             let embed = settings.suggestions_embed;
+            let successEmbed = Embeds.SUCCESS_EMBED.toJSON();
+            successEmbed.description = `Created a new suggestion (#${counter.suggestion_id}).`;
 
+            await interaction.reply({ ephemeral: true, embeds: [successEmbed] });
             return await suggestions_channel.send({ embeds: [JSON.parse(await parsePlaceholders(JSON.stringify(embed), interaction.data.guild, interaction.data.member, suggestion)) as APIEmbed]})
                 .then(async (msg) => {
                     settings.suggestions_reactions.forEach((reaction) => msg.react(reaction.emoji));
@@ -142,10 +166,7 @@ const suggestionsCommand = < AuxdibotCommand > {
                         let thread = await msg.startThread({ name: `Suggestion #${suggestion.suggestion_id}`, reason: "New suggestion opened." }).catch(() => undefined);
                         if (thread) suggestion.discussion_thread_id = thread.id;
                     }
-                    let successEmbed = Embeds.SUCCESS_EMBED.toJSON();
-                    successEmbed.description = `Created a new suggestion (#${counter.suggestion_id}).`;
                     await server.addSuggestion(suggestion);
-                    return await interaction.reply({ ephemeral: true, embeds: [successEmbed] });
                 }).catch(async () => {
                     let errorEmbed = Embeds.ERROR_EMBED.toJSON();
                     counter.suggestion_id = counter.suggestion_id - 1;

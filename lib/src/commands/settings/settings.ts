@@ -53,7 +53,12 @@ const settingsCommand = < AuxdibotCommand > {
             \r\n📩 Join/Leave Channel: ${settings.join_leave_channel ? `<#${settings.join_leave_channel}>` : "None"}
             \r\n🎤 Mute Role: ${settings.mute_role ? `<@&${settings.mute_role}>` : "None"}
             \r\n👋 Join Roles${settings.join_roles.reduce((accumulator: string, val: string, index: number) => `${accumulator}\r\n> **${index+1})** <@&${val}>`, "")}
-            \r\n📝 Sticky Roles${settings.sticky_roles.reduce((accumulator: string, val: string, index: number) => `${accumulator}\r\n> **${index+1})** <@&${val}>`, "")}`
+            \r\n📝 Sticky Roles${settings.sticky_roles.reduce((accumulator: string, val: string, index: number) => `${accumulator}\r\n> **${index+1})** <@&${val}>`, "")}
+            \r\n❓ Suggestions
+            > Channel: ${settings.suggestions_channel ? `<#${settings.suggestions_channel}>` : "None (Suggestions are disabled.)"}
+            > Updates Channel: ${settings.suggestions_updates_channel ? `<#${settings.suggestions_updates_channel}>` : "None"}
+            > Auto Delete: ${settings.suggestions_auto_delete ? "Delete." : "Do not Delete."}
+            > Discussion Threads: ${settings.suggestions_discussion_threads ? "Create Thread." : "Do not create a Thread."}`
             return await interaction.reply({
                 embeds: [embed]
             })
