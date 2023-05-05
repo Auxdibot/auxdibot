@@ -2,9 +2,12 @@ import LogSchema, {ILog} from "../../schema/LogSchema";
 import punishmentSchema, {IPunishment} from "../../schema/PunishmentSchema";
 import PermissionOverrideSchema, {IPermissionOverride} from "../../schema/PermissionOverrideSchema";
 import ReactionRoleSchema, {IReactionRole} from "../../schema/ReactionRoleSchema";
-
 import mongoose from "mongoose";
 import SuggestionSchema, {ISuggestion} from "../../schema/SuggestionSchema";
+import {APIEmbed, Guild} from "discord.js";
+import {getMessage} from "../../../util/functions/getMessage";
+import parsePlaceholders from "../../../util/functions/parsePlaceholder";
+import {SuggestionsColors} from "../../../util/constants/Colors";
 
 export interface IServerData {
     server_id: mongoose.ObjectId;
@@ -27,6 +30,8 @@ export interface IServerDataMethods {
     removeReactionRole(index: number): boolean;
     addSuggestion(suggestion: ISuggestion): ISuggestion;
     removeSuggestion(suggestion_id: number): ISuggestion;
+    updateSuggestion(guild: Guild, suggestion: ISuggestion): Promise<boolean>;
+
 }
 export interface IServerDataModel extends mongoose.Model<IServerData, {}, IServerDataMethods> {
 
@@ -108,6 +113,14 @@ ServerDataSchema.method("removeSuggestion", function(suggestion_id: number) {
     this.save();
     return findSuggestion;
 });
+ServerDataSchema.method("updateSuggestion", async function(guild: Guild, suggestion: ISuggestion) {
+    let message = suggestion.message_id ? await getMessage(guild, suggestion.message_id) : undefined;
+    if (!message) return false;
+    let settings = await this.populate('server_id').then(async (doc: any) => await doc.server_id.fetchSettings()).catch(() => undefined)
+    let embed: APIEmbed = JSON.parse(await parsePlaceholders(JSON.stringify(settings.suggestions_embed), guild, guild.members.cache.get(suggestion.creator_id) || undefined, suggestion)) as APIEmbed;
+    embed.color = SuggestionsColors[suggestion.status];
+    return message.edit({ embeds: [embed] }).then(() => true).catch(() => false);
+})
 const ServerData = mongoose.model<IServerData, IServerDataModel>("server_data", ServerDataSchema);
 export default ServerData;
 

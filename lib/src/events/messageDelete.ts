@@ -12,6 +12,16 @@ module.exports = {
         let server = await Server.findOrCreateServer(message.guild.id);
         let data = await server.fetchData();
         let rr = data.reaction_roles.find((rr: IReactionRole) => rr.message_id == message.id);
+        let suggestion = data.suggestions.find((suggestion) => suggestion.message_id == message.id);
+        if (suggestion) {
+            data.removeSuggestion(suggestion.suggestion_id);
+            await server.log({
+                user_id: sender.id,
+                description: `${sender.user.tag} deleted Suggestion #${suggestion.suggestion_id}`,
+                type: LogType.SUGGESTION_DELETED,
+                date_unix: Date.now()
+            });
+        }
         if (rr) {
             data.removeReactionRole(data.reaction_roles.indexOf(rr));
             await server.log({

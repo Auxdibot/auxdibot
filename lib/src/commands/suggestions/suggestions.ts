@@ -15,7 +15,7 @@ import canExecute from "../../util/functions/canExecute";
 async function stateCommand(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>, state: SuggestionState) {
     if (!interaction.data) return;
     let server = interaction.data.guildData;
-    let data = await server.fetchData(), settings = await server.fetchSettings();
+    let data = await server.fetchData();
     let id = interaction.options.getNumber("id");
     let suggestion = data.suggestions.find((sugg) => sugg.suggestion_id == id);
     if (!suggestion) {
@@ -32,7 +32,8 @@ async function stateCommand(interaction: AuxdibotCommandInteraction<GuildAuxdibo
         return await interaction.reply({ embeds: [errorEmbed] });
     }
     await data.save();
-    let edit = await message.edit({ embeds: [JSON.parse(await parsePlaceholders(JSON.stringify(settings.suggestions_embed), interaction.data.guild, interaction.data.member, suggestion)) as APIEmbed] }).catch(() => undefined);
+
+    let edit = await data.updateSuggestion(interaction.data.guild, suggestion);
     if (!edit) {
         let errorEmbed = Embeds.ERROR_EMBED.toJSON();
         errorEmbed.description = "Couldn't edit that suggestion!";

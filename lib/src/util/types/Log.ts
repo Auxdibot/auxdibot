@@ -29,7 +29,8 @@ export enum LogType {
     "SUGGESTIONS_CHANNEL_CHANGED",
     "SUGGESTIONS_UPDATES_CHANNEL_CHANGED",
     "SUGGESTIONS_AUTO_DELETE_CHANGED",
-    "SUGGESTIONS_THREAD_CREATION_CHANGED"
+    "SUGGESTIONS_THREAD_CREATION_CHANGED",
+    "SUGGESTION_DELETED"
 }
 
 export const LogNames = {
@@ -64,4 +65,6 @@ export const LogNames = {
     28: "❓ Suggestions Updates Channel Changed",
     29: "❓ Suggestions Auto Delete Changed",
     30: "❓ Suggestions Thread Creation Changed",
+    31: "❓ Suggestion Deleted",
+
 }
