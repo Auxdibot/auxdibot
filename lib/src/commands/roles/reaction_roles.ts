@@ -8,6 +8,7 @@ import {getMessage} from "../../util/functions/getMessage";
 import AuxdibotCommandInteraction from "../../util/templates/AuxdibotCommandInteraction";
 import GuildAuxdibotCommandData from "../../util/types/commandData/GuildAuxdibotCommandData";
 import {LogType} from "../../util/types/Log";
+import emojiRegex from "emoji-regex";
 
 const reactionRolesCommand = <AuxdibotCommand>{
     data: new SlashCommandBuilder()
@@ -133,7 +134,9 @@ const reactionRolesCommand = <AuxdibotCommand>{
                     if (!interaction.data) return arr;
                     if (!item[0] || !item[1]) return arr;
                     let role = await interaction.data.guild.roles.fetch((item[1].match(/\d+/) || [])[0] || "");
-                    let emoji = interaction.client.emojis.resolve(item[0]) || interaction.client.emojis.resolveIdentifier(item[0]);
+                    const regex = emojiRegex();
+                    let emojis = item[0].match(regex);
+                    let emoji = interaction.client.emojis.cache.find((i) => i.toString() == item[0]) || (emojis != null ? emojis[0] : null);
                     if (emoji && role) {
                         arr.push({ emoji: item[0], role });
                     }
@@ -208,7 +211,9 @@ const reactionRolesCommand = <AuxdibotCommand>{
                     if (!interaction.data) return arr;
                     if (!item[0] || !item[1]) return arr;
                     let role = await interaction.data.guild.roles.fetch((item[1].match(/\d+/) || [])[0] || "");
-                    let emoji = interaction.client.emojis.resolve(item[0]) || interaction.client.emojis.resolveIdentifier(item[0]);
+                    const regex = emojiRegex();
+                    let emojis = item[0].match(regex);
+                    let emoji = interaction.client.emojis.cache.find((i) => i.toString() == item[0]) || (emojis != null ? emojis[0] : null);
                     if (emoji && role) {
                         arr.push({ emoji: item[0], role: role.id });
                     }
@@ -282,7 +287,9 @@ const reactionRolesCommand = <AuxdibotCommand>{
                     if (!interaction.data) return arr;
                     if (!item[0] || !item[1]) return arr;
                     let role = await interaction.data.guild.roles.fetch((item[1].match(/\d+/) || [])[0] || "");
-                    let emoji = interaction.client.emojis.resolve(item[0]) || interaction.client.emojis.resolveIdentifier(item[0]);
+                    const regex = emojiRegex();
+                    let emojis = item[0].match(regex);
+                    let emoji = interaction.client.emojis.cache.find((i) => i.toString() == item[0]) || (emojis != null ? emojis[0] : null);
                     if (emoji && role) {
                         arr.push({ emoji: item[0], role: role.id });
                     }

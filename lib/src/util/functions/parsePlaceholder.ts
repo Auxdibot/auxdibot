@@ -2,8 +2,10 @@ import {Guild, GuildMember, PermissionsBitField} from "discord.js";
 import Server from "../../mongo/model/server/Server";
 import {PunishmentNames} from "../../mongo/schema/PunishmentSchema";
 import {LogNames, LogType} from "../types/Log";
+import {ISuggestion} from "../../mongo/schema/SuggestionSchema";
+import {SuggestionStateName} from "../types/SuggestionState";
 
-export default async function parsePlaceholders(msg: string, guild?: Guild, member?: GuildMember) {
+export default async function parsePlaceholders(msg: string, guild?: Guild, member?: GuildMember, suggestion?: ISuggestion) {
 
     let server = guild ? await Server.findOrCreateServer(guild.id) : undefined;
     let data = server ? await server.fetchData() : undefined;
@@ -62,6 +64,18 @@ export default async function parsePlaceholders(msg: string, guild?: Guild, memb
                 "member_latest_punishment_date_iso": latest_punishment ? new Date(latest_punishment.date_unix).toISOString() : "None",
             } : {})
         } : {}),
+        ...(suggestion ? {
+            "suggestion_id": suggestion.suggestion_id,
+            "suggestion_state": SuggestionStateName[suggestion.status],
+            "suggestion_rating": suggestion.rating,
+            "suggestion_creator_mention": `<@${suggestion.creator_id}>`,
+            "suggestion_handler_mention": suggestion.handler_id ? `<@${suggestion.handler_id}>` : "None",
+            "suggestion_content": suggestion.content,
+            "suggestion_date": new Date(suggestion.date_unix).toDateString(),
+            "suggestion_date_formatted": `<t:${Math.round(suggestion.date_unix / 1000)}>`,
+            "suggestion_date_utc": new Date(suggestion.date_unix).toUTCString(),
+            "suggestion_date_iso": new Date(suggestion.date_unix).toISOString(),
+        } : undefined),
         "message_date": new Date().toDateString(),
         "message_date_formatted": `<t:${Math.round(Date.now() / 1000)}>`,
         "message_date_utc": new Date().toUTCString(),

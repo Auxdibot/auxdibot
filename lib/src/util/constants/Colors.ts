@@ -7,4 +7,11 @@ enum Colors {
     LOG_COLOR = 0xF9F3D2,
     REACTION_ROLE_COLOR = 0xF3C810
 }
+export const SuggestionsColors = {
+    0: 0x5C5C5C,
+    1: 0x54CC31,
+    2: 0xCC3131,
+    3: 0xF2E876,
+    4: 0x31CCC4
+}
 export default Colors;

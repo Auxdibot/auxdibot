@@ -30,9 +30,10 @@ module.exports = {
                 guildData: server
             };
             if (command.subcommands) {
-                let subcommand = command.subcommands ? command.subcommands.filter((subcommand) => subcommand.name == interaction.options.getSubcommand())[0] : null;
+                let subcommand = command.subcommands.find((subcommand) => subcommand.name == interaction.options.getSubcommand());
+                
                 if (subcommand) {
-                    if (!server.testPermission(subcommand.info.permission, interactionData.data.member, (command.info.allowedDefault) || false)) {
+                    if (!await server.testPermission(subcommand.info.permission, interactionData.data.member, (subcommand.info.allowedDefault) || false)) {
                         let noPermissionEmbed = Embeds.DENIED_EMBED.toJSON();
                         noPermissionEmbed.title = "⛔ No Permission!"
                         noPermissionEmbed.description = `You do not have permission to use this subcommand. (Missing permission: \`${subcommand.info.permission}\`)`
@@ -43,7 +44,7 @@ module.exports = {
                     return await subcommand.execute(interactionData);
             }
             }
-            if (!server.testPermission(command.info.permission, interactionData.data.member, (command.info.allowedDefault) || false)) {
+            if (!await server.testPermission(command.info.permission, interactionData.data.member, (command.info.allowedDefault) || false)) {
                 let noPermissionEmbed = Embeds.DENIED_EMBED.toJSON();
                 noPermissionEmbed.title = "⛔ No Permission!"
                 noPermissionEmbed.description = `You do not have permission to use this command. (Missing permission: \`${command.info.permission}\`)`
@@ -59,18 +60,6 @@ module.exports = {
                 date: new Date(),
                 user: interaction.user,
             };
-            let subcommand = command.subcommands ? command.subcommands.filter((subcommand) => subcommand.name == interaction.options.getSubcommand())[0] : null;
-            if (subcommand) {
-                if (!subcommand.info.dmableCommand) {
-                    let discordServerOnlyEmbed = Embeds.DENIED_EMBED.toJSON();
-                    discordServerOnlyEmbed.title = "⛔ Nope!"
-                    discordServerOnlyEmbed.description = `This command can only be used in Discord Servers!`
-                    return await interaction.reply({
-                        embeds: [discordServerOnlyEmbed]
-                    });
-                }
-                await subcommand.execute(interactionData);
-            }
             if (!command.info.dmableCommand) {
                 let discordServerOnlyEmbed = Embeds.DENIED_EMBED.toJSON();
                 discordServerOnlyEmbed.title = "⛔ Nope!"
@@ -79,15 +68,23 @@ module.exports = {
                     embeds: [discordServerOnlyEmbed]
                 });
             }
-            await command.execute(interactionData);
-        }
-
-        if (client.commands) {
-            let command = client.commands.get(interaction.commandName);
-            if (command) {
-
-
+            if (command.subcommands) {
+                let subcommand = command.subcommands.find((subcommand) => subcommand.name == interaction.options.getSubcommand());
+                if (subcommand) {
+                if (!subcommand.info.dmableCommand) {
+                    let discordServerOnlyEmbed = Embeds.DENIED_EMBED.toJSON();
+                    discordServerOnlyEmbed.title = "⛔ Nope!"
+                    discordServerOnlyEmbed.description = `This command can only be used in Discord Servers!`
+                    return await interaction.reply({
+                        embeds: [discordServerOnlyEmbed]
+                    });
+                }
+                return await subcommand.execute(interactionData);
+                }
             }
+            
+            
+            return await command.execute(interactionData);
         }
     }
 }

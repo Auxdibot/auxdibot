@@ -10,6 +10,7 @@ import {APIEmbed, EmbedField, GuildMember, PermissionsBitField} from "discord.js
 import {IPunishment, PunishmentNames, toEmbedField} from "../../schema/PunishmentSchema";
 import {LogNames} from "../../../util/types/Log";
 import {client} from "../../../index";
+import {ISuggestion} from "../../schema/SuggestionSchema";
 
 export interface IServer {
     _id: mongoose.ObjectId;
@@ -30,6 +31,7 @@ export interface IServerMethods {
     recordAsEmbed(user_id: String): Promise<APIEmbed | undefined>;
     punish(punishment: IPunishment): Promise<APIEmbed | undefined>;
     testPermission(permission: string | undefined, executor: GuildMember, defaultAllowed: boolean): Promise<boolean>;
+    addSuggestion(suggestion: ISuggestion): ISuggestion;
 }
 export interface IServerModel extends mongoose.Model<IServer, {}, IServerMethods> {
     findOrCreateServer(discord_id: String): Promise<mongoose.HydratedDocument<IServer, IServerMethods>>;
@@ -216,5 +218,12 @@ ServerSchema.method("testPermission", async function(permission: string | undefi
     }, undefined);
     return accessible != undefined ? accessible : defaultAllowed;
 });
+ServerSchema.method("addSuggestion", async function (suggestion: ISuggestion) {
+    let data: HydratedDocument<IServerData, IServerDataMethods> = await this.fetchData();
+    // todo log
+
+    data.suggestions.push(suggestion);
+    await data.save();
+})
 const Server = mongoose.model<IServer, IServerModel>("server", ServerSchema);
 export default Server;

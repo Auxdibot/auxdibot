@@ -25,8 +25,12 @@ export enum LogType {
     "REACTION_ROLE_EDITED",
     "MASSROLE_GIVEN",
     "MASSROLE_TAKEN",
-
-
+    "SUGGESTION_CREATED",
+    "SUGGESTIONS_CHANNEL_CHANGED",
+    "SUGGESTIONS_UPDATES_CHANNEL_CHANGED",
+    "SUGGESTIONS_AUTO_DELETE_CHANGED",
+    "SUGGESTIONS_THREAD_CREATION_CHANGED",
+    "SUGGESTION_DELETED"
 }
 
 export const LogNames = {
@@ -55,5 +59,12 @@ export const LogNames = {
     22: "👈 Reaction Role Removed",
     23: "👈 Reaction Role Edited",
     24: "🪪 Massrole Given",
-    25: "🪪 Massrole Taken"
+    25: "🪪 Massrole Taken",
+    26: "❓ Suggestion Created",
+    27: "❓ Suggestions Channel Changed",
+    28: "❓ Suggestions Updates Channel Changed",
+    29: "❓ Suggestions Auto Delete Changed",
+    30: "❓ Suggestions Thread Creation Changed",
+    31: "❓ Suggestion Deleted",
+
 }
