@@ -12,7 +12,7 @@ export interface ILog {
     date_unix: number;
     description: string;
     mute_role?: IChange;
-    log_channel?: IChange;
+    channel?: IChange;
     message_edit?: IChange;
     permission_override?: IPermissionOverride;
 }
@@ -21,7 +21,7 @@ const LogSchema = new mongoose.Schema<ILog>({
     type: { type: Number, default: 0 },
     user_id: { type: String },
     mute_role: { type: ChangeSchema },
-    log_channel: { type: ChangeSchema },
+    channel: { type: ChangeSchema },
     message_edit: { type: ChangeSchema },
     punishment: { type: punishmentSchema },
     permission_override: { type: PermissionOverrideSchema },
