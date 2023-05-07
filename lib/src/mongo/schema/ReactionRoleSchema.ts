@@ -6,11 +6,13 @@ let ReactionSchema = new mongoose.Schema<IReaction>({
 }, { _id: false })
 export interface IReactionRole {
     message_id: string;
+    channel_id?: string;
     reactions: IReaction[];
 }
 
 const ReactionRoleSchema = new mongoose.Schema<IReactionRole>({
     message_id: { type: String, required: true },
+    channel_id: { type: String },
     reactions: { type: [ReactionSchema], required: true },
 }, { _id: false })
 export default ReactionRoleSchema;

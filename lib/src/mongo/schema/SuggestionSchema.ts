@@ -4,6 +4,7 @@ import SuggestionState from "../../util/types/SuggestionState";
 export interface ISuggestion {
     suggestion_id: number;
     message_id?: string;
+    channel_id?: string;
     creator_id: string;
     status: SuggestionState;
     rating: number;
@@ -18,7 +19,8 @@ let SuggestionSchema = new mongoose.Schema<ISuggestion>({
     creator_id: { type: String, required: true },
     rating: { type: Number, default: 0 },
     suggestion_id: { type: Number, default: 0, required: true },
-    message_id: { type: String, required: true },
+    message_id: { type: String },
+    channel_id: { type: String },
     status: { type: Number, required: true },
     date_unix: { type: Number, required: true, default: Date.now() },
     handler_id: { type: String },

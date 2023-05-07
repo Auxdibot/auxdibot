@@ -1,4 +1,4 @@
-import {SlashCommandBuilder, APIEmbed, ChannelType, TextChannel, Role, EmbedField, GuildMember} from "discord.js";
+import {SlashCommandBuilder, APIEmbed, ChannelType, TextChannel, Role, EmbedField, GuildMember, GuildBasedChannel} from "discord.js";
 import AuxdibotCommand from "../../util/templates/AuxdibotCommand";
 import {IReaction} from "../../mongo/schema/ReactionRoleSchema";
 import Embeds from "../../util/constants/Embeds";
@@ -153,7 +153,7 @@ const reactionRolesCommand = <AuxdibotCommand>{
                 let message = await channel.send({ embeds: [embed] });
 
                 reactionsAndRoles.forEach((item) => message.react(item.emoji));
-                data.addReactionRole({ message_id: message.id, reactions: reactionsAndRoles.map((item) => <IReaction>{ role: item.role.id, emoji: item.emoji }) });
+                data.addReactionRole({ message_id: message.id, channel_id: message.channel.id, reactions: reactionsAndRoles.map((item) => <IReaction>{ role: item.role.id, emoji: item.emoji }) });
                 let successEmbed = Embeds.SUCCESS_EMBED.toJSON();
                 successEmbed.title = "👈 Created Reaction Role"
                 successEmbed.description = `Created a reaction role in ${channel}`;
@@ -347,7 +347,9 @@ const reactionRolesCommand = <AuxdibotCommand>{
                     embed.description = `Couldn't find that reaction role!`;
                     return await interaction.reply({ embeds: [embed] });
                 }
-                let message = await getMessage(interaction.data.guild, rr.message_id);
+                let message_channel: GuildBasedChannel | undefined = rr.channel_id ? interaction.data.guild.channels.cache.get(rr.channel_id) : undefined;
+                let message = message_channel && message_channel.isTextBased() ? message_channel.messages.cache.get(rr.message_id) : await getMessage(interaction.data.guild, rr.message_id);
+
                 if (message) {
                     await message.delete();
                 }
@@ -420,7 +422,8 @@ const reactionRolesCommand = <AuxdibotCommand>{
                     embed.description = `Couldn't find that reaction role!`;
                     return await interaction.reply({ embeds: [embed] });
                 }
-                let message = await getMessage(interaction.data.guild, rr.message_id);
+                let message_channel: GuildBasedChannel | undefined = rr.channel_id ? interaction.data.guild.channels.cache.get(rr.channel_id) : undefined;
+                let message = message_channel && message_channel.isTextBased() ? message_channel.messages.cache.get(rr.message_id) : await getMessage(interaction.data.guild, rr.message_id);
                 if (!message) {
                     let embed = Embeds.ERROR_EMBED.toJSON();
                     embed.description = `No message found! Might want to remove that reaction role.`;
