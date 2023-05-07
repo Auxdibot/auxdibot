@@ -73,9 +73,9 @@ const suggestionsCommand = < AuxdibotCommand > {
         .addSubcommand(builder => builder.setName("create").setDescription("Create a new suggestion.")
             .addStringOption(argBuilder => argBuilder.setName("suggestion").setDescription("The suggestion you want to make for this server.").setRequired(true)))
         .addSubcommand(builder => builder.setName("channel").setDescription("Change the channel where suggestions are posted.")
-            .addChannelOption(argBuilder => argBuilder.setName("channel").setDescription("The channel to post suggestions in.").setRequired(false)))
+            .addChannelOption(argBuilder => argBuilder.setName("channel").setDescription("The channel to post suggestions in.")))
         .addSubcommand(builder => builder.setName("updates_channel").setDescription("Change the channel where updates to suggestions are posted.")
-            .addChannelOption(argBuilder => argBuilder.setName("channel").setDescription("The channel to post suggestion updates in.").setRequired(true)))
+            .addChannelOption(argBuilder => argBuilder.setName("channel").setDescription("The channel to post suggestion updates in.")))
         .addSubcommand(builder => builder.setName("auto_delete").setDescription("Set whether suggestions are deleted upon being approved, denied, or marked as added.")
             .addBooleanOption(argBuilder => argBuilder.setName("delete").setDescription("Whether to delete suggestions upon being approved, denied or marked as added.").setRequired(true)))
         .addSubcommand(builder => builder.setName("discussion_threads").setDescription("Set whether a discussion thread is created when a suggestion is created.")
@@ -205,7 +205,7 @@ const suggestionsCommand = < AuxdibotCommand > {
                 embed.title = "⚙️ Suggestions Channel Changed";
 
                 let formerChannel = interaction.data.guild.channels.resolve(settings.suggestions_channel || "");
-                if (channel && channel.id == settings.log_channel || !channel && !settings.log_channel) {
+                if (channel && channel.id == settings.suggestions_channel || !channel && !settings.suggestions_channel) {
                     embed.description = `Nothing changed. Suggestions channel is the same as one specified in settings.`;
                     return await interaction.reply({
                         embeds: [embed]
@@ -213,16 +213,16 @@ const suggestionsCommand = < AuxdibotCommand > {
                 }
                 settings.suggestions_channel = channel ? channel.id : undefined;
                 await settings.save();
-                embed.description = `The suggestions channel for this server has been changed.\r\n\r\nFormerly: ${formerChannel ? `<#${formerChannel.id}>` : "None"}\r\n\r\nNow: ${channel || "`None (Disabled)`"}`;
+                embed.description = `The suggestions channel for this server has been changed.\r\n\r\nFormerly: ${formerChannel ? `<#${formerChannel.id}>` : "None"}\r\n\r\nNow: ${channel || "None (Disabled)"}`;
 
                 await interaction.data.guildData.log({
                     type: LogType.SUGGESTIONS_CHANNEL_CHANGED,
                     user_id: interaction.data.member.id,
                     date_unix: Date.now(),
                     description: "The suggestions channel for this server has been changed.",
-                    log_channel: {
-                        former: formerChannel ? formerChannel.id : undefined,
-                        now: channel ? channel.id : ""
+                    channel: {
+                        former: formerChannel?.id,
+                        now: channel?.id
                     }
                 });
                 return await interaction.reply({
@@ -245,10 +245,8 @@ const suggestionsCommand = < AuxdibotCommand > {
                 if (!interaction.data) return;
                 const channel: Channel | null = interaction.options.getChannel('channel');
                 let settings = await interaction.data.guildData.fetchSettings();
-                if (!channel) return await interaction.reply({
-                    embeds: [Embeds.ERROR_EMBED.toJSON()]
-                });
-                if (!channel.isTextBased() || channel.isDMBased() || channel.isThread() || channel.isVoiceBased()) {
+                
+                if (channel && (!channel.isTextBased() || channel.isDMBased() || channel.isThread() || channel.isVoiceBased())) {
                     let error = Embeds.ERROR_EMBED.toJSON();
                     error.description = "This isn't a text channel! Please set the log channel to be a Discord **Text Channel**.";
                     return await interaction.reply({
@@ -259,24 +257,24 @@ const suggestionsCommand = < AuxdibotCommand > {
                 embed.title = "⚙️ Suggestions Updates Channel Changed";
 
                 let formerChannel = interaction.data.guild.channels.resolve(settings.suggestions_updates_channel || "");
-                if (channel.id == settings.log_channel) {
+                if (channel && channel.id == settings.suggestions_updates_channel || !channel && channel == settings.suggestions_updates_channel) {
                     embed.description = `Nothing changed. Suggestions updates channel is the same as one specified in settings.`;
                     return await interaction.reply({
                         embeds: [embed]
                     });
                 }
-                settings.suggestions_updates_channel = channel.id;
+                settings.suggestions_updates_channel = channel ? channel.id : undefined;
                 await settings.save();
-                embed.description = `The suggestions updates channel for this server has been changed.\r\n\r\nFormerly: ${formerChannel ? `<#${formerChannel.id}>` : "None"}\r\n\r\nNow: ${channel}`;
+                embed.description = `The suggestions updates channel for this server has been changed.\r\n\r\nFormerly: ${formerChannel ? `<#${formerChannel.id}>` : "None"}\r\n\r\nNow: ${channel || "None (Disabled)"}`;
 
                 await interaction.data.guildData.log({
                     type: LogType.SUGGESTIONS_UPDATES_CHANNEL_CHANGED,
                     user_id: interaction.data.member.id,
                     date_unix: Date.now(),
                     description: "The suggestions updates channel for this server has been changed.",
-                    log_channel: {
-                        former: formerChannel ? formerChannel.id : undefined,
-                        now: channel.id
+                    channel: {
+                        former: formerChannel?.id,
+                        now: channel?.id
                     }
                 });
                 return await interaction.reply({

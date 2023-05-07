@@ -14,14 +14,11 @@ const settingsCommand = < AuxdibotCommand > {
         .setName('settings')
         .setDescription('Change settings for the server.')
         .addSubcommand(builder => builder.setName('log_channel').setDescription('Change the channel where log messages are broadcast.').addChannelOption(builder => builder.setName('channel')
-            .setDescription('The channel to broadcast all logs to.')
-            .setRequired(true)))
+            .setDescription('The channel to broadcast all logs to.')))
         .addSubcommand(builder => builder.setName('join_leave_channel').setDescription('Change the channel where join and leave messages are broadcast.').addChannelOption(builder => builder.setName('channel')
-            .setDescription('The channel to broadcast join and leave messages to.')
-            .setRequired(true)))
+            .setDescription('The channel to broadcast join and leave messages to.')))
         .addSubcommand(builder => builder.setName('mute_role').setDescription('Change the mute role for this server.').addRoleOption(builder => builder.setName('role')
-            .setDescription('The role to apply when muted.')
-            .setRequired(true)))
+            .setDescription('The role to apply when muted.')))
         .addSubcommand(builder => builder.setName("view").setDescription("View this server's settings.")),
     info: {
         help: {
@@ -49,16 +46,28 @@ const settingsCommand = < AuxdibotCommand > {
             let settings = await server.fetchSettings();
             let embed = Embeds.INFO_EMBED.toJSON();
             embed.title = "⚙️ Server Settings";
-            embed.description = `🗒️ Log Channel: ${settings.log_channel ? `<#${settings.log_channel}>` : "None"}
-            \r\n📩 Join/Leave Channel: ${settings.join_leave_channel ? `<#${settings.join_leave_channel}>` : "None"}
-            \r\n🎤 Mute Role: ${settings.mute_role ? `<@&${settings.mute_role}>` : "None"}
-            \r\n👋 Join Roles${settings.join_roles.reduce((accumulator: string, val: string, index: number) => `${accumulator}\r\n> **${index+1})** <@&${val}>`, "")}
-            \r\n📝 Sticky Roles${settings.sticky_roles.reduce((accumulator: string, val: string, index: number) => `${accumulator}\r\n> **${index+1})** <@&${val}>`, "")}
-            \r\n❓ Suggestions
-            > Channel: ${settings.suggestions_channel ? `<#${settings.suggestions_channel}>` : "`None (Suggestions are disabled.)`"}
-            > Updates Channel: ${settings.suggestions_updates_channel ? `<#${settings.suggestions_updates_channel}>` : "`None`"}
-            > Auto Delete: \`${settings.suggestions_auto_delete ? "Delete." : "Do not Delete."}\`
-            > Discussion Threads: \`${settings.suggestions_discussion_threads ? "Create Thread." : "Do not create a Thread."}\``
+            embed.description = `🗒️ Log Channel: ${settings.log_channel ? `<#${settings.log_channel}>` : "`None`"}
+            \r\n📩 Join/Leave Channel: ${settings.join_leave_channel ? `<#${settings.join_leave_channel}>` : "`None`"}
+            \r\n🎤 Mute Role: ${settings.mute_role ? `<@&${settings.mute_role}>` : "`None`"}`;
+            embed.fields = [
+                {
+                    name: "👋 Join Roles",
+                    value: settings.join_roles.reduce((accumulator: string, val: string, index: number) => `${accumulator}\r\n> **${index+1})** <@&${val}>`, ""),
+                    inline: true
+                },
+                {
+                    name: "📝 Sticky Roles",
+                    value: settings.sticky_roles.reduce((accumulator: string, val: string, index: number) => `${accumulator}\r\n> **${index+1})** <@&${val}>`, ""),
+                    inline: true
+                },
+                {
+                    name: "❓ Suggestions",
+                    value: `> Channel: ${settings.suggestions_channel ? `<#${settings.suggestions_channel}>` : "`None (Suggestions are disabled.)`"}
+                    > Updates Channel: ${settings.suggestions_updates_channel ? `<#${settings.suggestions_updates_channel}>` : "`None`"}
+                    > Auto Delete: \`${settings.suggestions_auto_delete ? "Delete." : "Do not Delete."}\`
+                    > Discussion Threads: \`${settings.suggestions_discussion_threads ? "Create Thread." : "Do not create a Thread."}\``
+                }
+            ]
             return await interaction.reply({
                 embeds: [embed]
             })
@@ -79,10 +88,8 @@ const settingsCommand = < AuxdibotCommand > {
                 if (!interaction.data) return;
                 const channel: Channel | null = interaction.options.getChannel('channel');
                 let settings = await interaction.data.guildData.fetchSettings();
-                if (!channel) return await interaction.reply({
-                    embeds: [Embeds.ERROR_EMBED.toJSON()]
-                });
-                if (!channel.isTextBased() || channel.isDMBased() || channel.isThread() || channel.isVoiceBased()) {
+                
+                if (channel && (!channel.isTextBased() || channel.isDMBased() || channel.isThread() || channel.isVoiceBased())) {
                     let error = Embeds.ERROR_EMBED.toJSON();
                     error.description = "This isn't a text channel! Please set the log channel to be a Discord **Text Channel**.";
                     return await interaction.reply({
@@ -93,22 +100,22 @@ const settingsCommand = < AuxdibotCommand > {
                 embed.title = "⚙️ Log Channel Change";
 
                 let formerChannel = interaction.data.guild.channels.resolve(settings.log_channel || "");
-                if (channel.id == settings.log_channel) {
+                if (channel && channel.id == settings.log_channel || !channel && channel == settings.log_channel) {
                     embed.description = `Nothing changed. Log channel is the same as one specified in settings.`;
                     return await interaction.reply({
                         embeds: [embed]
                     });
                 }
-                settings.setLogChannel(channel.id);
-                embed.description = `The log channel for this server has been changed.\r\n\r\nFormerly: ${formerChannel ? `<#${formerChannel.id}>` : "None"}\r\n\r\nNow: ${channel}`;
+                settings.setLogChannel(channel ? channel.id : undefined);
+                embed.description = `The log channel for this server has been changed.\r\n\r\nFormerly: ${formerChannel ? `<#${formerChannel.id}>` : "None"}\r\n\r\nNow: ${channel || "None (Disabled)"}`;
                 await interaction.data.guildData.log({
                     type: LogType.LOG_CHANNEL_CHANGED,
                     user_id: interaction.data.member.id,
                     date_unix: Date.now(),
                     description: "The log channel for this server has been changed.",
-                    log_channel: {
-                        former: formerChannel ? formerChannel.id : undefined,
-                        now: channel.id
+                    channel: {
+                        former: formerChannel?.id,
+                        now: channel?.id
                     }
                 });
                 return await interaction.reply({
@@ -131,10 +138,8 @@ const settingsCommand = < AuxdibotCommand > {
                 if (!interaction.data) return;
                 const channel: Channel | null = interaction.options.getChannel('channel');
                 let settings = await interaction.data.guildData.fetchSettings();
-                if (!channel) return await interaction.reply({
-                    embeds: [Embeds.ERROR_EMBED.toJSON()]
-                });
-                if (!channel.isTextBased() || channel.isDMBased() || channel.isThread() || channel.isVoiceBased()) {
+                
+                if (channel && (!channel.isTextBased() || channel.isDMBased() || channel.isThread() || channel.isVoiceBased())) {
                     let error = Embeds.ERROR_EMBED.toJSON();
                     error.description = "This isn't a text channel! Please set the join/leave channel to be a Discord **Text Channel**.";
                     return await interaction.reply({
@@ -144,22 +149,22 @@ const settingsCommand = < AuxdibotCommand > {
                 let embed = Embeds.SUCCESS_EMBED.toJSON();
                 embed.title = "⚙️ Join/Leave Channel Change";
                 let formerChannel = interaction.data.guild.channels.resolve(settings.join_leave_channel || "");
-                if (channel.id == settings.join_leave_channel) {
+                if (channel && channel.id == settings.join_leave_channel || !channel && channel == settings.join_leave_channel) {
                     embed.description = `Nothing changed. Channel is the same as one specified in settings.`;
                     return await interaction.reply({
                         embeds: [embed]
                     });
                 }
-                settings.setJoinLeaveChannel(channel.id);
-                embed.description = `The Join/Leave channel for this server has been changed.\r\n\r\nFormerly: ${formerChannel ? `<#${formerChannel.id}>` : "None"}\r\n\r\nNow: ${channel}`;
+                settings.setJoinLeaveChannel(channel ? channel.id : undefined);
+                embed.description = `The Join/Leave channel for this server has been changed.\r\n\r\nFormerly: ${formerChannel ? `<#${formerChannel.id}>` : "None"}\r\n\r\nNow: ${channel || "None (Disabled)"}`;
                 await interaction.data.guildData.log({
                     type: LogType.JOIN_LEAVE_CHANNEL_CHANGED,
                     user_id: interaction.data.member.id,
                     date_unix: Date.now(),
                     description: "The join/leave channel for this server has been changed.",
-                    log_channel: {
-                        former: formerChannel ? formerChannel.id : undefined,
-                        now: channel.id
+                    channel: {
+                        former: formerChannel?.id,
+                        now: channel?.id
                     }
                 });
                 return await interaction.reply({
@@ -182,10 +187,7 @@ const settingsCommand = < AuxdibotCommand > {
                 if (!interaction.data) return;
                 const role = interaction.options.getRole('role');
                 let settings = await interaction.data.guildData.fetchSettings();
-                if (!role) return await interaction.reply({
-                    embeds: [Embeds.ERROR_EMBED.toJSON()]
-                });
-                if (interaction.data.member.id != interaction.data.guild.ownerId && interaction.data.guild.roles.comparePositions(interaction.data.member.roles.highest, role.id) <= 0) {
+                if (role && interaction.data.member.id != interaction.data.guild.ownerId && interaction.data.guild.roles.comparePositions(interaction.data.member.roles.highest, role.id) <= 0) {
                     let noPermissionEmbed = Embeds.DENIED_EMBED.toJSON();
                     noPermissionEmbed.title = "⛔ No Permission!"
                     noPermissionEmbed.description = `This role is higher than yours!`
@@ -193,7 +195,7 @@ const settingsCommand = < AuxdibotCommand > {
                         embeds: [noPermissionEmbed]
                     });
                 }
-                if (interaction.data.guild.roles.comparePositions(interaction.data.member.roles.highest, role.id) <= 0) {
+                if (role && interaction.data.guild.roles.comparePositions(interaction.data.member.roles.highest, role.id) <= 0) {
                     let noPermissionEmbed = Embeds.DENIED_EMBED.toJSON();
                     noPermissionEmbed.title = "⛔ No Permission!"
                     noPermissionEmbed.description = `This role is higher up on the role hierarchy than Auxdibot's roles!`
@@ -205,13 +207,13 @@ const settingsCommand = < AuxdibotCommand > {
                 embed.title = "⚙️ Mute Role Change";
 
                 let formerRole = interaction.data.guild.roles.resolve(settings.mute_role || "");
-                if (role.id == settings.mute_role) {
+                if (role && role.id == settings.mute_role || !role && role == settings.mute_role) {
                     embed.description = `Nothing changed. Mute role is the same as one specified in settings.`;
                     return await interaction.reply({
                         embeds: [embed]
                     });
                 }
-                if (role instanceof Role) {
+                if (role && role instanceof Role) {
                     await role.setPermissions([], "Clearing all permissions.")
                         .catch(() => {});
                     interaction.data.guild.channels.cache.forEach(r => {
@@ -233,11 +235,11 @@ const settingsCommand = < AuxdibotCommand > {
                     description: "The mute role for this server has been changed.",
                     mute_role: {
                         former: formerRole ? formerRole.id : undefined,
-                        now: role.id
+                        now: role ? role.id : "None"
                     }
                 });
-                settings.setMuteRole(role.id);
-                embed.description = `The mute role for this server has been changed.\r\n\r\nFormerly: ${formerRole ? `<@&${formerRole.id}>` : "None"}\r\n\r\nNow: ${role}`;
+                settings.setMuteRole(role ? role.id : undefined);
+                embed.description = `The mute role for this server has been changed.\r\n\r\nFormerly: ${formerRole ? `<@&${formerRole.id}>` : "None"}\r\n\r\nNow: ${role || "None"}`;
                 return await interaction.reply({
                     embeds: [embed]
                 })

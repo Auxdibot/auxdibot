@@ -133,15 +133,15 @@ ServerSchema.method("log", async function (log: ILog) {
     }
     if (log.mute_role) {
         fields.push({
-            name: "Mute Role Data",
+            name: "Mute Role Change",
             value: `Formerly: ${log.mute_role.former ? `<@&${log.mute_role.former}>` : "None"}\r\n\r\nNow: <@&${log.mute_role.now}>`,
             inline: false
         })
     }
-    if (log.log_channel) {
+    if (log.channel) {
         fields.push({
-            name: "Log Channel Data",
-            value: `Formerly: ${log.log_channel.former ? `<#${log.log_channel.former}>` : "None"}\r\n\r\nNow: <#${log.log_channel.now}>`,
+            name: "Channel Change",
+            value: `Formerly: ${log.channel.former ? `<#${log.channel.former}>` : "None"}\r\n\r\nNow: ${log.channel.now ? `<#${log.channel.now}>` : "None"}`,
             inline: false
         })
     }

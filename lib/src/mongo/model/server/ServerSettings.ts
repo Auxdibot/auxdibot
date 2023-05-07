@@ -28,9 +28,9 @@ export interface IServerSettingsMethods {
     removeStickyRole(index: number): boolean;
     addJoinRole(role: string): boolean;
     addStickyRole(role: string): boolean;
-    setMuteRole(mute_role_id: String): boolean;
-    setLogChannel(log_channel_id: String): boolean;
-    setJoinLeaveChannel(join_leave_channel_id: String): boolean;
+    setMuteRole(mute_role_id: String | undefined): boolean;
+    setLogChannel(log_channel_id: String | undefined): boolean;
+    setJoinLeaveChannel(join_leave_channel_id: String | undefined): boolean;
     setJoinEmbed(join_embed: APIEmbed): boolean;
     setJoinText(join_text: String): boolean;
     setJoinDMEmbed(join_dm_embed: APIEmbed): boolean;
@@ -87,17 +87,17 @@ ServerSettingsSchema.method("removeStickyRole", function(index: number) {
     this.save();
     return true;
 });
-ServerSettingsSchema.method('setMuteRole', function(mute_role_id: String) {
+ServerSettingsSchema.method('setMuteRole', function(mute_role_id: String | undefined) {
     this.mute_role = mute_role_id;
     this.save();
     return true;
 });
-ServerSettingsSchema.method('setLogChannel', function(log_channel_id: String) {
+ServerSettingsSchema.method('setLogChannel', function(log_channel_id: String | undefined) {
     this.log_channel = log_channel_id;
     this.save();
     return true;
 });
-ServerSettingsSchema.method('setJoinLeaveChannel', function(join_leave_channel_id: String) {
+ServerSettingsSchema.method('setJoinLeaveChannel', function(join_leave_channel_id: String | undefined) {
     this.join_leave_channel = join_leave_channel_id;
     this.save();
     return true;
