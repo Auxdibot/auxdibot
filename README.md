@@ -1,4 +1,26 @@
-# 🤖 auxdibot
+<div align="center" id="header">
+   <a href="https://bot.auxdible.me">
+      <img src="https://github.com/Auxdible/auxdibot/blob/main/app/public/icon.png?raw=true" alt="Auxdibot icon" width=250/>
+   </a>
+   <div id="badges">
+      <div id="badges-row1">
+         <a href="https://discord.gg/tnsFW9CQEn">
+            <img src="https://img.shields.io/badge/Auxdibot%20Discord-7289DA?style=for-the-badge&logo=discord&logoColor=white" width=150/>
+         </a>
+      </div>
+      <div id="badges-row2">
+         <img src="https://img.shields.io/github/commit-activity/w/Auxdible/auxdibot?style=flat-square"/>
+         <img src="https://img.shields.io/github/contributors/Auxdible/auxdibot?style=flat-square"/>
+         <img src="https://img.shields.io/github/last-commit/Auxdible/auxdibot?style=flat-square"/>
+      </div>
+      <div id="badges-row3">
+         <img src="https://img.shields.io/github/stars/Auxdible/auxdibot?style=flat-square"/>
+         <img src="https://img.shields.io/github/forks/Auxdible/auxdibot?style=flat-square"/>
+      </div>
+    </div>
+   <h1>Auxdibot 🤖</h1>
+</div>
+
 
 ## About Project
 
@@ -64,13 +86,13 @@ If you would like to run Auxdibot on your own machine:
 `👋` *Welcome & Leave Messages*
 
 `👈` *Role Management (Join Roles, Sticky Roles, Massrole, Reaction Roles)*
+
+`🔺` *Suggestions*
 ## Planned Features
 
 `🏆` *Levels*
 
 `⭐` *Starboard*
-
-`🔺` *Suggestions*
 
 `🧰` *Easy Setup Command*
 
@@ -82,4 +104,3 @@ If you would like to run Auxdibot on your own machine:
 
 This project is developed solely by [Auxdible](https://github.com/Auxdible) on GitHub. Contact me on Discord using Auxdible#3003 or by my email.
 
-![Discord](https://img.shields.io/discord/1093242184708399104?color=5865F2&label=Server&logo=Discord&logoColor=FFFFFF&style=flat-square) ![GitHub commit activity](https://img.shields.io/github/commit-activity/w/Auxdible/auxdibot?style=flat-square) ![GitHub contributors](https://img.shields.io/github/contributors/Auxdible/auxdibot?style=flat-square) ![GitHub last commit](https://img.shields.io/github/last-commit/Auxdible/auxdibot?style=flat-square) ![GitHub forks](https://img.shields.io/github/forks/Auxdible/auxdibot?style=flat-square) ![GitHub Repo stars](https://img.shields.io/github/stars/Auxdible/auxdibot?style=flat-square)
