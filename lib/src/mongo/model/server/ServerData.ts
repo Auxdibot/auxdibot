@@ -4,7 +4,7 @@ import PermissionOverrideSchema, {IPermissionOverride} from "../../schema/Permis
 import ReactionRoleSchema, {IReactionRole} from "../../schema/ReactionRoleSchema";
 import mongoose from "mongoose";
 import SuggestionSchema, {ISuggestion} from "../../schema/SuggestionSchema";
-import {APIEmbed, Guild} from "discord.js";
+import {APIEmbed, Guild, GuildBasedChannel} from "discord.js";
 import {getMessage} from "../../../util/functions/getMessage";
 import parsePlaceholders from "../../../util/functions/parsePlaceholder";
 import {SuggestionsColors} from "../../../util/constants/Colors";
@@ -114,7 +114,8 @@ ServerDataSchema.method("removeSuggestion", function(suggestion_id: number) {
     return findSuggestion;
 });
 ServerDataSchema.method("updateSuggestion", async function(guild: Guild, suggestion: ISuggestion) {
-    let message = suggestion.message_id ? await getMessage(guild, suggestion.message_id) : undefined;
+    let message_channel: GuildBasedChannel | undefined = suggestion.channel_id ? guild.channels.cache.get(suggestion.channel_id) : undefined;
+    let message = suggestion.message_id ? message_channel && message_channel.isTextBased() ? message_channel.messages.cache.get(suggestion.message_id) : await getMessage(guild, suggestion.message_id) : undefined;
     if (!message) return false;
     let settings = await this.populate('server_id').then(async (doc: any) => await doc.server_id.fetchSettings()).catch(() => undefined)
     let embed: APIEmbed = JSON.parse(await parsePlaceholders(JSON.stringify(settings.suggestions_embed), guild, guild.members.cache.get(suggestion.creator_id) || undefined, suggestion)) as APIEmbed;

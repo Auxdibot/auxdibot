@@ -1,4 +1,4 @@
-import {APIEmbed, Channel, SlashCommandBuilder, TextChannel} from "discord.js";
+import {APIEmbed, Channel, GuildBasedChannel, SlashCommandBuilder, TextChannel} from "discord.js";
 import AuxdibotCommand from "../../util/templates/AuxdibotCommand";
 import AuxdibotCommandInteraction from "../../util/templates/AuxdibotCommandInteraction";
 import GuildAuxdibotCommandData from "../../util/types/commandData/GuildAuxdibotCommandData";
@@ -26,7 +26,8 @@ async function stateCommand(interaction: AuxdibotCommandInteraction<GuildAuxdibo
     }
 
     suggestion.status = state;
-    let message = suggestion.message_id ? await getMessage(interaction.data.guild, suggestion.message_id) : undefined;
+    let message_channel: GuildBasedChannel | undefined = suggestion.channel_id ? interaction.data.guild.channels.cache.get(suggestion.channel_id) : undefined;
+    let message = suggestion.message_id ? message_channel && message_channel.isTextBased() ? message_channel.messages.cache.get(suggestion.message_id) : await getMessage(interaction.data.guild, suggestion.message_id) : undefined;
     if (!message) {
         data.removeSuggestion(suggestion.suggestion_id);
         let errorEmbed = Embeds.ERROR_EMBED.toJSON();
@@ -162,6 +163,7 @@ const suggestionsCommand = < AuxdibotCommand > {
                 .then(async (msg) => {
                     settings.suggestions_reactions.forEach((reaction) => msg.react(reaction.emoji));
                     suggestion.message_id = msg.id;
+                    suggestion.channel_id = msg.channel.id;
                     if (settings.suggestions_discussion_threads) {
                         let thread = await msg.startThread({ name: `Suggestion #${suggestion.suggestion_id}`, reason: "New suggestion opened." }).catch(() => undefined);
                         if (thread) suggestion.discussion_thread_id = thread.id;
@@ -629,7 +631,8 @@ const suggestionsCommand = < AuxdibotCommand > {
                     errorEmbed.description = "Couldn't find that suggestion!";
                     return await interaction.reply({ embeds: [errorEmbed] });
                 }
-                let message = suggestion.message_id ? await getMessage(interaction.data.guild, suggestion.message_id) : undefined;
+                let message_channel: GuildBasedChannel | undefined = suggestion.channel_id ? interaction.data.guild.channels.cache.get(suggestion.channel_id) : undefined;
+                let message = suggestion.message_id ? message_channel && message_channel.isTextBased() ? message_channel.messages.cache.get(suggestion.message_id) : await getMessage(interaction.data.guild, suggestion.message_id) : undefined;
                 if (message) {
                     let thread = message.thread && message.thread.id == suggestion.discussion_thread_id ? message.thread : undefined;
                     if (thread) {
