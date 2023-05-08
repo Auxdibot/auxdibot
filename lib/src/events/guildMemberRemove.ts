@@ -31,6 +31,6 @@ module.exports = {
             description: `<@${member.id}> left the server! (Total Members: **${member.guild.memberCount}**)`,
             type: LogType.MEMBER_LEAVE,
             date_unix: Date.now()
-        })
+        }, true)
     }
 }

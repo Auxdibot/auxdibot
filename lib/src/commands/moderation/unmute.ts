@@ -67,7 +67,7 @@ const unmuteCommand = <AuxdibotCommand>{
             date_unix: Date.now(),
             type: LogType.UNMUTE,
             punishment: muted
-        })
+        }, true)
         await interaction.reply({ embeds: [embed] });
     },
 

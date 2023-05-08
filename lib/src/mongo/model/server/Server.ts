@@ -6,7 +6,7 @@ import ServerSettings , {IServerSettings, IServerSettingsMethods} from "./Server
 import ServerCounter, {IServerCounter, IServerCounterMethods} from "./ServerCounter";
 import {ILog} from "../../schema/LogSchema";
 import Embeds from "../../../util/constants/Embeds";
-import {APIEmbed, EmbedField, GuildMember, PermissionsBitField} from "discord.js";
+import {APIEmbed, EmbedField, GuildBasedChannel, GuildMember, PermissionsBitField} from "discord.js";
 import {IPunishment, PunishmentNames, toEmbedField} from "../../schema/PunishmentSchema";
 import {LogNames} from "../../../util/types/Log";
 import {client} from "../../../index";
@@ -27,7 +27,7 @@ export interface IServerMethods {
     findOrCreateMember(discord_id: string): Promise<HydratedDocument<IServerMember, IServerMemberMethods>> | undefined;
     fetchSettings(): Promise<HydratedDocument<IServerSettings, IServerSettingsMethods>>;
     fetchCounter(): Promise<HydratedDocument<IServerCounter, IServerCounterMethods>>;
-    log(log: ILog): Promise<APIEmbed | undefined>;
+    log(log: ILog, use_user_thumbnail?: boolean): Promise<APIEmbed | undefined>;
     recordAsEmbed(user_id: String): Promise<APIEmbed | undefined>;
     punish(punishment: IPunishment): Promise<APIEmbed | undefined>;
     testPermission(permission: string | undefined, executor: GuildMember, defaultAllowed: boolean): Promise<boolean>;
@@ -112,55 +112,51 @@ ServerSchema.method("fetchCounter", async function() {
     }
     return counter;
 });
-ServerSchema.method("log", async function (log: ILog) {
+ServerSchema.method("log", async function (log: ILog, use_user_thumbnail?: boolean) {
     let settings = await this.fetchSettings(), data = await this.fetchData();
     let guild = await (await client).guilds.fetch(this.discord_id).catch(() => undefined);
     data.updateLog(log);
-    if (!guild || !guild.available) return;
-    if (!settings.log_channel) return false;
-    let channel = guild.channels.cache.get(settings.log_channel);
-    if (!channel || (channel.isVoiceBased() || channel.isDMBased() || channel.isThread() || !channel.isTextBased())) return false;
-
+    if (!guild || !guild.available || !settings.log_channel) return undefined;
+    let channel: GuildBasedChannel | undefined = guild.channels.cache.get(settings.log_channel);
+    if (!channel || !channel.isTextBased()) return undefined;
     let embed = Embeds.LOG_EMBED.toJSON();
+    if (use_user_thumbnail && log.user_id) {
+        let user = log.punishment ? await (await client).users.cache.get(log.punishment.user_id) : await (await client).users.cache.get(log.user_id);
+        if (user) {
+            let avatar = user.avatarURL({ size: 128 });
+            embed.thumbnail = avatar ? { url: avatar } : undefined;
+        }
+    }
     embed.title = `Log | ${LogNames[log.type]}`;
     embed.description = `${log.description}\n\n🕰️ Date: <t:${Math.round(log.date_unix / 1000)}>${log.user_id ? `\n🧍 User: <@${log.user_id}>` : ""}`;
-    let fields: EmbedField[] = [];
+    embed.fields = [(log.punishment ? toEmbedField(log.punishment) : undefined), 
+        (log.mute_role ? {
+            name: "Mute Role Change",
+            value: `Formerly: ${log.mute_role.former ? `<@&${log.mute_role.former}>` : "None"}\r\n\r\nNow: <@&${log.mute_role.now}>`,
+            inline: false
+        } : undefined),
+        (log.channel ? {
+            name: "Channel Change",
+            value: `Formerly: ${log.channel.former ? `<#${log.channel.former}>` : "None"}\r\n\r\nNow: ${log.channel.now ? `<#${log.channel.now}>` : "None"}`,
+            inline: false
+        } : undefined),
+        (log.permission_override ? {
+            name: "Permission Override",
+            value: `${log.permission_override.allowed ? "✅" : "❎"} \`${log.permission_override.permission}\` - ${log.permission_override.role_id ? `<@&${log.permission_override.role_id}>` : log.permission_override.user_id ? `<@${log.permission_override.user_id}>` : ""}`,
+            inline: false
+        } : undefined),
+        (log.message_edit ? {
+            name: "Message Change",
+            value: `Formerly: \r\n\r\n${log.message_edit.former}\r\n\r\nNow: \r\n\r\n${log.message_edit.now}\r\n\r\n`,
+            inline: false
+        } : undefined)
+    ].filter((i) => i) as EmbedField[];
     if (log.punishment) {
-        fields.push(toEmbedField(log.punishment));
         embed.footer = {
             text: `Punishment ID: ${log.punishment.punishment_id}`
         }
     }
-    if (log.mute_role) {
-        fields.push({
-            name: "Mute Role Change",
-            value: `Formerly: ${log.mute_role.former ? `<@&${log.mute_role.former}>` : "None"}\r\n\r\nNow: <@&${log.mute_role.now}>`,
-            inline: false
-        })
-    }
-    if (log.channel) {
-        fields.push({
-            name: "Channel Change",
-            value: `Formerly: ${log.channel.former ? `<#${log.channel.former}>` : "None"}\r\n\r\nNow: ${log.channel.now ? `<#${log.channel.now}>` : "None"}`,
-            inline: false
-        })
-    }
-    if (log.permission_override) {
-        fields.push({
-            name: "Permission Override",
-            value: `${log.permission_override.allowed ? "✅" : "❎"} \`${log.permission_override.permission}\` - ${log.permission_override.role_id ? `<@&${log.permission_override.role_id}>` : log.permission_override.user_id ? `<@${log.permission_override.user_id}>` : ""}`,
-            inline: false
-        })
-    }
-    if (log.message_edit) {
-        fields.push({
-            name: "Message Change",
-            value: `Formerly: \r\n\r\n${log.message_edit.former}\r\n\r\nNow: \r\n\r\n${log.message_edit.now}\r\n\r\n`,
-            inline: false
-        })
-    }
-    embed.fields = fields;
-    return await channel.send({ embeds: [embed] });
+    return await channel.send({ embeds: [embed] }).then(() => embed).catch(() => undefined);
 });
 ServerSchema.method("recordAsEmbed", async function (user_id: string) {
     let embed = Embeds.DEFAULT_EMBED.toJSON();

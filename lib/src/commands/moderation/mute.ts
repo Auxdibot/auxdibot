@@ -94,7 +94,7 @@ const muteCommand = <AuxdibotCommand>{
                     date_unix: Date.now(),
                     type: LogType.MUTE,
                     punishment: muteData
-                })
+                }, true)
                 return await interaction.reply({embeds: [embed]});
             });
         }).catch(async () => {

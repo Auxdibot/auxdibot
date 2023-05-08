@@ -47,7 +47,7 @@ const unbanCommand = <AuxdibotCommand>{
             date_unix: Date.now(),
             type: LogType.UNBAN,
             punishment: banned
-        })
+        }, true)
         await interaction.reply({ embeds: [embed] });
     },
 

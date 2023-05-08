@@ -70,7 +70,7 @@ const warnCommand = <AuxdibotCommand>{
                 date_unix: Date.now(),
                 type: LogType.WARN,
                 punishment: warnData
-            })
+            }, true)
             return await interaction.reply({embeds: [embed]});
         });
     },
