@@ -27,7 +27,7 @@ export interface IServerMethods {
     findOrCreateMember(discord_id: string): Promise<HydratedDocument<IServerMember, IServerMemberMethods>> | undefined;
     fetchSettings(): Promise<HydratedDocument<IServerSettings, IServerSettingsMethods>>;
     fetchCounter(): Promise<HydratedDocument<IServerCounter, IServerCounterMethods>>;
-    log(log: ILog): Promise<APIEmbed | undefined>;
+    log(log: ILog, use_user_thumbnail?: boolean): Promise<APIEmbed | undefined>;
     recordAsEmbed(user_id: String): Promise<APIEmbed | undefined>;
     punish(punishment: IPunishment): Promise<APIEmbed | undefined>;
     testPermission(permission: string | undefined, executor: GuildMember, defaultAllowed: boolean): Promise<boolean>;
@@ -120,6 +120,13 @@ ServerSchema.method("log", async function (log: ILog, use_user_thumbnail?: boole
     let channel: GuildBasedChannel | undefined = guild.channels.cache.get(settings.log_channel);
     if (!channel || !channel.isTextBased()) return undefined;
     let embed = Embeds.LOG_EMBED.toJSON();
+    if (use_user_thumbnail && log.user_id) {
+        let user = log.punishment ? await (await client).users.cache.get(log.punishment.user_id) : await (await client).users.cache.get(log.user_id);
+        if (user) {
+            let avatar = user.avatarURL({ size: 128 });
+            embed.thumbnail = avatar ? { url: avatar } : undefined;
+        }
+    }
     embed.title = `Log | ${LogNames[log.type]}`;
     embed.description = `${log.description}\n\n🕰️ Date: <t:${Math.round(log.date_unix / 1000)}>${log.user_id ? `\n🧍 User: <@${log.user_id}>` : ""}`;
     embed.fields = [(log.punishment ? toEmbedField(log.punishment) : undefined), 

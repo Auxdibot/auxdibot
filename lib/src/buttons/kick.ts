@@ -50,7 +50,7 @@ module.exports = <AuxdibotButton>{
                     date_unix: Date.now(),
                     type: LogType.KICK,
                     punishment: kickData
-                })
+                }, true)
                 return await interaction.reply({ embeds: [embed] });
             });
         }).catch(async () => {

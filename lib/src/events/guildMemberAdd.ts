@@ -40,6 +40,6 @@ module.exports = {
             description: `<@${member.id}> joined the server! (Total Members: **${member.guild.memberCount}**)`,
             type: LogType.MEMBER_JOIN,
             date_unix: Date.now()
-        })
+        }, true)
     }
 }

@@ -59,7 +59,7 @@ module.exports = <AuxdibotButton>{
             date_unix: Date.now(),
             type: LogType.UNMUTE,
             punishment: muted
-        })
+        }, true)
         return await interaction.reply({ embeds: [embed] });
     }
 }

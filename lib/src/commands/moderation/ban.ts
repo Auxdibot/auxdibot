@@ -91,7 +91,7 @@ const banCommand = <AuxdibotCommand>{
                     date_unix: Date.now(),
                     type: LogType.BAN,
                     punishment: banData
-                });
+                }, true);
                 return await interaction.reply({embeds: [embed]});
             });
         }).catch(async () => {

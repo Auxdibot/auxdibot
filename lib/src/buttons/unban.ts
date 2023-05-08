@@ -36,7 +36,7 @@ module.exports = <AuxdibotButton>{
             date_unix: Date.now(),
             type: LogType.UNBAN,
             punishment: banned
-        })
+        }, true)
         return await interaction.reply({ embeds: [embed] });
     }
 }
