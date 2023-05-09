@@ -1,6 +1,6 @@
 import {Guild} from "discord.js";
 import Server from "../mongo/model/server/Server";
-import {updateDiscordStatus} from "../modules/discord";
+import { IAuxdibot } from "../util/templates/IAuxdibot";
 
 module.exports = {
     name: 'guildDelete',
@@ -8,7 +8,8 @@ module.exports = {
     async execute(guild: Guild) {
         if (!guild) return;
         await Server.deleteByDiscordId(guild.id.toString());
-        await updateDiscordStatus()
+        let client: IAuxdibot = guild.client;
+        if (client.updateDiscordStatus) await client.updateDiscordStatus();
         return;
     }
 }
