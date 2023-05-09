@@ -9,6 +9,8 @@ import AuxdibotCommandInteraction from "../../util/templates/AuxdibotCommandInte
 import GuildAuxdibotCommandData from "../../util/types/commandData/GuildAuxdibotCommandData";
 import {LogType} from "../../util/types/Log";
 import emojiRegex from "emoji-regex";
+import createEmbedParameters from "../../util/functions/createEmbedParameters";
+import argumentsToEmbedParameters from "../../util/functions/argumentsToEmbedParameters";
 
 const reactionRolesCommand = <AuxdibotCommand>{
     data: new SlashCommandBuilder()
@@ -25,35 +27,14 @@ const reactionRolesCommand = <AuxdibotCommand>{
             .addStringOption(argBuilder => argBuilder.setName("title")
                 .setDescription("Title of the reaction roles."))
             )
-        .addSubcommand(builder => builder.setName("add_custom")
+        .addSubcommand(builder => createEmbedParameters(builder.setName("add_custom")
             .setDescription("Add a reaction role to the server.")
             .addChannelOption(argBuilder => argBuilder.setName("channel")
                 .setDescription("The channel to put the reaction role embed in.")
                 .setRequired(true))
             .addStringOption(argBuilder => argBuilder.setName("roles")
                 .setDescription("Space between emoji & role. (ex. [emoji] [role] [...emoji2] [...role2])")
-                .setRequired(true))
-            .addStringOption(option => option.setName("color")
-                .setDescription("The color of the Embed as a HEX color code.")
-                .setRequired(true))
-            .addStringOption(option => option.setName("title")
-                .setDescription("The title of the Embed.")
-                .setRequired(true))
-            .addStringOption(option => option.setName("description")
-                .setDescription("The description of the Embed. (Optional)"))
-            .addStringOption(option => option.setName("content")
-                .setDescription("The message content to send with the embed. (Optional)"))
-            .addStringOption(option => option.setName("author_text")
-                .setDescription("The author text of the Embed. (Optional)"))
-            .addStringOption(option => option.setName("fields")
-                .setDescription("Embed fields. \"Title|d|Description|s|Title|d|Description\" (Optional)"))
-            .addStringOption(option => option.setName("footer")
-                .setDescription("The footer text of the Embed. (Optional)"))
-            .addStringOption(option => option.setName("image_url")
-                .setDescription("The URL of the image for the Embed. (Optional)"))
-            .addStringOption(option => option.setName("thumbnail_url")
-                .setDescription("The URL of the thumbnail for the Embed. (Optional)"))
-        )
+                .setRequired(true))))
         .addSubcommand(builder => builder.setName("add_json")
             .setDescription("Add a reaction role to the server.")
             .addChannelOption(argBuilder => argBuilder.setName("channel")
@@ -69,29 +50,12 @@ const reactionRolesCommand = <AuxdibotCommand>{
         .addSubcommand(builder => builder.setName("remove").setDescription("Remove a reaction role from the server.")
             .addStringOption(argBuilder => argBuilder.setName("message_id").setDescription("The message id of the reaction role."))
             .addNumberOption(argBuilder => argBuilder.setName("index").setDescription("The index of the reaction role, which is the placement of the item on /reaction_roles list.")))
-        .addSubcommand(builder => builder.setName("edit").setDescription("Edit a reaction role embed on this server.")
+        .addSubcommand(builder => createEmbedParameters(builder.setName("edit").setDescription("Edit a reaction role embed on this server.")
             .addStringOption(argBuilder => argBuilder.setName("message_id").setDescription("The message id of the reaction role."))
             .addNumberOption(argBuilder => argBuilder.setName("index").setDescription("The index of the reaction role, which is the placement of the item on /reaction_roles list."))
-
-            .addStringOption(option => option.setName("color")
-                .setDescription("The color of the Embed as a HEX color code. (Optional)"))
-            .addStringOption(option => option.setName("title")
-                .setDescription("The title of the Embed. (Optional)"))
-            .addStringOption(option => option.setName("description")
-                .setDescription("The description of the Embed. (Optional)"))
-            .addStringOption(option => option.setName("author_text")
-                .setDescription("The author text of the Embed. (Optional)"))
-            .addStringOption(option => option.setName("fields")
-                .setDescription("Embed fields. ex. \"Title|d|Description|s|Title|d|Description\" (Optional)"))
-            .addStringOption(option => option.setName("footer")
-                .setDescription("The footer text of the Embed. (Optional)"))
-            .addStringOption(option => option.setName("image_url")
-                .setDescription("The URL of the image for the Embed. (Optional)"))
-            .addStringOption(option => option.setName("thumbnail_url")
-                .setDescription("The URL of the thumbnail for the Embed. (Optional)"))
             .addStringOption(argBuilder => argBuilder.setName("json")
                 .setDescription("The JSON for the Discord Embed attached to the reaction role. (overrides embed parameters)"))
-            )
+            ))
         .addSubcommand(builder => builder.setName("list").setDescription("List the reaction roles on this server.")),
     info: {
         help: {
@@ -173,28 +137,16 @@ const reactionRolesCommand = <AuxdibotCommand>{
                     commandCategory: "Roles",
                     name: "/reaction_roles add_custom",
                     description: "Add a reaction role to the server with custom Embed parameters.",
-                    usageExample: "/reaction_roles add_custom (channel) (roles) (color) (title) [author_text] [description] [fields (split title and description with `\"|d|\"``, and seperate fields with `\"|s|\"`)] [footer] [image url] [thumbnail url]"
+                    usageExample: "/reaction_roles add_custom (channel) (roles) [content] [color] [title] [title url] [author] [author icon url] [author url] [description] [fields (split title and description with `\"|d|\"``, and seperate fields with `\"|s|\"`)] [footer] [footer icon url] [image url] [thumbnail url]"
                 },
                 permission: "rr.add.custom"
             },
             async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
                 if (!interaction.data) return;
                 let channel = interaction.options.getChannel("channel"), roles = interaction.options.getString("roles"),
-                    color = interaction.options.getString("color"),
-                    title = interaction.options.getString("title")?.replace(/\\n/g, "\n"),
-                    description = interaction.options.getString("description")?.replace(/\\n/g, "\n") || null,
-                    content = interaction.options.getString("content")?.replace(/\\n/g, "\n") || "",
-                    author_text = interaction.options.getString("author_text")?.replace(/\\n/g, "\n") || null,
-                    fields = interaction.options.getString("fields")?.replace(/\\n/g, "\n") || null,
-                    footer = interaction.options.getString("footer")?.replace(/\\n/g, "\n") || null,
-                    image_url = interaction.options.getString("image_url") || null,
-                    thumbnail_url = interaction.options.getString("thumbnail_url") || null;
+                    content = interaction.options.getString("content")?.replace(/\\n/g, "\n") || "";
+                
                 let data = await interaction.data.guildData.fetchData();
-                if (!color || !/(#|)[0-9a-fA-F]{6}/.test(color)) {
-                    let error = Embeds.ERROR_EMBED.toJSON();
-                    error.description = "Invalid hex color code!";
-                    return await interaction.reply({ embeds: [Embeds.ERROR_EMBED.toJSON()] })
-                }
                 if (!channel || !roles) return;
                 if (channel.type != ChannelType.GuildText) {
                     let errorEmbed = Embeds.ERROR_EMBED.toJSON();
@@ -224,23 +176,9 @@ const reactionRolesCommand = <AuxdibotCommand>{
                     errorEmbed.description = "No reactions and roles found! Please use spaces between reactions and roles. (ex. [emoji] [role] [emoji2] [role2] ...)";
                     return await interaction.reply({ embeds: [errorEmbed] });
                 }
-
-                let parameters = <EmbedParameters>{
-                    color,
-                    title,
-                    description,
-                    author_text,
-                    fields: fields ? fields.split("|s|").map((field) => (<EmbedField>{ name: field.split("|d|")[0].replace(/\\n/g, "\n"), value: field.split("|d|")[1].replace(/\\n/g, "\n") })) : undefined,
-                    footer,
-                    thumbnail_url,
-                    image_url
-                };
-                let message = await channel.send({ content: content, embeds: [toAPIEmbed(JSON.parse(await parsePlaceholders(JSON.stringify(parameters), interaction.data.guild, interaction.member as GuildMember | undefined))) as APIEmbed] }).catch(() => undefined);
-                if (!message) {
-                    let embed = Embeds.ERROR_EMBED.toJSON();
-                    embed.description = `There was an error sending that embed!`;
-                    return await interaction.reply({ embeds: [embed] });
-                }
+                try {
+                let parameters = argumentsToEmbedParameters(interaction);
+                let message = await channel.send({ content: content, embeds: [toAPIEmbed(JSON.parse(await parsePlaceholders(JSON.stringify(parameters), interaction.data.guild, interaction.member as GuildMember | undefined))) as APIEmbed] });
                 reactionsAndRoles.forEach((item) => message ? message.react(item.emoji) : undefined);
                 data.addReactionRole({ message_id: message.id, reactions: reactionsAndRoles });
                 let successEmbed = Embeds.SUCCESS_EMBED.toJSON();
@@ -253,6 +191,11 @@ const reactionRolesCommand = <AuxdibotCommand>{
                     date_unix: Date.now()
                 })
                 return await interaction.reply({ embeds: [successEmbed] });
+                } catch (x) {
+                    let embed = Embeds.ERROR_EMBED.toJSON();
+                    embed.description = `There was an error sending that embed!`;
+                    return await interaction.reply({ embeds: [embed] });
+                }
             }
         },
         {
@@ -393,7 +336,7 @@ const reactionRolesCommand = <AuxdibotCommand>{
                     commandCategory: "Roles",
                     name: "/reaction_roles edit",
                     description: "Edit a reaction role on this server.",
-                    usageExample: "/reaction_roles edit [message_id] [index] (roles) [json, overrides embed parameters] [color] [title] [author_text] [description] [fields (split title and description with `\"|d|\"``, and seperate fields with `\"|s|\"`)] [footer] [image url] [thumbnail url]"
+                    usageExample: "/reaction_roles edit [message_id] [index] (roles) [json, overrides embed parameters] [content] [color] [title] [title url] [author] [author icon url] [author url] [description] [fields (split title and description with `\"|d|\"``, and seperate fields with `\"|s|\"`)] [footer] [footer icon url] [image url] [thumbnail url]"
                 },
                 permission: "rr.edit"
             },
@@ -402,14 +345,7 @@ const reactionRolesCommand = <AuxdibotCommand>{
                 let message_id = interaction.options.getString("message_id"),
                     index = interaction.options.getNumber("index"),
                     json = interaction.options.getString("json"),
-                    color = interaction.options.getString("color"),
-                    title = interaction.options.getString("title")?.replace(/\\n/g, "\n"),
-                    description = interaction.options.getString("description")?.replace(/\\n/g, "\n") || null,
-                    author_text = interaction.options.getString("author_text")?.replace(/\\n/g, "\n") || null,
-                    fields = interaction.options.getString("fields")?.replace(/\\n/g, "\n") || null,
-                    footer = interaction.options.getString("footer")?.replace(/\\n/g, "\n") || null,
-                    image_url = interaction.options.getString("image_url") || null,
-                    thumbnail_url = interaction.options.getString("thumbnail_url") || null;
+                    content = interaction.options.getString("content");
                 let data = await interaction.data.guildData.fetchData();
                 if (!message_id && !index) {
                     let embed = Embeds.ERROR_EMBED.toJSON();
@@ -430,7 +366,7 @@ const reactionRolesCommand = <AuxdibotCommand>{
                     return await interaction.reply({ embeds: [embed] });
                 }
                 if (json) {
-                    let messageEdit = await message.edit({ embeds: [JSON.parse(await parsePlaceholders(json || "", interaction.data.guild, interaction.member as GuildMember | undefined)) as APIEmbed]}).catch(() => undefined)
+                    let messageEdit = await message.edit({ ...(content ? {content} : {}), embeds: [JSON.parse(await parsePlaceholders(json || "", interaction.data.guild, interaction.member as GuildMember | undefined)) as APIEmbed]}).catch(() => undefined)
                     if (!messageEdit) {
                         let embed = Embeds.ERROR_EMBED.toJSON();
                         embed.description = `There was an error sending that embed!`;
@@ -447,23 +383,10 @@ const reactionRolesCommand = <AuxdibotCommand>{
                     })
                     return await interaction.reply({ embeds: [successEmbed] });
                 }
-                if (color && title) {
-                    if (!color || !/(#|)[0-9a-fA-F]{6}/.test(color)) {
-                        let error = Embeds.ERROR_EMBED.toJSON();
-                        error.description = "Invalid hex color code!";
-                        return await interaction.reply({ embeds: [Embeds.ERROR_EMBED.toJSON()] })
-                    }
-                    let parameters = <EmbedParameters>{
-                        color,
-                        title,
-                        description,
-                        author_text,
-                        fields: fields ? fields.split("|s|").map((field) => (<EmbedField>{ name: field.split("|d|")[0].replace(/\\n/g, "\n"), value: field.split("|d|")[1].replace(/\\n/g, "\n") })) : undefined,
-                        footer,
-                        thumbnail_url,
-                        image_url
-                    };
-                    let messageEdit = await message.edit({ embeds: [toAPIEmbed(JSON.parse(await parsePlaceholders(JSON.stringify(parameters), interaction.data.guild, interaction.member as GuildMember | undefined))) as APIEmbed] }).catch(() => undefined);
+
+                try {
+                    let parameters = argumentsToEmbedParameters(interaction);
+                    let messageEdit = await message.edit({ ...(content ? {content} : {}), embeds: [toAPIEmbed(JSON.parse(await parsePlaceholders(JSON.stringify(parameters), interaction.data.guild, interaction.member as GuildMember | undefined))) as APIEmbed] }).catch(() => undefined);
                     if (!messageEdit) {
                         let embed = Embeds.ERROR_EMBED.toJSON();
                         embed.description = `There was an error sending that embed!`;
@@ -479,10 +402,12 @@ const reactionRolesCommand = <AuxdibotCommand>{
                         date_unix: Date.now()
                     })
                     return await interaction.reply({ embeds: [successEmbed] });
+                } catch (x) {
+                    let embed = Embeds.ERROR_EMBED.toJSON();
+                    embed.description = `There was an error creating that embed!`;
+                    return await interaction.reply({ embeds: [embed] });
                 }
-                let embed = Embeds.ERROR_EMBED.toJSON();
-                embed.description = `Nothing happened.`;
-                return await interaction.reply({ embeds: [embed] });
+                
             }
         }],
     async execute() {
