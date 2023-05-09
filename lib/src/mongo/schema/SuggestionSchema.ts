@@ -12,6 +12,7 @@ export interface ISuggestion {
     discussion_thread_id?: string;
     handler_id?: string;
     date_unix: number;
+    handled_reason?: string;
 }
 
 let SuggestionSchema = new mongoose.Schema<ISuggestion>({
@@ -24,6 +25,7 @@ let SuggestionSchema = new mongoose.Schema<ISuggestion>({
     status: { type: Number, required: true },
     date_unix: { type: Number, required: true, default: Date.now() },
     handler_id: { type: String },
+    handled_reason: { type: String },
     discussion_thread_id: { type: String }
 });
 export default SuggestionSchema;

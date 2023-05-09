@@ -1,6 +1,6 @@
 {
   "name": "auxdibot-lib",
-  "version": "1.0.0-alpha.3",
+  "version": "1.0.0-alpha.4",
   "description": "Express API and Discord.js backend for Auxdibot.",
   "main": "index.js",
   "scripts": {
