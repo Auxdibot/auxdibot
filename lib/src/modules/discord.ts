@@ -43,11 +43,17 @@ export class AuxdibotClient {
 
         client.commands = new Collection();
         client.buttons = new Collection();
-        client.getMembers = function() {
-            return this.guilds.cache.reduce((acc, guild) => {
-                if (!guild.available) return acc;
-                return (acc+(guild.memberCount || 0));
-            } , 0);
+        client.getMembers = async function() {
+            return await this.guilds.cache.reduce(async (acc: Promise<number> | number, guild) => ((await acc)+((guild.memberCount || (await guild.fetch()).memberCount) || 0)), 0);
+        }
+        client.updateDiscordStatus = async function() {
+            if (this.user) return this.user.setPresence({
+                activities: [{
+                    type: ActivityType.Watching,
+                    name: `${this.guilds.cache.size} servers | ${this.getMembers ? await this.getMembers() : "0"} members`
+                }]
+            });
+            return undefined;
         }
         /********************************************************************************/
         // Declare commands
@@ -132,14 +138,7 @@ export class AuxdibotClient {
 
         client.login(TOKEN).then(() => {
             console.log("Auxdibot is loaded!")
-            if (client.user) {
-                client.user.setPresence({
-                    activities: [{
-                        type: ActivityType.Watching,
-                        name: `${client.guilds.cache.size} servers | ${client.getMembers ? client.getMembers() : "0"} members`
-                    }]
-                })
-            }
+            if (client.updateDiscordStatus) client.updateDiscordStatus();
             setInterval(async () => {
                 for (let guild of client.guilds.cache.values()) {
                     let server = await Server.findOrCreateServer(guild.id);
@@ -175,15 +174,4 @@ export class AuxdibotClient {
         this.client = client;
         return client;
     }
-}
-
-export const updateDiscordStatus = async () => {
-    let awaitClient = await client;
-    if (awaitClient.user) return awaitClient.user.setPresence({
-        activities: [{
-            type: ActivityType.Watching,
-            name: `${awaitClient.guilds.cache.size} servers | ${awaitClient.getMembers ? awaitClient.getMembers() : "0"} members`
-        }]
-    });
-    return false;
 }
