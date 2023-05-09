@@ -5,11 +5,14 @@ import {LogNames, LogType} from "../types/Log";
 import {ISuggestion} from "../../mongo/schema/SuggestionSchema";
 import {SuggestionStateName} from "../types/SuggestionState";
 
-export default async function parsePlaceholders(msg: string, guild?: Guild, member?: GuildMember, suggestion?: ISuggestion) {
+export default async function parsePlaceholders(msg: string, guild?: Guild, guildMember?: GuildMember, suggestion?: ISuggestion) {
 
     let server = guild ? await Server.findOrCreateServer(guild.id) : undefined;
     let data = server ? await server.fetchData() : undefined;
+    let member = guildMember;
+    if (suggestion?.creator_id && guild && guild.members.cache.get(suggestion.creator_id)) member = guild.members.cache.get(suggestion.creator_id);
     let latest_punishment = data && member ? data.userRecord(member.user.id).reverse()[0] : undefined;
+    
     const PLACEHOLDERS: any = {
         ...(guild ? {
             "server_members": guild.memberCount,
@@ -68,8 +71,8 @@ export default async function parsePlaceholders(msg: string, guild?: Guild, memb
             "suggestion_id": suggestion.suggestion_id,
             "suggestion_state": SuggestionStateName[suggestion.status],
             "suggestion_rating": suggestion.rating,
-            "suggestion_creator_mention": `<@${suggestion.creator_id}>`,
             "suggestion_handler_mention": suggestion.handler_id ? `<@${suggestion.handler_id}>` : "None",
+            "suggestion_handled_reason": suggestion.handled_reason || "No reason given.",
             "suggestion_content": suggestion.content,
             "suggestion_date": new Date(suggestion.date_unix).toDateString(),
             "suggestion_date_formatted": `<t:${Math.round(suggestion.date_unix / 1000)}>`,

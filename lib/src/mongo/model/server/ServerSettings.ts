@@ -21,6 +21,7 @@ export interface IServerSettings {
     suggestions_auto_delete: boolean;
     suggestions_reactions: ISuggestionReaction[];
     suggestions_embed?: APIEmbed;
+    suggestions_update_embed?: APIEmbed;
     suggestions_discussion_threads: boolean;
 }
 export interface IServerSettingsMethods {
@@ -63,7 +64,8 @@ export const ServerSettingsSchema = new mongoose.Schema<IServerSettings, IServer
     suggestions_updates_channel: { type: String },
     suggestions_auto_delete: { type: Boolean, default: false },
     suggestions_discussion_threads: { type: Boolean, default: true },
-    suggestions_embed: { type: Object, default: {"type":"rich","title":"Suggestion #%suggestion_id%","footer":{"text":"👍 Rating: %suggestion_rating%"},"description":"🧍 Created By: %suggestion_creator_mention%\n🕰️ Date: %suggestion_date_formatted%\n\n```%suggestion_content%```","color":6052956,"author":{"name":"%suggestion_state%"}} },
+    suggestions_embed: { type: Object, default: {"type":"rich","title":"Suggestion #%suggestion_id%","footer":{"text":"👍 Rating: %suggestion_rating%"},"description":"🕰️ Date: %suggestion_date_formatted%\n%suggestion_state%","fields":[{"value":"%suggestion_content%","name":"Suggestion","inline":false}],"color":6052956,"author":{"name":"%member_tag%","icon_url":"%member_avatar_128%"}}},
+    suggestions_update_embed: { type: Object, default: {"type":"rich","title":"%suggestion_state% Suggestion #%suggestion_id%","footer":{"text":"👍 Rating: %suggestion_rating%"},"fields":[{"value":"%suggestion_handled_reason%","name":"Reason","inline":false}],"description":"🕰️ Date: %suggestion_date_formatted%\n🧍 Handled by: %suggestion_handler_mention% \n\n%suggestion_content%","color":6052956,"author":{"name":"%member_tag%","icon_url":"%member_avatar_128%"}}},
     suggestions_reactions: { type: [SuggestionReactionSchema], default: [{emoji: "🔼", rating: 1},{emoji: "🟦", rating: 0},{emoji: "🔽", rating: -1}] }
 });
 

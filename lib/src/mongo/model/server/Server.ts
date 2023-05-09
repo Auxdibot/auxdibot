@@ -6,7 +6,7 @@ import ServerSettings , {IServerSettings, IServerSettingsMethods} from "./Server
 import ServerCounter, {IServerCounter, IServerCounterMethods} from "./ServerCounter";
 import {ILog} from "../../schema/LogSchema";
 import Embeds from "../../../util/constants/Embeds";
-import {APIEmbed, EmbedField, GuildBasedChannel, GuildMember, PermissionsBitField} from "discord.js";
+import {APIEmbed, EmbedField, Guild, GuildBasedChannel, GuildMember, PermissionsBitField} from "discord.js";
 import {IPunishment, PunishmentNames, toEmbedField} from "../../schema/PunishmentSchema";
 import {LogNames} from "../../../util/types/Log";
 import {client} from "../../../index";
@@ -216,8 +216,6 @@ ServerSchema.method("testPermission", async function(permission: string | undefi
 });
 ServerSchema.method("addSuggestion", async function (suggestion: ISuggestion) {
     let data: HydratedDocument<IServerData, IServerDataMethods> = await this.fetchData();
-    // todo log
-
     data.suggestions.push(suggestion);
     await data.save();
 })

@@ -17,7 +17,7 @@ async function stateCommand(interaction: AuxdibotCommandInteraction<GuildAuxdibo
     if (!interaction.data) return;
     let server = interaction.data.guildData;
     let data = await server.fetchData(), settings = await server.fetchSettings();
-    let id = interaction.options.getNumber("id");
+    let id = interaction.options.getNumber("id"), reason = interaction.options.getString("reason");
     let suggestion = data.suggestions.find((sugg) => sugg.suggestion_id == id);
     if (!suggestion) {
         let errorEmbed = Embeds.ERROR_EMBED.toJSON();
@@ -26,6 +26,8 @@ async function stateCommand(interaction: AuxdibotCommandInteraction<GuildAuxdibo
     }
 
     suggestion.status = state;
+    suggestion.handler_id = interaction.data.member.id;
+    suggestion.handled_reason = reason || undefined;
     let message_channel: GuildBasedChannel | undefined = suggestion.channel_id ? interaction.data.guild.channels.cache.get(suggestion.channel_id) : undefined;
     let message = suggestion.message_id ? message_channel && message_channel.isTextBased() ? message_channel.messages.cache.get(suggestion.message_id) : await getMessage(interaction.data.guild, suggestion.message_id) : undefined;
     if (!message) {
@@ -56,15 +58,15 @@ async function stateCommand(interaction: AuxdibotCommandInteraction<GuildAuxdibo
     if (settings.suggestions_updates_channel) {
         let channel = interaction.data.guild.channels.cache.get(settings.suggestions_updates_channel);
         if (channel && channel.isTextBased()) {
-            let embed = JSON.parse(await parsePlaceholders(JSON.stringify(settings.suggestions_embed), interaction.data.guild, interaction.data.member, suggestion)) as APIEmbed;
+            let embed = JSON.parse(await parsePlaceholders(JSON.stringify(settings.suggestions_update_embed), interaction.data.guild, interaction.data.member, suggestion)) as APIEmbed;
             embed.color = SuggestionsColors[suggestion.status];
-            await channel.send({ content: "A suggestion has been updated.", embeds: [embed] });
+            await channel.send({ embeds: [embed] });
         }
     }
     let successEmbed = Embeds.SUCCESS_EMBED.toJSON();
     successEmbed.title = "Successfully edited suggestion.";
     successEmbed.description = `The suggestion #${suggestion.suggestion_id} has been updated. (Now: ${SuggestionStateName[suggestion.status]})`;
-    return await interaction.reply({ embeds: [successEmbed] });
+    return await interaction.reply({ embeds: [successEmbed], ephemeral: true });
 }
 const suggestionsCommand = < AuxdibotCommand > {
     data: new SlashCommandBuilder()
@@ -88,13 +90,17 @@ const suggestionsCommand = < AuxdibotCommand > {
             .addStringOption(argBuilder => argBuilder.setName("reaction").setDescription("The reaction that is used ( ex. 👍)"))
             .addNumberOption(argBuilder => argBuilder.setName("index").setDescription("The index of the reaction on /suggestions reactions")))
         .addSubcommand(builder => builder.setName("approve").setDescription("Mark a suggestion as approved.")
-            .addNumberOption(argBuilder => argBuilder.setName("id").setDescription("The ID of the suggestion.").setRequired(true)))
+            .addNumberOption(argBuilder => argBuilder.setName("id").setDescription("The ID of the suggestion.").setRequired(true))
+            .addStringOption(argBuilder => argBuilder.setName("reason").setDescription("The reason you would like to specify for this action.")))
         .addSubcommand(builder => builder.setName("deny").setDescription("Mark a suggestion as denied.")
-            .addNumberOption(argBuilder => argBuilder.setName("id").setDescription("The ID of the suggestion.").setRequired(true)))
+            .addNumberOption(argBuilder => argBuilder.setName("id").setDescription("The ID of the suggestion.").setRequired(true))
+            .addStringOption(argBuilder => argBuilder.setName("reason").setDescription("The reason you would like to specify for this action.")))
         .addSubcommand(builder => builder.setName("consider").setDescription("Mark a suggestion as considered.")
-            .addNumberOption(argBuilder => argBuilder.setName("id").setDescription("The ID of the suggestion.").setRequired(true)))
+            .addNumberOption(argBuilder => argBuilder.setName("id").setDescription("The ID of the suggestion.").setRequired(true))
+            .addStringOption(argBuilder => argBuilder.setName("reason").setDescription("The reason you would like to specify for this action.")))
         .addSubcommand(builder => builder.setName("add").setDescription("Mark a suggestion as added.")
-            .addNumberOption(argBuilder => argBuilder.setName("id").setDescription("The ID of the suggestion.").setRequired(true)))
+            .addNumberOption(argBuilder => argBuilder.setName("id").setDescription("The ID of the suggestion.").setRequired(true))
+            .addStringOption(argBuilder => argBuilder.setName("reason").setDescription("The reason you would like to specify for this action.")))
         .addSubcommand(builder => builder.setName("ban").setDescription("Ban a user from using suggestions.")
             .addUserOption(argBuilder => argBuilder.setName("user").setDescription("The user to ban.").setRequired(true)))
         .addSubcommand(builder => builder.setName("unban").setDescription("Unban a user, allowing them to use suggestions.")
@@ -161,6 +167,7 @@ const suggestionsCommand = < AuxdibotCommand > {
             await interaction.reply({ ephemeral: true, embeds: [successEmbed] });
             return await suggestions_channel.send({ embeds: [JSON.parse(await parsePlaceholders(JSON.stringify(embed), interaction.data.guild, interaction.data.member, suggestion)) as APIEmbed]})
                 .then(async (msg) => {
+                    if (!interaction.data) return;
                     settings.suggestions_reactions.forEach((reaction) => msg.react(reaction.emoji));
                     suggestion.message_id = msg.id;
                     suggestion.channel_id = msg.channel.id;
@@ -169,6 +176,12 @@ const suggestionsCommand = < AuxdibotCommand > {
                         if (thread) suggestion.discussion_thread_id = thread.id;
                     }
                     await server.addSuggestion(suggestion);
+                    await server.log({
+                        user_id: interaction.data.member.id,
+                        description: `${interaction.data.member.user.tag} created Suggestion #${suggestion.suggestion_id}`,
+                        type: LogType.SUGGESTION_CREATED,
+                        date_unix: Date.now()
+                    });
                 }).catch(async () => {
                     let errorEmbed = Embeds.ERROR_EMBED.toJSON();
                     counter.suggestion_id = counter.suggestion_id - 1;
@@ -637,6 +650,12 @@ const suggestionsCommand = < AuxdibotCommand > {
                         await thread.setArchived(true, "Suggestion has been deleted.").catch(() => undefined);
                     }
                     await message.delete().catch(() => undefined);
+                    await server.log({
+                        user_id: interaction.data.member.id,
+                        description: `${interaction.data.member.user.tag} deleted Suggestion #${suggestion.suggestion_id}`,
+                        type: LogType.SUGGESTION_DELETED,
+                        date_unix: Date.now()
+                    });
                 }
                 data.removeSuggestion(suggestion.suggestion_id);
                 let successEmbed = Embeds.SUCCESS_EMBED.toJSON();
