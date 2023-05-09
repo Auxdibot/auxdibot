@@ -104,32 +104,26 @@ ServerSettingsSchema.method('setJoinLeaveChannel', function(join_leave_channel_i
 });
 ServerSettingsSchema.method('setJoinEmbed', function(join_embed: APIEmbed) {
     this.join_embed = join_embed;
-    this.save();
     return true;
 });
 ServerSettingsSchema.method('setJoinDMEmbed', function(join_dm_embed: APIEmbed) {
     this.join_dm_embed = join_dm_embed;
-    this.save();
     return true;
 });
 ServerSettingsSchema.method('setLeaveEmbed', function(leave_embed: APIEmbed) {
     this.leave_embed = leave_embed;
-    this.save();
     return true;
 });
 ServerSettingsSchema.method('setJoinText', function(join_text: String) {
     this.join_text = join_text;
-    this.save();
     return true;
 });
 ServerSettingsSchema.method('setJoinDMText', function(join_dm_text: String) {
     this.join_dm_text = join_dm_text;
-    this.save();
     return true;
 });
 ServerSettingsSchema.method('setLeaveText', function(leave_text: String) {
     this.leave_text = leave_text;
-    this.save();
     return true;
 });
 ServerSettingsSchema.method("addSuggestionsReaction", function(reaction: ISuggestionReaction) {

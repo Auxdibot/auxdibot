@@ -8,96 +8,66 @@ import parsePlaceholders from "../../util/functions/parsePlaceholder";
 import EmbedParameters, {toAPIEmbed} from "../../util/types/EmbedParameters";
 import AuxdibotCommandInteraction from "../../util/templates/AuxdibotCommandInteraction";
 import GuildAuxdibotCommandData from "../../util/types/commandData/GuildAuxdibotCommandData";
+import createEmbedParameters from "../../util/functions/createEmbedParameters";
+import argumentsToEmbedParameters from "../../util/functions/argumentsToEmbedParameters";
 
 const leaveCommand = <AuxdibotCommand>{
     data: new SlashCommandBuilder()
         .setName('leave')
         .setDescription('Change settings for leave messages on the server.')
-        .addSubcommand(builder => builder.setName('embed').setDescription('Display an embed (With placeholders)!')
-            .addStringOption(option => option.setName("color")
-                .setDescription("The color of the Embed as a HEX color code.")
-                .setRequired(true))
-            .addStringOption(option => option.setName("title")
-                .setDescription("The title of the Embed.")
-                .setRequired(true))
-            .addStringOption(option => option.setName("description")
-                .setDescription("The description of the Embed. (Optional)"))
-            .addStringOption(option => option.setName("author_text")
-                .setDescription("The author text of the Embed. (Optional)"))
-            .addStringOption(option => option.setName("fields")
-                .setDescription("Embed fields. \"Title|d|Description|s|Title|d|Description\" (Optional)"))
-            .addStringOption(option => option.setName("footer")
-                .setDescription("The footer text of the Embed. (Optional)"))
-            .addStringOption(option => option.setName("image_url")
-                .setDescription("The URL of the image for the Embed. (Optional)"))
-            .addStringOption(option => option.setName("thumbnail_url")
-                .setDescription("The URL of the thumbnail for the Embed. (Optional)")))
+        .addSubcommand(builder => createEmbedParameters(builder.setName('message').setDescription('Display an embed (With placeholders)!')))
         .addSubcommand(builder => builder.setName('embed_json').setDescription('Display some JSON as an embed (With placeholders)!')
             .addStringOption(option => option.setName("json")
             .setDescription("The JSON data to use for creating the Discord Embed.")
             .setRequired(true)))
-        .addSubcommand(builder => builder.setName("text").setDescription("Show text (With placeholders!)")
-            .addStringOption(option => option.setName("text")
-                .setDescription("The text to use when a member leaves the server")))
         .addSubcommand(builder => builder.setName('preview').setDescription('Preview the leave embed.')),
     info: {
         help: {
             commandCategory: "Settings",
             name: "/leave",
             description: "Change settings for leave messages on the server. (Placeholders are supported. Do /placeholders for a list of placeholders.)",
-            usageExample: "/leave (embed|embed_json|text)"
+            usageExample: "/leave (message|embed_json|preview)"
         },
         permission: "settings.leave"
     },
     subcommands: [{
-        name: "embed",
+        name: "message",
         info: {
             help: {
                 commandCategory: "Settings",
-                name: "/leave embed (color) (title) [author_text] [description] [fields (split title and description with `\"|d|\"``, and seperate fields with `\"|s|\"`)] [footer] [image url] [thumbnail url]",
-                description: "Add an embed to the leave message. (Placeholders are supported. Do /placeholders for a list of placeholders.)",
-                usageExample: "/leave embed"
+                name: "/leave message",
+                description: "Set the leave message. (Placeholders are supported. Do /placeholders for a list of placeholders.)",
+                usageExample: "/leave message (color) (title) [author_text] [description] [fields (split title and description with `\"|d|\"``, and seperate fields with `\"|s|\"`)] [footer] [image url] [thumbnail url]"
             },
-            permission: "settings.leave.embed"
+            permission: "settings.leave.message"
         },
         async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
             let settings = await interaction.data.guildData.fetchSettings();
-            let color = interaction.options.getString("color"),
-                title = interaction.options.getString("title")?.replace(/\\n/g, "\n"),
-                description = interaction.options.getString("description")?.replace(/\\n/g, "\n") || null,
-                author_text = interaction.options.getString("author_text")?.replace(/\\n/g, "\n") || null,
-                fields = interaction.options.getString("fields")?.replace(/\\n/g, "\n") || null,
-                footer = interaction.options.getString("footer")?.replace(/\\n/g, "\n") || null,
-                image_url = interaction.options.getString("image_url") || null,
-                thumbnail_url = interaction.options.getString("thumbnail_url") || null;
-            if (!color || !/(#|)[0-9a-fA-F]{6}/.test(color)) {
-                let error = Embeds.ERROR_EMBED.toJSON();
-                error.description = "Invalid hex color code!";
-                return await interaction.reply({ embeds: [Embeds.ERROR_EMBED.toJSON()] })
+            let content = interaction.options.getString("content");
+            let parameters = argumentsToEmbedParameters(interaction);
+            try {
+                settings.setLeaveEmbed(toAPIEmbed(parameters));
+                if (content) {
+                    settings.setLeaveText(content);
+                }
+                await settings.save();
+                let embed = Embeds.SUCCESS_EMBED.toJSON();
+                embed.title = "Success!";
+                embed.description = `Set the leave embed.`;
+                await interaction.reply({ embeds: [embed] });
+            } catch (x) {
+                let embed = Embeds.ERROR_EMBED.toJSON();
+                embed.description = "Couldn't make that embed!";
+                return await interaction.reply({ embeds: [embed] });
             }
-            let parameters = <EmbedParameters>{
-                color,
-                title,
-                description,
-                author_text,
-                fields: fields ? fields.split("|s|").map((field) => (<EmbedField>{ name: field.split("|d|")[0].replace(/\\n/g, "\n"), value: field.split("|d|")[1].replace(/\\n/g, "\n") })) : undefined,
-                footer,
-                thumbnail_url,
-                image_url
-            };
-            settings.setLeaveEmbed(toAPIEmbed(parameters));
-            let embed = Embeds.SUCCESS_EMBED.toJSON();
-            embed.title = "Success!";
-            embed.description = `Set the leave embed.`;
-
             if (interaction.channel && (interaction.channel as Channel).isTextBased()) {
                 try {
                     let channel = (interaction.channel) as TextChannel;
                     await channel.send({ content: "Here's a preview of the new leave embed!", embeds: [JSON.parse(await parsePlaceholders(JSON.stringify(settings.leave_embed), interaction.data.guild, interaction.data.member)) as APIEmbed] });
                 } catch (x) { }
             }
-            return await interaction.reply({ embeds: [embed] });
+            return; 
         }
     },
         {
@@ -105,11 +75,11 @@ const leaveCommand = <AuxdibotCommand>{
             info: {
                 help: {
                     commandCategory: "Settings",
-                    name: "/leave embed_json (json)",
+                    name: "/leave embed_json",
                     description: "Add an embed to the join message using custom JSON. (Placeholders are supported. Do /placeholders for a list of placeholders.)",
-                    usageExample: "/leave embed_json"
+                    usageExample: "/leave embed_json (json)"
                 },
-                permission: "settings.leave.embed.json"
+                permission: "settings.leave.embed_json"
             },
             async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
                 if (!interaction.data) return;
@@ -123,6 +93,7 @@ const leaveCommand = <AuxdibotCommand>{
                     return await interaction.reply({ embeds: [error] });
                 }
                 settings.setLeaveEmbed(jsonEmbed);
+                await settings.save();
                 let embed = Embeds.SUCCESS_EMBED.toJSON();
                 embed.title = "Success!";
                 embed.description = `Set the leave embed.`;
@@ -133,28 +104,6 @@ const leaveCommand = <AuxdibotCommand>{
                         await channel.send({ content: "Here's a preview of the new leave embed!", embeds: [JSON.parse(await parsePlaceholders(JSON.stringify(settings.leave_embed), interaction.data.guild, interaction.data.member)) as APIEmbed] });
                     } catch (x) { }
                 }
-                return await interaction.reply({ embeds: [embed] });
-            }
-        },
-        {
-            name: "text",
-            info: {
-                help: {
-                    commandCategory: "Settings",
-                    name: "/leave text (text)",
-                    description: "Add text to the join message.",
-                    usageExample: "/leave text"
-                },
-                permission: "settings.leave.text"
-            },
-            async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
-                if (!interaction.data) return;
-                let text = interaction.options.getString('text') || "";
-                let settings = await interaction.data.guildData.fetchSettings();
-                settings.setLeaveText(text);
-                let embed = Embeds.SUCCESS_EMBED.toJSON();
-                embed.title = "Success!";
-                embed.description = `Set the leave message text to "${settings.leave_text}".`;
                 return await interaction.reply({ embeds: [embed] });
             }
         },

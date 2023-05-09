@@ -4,6 +4,7 @@ import {
     Channel,
     Embed, EmbedAuthorOptions,
     EmbedField,
+    EmbedFooterOptions,
     Guild, GuildMember,
     SlashCommandBuilder,
 } from "discord.js";
@@ -15,37 +16,19 @@ import {getMessage} from "../../util/functions/getMessage";
 import parsePlaceholders from "../../util/functions/parsePlaceholder";
 import AuxdibotCommandInteraction from "../../util/templates/AuxdibotCommandInteraction";
 import GuildAuxdibotCommandData from "../../util/types/commandData/GuildAuxdibotCommandData";
+import createEmbedParameters from "../../util/functions/createEmbedParameters";
+import argumentsToEmbedParameters from "../../util/functions/argumentsToEmbedParameters";
 
 dotenv.config();
 const embedCommand = <AuxdibotCommand> {
     data: new SlashCommandBuilder()
         .setName('embed')
         .setDescription('Create or edit a Discord Embed with Auxdibot, as well as obtain the JSON data of any Embed.')
-        .addSubcommand(builder => builder.setName("create")
+        .addSubcommand(builder => createEmbedParameters(builder.setName("create")
             .setDescription("Create an embed with Auxdibot.")
             .addChannelOption(option => option.setName("channel")
                 .setDescription("The channel to post the embed in.")
-                .setRequired(true))
-            .addStringOption(option => option.setName("color")
-                .setDescription("The color of the Embed as a HEX color code.")
-                .setRequired(true))
-            .addStringOption(option => option.setName("title")
-                .setDescription("The title of the Embed.")
-                .setRequired(true))
-            .addStringOption(option => option.setName("content")
-                .setDescription("The message content to send with the embed."))
-            .addStringOption(option => option.setName("description")
-                .setDescription("The description of the Embed. (Optional)"))
-            .addStringOption(option => option.setName("author_text")
-                .setDescription("The author text of the Embed. (Optional)"))
-            .addStringOption(option => option.setName("fields")
-                .setDescription("Embed fields. \"Title|d|Description|s|Title|d|Description\" (Optional)"))
-            .addStringOption(option => option.setName("footer")
-                .setDescription("The footer text of the Embed. (Optional)"))
-            .addStringOption(option => option.setName("image_url")
-                .setDescription("The URL of the image for the Embed. (Optional)"))
-            .addStringOption(option => option.setName("thumbnail_url")
-                .setDescription("The URL of the thumbnail for the Embed. (Optional)")))
+                .setRequired(true))))
         .addSubcommand(builder => builder.setName("create_json")
             .setDescription("Create an embed with Auxdibot using valid Discord Embed JSON data.")
             .addChannelOption(option => option.setName("channel")
@@ -54,27 +37,11 @@ const embedCommand = <AuxdibotCommand> {
             .addStringOption(option => option.setName("json")
                 .setDescription("The JSON data to use for creating the Discord Embed.")
                 .setRequired(true)))
-        .addSubcommand(builder => builder.setName("edit")
+        .addSubcommand(builder => createEmbedParameters(builder.setName("edit")
             .setDescription("Edit an existing Embed by Auxdibot.")
             .addStringOption(option => option.setName("message_id")
                 .setDescription("The message ID of the Embed. (Copy ID of message with Developer Mode.)")
-                .setRequired(true))
-            .addStringOption(option => option.setName("color")
-                .setDescription("The color of the Embed as a HEX color code. (Optional)"))
-            .addStringOption(option => option.setName("title")
-                .setDescription("The title of the Embed. (Optional)"))
-            .addStringOption(option => option.setName("description")
-                .setDescription("The description of the Embed. (Optional)"))
-            .addStringOption(option => option.setName("author_text")
-                .setDescription("The author text of the Embed. (Optional)"))
-            .addStringOption(option => option.setName("fields")
-                .setDescription("Embed fields. ex. \"Title|d|Description|s|Title|d|Description\" (Optional)"))
-            .addStringOption(option => option.setName("footer")
-                .setDescription("The footer text of the Embed. (Optional)"))
-            .addStringOption(option => option.setName("image_url")
-                .setDescription("The URL of the image for the Embed. (Optional)"))
-            .addStringOption(option => option.setName("thumbnail_url")
-                .setDescription("The URL of the thumbnail for the Embed. (Optional)")))
+                .setRequired(true))))
         .addSubcommand(builder => builder.setName("edit_json")
             .setDescription("Edit an existing Embed by Auxdibot using valid Discord Embed JSON data.")
             .addStringOption(option => option.setName("message_id")
@@ -103,7 +70,7 @@ const embedCommand = <AuxdibotCommand> {
             help: {
                 commandCategory: "Embed",
                 name: "/embed create",
-                usageExample: "/embed create (channel) (color) (title) [author_text] [description] [content] [fields (split title and description with `\"|d|\"``, and seperate fields with `\"|s|\"`)] [footer] [image url] [thumbnail url]",
+                usageExample: "/embed create (channel) [content] [color] [title] [title url] [author] [author icon url] [author url] [description] [fields (split title and description with `\"|d|\"``, and seperate fields with `\"|s|\"`)] [footer] [footer icon url] [image url] [thumbnail url]",
                 description: "Create an embed with Auxdibot."
             },
             permission: "embed.create"
@@ -117,30 +84,8 @@ const embedCommand = <AuxdibotCommand> {
                 error.description = "This isn't a valid channel!";
                 return await interaction.reply({ embeds: [Embeds.ERROR_EMBED.toJSON()] })
             }
-            let color = interaction.options.getString("color"),
-                title = interaction.options.getString("title")?.replace(/\\n/g, "\n"),
-                description = interaction.options.getString("description")?.replace(/\\n/g, "\n") || null,
-                content = interaction.options.getString("content")?.replace(/\\n/g, "\n") || "",
-                author_text = interaction.options.getString("author_text")?.replace(/\\n/g, "\n") || null,
-                fields = interaction.options.getString("fields")?.replace(/\\n/g, "\n") || null,
-                footer = interaction.options.getString("footer")?.replace(/\\n/g, "\n") || null,
-                image_url = interaction.options.getString("image_url") || null,
-                thumbnail_url = interaction.options.getString("thumbnail_url") || null;
-            if (!color || !/(#|)[0-9a-fA-F]{6}/.test(color)) {
-                let error = Embeds.ERROR_EMBED.toJSON();
-                error.description = "Invalid hex color code!";
-                return await interaction.reply({ embeds: [Embeds.ERROR_EMBED.toJSON()] })
-            }
-            let parameters = <EmbedParameters>{
-                color,
-                title,
-                description,
-                author_text,
-                fields: fields ? fields.split("|s|").map((field) => (<EmbedField>{ name: field.split("|d|")[0].replace(/\\n/g, "\n"), value: field.split("|d|")[1].replace(/\\n/g, "\n") })) : undefined,
-                footer,
-                thumbnail_url,
-                image_url
-            };
+            let content = interaction.options.getString("content")?.replace(/\\n/g, "\n") || "";
+            let parameters = argumentsToEmbedParameters(interaction)
             try {
                 await channel.send({ content: content, embeds: [toAPIEmbed(JSON.parse(await parsePlaceholders(JSON.stringify(parameters), interaction.data.guild, interaction.data.member))) as APIEmbed] });
             } catch (x) {
@@ -198,7 +143,7 @@ const embedCommand = <AuxdibotCommand> {
             help: {
                 commandCategory: "Embed",
                 name: "/embed edit",
-                usageExample: "/embed edit (message_id) [color] [title] [author] [description] [fields (split title and description with `\"|d|\"``, and seperate fields with `\"|s|\"`)] [footer] [image url] [thumbnail url]",
+                usageExample: "/embed edit (message_id) [content] [color] [title] [title url] [author] [author icon url] [author url] [description] [fields (split title and description with `\"|d|\"``, and seperate fields with `\"|s|\"`)] [footer] [footer icon url] [image url] [thumbnail url]",
                 description: "Edit an existing Embed by Auxdibot."
             },
             permission: "embed.edit"
@@ -209,14 +154,8 @@ const embedCommand = <AuxdibotCommand> {
             if (!message_id) return;
             let guild: Guild = interaction.data.guild;
             let message = await getMessage(guild, message_id);
-            let color = interaction.options.getString("color"),
-                title = interaction.options.getString("title")?.replace(/\\n/g, "\n"),
-                description = interaction.options.getString("description")?.replace(/\\n/g, "\n") || null,
-                author_text = interaction.options.getString("author_text")?.replace(/\\n/g, "\n") || null,
-                fields = interaction.options.getString("fields")?.replace(/\\n/g, "\n") || null,
-                footer = interaction.options.getString("footer")?.replace(/\\n/g, "\n") || null,
-                image_url = interaction.options.getString("image_url") || null,
-                thumbnail_url = interaction.options.getString("thumbnail_url") || null;
+            let content = interaction.options.getString("content")?.replace(/\\n/g, "\n") || "";
+            let parameters = argumentsToEmbedParameters(interaction);
             if (!message) {
                 let error = Embeds.ERROR_EMBED.toJSON();
                 error.description = "Couldn't find that message!";
@@ -228,24 +167,26 @@ const embedCommand = <AuxdibotCommand> {
                 return await interaction.reply({embeds: [error]});
             }
 
-            if (color && !/(#|)[0-9a-fA-F]{6}/.test(color)) {
-                let error = Embeds.ERROR_EMBED.toJSON();
-                error.description = "Invalid hex color code!";
-                return await interaction.reply({ embeds: [Embeds.ERROR_EMBED.toJSON()] })
-            }
-            let embed = message.embeds[0].toJSON();
-            embed.title = title ? await parsePlaceholders(title) : embed.title;
-            embed.color = color ? parseInt("0x" + color.replaceAll("#", ""), 16) : embed.color;
-            embed.description = description ? await parsePlaceholders(description) : embed.description;
-            embed.author = author_text ? <EmbedAuthorOptions>{
-                name: await parsePlaceholders(author_text)
-            } : embed.author;
-            embed.fields = fields ? (await parsePlaceholders(fields)).split("|s|").map((field) => (<EmbedField>{ name: field.split("|d|")[0], value: field.split("|d|")[1] })) : embed.fields;
-            embed.footer = footer ? { text: await parsePlaceholders(footer) } : embed.footer;
-            embed.image = image_url ? { url: await parsePlaceholders(image_url) } : embed.image;
-            embed.thumbnail = thumbnail_url ? { url: await parsePlaceholders(thumbnail_url) } : embed.thumbnail;
             try {
-                await message.edit({ embeds: [embed] });
+                let embed = message.embeds[0].toJSON();
+                embed.url = parameters.title_url;
+                embed.title = parameters.title ? await parsePlaceholders(parameters.title) : embed.title;
+                embed.color = parameters.color ? parseInt("0x" + parameters.color.replaceAll("#", ""), 16) : embed.color;
+                embed.description = parameters.description ? await parsePlaceholders(parameters.description) : embed.description;
+                embed.author = parameters.author_text ? <EmbedAuthorOptions>{
+                    name: await parsePlaceholders(parameters.author_text),
+                    ...(parameters.author_url ? { url: parameters.author_url } : {}),
+                    ...(parameters.author_icon ? { iconURL: parameters.author_icon } : {})
+                } : embed.author;
+                embed.fields = parameters.fields || embed.fields;
+                embed.footer = parameters.footer_text ? <EmbedFooterOptions>{
+                    text: await parsePlaceholders(parameters.footer_text),
+                    ...(parameters.footer_icon ? { iconURL: parameters.footer_icon } : {})
+                } : embed.footer;
+                embed.image = parameters.image_url ? { url: await parsePlaceholders(parameters.image_url) } : embed.image;
+                embed.thumbnail = parameters.thumbnail_url ? { url: await parsePlaceholders(parameters.thumbnail_url) } : embed.thumbnail;
+            
+                await message.edit({ ...(content ? {content} : {}), embeds: [embed] });
             } catch (x) {
                 let embed = Embeds.ERROR_EMBED.toJSON();
                 embed.description = `There was an error sending that embed! (Auxdibot cannot edit this!)`;

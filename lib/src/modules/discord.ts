@@ -43,6 +43,12 @@ export class AuxdibotClient {
 
         client.commands = new Collection();
         client.buttons = new Collection();
+        client.getMembers = function() {
+            return this.guilds.cache.reduce((acc, guild) => {
+                if (!guild.available) return acc;
+                return (acc+(guild.memberCount || 0));
+            } , 0);
+        }
         /********************************************************************************/
         // Declare commands
 
@@ -130,7 +136,7 @@ export class AuxdibotClient {
                 client.user.setPresence({
                     activities: [{
                         type: ActivityType.Watching,
-                        name: `${client.guilds.cache.size} servers! (NEW! Roles)`
+                        name: `${client.guilds.cache.size} servers | ${client.getMembers ? client.getMembers() : "0"} members`
                     }]
                 })
             }
@@ -176,7 +182,7 @@ export const updateDiscordStatus = async () => {
     if (awaitClient.user) return awaitClient.user.setPresence({
         activities: [{
             type: ActivityType.Watching,
-            name: `${awaitClient.guilds.cache.size} servers! (NEW! Roles)`
+            name: `${awaitClient.guilds.cache.size} servers | ${awaitClient.getMembers ? awaitClient.getMembers() : "0"} members`
         }]
     });
     return false;
