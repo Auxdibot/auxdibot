@@ -18,6 +18,8 @@ export interface IServerSettings {
     join_roles: string[];
     sticky_roles: string[];
     level_rewards: ILevelReward[];
+    levelup_embed: APIEmbed;
+    message_xp: number;
     suggestions_channel?: string;
     suggestions_updates_channel?: string;
     suggestions_auto_delete: boolean;
@@ -63,6 +65,7 @@ export const ServerSettingsSchema = new mongoose.Schema<IServerSettings, IServer
     join_roles: { type: [String], default: [] },
     sticky_roles: { type: [String], default: [] },
     level_rewards: { type: [LevelRewardSchema], default: [] },
+    levelup_embed: { type: Object, default: {"type":"rich","title":"🏆 Level Up!","description":"%member_mention% levelled up.\n\n🏅 Experience Points: `%member_experience%`","color":15845147,"author":{"name":"%member_tag%","icon_url":"%member_avatar_128%"}} },
     suggestions_channel: { type: String },
     suggestions_updates_channel: { type: String },
     suggestions_auto_delete: { type: Boolean, default: false },
