@@ -2,7 +2,7 @@ import {GuildMember} from "discord.js";
 import mongoose, {Schema} from "mongoose";
 
 export interface IServerMember {
-    discord_id: String;
+    discord_id: string;
     server_id: mongoose.ObjectId;
     in_server: boolean;
     sticky_roles: string[];
@@ -12,6 +12,7 @@ export interface IServerMember {
 export interface IServerMemberMethods {
     leaveServer(member: GuildMember): Promise<boolean>;
     joinServer(member: GuildMember): Promise<boolean>;
+    getLevel(): number;
 }
 export interface IServerMemberModel extends mongoose.Model<IServerMember, {}, IServerMemberMethods> {
 
@@ -45,5 +46,6 @@ ServerMemberSchema.method("joinServer", async function(member: GuildMember): Pro
     await this.save();
     return true;
 });
+ServerMemberSchema.method("getLevel", function() { return Math.floor(Math.sqrt((this.experience-100)/10)) })
 const ServerMember = mongoose.model<IServerMember, IServerMemberModel>("server_member", ServerMemberSchema);
 export default ServerMember;
