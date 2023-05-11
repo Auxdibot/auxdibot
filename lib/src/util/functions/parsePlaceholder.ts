@@ -12,7 +12,7 @@ export default async function parsePlaceholders(msg: string, guild?: Guild, guil
     let member = guildMember;
     if (suggestion?.creator_id && guild && guild.members.cache.get(suggestion.creator_id)) member = guild.members.cache.get(suggestion.creator_id);
     let latest_punishment = data && member ? data.userRecord(member.user.id).reverse()[0] : undefined;
-    
+    let memberData = member && server ? await server.findOrCreateMember(member.id) : undefined;
     const PLACEHOLDERS: any = {
         ...(guild ? {
             "server_members": guild.memberCount,
@@ -57,6 +57,10 @@ export default async function parsePlaceholders(msg: string, guild?: Guild, guil
             "member_is_admin": member.permissions.has(PermissionsBitField.Flags.Administrator) ? "Yes" : "No",
             "member_avatar_512": member.user.avatarURL({ size: 512 }) || '',
             "member_avatar_128": member.user.avatarURL({ size: 128 }) || '',
+            ...(memberData ? {
+                "member_experience": memberData.experience.toLocaleString(),
+                "member_level": memberData.getLevel(),
+            } : {}),
             ...(data ? {
                 "member_total_punishments": data.userRecord(member.user.id).length,
                 "member_latest_punishment": latest_punishment ? PunishmentNames[latest_punishment.type as "warn" | "kick" | "mute" | "ban"].name : "None",

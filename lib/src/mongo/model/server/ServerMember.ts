@@ -46,6 +46,6 @@ ServerMemberSchema.method("joinServer", async function(member: GuildMember): Pro
     await this.save();
     return true;
 });
-ServerMemberSchema.method("getLevel", function() { return Math.floor(Math.sqrt((this.experience-100)/10)) })
+ServerMemberSchema.method("getLevel", function() { return Math.floor(Math.sqrt((this.experience-100)/30)) })
 const ServerMember = mongoose.model<IServerMember, IServerMemberModel>("server_member", ServerMemberSchema);
 export default ServerMember;

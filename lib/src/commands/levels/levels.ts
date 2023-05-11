@@ -14,14 +14,14 @@ const joinCommand = <AuxdibotCommand>{
         .addSubcommand(builder => builder.setName('remove_reward').setDescription('Remove a reward from the Level Rewards.')
         .addNumberOption(argBuilder => argBuilder.setName("level").setDescription("The level at which this reward is given.").setRequired(true)))
         .addSubcommand(builder => builder.setName('rewards').setDescription('View the Level Rewards for this server.'))
-        .addSubcommand(builder => builder.setName('give_exp').setDescription('Give a user experience points.')
-        .addNumberOption(argBuilder => argBuilder.setName("experience").setDescription("How much experience is given.").setRequired(true))
-        .addUserOption(argBuilder => argBuilder.setName("user").setDescription("The user to give the experience to.").setRequired(true)))
-        .addSubcommand(builder => builder.setName('remove_exp').setDescription('Remove experience points from a user.')
-        .addNumberOption(argBuilder => argBuilder.setName("experience").setDescription("How much experience is removed.").setRequired(true))
-        .addUserOption(argBuilder => argBuilder.setName("user").setDescription("The user to remove the experience from.").setRequired(true)))
-        .addSubcommand(builder => builder.setName('message_exp').setDescription('Set the amount of XP given for sending a message.')
-        .addNumberOption(argBuilder => argBuilder.setName("experience").setDescription("The amount of XP to give.").setRequired(true)))
+        .addSubcommand(builder => builder.setName('give_xp').setDescription('Give a user XP points.')
+        .addNumberOption(argBuilder => argBuilder.setName("xp").setDescription("How much XP is given.").setRequired(true))
+        .addUserOption(argBuilder => argBuilder.setName("user").setDescription("The user to give the XP to.").setRequired(true)))
+        .addSubcommand(builder => builder.setName('remove_xp').setDescription('Remove XP points from a user.')
+        .addNumberOption(argBuilder => argBuilder.setName("xp").setDescription("How much XP is removed.").setRequired(true))
+        .addUserOption(argBuilder => argBuilder.setName("user").setDescription("The user to remove the XP from.").setRequired(true)))
+        .addSubcommand(builder => builder.setName('message_xp').setDescription('Set the amount of XP given for sending a message.')
+        .addNumberOption(argBuilder => argBuilder.setName("xp").setDescription("The amount of XP to give.").setRequired(true)))
         ,
     info: {
         help: {
@@ -81,13 +81,13 @@ const joinCommand = <AuxdibotCommand>{
         }
     },
     {
-        name: "give_exp",
+        name: "give_xp",
         info: {
             help: {
                 commandCategory: "Levels",
-                name: "/levels give_exp",
-                description: "Give a user experience points.",
-                usageExample: "/levels give_exp (experience) (user)"
+                name: "/levels give_xp",
+                description: "Give a user XP points.",
+                usageExample: "/levels give_xp (xp) (user)"
             },
             permission: "levels.exp.give"
         },
@@ -97,15 +97,15 @@ const joinCommand = <AuxdibotCommand>{
         }
     },
     {
-        name: "remove_exp",
+        name: "remove_xp",
         info: {
             help: {
                 commandCategory: "Levels",
-                name: "/levels remove_exp",
-                description: "Remove experience points from a user.",
-                usageExample: "/levels remove_exp (experience) (user)"
+                name: "/levels remove_xp",
+                description: "Remove XP points from a user.",
+                usageExample: "/levels remove_exp (xp) (user)"
             },
-            permission: "levels.exp.remove"
+            permission: "levels.xp.remove"
         },
         async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
@@ -113,15 +113,15 @@ const joinCommand = <AuxdibotCommand>{
         }
     },
     {
-        name: "message_exp",
+        name: "message_xp",
         info: {
             help: {
                 commandCategory: "Levels",
-                name: "/levels message_exp",
+                name: "/levels message_xp",
                 description: "Set the amount of XP given for sending a message.",
-                usageExample: "/levels message_exp (experience)"
+                usageExample: "/levels message_xp (xp)"
             },
-            permission: "levels.message_exp"
+            permission: "levels.message_xp"
         },
         async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
