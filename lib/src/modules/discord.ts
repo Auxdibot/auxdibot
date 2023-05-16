@@ -64,7 +64,7 @@ export class AuxdibotClient {
         }).setToken(TOKEN);
 
         let commands = [];
-        const PACKAGES = ['general', 'moderation', 'settings', 'permissions', 'embeds', 'roles', 'suggestions'];
+        const PACKAGES = ['general', 'moderation', 'settings', 'permissions', 'embeds', 'roles', 'suggestions', 'levels'];
         let commandFiles = [{
             dir: "",
             files: fs.readdirSync(path.join(__dirname, "..", "commands")).filter(file => file.endsWith('.js'))

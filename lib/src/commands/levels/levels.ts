@@ -4,10 +4,12 @@ import {
 import AuxdibotCommand from "../../util/templates/AuxdibotCommand";
 import AuxdibotCommandInteraction from "../../util/templates/AuxdibotCommandInteraction";
 import GuildAuxdibotCommandData from "../../util/types/commandData/GuildAuxdibotCommandData";
+import Embeds from "../../util/constants/Embeds";
 const joinCommand = <AuxdibotCommand>{
     data: new SlashCommandBuilder()
         .setName('levels')
         .setDescription('Change settings for leveling on this server.')
+        .addSubcommand(builder => builder.setName('leaderboard').setDescription('View the leaderboard for this server.'))
         .addSubcommand(builder => builder.setName('add_reward').setDescription('Add a reward to the Level Rewards.')
         .addNumberOption(argBuilder => argBuilder.setName("level").setDescription("The level at which this reward is given.").setRequired(true))
         .addRoleOption(argBuilder => argBuilder.setName("role").setDescription("The role that is given.").setRequired(true)))
@@ -28,11 +30,39 @@ const joinCommand = <AuxdibotCommand>{
             commandCategory: "Levels",
             name: "/levels",
             description: "Change settings for leveling on this server.",
-            usageExample: "/levels (add_reward|rewards|remove_reward|give_exp|remove_exp|message_exp)"
+            usageExample: "/levels (leaderboard|add_reward|rewards|remove_reward|give_exp|remove_exp|message_exp)"
         },
         permission: "levels"
     },
-    subcommands: [{
+    subcommands: [
+        {
+            name: "leaderboard",
+            info: {
+                help: {
+                    commandCategory: "Levels",
+                    name: "/leaderboard",
+                    description: "View the top levelled members on this server.",
+                    usageExample: "/leaderboard"
+                },
+                allowedDefault: true,
+                permission: "levels.leaderboard"
+            },
+            async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+                if (!interaction.data) return;
+                let server = interaction.data.guildData;
+                let leaderboard = await server.createLeaderboard(20);
+                let embed = Embeds.LEVELS_EMBED.toJSON();
+                embed.title = "🎖️ Top Members";
+                let placement = 0;
+                embed.description = leaderboard.reduce((acc, xp, member) => {
+                    
+                    placement++;
+                    return acc+`**${placement}**) <@${member.discord_id}> - \`Level ${member.level}\` (\`${member.xp} XP\`)\n`
+                }, "");
+                return await interaction.reply({ embeds: [embed] });
+            }
+        },
+        {
         name: "add_reward",
         info: {
             help: {

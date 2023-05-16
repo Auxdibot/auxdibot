@@ -32,7 +32,7 @@ export interface IServerMethods {
     punish(punishment: IPunishment): Promise<APIEmbed | undefined>;
     testPermission(permission: string | undefined, executor: GuildMember, defaultAllowed: boolean): Promise<boolean>;
     addSuggestion(suggestion: ISuggestion): ISuggestion;
-    createLeaderboard(top?: number): LimitedCollection<string, number> | Collection<string, number>;
+    createLeaderboard(top?: number): LimitedCollection<HydratedDocument<IServerMember, IServerMemberMethods>, number> | Collection<HydratedDocument<IServerMember, IServerMemberMethods>, number>;
 }
 export interface IServerModel extends mongoose.Model<IServer, {}, IServerMethods> {
     findOrCreateServer(discord_id: String): Promise<mongoose.HydratedDocument<IServer, IServerMethods>>;
@@ -222,8 +222,8 @@ ServerSchema.method("addSuggestion", async function (suggestion: ISuggestion) {
 });
 ServerSchema.method("createLeaderboard", async function(top?: number) {
     let members: HydratedDocument<IServerMember, IServerMemberMethods>[] = await this.fetchMembers();
-    let leaderboard = members.reduce((acc: Collection<string, number>, member: HydratedDocument<IServerMember, IServerMemberMethods>) => {
-        return acc.set(member.discord_id, member.experience);
+    let leaderboard = members.reduce((acc: Collection<HydratedDocument<IServerMember, IServerMemberMethods>, number>, member: HydratedDocument<IServerMember, IServerMemberMethods>) => {
+        return acc.set(member, member.xp);
     }, new Collection()).sort((a,b) => b-a);
     return top ? new LimitedCollection({maxSize: top}, leaderboard) : leaderboard;
 })

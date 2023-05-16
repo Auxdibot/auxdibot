@@ -65,7 +65,7 @@ export const ServerSettingsSchema = new mongoose.Schema<IServerSettings, IServer
     join_roles: { type: [String], default: [] },
     sticky_roles: { type: [String], default: [] },
     level_rewards: { type: [LevelRewardSchema], default: [] },
-    levelup_embed: { type: Object, default: {"type":"rich","title":"🏆 Level Up!","description":"%member_mention% levelled up.\n\n🏅 Experience Points: `%member_experience% XP`\n\n🏆 %levelup%","color":15845147,"author":{"name":"%member_tag%","icon_url":"%member_avatar_128%"}} },
+    levelup_embed: { type: Object, default: {"type":"rich","title":"🏆 Level Up!","description":"%member_mention% levelled up.\n\n🏅 Experience: `%member_experience% XP`\n\n🏆 %levelup%","color":15845147,"author":{"name":"%member_tag%","icon_url":"%member_avatar_128%"}} },
     message_xp: { type: Number, default: 20 },
     suggestions_channel: { type: String },
     suggestions_updates_channel: { type: String },

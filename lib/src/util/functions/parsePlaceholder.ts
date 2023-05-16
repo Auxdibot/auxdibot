@@ -58,8 +58,9 @@ export default async function parsePlaceholders(msg: string, guild?: Guild, guil
             "member_avatar_512": member.user.avatarURL({ size: 512 }) || '',
             "member_avatar_128": member.user.avatarURL({ size: 128 }) || '',
             ...(memberData ? {
-                "member_experience": memberData.experience.toLocaleString(),
-                "member_level": memberData.getLevel(),
+                "member_experience": memberData.xp,
+                "member_level": memberData.level,
+                "member_xp_till": memberData.xpTill
             } : {}),
             ...(data ? {
                 "member_total_punishments": data.userRecord(member.user.id).length,
