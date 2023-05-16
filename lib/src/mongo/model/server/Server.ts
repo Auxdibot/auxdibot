@@ -6,7 +6,7 @@ import ServerSettings , {IServerSettings, IServerSettingsMethods} from "./Server
 import ServerCounter, {IServerCounter, IServerCounterMethods} from "./ServerCounter";
 import {ILog} from "../../schema/LogSchema";
 import Embeds from "../../../util/constants/Embeds";
-import {APIEmbed, EmbedField, Guild, GuildBasedChannel, GuildMember, PermissionsBitField} from "discord.js";
+import {APIEmbed, Collection, EmbedField, Guild, GuildBasedChannel, GuildMember, LimitedCollection, PermissionsBitField} from "discord.js";
 import {IPunishment, PunishmentNames, toEmbedField} from "../../schema/PunishmentSchema";
 import {LogNames} from "../../../util/types/Log";
 import {client} from "../../../index";
@@ -32,6 +32,7 @@ export interface IServerMethods {
     punish(punishment: IPunishment): Promise<APIEmbed | undefined>;
     testPermission(permission: string | undefined, executor: GuildMember, defaultAllowed: boolean): Promise<boolean>;
     addSuggestion(suggestion: ISuggestion): ISuggestion;
+    createLeaderboard(top?: number): LimitedCollection<HydratedDocument<IServerMember, IServerMemberMethods>, number> | Collection<HydratedDocument<IServerMember, IServerMemberMethods>, number>;
 }
 export interface IServerModel extends mongoose.Model<IServer, {}, IServerMethods> {
     findOrCreateServer(discord_id: String): Promise<mongoose.HydratedDocument<IServer, IServerMethods>>;
@@ -218,6 +219,13 @@ ServerSchema.method("addSuggestion", async function (suggestion: ISuggestion) {
     let data: HydratedDocument<IServerData, IServerDataMethods> = await this.fetchData();
     data.suggestions.push(suggestion);
     await data.save();
+});
+ServerSchema.method("createLeaderboard", async function(top?: number) {
+    let members: HydratedDocument<IServerMember, IServerMemberMethods>[] = await this.fetchMembers();
+    let leaderboard = members.reduce((acc: Collection<HydratedDocument<IServerMember, IServerMemberMethods>, number>, member: HydratedDocument<IServerMember, IServerMemberMethods>) => {
+        return acc.set(member, member.xp);
+    }, new Collection()).sort((a,b) => b-a);
+    return top ? new LimitedCollection({maxSize: top}, leaderboard) : leaderboard;
 })
 const Server = mongoose.model<IServer, IServerModel>("server", ServerSchema);
 export default Server;

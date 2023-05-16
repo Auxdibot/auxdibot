@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import {APIEmbed} from "discord.js";
 import SuggestionReactionSchema, {ISuggestionReaction} from "../../schema/SuggestionReactionSchema";
+import { ILevelReward, LevelRewardSchema } from "../../schema/LevelRewardSchema";
 
 export interface IServerSettings {
     _id: mongoose.ObjectId;
@@ -16,6 +17,9 @@ export interface IServerSettings {
     leave_text?: string;
     join_roles: string[];
     sticky_roles: string[];
+    level_rewards: ILevelReward[];
+    levelup_embed: APIEmbed;
+    message_xp: number;
     suggestions_channel?: string;
     suggestions_updates_channel?: string;
     suggestions_auto_delete: boolean;
@@ -60,6 +64,9 @@ export const ServerSettingsSchema = new mongoose.Schema<IServerSettings, IServer
     leave_text: { type: String, default: "Somebody left the server!" },
     join_roles: { type: [String], default: [] },
     sticky_roles: { type: [String], default: [] },
+    level_rewards: { type: [LevelRewardSchema], default: [] },
+    levelup_embed: { type: Object, default: {"type":"rich","title":"🏆 Level Up!","description":"%member_mention% levelled up.\n\n🏅 Experience: `%member_experience% XP`\n\n🏆 %levelup%","color":15845147,"author":{"name":"%member_tag%","icon_url":"%member_avatar_128%"}} },
+    message_xp: { type: Number, default: 20 },
     suggestions_channel: { type: String },
     suggestions_updates_channel: { type: String },
     suggestions_auto_delete: { type: Boolean, default: false },
