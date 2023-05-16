@@ -57,7 +57,6 @@ ServerMemberSchema.method("takeXP", function(xp: number) {
     this.xp -= xp;
     this.xpTill -= xp;
     while (this.xpTill < 0) {
-        console.log(this.level + " " + this.xpTill);
         this.level--, this.xpTill += calcXP(this.level);
     }
     
