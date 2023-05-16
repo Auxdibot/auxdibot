@@ -19,14 +19,17 @@ module.exports = {
         let level = member.level;
         let newLevel = member.addXP(settings.message_xp);
         await member.save();
-        
-        console.log(newLevel + level);
         if (newLevel > level) {
             try {
                 if (!message.guild || !message.member) return;
-                let embed = JSON.parse((await parsePlaceholders(JSON.stringify(settings.levelup_embed), message.guild, message.member)).replaceAll("%levelup%", ` \`Level ${level}\` -> \`Level ${newLevel}\` `));
+                let embed = JSON.parse((await parsePlaceholders(JSON.stringify(settings.levelup_embed), message.guild, message.member)).replaceAll("%levelup%", ` \`Level ${level.toLocaleString()}\` -> \`Level ${newLevel.toLocaleString()}\` `));
                 await message.reply({ embeds: [embed as APIEmbed] });
             } catch (x) { console.log(x); }
+            let reward = settings.level_rewards.find((reward) => reward.level == newLevel);
+            if (reward) {
+                let role = message.guild.roles.cache.get(reward.role_id);
+                if (role) sender.roles.add(role);
+            }
         }
 
     

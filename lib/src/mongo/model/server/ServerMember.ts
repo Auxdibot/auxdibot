@@ -56,13 +56,20 @@ ServerMemberSchema.method("joinServer", async function(member: GuildMember): Pro
 ServerMemberSchema.method("takeXP", function(xp: number) {
     this.xp -= xp;
     this.xpTill -= xp;
-    if (this.xpTill < 0) this.level--, this.xpTill += calcXP(this.level);
+    while (this.xpTill < 0) {
+        console.log(this.level + " " + this.xpTill);
+        this.level--, this.xpTill += calcXP(this.level);
+    }
+    
     return this.level;
 })
 ServerMemberSchema.method("addXP", function(xp: number) {
     this.xp += xp;
     this.xpTill += xp;
-    if (this.xpTill >= calcXP(this.level)) this.level++, this.xpTill = 0;
+    while (this.xpTill >= calcXP(this.level) ) {
+        this.xpTill -= calcXP(this.level), this.level++;
+    }
+    
     return this.level;
 })
 const ServerMember = mongoose.model<IServerMember, IServerMemberModel>("server_member", ServerMemberSchema);
