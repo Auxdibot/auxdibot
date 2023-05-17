@@ -161,7 +161,7 @@ ServerSchema.method("log", async function (log: ILog, use_user_thumbnail?: boole
 });
 ServerSchema.method("recordAsEmbed", async function (user_id: string) {
     let embed = Embeds.DEFAULT_EMBED.toJSON();
-    let record = (await this.fetchData()).userRecord(user_id);
+    let record = (await this.fetchData()).userRecord(user_id).reverse();
     embed.title = "📜 Record";
     embed.description = `This is the record for <@${user_id}>.\nWant to check more info about a punishment? Do \`/punishment view (id)\`.`
     embed.fields = [{

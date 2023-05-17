@@ -1,5 +1,6 @@
 import {
     Channel,
+    ChannelType,
     Role,
     SlashCommandBuilder
 } from "discord.js";
@@ -14,9 +15,9 @@ const settingsCommand = < AuxdibotCommand > {
         .setName('settings')
         .setDescription('Change settings for the server.')
         .addSubcommand(builder => builder.setName('log_channel').setDescription('Change the channel where log messages are broadcast.').addChannelOption(builder => builder.setName('channel')
-            .setDescription('The channel to broadcast all logs to.')))
+            .setDescription('The channel to broadcast all logs to.').addChannelTypes(ChannelType.GuildText)))
         .addSubcommand(builder => builder.setName('join_leave_channel').setDescription('Change the channel where join and leave messages are broadcast.').addChannelOption(builder => builder.setName('channel')
-            .setDescription('The channel to broadcast join and leave messages to.')))
+            .setDescription('The channel to broadcast join and leave messages to.').addChannelTypes(ChannelType.GuildText)))
         .addSubcommand(builder => builder.setName('mute_role').setDescription('Change the mute role for this server.').addRoleOption(builder => builder.setName('role')
             .setDescription('The role to apply when muted.')))
         .addSubcommand(builder => builder.setName("view").setDescription("View this server's settings.")),
@@ -86,16 +87,8 @@ const settingsCommand = < AuxdibotCommand > {
             },
             async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
                 if (!interaction.data) return;
-                const channel: Channel | null = interaction.options.getChannel('channel');
+                const channel = interaction.options.getChannel('channel', true, [ChannelType.GuildText]);
                 let settings = await interaction.data.guildData.fetchSettings();
-                
-                if (channel && (!channel.isTextBased() || channel.isDMBased() || channel.isThread() || channel.isVoiceBased())) {
-                    let error = Embeds.ERROR_EMBED.toJSON();
-                    error.description = "This isn't a text channel! Please set the log channel to be a Discord **Text Channel**.";
-                    return await interaction.reply({
-                        embeds: [error]
-                    });
-                }
                 let embed = Embeds.SUCCESS_EMBED.toJSON();
                 embed.title = "⚙️ Log Channel Change";
 
@@ -136,16 +129,8 @@ const settingsCommand = < AuxdibotCommand > {
             },
             async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
                 if (!interaction.data) return;
-                const channel: Channel | null = interaction.options.getChannel('channel');
+                const channel = interaction.options.getChannel('channel', true, [ChannelType.GuildText]);
                 let settings = await interaction.data.guildData.fetchSettings();
-                
-                if (channel && (!channel.isTextBased() || channel.isDMBased() || channel.isThread() || channel.isVoiceBased())) {
-                    let error = Embeds.ERROR_EMBED.toJSON();
-                    error.description = "This isn't a text channel! Please set the join/leave channel to be a Discord **Text Channel**.";
-                    return await interaction.reply({
-                        embeds: [error]
-                    });
-                }
                 let embed = Embeds.SUCCESS_EMBED.toJSON();
                 embed.title = "⚙️ Join/Leave Channel Change";
                 let formerChannel = interaction.data.guild.channels.resolve(settings.join_leave_channel || "");
@@ -185,9 +170,9 @@ const settingsCommand = < AuxdibotCommand > {
             },
             async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
                 if (!interaction.data) return;
-                const role = interaction.options.getRole('role');
+                const role = interaction.options.getRole('role', true);
                 let settings = await interaction.data.guildData.fetchSettings();
-                if (role && interaction.data.member.id != interaction.data.guild.ownerId && interaction.data.guild.roles.comparePositions(interaction.data.member.roles.highest, role.id) <= 0) {
+                if (interaction.data.member.id != interaction.data.guild.ownerId && interaction.data.guild.roles.comparePositions(interaction.data.member.roles.highest, role.id) <= 0) {
                     let noPermissionEmbed = Embeds.DENIED_EMBED.toJSON();
                     noPermissionEmbed.title = "⛔ No Permission!"
                     noPermissionEmbed.description = `This role is higher than yours!`
@@ -195,7 +180,7 @@ const settingsCommand = < AuxdibotCommand > {
                         embeds: [noPermissionEmbed]
                     });
                 }
-                if (role && interaction.data.guild.roles.comparePositions(interaction.data.member.roles.highest, role.id) <= 0) {
+                if (interaction.data.guild.roles.comparePositions(interaction.data.member.roles.highest, role.id) <= 0) {
                     let noPermissionEmbed = Embeds.DENIED_EMBED.toJSON();
                     noPermissionEmbed.title = "⛔ No Permission!"
                     noPermissionEmbed.description = `This role is higher up on the role hierarchy than Auxdibot's roles!`
@@ -205,25 +190,25 @@ const settingsCommand = < AuxdibotCommand > {
                 }
                 let embed = Embeds.SUCCESS_EMBED.toJSON();
                 embed.title = "⚙️ Mute Role Change";
-
-                let formerRole = interaction.data.guild.roles.resolve(settings.mute_role || "");
-                if (role && role.id == settings.mute_role || !role && role == settings.mute_role) {
+                if (role.id == settings.mute_role) {
                     embed.description = `Nothing changed. Mute role is the same as one specified in settings.`;
                     return await interaction.reply({
                         embeds: [embed]
                     });
                 }
-                if (role && role instanceof Role) {
-                    await role.setPermissions([], "Clearing all permissions.")
+                let formerRole = interaction.data.guild.roles.cache.get(settings.mute_role || ""), 
+                guildRole = interaction.data.guild.roles.cache.get(role.id);
+                if (guildRole) {
+                    await guildRole.setPermissions([], "Clearing all permissions.")
                         .catch(() => {});
                     interaction.data.guild.channels.cache.forEach(r => {
-                        if (r.isDMBased() || r.isThread()) return;
-                        r.permissionOverwrites.create(role, {
+                        if ((r.isDMBased() || r.isThread()) || !guildRole) return;
+                        r.permissionOverwrites.create(guildRole, {
                             SendMessages: false,
                             SendMessagesInThreads: false,
                             AddReactions: false
                         })
-                        if (r.isVoiceBased()) r.permissionOverwrites.create(role, {
+                        if (r.isVoiceBased()) r.permissionOverwrites.create(guildRole, {
                             Connect: false,
                         })
                     });
@@ -235,11 +220,11 @@ const settingsCommand = < AuxdibotCommand > {
                     description: "The mute role for this server has been changed.",
                     mute_role: {
                         former: formerRole ? formerRole.id : undefined,
-                        now: role ? role.id : "None"
+                        now: role.id
                     }
                 });
-                settings.setMuteRole(role ? role.id : undefined);
-                embed.description = `The mute role for this server has been changed.\r\n\r\nFormerly: ${formerRole ? `<@&${formerRole.id}>` : "None"}\r\n\r\nNow: ${role || "None"}`;
+                settings.setMuteRole(role.id);
+                embed.description = `The mute role for this server has been changed.\r\n\r\nFormerly: ${formerRole ? `<@&${formerRole.id}>` : "None"}\r\n\r\nNow: <@&${role.id}>`;
                 return await interaction.reply({
                     embeds: [embed]
                 })

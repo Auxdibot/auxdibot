@@ -54,31 +54,26 @@ const permissionsCommand = <AuxdibotCommand>{
             help: {
                 commandCategory: "Permissions",
                 name: "/permissions view",
-                description: "Edit, view, or delete permission overrides.",
-                usageExample: "/permissions view [override_id]"
+                description: "View a permission override.",
+                usageExample: "/permissions view (override_id)"
             },
             permission: "permissions.view"
         },
         async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
-            let override_id = interaction.options.getNumber("override_id");
+            let override_id = interaction.options.getNumber("override_id", true);
             let data = await interaction.data.guildData.fetchData();
-            if (override_id) {
-                let permission = data.permission_overrides[override_id - 1];
-                if (permission) {
-                    let embed = Embeds.SUCCESS_EMBED.toJSON();
-                    embed.title = `✋ Permission Override (OID: ${override_id + 1})`;
-                    embed.description = "";
-                    embed.fields = [{
-                        name: "Permission Override",
-                        value: `${permission.allowed ? "✅" : "❎"} \`${permission.permission}\` - ${permission.role_id ? `<@&${permission.role_id}>` : permission.user_id ? `<@${permission.user_id}>` : ""}`
-                    }];
-                    return await interaction.reply({ embeds: [embed] });
-                }
+            let permission = data.permission_overrides[override_id - 1];
+            if (permission) {
+                let embed = Embeds.SUCCESS_EMBED.toJSON();
+                embed.title = `✋ Permission Override (OID: ${override_id + 1})`;
+                embed.description = "";
+                embed.fields = [{
+                    name: "Permission Override",
+                    value: `${permission.allowed ? "✅" : "❎"} \`${permission.permission}\` - ${permission.role_id ? `<@&${permission.role_id}>` : permission.user_id ? `<@${permission.user_id}>` : ""}`
+                }];
+                return await interaction.reply({ embeds: [embed] });
             }
-            let embed = Embeds.ERROR_EMBED.toJSON();
-            embed.description = "Couldn't find that permission override!";
-            return await interaction.reply({ embeds: [embed] })
         }
     },
         {
@@ -87,7 +82,7 @@ const permissionsCommand = <AuxdibotCommand>{
                 help: {
                     commandCategory: "Permissions",
                     name: "/permissions create",
-                    description: "Create a permission override",
+                    description: "Create a permission override.",
                     usageExample: "/permissions create (permission) (role|user) (allowed)"
                 },
                 permission: "permissions.create"
@@ -95,13 +90,13 @@ const permissionsCommand = <AuxdibotCommand>{
             async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
                 if (!interaction.data) return;
                 const user = interaction.options.getUser('user'),
-                    permission = interaction.options.getString('permission'),
+                    permission = interaction.options.getString('permission', true),
                     role = interaction.options.getRole('role'),
-                    allowed = interaction.options.getBoolean('allowed');
+                    allowed = interaction.options.getBoolean('allowed', true);
                 let data = await interaction.data.guildData.fetchData();
-                if (!permission || allowed == null || (!role && !user)) {
+                if (!role && !user) {
                     let errorEmbed = Embeds.ERROR_EMBED.toJSON();
-                    errorEmbed.description = "No arguments provided!";
+                    errorEmbed.description = "No arguments provided for the role or user!";
                     return await interaction.reply({ embeds: [errorEmbed] });
                 }
 
@@ -137,38 +132,33 @@ const permissionsCommand = <AuxdibotCommand>{
                     commandCategory: "Permissions",
                     name: "/permissions delete",
                     description: "Delete a permission override.",
-                    usageExample: "/permissions delete [override_id]"
+                    usageExample: "/permissions delete (override_id)"
                 },
                 permission: "permissions.delete"
             },
             async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
                 if (!interaction.data) return;
-                let override_id = interaction.options.getNumber("override_id");
+                let override_id = interaction.options.getNumber("override_id", true);
                 let data = await interaction.data.guildData.fetchData();
-                if (override_id) {
-                    let permission = data.permission_overrides[override_id - 1];
-                    if (permission) {
-                        data.removePermissionOverride(override_id-1);
-                        let embed = Embeds.SUCCESS_EMBED.toJSON();
-                        embed.title = "✋ Deleted Permission Override";
-                        embed.description = `Deleted permission override with override id \`${override_id}\`.`
-                        embed.fields = [{
-                            name: "Permission Override",
-                            value: `${permission.allowed ? "✅" : "❎"} \`${permission.permission}\` - ${permission.role_id ? `<@&${permission.role_id}>` : permission.user_id ? `<@${permission.user_id}>` : ""}`
-                        }];
-                        await interaction.data.guildData.log({
-                            type: LogType.PERMISSION_DELETED,
-                            permission_override: permission,
-                            date_unix: Date.now(),
-                            user_id: interaction.user.id,
-                            description: `${interaction.user.tag} deleted a permission override. (OID: ${override_id})`
-                        });
-                        return await interaction.reply({ embeds: [embed] });
-                    }
+                let permission = data.permission_overrides[override_id - 1];
+                if (permission) {
+                    data.removePermissionOverride(override_id-1);
+                    let embed = Embeds.SUCCESS_EMBED.toJSON();
+                    embed.title = "✋ Deleted Permission Override";
+                    embed.description = `Deleted permission override with override id \`${override_id}\`.`
+                    embed.fields = [{
+                        name: "Permission Override",
+                        value: `${permission.allowed ? "✅" : "❎"} \`${permission.permission}\` - ${permission.role_id ? `<@&${permission.role_id}>` : permission.user_id ? `<@${permission.user_id}>` : ""}`
+                    }];
+                    await interaction.data.guildData.log({
+                        type: LogType.PERMISSION_DELETED,
+                        permission_override: permission,
+                        date_unix: Date.now(),
+                        user_id: interaction.user.id,
+                        description: `${interaction.user.tag} deleted a permission override. (OID: ${override_id})`
+                    });
+                    return await interaction.reply({ embeds: [embed] });
                 }
-                let embed = Embeds.ERROR_EMBED.toJSON();
-                embed.description = "Couldn't find that permission override!";
-                return await interaction.reply({ embeds: [Embeds.ERROR_EMBED.toJSON()] })
             }
         },
         {

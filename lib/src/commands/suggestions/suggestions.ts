@@ -1,4 +1,4 @@
-import {APIEmbed, Channel, GuildBasedChannel, SlashCommandBuilder, TextChannel} from "discord.js";
+import {APIEmbed, Channel, ChannelType, GuildBasedChannel, SlashCommandBuilder, TextChannel} from "discord.js";
 import AuxdibotCommand from "../../util/templates/AuxdibotCommand";
 import AuxdibotCommandInteraction from "../../util/templates/AuxdibotCommandInteraction";
 import GuildAuxdibotCommandData from "../../util/types/commandData/GuildAuxdibotCommandData";
@@ -75,9 +75,9 @@ const suggestionsCommand = < AuxdibotCommand > {
         .addSubcommand(builder => builder.setName("create").setDescription("Create a new suggestion.")
             .addStringOption(argBuilder => argBuilder.setName("suggestion").setDescription("The suggestion you want to make for this server.").setRequired(true)))
         .addSubcommand(builder => builder.setName("channel").setDescription("Change the channel where suggestions are posted.")
-            .addChannelOption(argBuilder => argBuilder.setName("channel").setDescription("The channel to post suggestions in.")))
+            .addChannelOption(argBuilder => argBuilder.setName("channel").setDescription("The channel to post suggestions in.").addChannelTypes(ChannelType.GuildText)))
         .addSubcommand(builder => builder.setName("updates_channel").setDescription("Change the channel where updates to suggestions are posted.")
-            .addChannelOption(argBuilder => argBuilder.setName("channel").setDescription("The channel to post suggestion updates in.")))
+            .addChannelOption(argBuilder => argBuilder.setName("channel").setDescription("The channel to post suggestion updates in.").addChannelTypes(ChannelType.GuildText)))
         .addSubcommand(builder => builder.setName("auto_delete").setDescription("Set whether suggestions are deleted upon being approved, denied, or marked as added.")
             .addBooleanOption(argBuilder => argBuilder.setName("delete").setDescription("Whether to delete suggestions upon being approved, denied or marked as added.").setRequired(true)))
         .addSubcommand(builder => builder.setName("discussion_threads").setDescription("Set whether a discussion thread is created when a suggestion is created.")
@@ -132,9 +132,8 @@ const suggestionsCommand = < AuxdibotCommand > {
             if (!interaction.data) return;
             let server = interaction.data.guildData;
             let settings = await server.fetchSettings(), counter = await server.fetchCounter();
-            let content = interaction.options.getString("suggestion");
+            let content = interaction.options.getString("suggestion", true);
             let member = await server.findOrCreateMember(interaction.data.member.id);
-            if (!content) return;
             if (member && member.suggestions_banned) {
                 let errorEmbed = Embeds.ERROR_EMBED.toJSON();
                 errorEmbed.description = "You are banned from making suggestions!";
@@ -143,10 +142,9 @@ const suggestionsCommand = < AuxdibotCommand > {
             let suggestions_channel = settings.suggestions_channel ? await interaction.data.guild.channels.fetch(settings.suggestions_channel) : undefined;
             if (!suggestions_channel || !suggestions_channel.isTextBased()) {
                 let errorEmbed = Embeds.ERROR_EMBED.toJSON();
-                errorEmbed.description = "No suggestions channel was found! Ask an admin to enable suggestions by setting a suggestions channel.";
+                errorEmbed.description = "No working suggestions channel was found! Ask an admin to enable suggestions by setting a suggestions channel.";
                 return await interaction.reply({ embeds: [errorEmbed] });
             }
-            suggestions_channel = (suggestions_channel as TextChannel);
             if (!settings.suggestions_embed || settings.suggestions_reactions.length < 1) {
                 let errorEmbed = Embeds.ERROR_EMBED.toJSON();
                 errorEmbed.description = "No suggestions reactions or suggestions embed could be found!";
@@ -198,22 +196,14 @@ const suggestionsCommand = < AuxdibotCommand > {
                     commandCategory: "Suggestions",
                     name: "/suggestions channel",
                     description: "Change the channel where suggestions are posted. (None to disable.)",
-                    usageExample: "/suggestions channel (channel)"
+                    usageExample: "/suggestions channel [channel]"
                 },
                 permission: "suggestions.channel"
             },
             async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
                 if (!interaction.data) return;
-                const channel: Channel | null = interaction.options.getChannel('channel');
+                const channel = interaction.options.getChannel('channel', false, [ChannelType.GuildText]);
                 let settings = await interaction.data.guildData.fetchSettings();
-                
-                if (channel && (!channel.isTextBased() || channel.isDMBased() || channel.isThread() || channel.isVoiceBased())) {
-                    let error = Embeds.ERROR_EMBED.toJSON();
-                    error.description = "This isn't a text channel! Please set the log channel to be a Discord **Text Channel**.";
-                    return await interaction.reply({
-                        embeds: [error]
-                    });
-                }
                 let embed = Embeds.SUCCESS_EMBED.toJSON();
                 embed.title = "⚙️ Suggestions Channel Changed";
 
@@ -256,16 +246,8 @@ const suggestionsCommand = < AuxdibotCommand > {
             },
             async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
                 if (!interaction.data) return;
-                const channel: Channel | null = interaction.options.getChannel('channel');
+                const channel = interaction.options.getChannel('channel', false, [ChannelType.GuildText]);
                 let settings = await interaction.data.guildData.fetchSettings();
-                
-                if (channel && (!channel.isTextBased() || channel.isDMBased() || channel.isThread() || channel.isVoiceBased())) {
-                    let error = Embeds.ERROR_EMBED.toJSON();
-                    error.description = "This isn't a text channel! Please set the log channel to be a Discord **Text Channel**.";
-                    return await interaction.reply({
-                        embeds: [error]
-                    });
-                }
                 let embed = Embeds.SUCCESS_EMBED.toJSON();
                 embed.title = "⚙️ Suggestions Updates Channel Changed";
 
@@ -308,7 +290,7 @@ const suggestionsCommand = < AuxdibotCommand > {
             },
             async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
                 if (!interaction.data) return;
-                const deleteBool: boolean | null = interaction.options.getBoolean('delete');
+                const deleteBool = interaction.options.getBoolean('delete');
                 let settings = await interaction.data.guildData.fetchSettings();
                 if (deleteBool == null) return await interaction.reply({
                     embeds: [Embeds.ERROR_EMBED.toJSON()]
@@ -351,7 +333,7 @@ const suggestionsCommand = < AuxdibotCommand > {
             },
             async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
                 if (!interaction.data) return;
-                const create_thread: boolean | null = interaction.options.getBoolean('create_thread');
+                const create_thread = interaction.options.getBoolean('create_thread');
                 let settings = await interaction.data.guildData.fetchSettings();
                 if (create_thread == null) return await interaction.reply({
                     embeds: [Embeds.ERROR_EMBED.toJSON()]
@@ -540,8 +522,7 @@ const suggestionsCommand = < AuxdibotCommand > {
             async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
                 if (!interaction.data) return;
                 let server = interaction.data.guildData;
-                let user = interaction.options.getUser("user");
-                if (!user) return;
+                let user = interaction.options.getUser("user", true);
                 let executed = interaction.data.guild.members.cache.get(user.id);
                 if (!executed) {
                     let errorEmbed = Embeds.ERROR_EMBED.toJSON();
@@ -587,8 +568,7 @@ const suggestionsCommand = < AuxdibotCommand > {
             async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
                 if (!interaction.data) return;
                 let server = interaction.data.guildData;
-                let user = interaction.options.getUser("user");
-                if (!user) return;
+                let user = interaction.options.getUser("user", true);
                 let executed = interaction.data.guild.members.cache.get(user.id);
                 if (!executed) {
                     let errorEmbed = Embeds.ERROR_EMBED.toJSON();
@@ -635,7 +615,7 @@ const suggestionsCommand = < AuxdibotCommand > {
                 if (!interaction.data) return;
                 let server = interaction.data.guildData;
                 let data = await server.fetchData();
-                let id = interaction.options.getNumber("id");
+                let id = interaction.options.getNumber("id", true);
                 let suggestion = data.suggestions.find((sugg) => sugg.suggestion_id == id);
                 if (!suggestion) {
                     let errorEmbed = Embeds.ERROR_EMBED.toJSON();

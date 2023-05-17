@@ -16,7 +16,7 @@ module.exports = {
                     if (settings.leave_text || settings.leave_embed) {
                         await (channel as TextChannel).send({
                             content: `${settings.leave_text || ""}`,
-                            embeds: settings.leave_embed ? [JSON.parse(await parsePlaceholders(JSON.stringify(settings.leave_embed), member.guild, member as GuildMember | undefined)) as APIEmbed] : []
+                            ...(Object.entries(settings.leave_embed || {}).length != 0 ? { embeds: [JSON.parse(await parsePlaceholders(JSON.stringify(settings.leave_embed), member.guild, member)) as APIEmbed] } : {})
                         }).catch((x) => console.error(x));
                     }
                 }

@@ -2,6 +2,7 @@ import {
     APIEmbed,
     ButtonStyle,
     Channel,
+    ChannelType,
     Embed, EmbedAuthorOptions,
     EmbedField,
     EmbedFooterOptions,
@@ -27,12 +28,12 @@ const embedCommand = <AuxdibotCommand> {
         .addSubcommand(builder => createEmbedParameters(builder.setName("create")
             .setDescription("Create an embed with Auxdibot.")
             .addChannelOption(option => option.setName("channel")
-                .setDescription("The channel to post the embed in.")
+                .setDescription("The channel to post the embed in.").addChannelTypes(ChannelType.GuildText)
                 .setRequired(true))))
         .addSubcommand(builder => builder.setName("create_json")
             .setDescription("Create an embed with Auxdibot using valid Discord Embed JSON data.")
             .addChannelOption(option => option.setName("channel")
-                .setDescription("The channel to post the embed in.")
+                .setDescription("The channel to post the embed in.").addChannelTypes(ChannelType.GuildText)
                 .setRequired(true))
             .addStringOption(option => option.setName("json")
                 .setDescription("The JSON data to use for creating the Discord Embed.")
@@ -77,13 +78,7 @@ const embedCommand = <AuxdibotCommand> {
         },
         async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
-            let channel: Channel | null = interaction.options.getChannel("channel");
-            if (!channel) return await interaction.reply({ embeds: [Embeds.ERROR_EMBED.toJSON()] });
-            if (!channel.isTextBased() || channel.isThread() || channel.isVoiceBased() || channel.isDMBased()) {
-                let error = Embeds.ERROR_EMBED.toJSON();
-                error.description = "This isn't a valid channel!";
-                return await interaction.reply({ embeds: [Embeds.ERROR_EMBED.toJSON()] })
-            }
+            let channel = interaction.options.getChannel("channel", true, [ChannelType.GuildText]);
             let content = interaction.options.getString("content")?.replace(/\\n/g, "\n") || "";
             let parameters = argumentsToEmbedParameters(interaction)
             try {
@@ -114,13 +109,7 @@ const embedCommand = <AuxdibotCommand> {
         },
         async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
-            let channel: Channel | null = interaction.options.getChannel("channel");
-            if (!channel) return await interaction.reply({ embeds: [Embeds.ERROR_EMBED.toJSON()] });
-            if (!channel.isTextBased() || channel.isThread() || channel.isVoiceBased() || channel.isDMBased()) {
-                let error = Embeds.ERROR_EMBED.toJSON();
-                error.description = "This isn't a valid channel!";
-                return await interaction.reply({ embeds: [Embeds.ERROR_EMBED.toJSON()] })
-            }
+            let channel = interaction.options.getChannel("channel", true, [ChannelType.GuildText]);
             let json = interaction.options.getString("json");
             if (!json) return await interaction.reply({ embeds: [Embeds.ERROR_EMBED.toJSON()] });
             try {
@@ -150,9 +139,8 @@ const embedCommand = <AuxdibotCommand> {
         },
         async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
-            let message_id = interaction.options.getString("message_id");
-            if (!message_id) return;
-            let guild: Guild = interaction.data.guild;
+            let message_id = interaction.options.getString("message_id", true);
+            let guild = interaction.data.guild;
             let message = await getMessage(guild, message_id);
             let content = interaction.options.getString("content")?.replace(/\\n/g, "\n") || "";
             let parameters = argumentsToEmbedParameters(interaction);
@@ -210,10 +198,9 @@ const embedCommand = <AuxdibotCommand> {
         },
         async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
-            let message_id = interaction.options.getString("message_id");
-            let json = interaction.options.getString("json");
-            if (!message_id || !json) return;
-            let guild: Guild = interaction.data.guild;
+            let message_id = interaction.options.getString("message_id", true);
+            let json = interaction.options.getString("json", true);
+            let guild = interaction.data.guild;
             let message = await getMessage(guild, message_id);
             if (!message) {
                 let error = Embeds.ERROR_EMBED.toJSON();
@@ -249,11 +236,9 @@ const embedCommand = <AuxdibotCommand> {
             permission: "embed.json"
         },
         async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
-
             if (!interaction.data) return;
-            let message_id = interaction.options.getString("message_id");
-            if (!message_id) return;
-            let guild: Guild = interaction.data.guild;
+            let message_id = interaction.options.getString("message_id", true);
+            let guild = interaction.data.guild;
             let message = await getMessage(guild, message_id);
             if (!message) {
                 let error = Embeds.ERROR_EMBED.toJSON();

@@ -33,7 +33,7 @@ const muteCommand = <AuxdibotCommand>{
     },
     async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
         if (!interaction.data) return;
-        const user = interaction.options.getUser('user'),
+        const user = interaction.options.getUser('user', true),
             reason = interaction.options.getString('reason') || "No reason specified.",
             durationOption = interaction.options.getString('duration') || "permanent";
         let data = await interaction.data.guildData.fetchData(), settings = await interaction.data.guildData.fetchSettings(), counter = await interaction.data.guildData.fetchCounter();
@@ -42,7 +42,6 @@ const muteCommand = <AuxdibotCommand>{
             errorEmbed.description = "There is no mute role assigned for the server! Do `/help muterole` to view the command to add a muterole.";
             return await interaction.reply({ embeds: [errorEmbed] });
         }
-        if (!user) return await interaction.reply({ embeds: [Embeds.ERROR_EMBED.toJSON()] });
         if (data.getPunishment(user.id, 'mute')) {
             let errorEmbed = Embeds.ERROR_EMBED.toJSON();
             errorEmbed.description = "This user is already muted!";

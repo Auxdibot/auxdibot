@@ -80,8 +80,7 @@ const levelCommand = <AuxdibotCommand>{
         },
         async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
-            // todo REQUIRED ASSERTIONS EXIST??????? WHAT AM I DOING??? TIME FOR ANOTHER CODE REFACTOR HOLY CRAP
-            let role = interaction.options.getRole("role", true) as Role, 
+            let role = interaction.options.getRole("role", true), 
             level = interaction.options.getNumber("level", true);
             let server = interaction.data.guildData;
             let settings = await server.fetchSettings();
@@ -91,12 +90,12 @@ const levelCommand = <AuxdibotCommand>{
                 embed.description = "This is the everyone role, silly!";
                 return await interaction.reply({ embeds: [embed] });
             }
-            if (role && interaction.memberPermissions && (interaction.data.member.id != interaction.data.guild.ownerId  && !interaction.memberPermissions.has(PermissionsBitField.Flags.Administrator)) && role.comparePositionTo(interaction.data.member.roles.highest) <= 0) {
+            if (role && interaction.memberPermissions && (interaction.data.member.id != interaction.data.guild.ownerId  && !interaction.memberPermissions.has(PermissionsBitField.Flags.Administrator)) && role.position >= interaction.data.member.roles.highest.position) {
                 let errorEmbed = Embeds.ERROR_EMBED.toJSON();
                 errorEmbed.description = "This role is higher than yours!";
                 return await interaction.reply({ embeds: [errorEmbed] });
             }
-            if (role && interaction.data.guild.members.me && role.comparePositionTo(interaction.data.guild.members.me.roles.highest) >= 0) {
+            if (role && interaction.data.guild.members.me && role.position >= interaction.data.guild.members.me.roles.highest.position) {
                 let errorEmbed = Embeds.ERROR_EMBED.toJSON();
                 errorEmbed.description = "This role is higher than Auxdibot's highest role!";
                 return await interaction.reply({ embeds: [errorEmbed] });

@@ -37,7 +37,7 @@ const leaveCommand = <AuxdibotCommand>{
                 commandCategory: "Settings",
                 name: "/leave message",
                 description: "Set the leave message. (Placeholders are supported. Do /placeholders for a list of placeholders.)",
-                usageExample: "/leave message (color) (title) [author_text] [description] [fields (split title and description with `\"|d|\"``, and seperate fields with `\"|s|\"`)] [footer] [image url] [thumbnail url]"
+                usageExample: "/leave message [content] [color] [title] [title url] [author] [author icon url] [author url] [description] [fields (split title and description with \"|d|\", and seperate fields with \"|s|\")] [footer] [footer icon url] [image url] [thumbnail url]"
             },
             permission: "settings.leave.message"
         },
@@ -56,17 +56,13 @@ const leaveCommand = <AuxdibotCommand>{
                 embed.title = "Success!";
                 embed.description = `Set the leave embed.`;
                 await interaction.reply({ embeds: [embed] });
+                if (interaction.channel && interaction.channel.isTextBased()) await interaction.channel.send({ content: "Here's a preview of the new leave embed!", embeds: [JSON.parse(await parsePlaceholders(JSON.stringify(settings.leave_embed), interaction.data.guild, interaction.data.member)) as APIEmbed] });
             } catch (x) {
                 let embed = Embeds.ERROR_EMBED.toJSON();
                 embed.description = "Couldn't make that embed!";
                 return await interaction.reply({ embeds: [embed] });
             }
-            if (interaction.channel && (interaction.channel as Channel).isTextBased()) {
-                try {
-                    let channel = (interaction.channel) as TextChannel;
-                    await channel.send({ content: "Here's a preview of the new leave embed!", embeds: [JSON.parse(await parsePlaceholders(JSON.stringify(settings.leave_embed), interaction.data.guild, interaction.data.member)) as APIEmbed] });
-                } catch (x) { }
-            }
+            
             return; 
         }
     },
@@ -83,28 +79,22 @@ const leaveCommand = <AuxdibotCommand>{
             },
             async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
                 if (!interaction.data) return;
-                let json = interaction.options.getString('json') || undefined;
+                let json = interaction.options.getString('json', true);
                 let settings = await interaction.data.guildData.fetchSettings();
-                if (!json) return;
-                let jsonEmbed = JSON.parse(json) as APIEmbed;
-                if (!jsonEmbed['type'] || jsonEmbed['type'] != "rich") {
-                    let error = Embeds.ERROR_EMBED.toJSON();
-                    error.description = "This isn't valid Embed JSON!";
-                    return await interaction.reply({ embeds: [error] });
+                try {
+                    let jsonEmbed = JSON.parse(json) as APIEmbed;
+                    let embed = Embeds.SUCCESS_EMBED.toJSON();
+                    settings.setLeaveEmbed(jsonEmbed);
+                    await settings.save(); 
+                    embed.title = "Success!";
+                    embed.description = `Set the leave embed.`;
+                    if (interaction.channel && interaction.channel.isTextBased()) await interaction.channel.send({ content: "Here's a preview of the new leave embed!", ...(Object.entries(settings.leave_embed || {}).length != 0 ? { embeds: [JSON.parse(await parsePlaceholders(JSON.stringify(settings.leave_embed), interaction.data.guild, interaction.data.member)) as APIEmbed] } : {}) });
+                    return await interaction.reply({ embeds: [embed] });
+                } catch (x) {
+                    let embed = Embeds.ERROR_EMBED.toJSON();
+                    embed.description = "This isn't valid Embed JSON!";
+                    return await interaction.reply({ embeds: [embed] });
                 }
-                settings.setLeaveEmbed(jsonEmbed);
-                await settings.save();
-                let embed = Embeds.SUCCESS_EMBED.toJSON();
-                embed.title = "Success!";
-                embed.description = `Set the leave embed.`;
-
-                if (interaction.channel && (interaction.channel as Channel).isTextBased()) {
-                    try {
-                        let channel = (interaction.channel) as TextChannel;
-                        await channel.send({ content: "Here's a preview of the new leave embed!", embeds: [JSON.parse(await parsePlaceholders(JSON.stringify(settings.leave_embed), interaction.data.guild, interaction.data.member)) as APIEmbed] });
-                    } catch (x) { }
-                }
-                return await interaction.reply({ embeds: [embed] });
             }
         },
         {
@@ -122,11 +112,11 @@ const leaveCommand = <AuxdibotCommand>{
                 if (!interaction.data) return;
                 let settings = await interaction.data.guildData.fetchSettings();
                 try {
-                    return await interaction.reply({ content: `**EMBED PREVIEW**\r\n${settings.leave_text || ""}`, embeds: settings.leave_embed ? [JSON.parse(await parsePlaceholders(JSON.stringify(settings.leave_embed), interaction.data.guild, interaction.data.member)) as APIEmbed] : [] });
+                    return await interaction.reply({ content: `**EMBED PREVIEW**\r\n${settings.leave_text || ""}`, ...(Object.entries(settings.leave_embed || {}).length != 0 ? { embeds: [JSON.parse(await parsePlaceholders(JSON.stringify(settings.leave_embed), interaction.data.guild, interaction.data.member)) as APIEmbed] } : {}) });
                 } catch (x) {
                     let error = Embeds.ERROR_EMBED.toJSON();
                     error.description = "This isn't valid! Try changing the Leave Embed or Leave Text.";
-                    return await interaction.reply({ embeds: [error] });
+                    return interaction.channel && interaction.channel.isTextBased() ? await interaction.channel.send({ embeds: [error] }) : undefined;
                 }
             }
         }],

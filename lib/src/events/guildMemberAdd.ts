@@ -16,7 +16,7 @@ module.exports = {
                     if (settings.join_embed || settings.join_text) {
                         await (channel as TextChannel).send({
                             content: `${settings.join_text || ""}`,
-                            embeds: settings.join_embed ? [JSON.parse(await parsePlaceholders(JSON.stringify(settings.join_embed), member.guild, member as GuildMember | undefined)) as APIEmbed] : []
+                            ...(Object.entries(settings.join_embed || {}).length != 0 ? { embeds: [JSON.parse(await parsePlaceholders(JSON.stringify(settings.join_embed), member.guild, member)) as APIEmbed] } : {})
                         }).catch((x) => console.error(x));
                     }
                 }
@@ -25,7 +25,7 @@ module.exports = {
         if (settings.join_dm_embed || settings.join_dm_text) {
             await member.send({
                 content: `${settings.join_dm_text || ""}`,
-                embeds: settings.join_dm_embed ? [JSON.parse(await parsePlaceholders(JSON.stringify(settings.join_dm_embed), member.guild, member)) as APIEmbed] : []
+                ...(Object.entries(settings.join_dm_embed || {}).length != 0 ? { embeds: [JSON.parse(await parsePlaceholders(JSON.stringify(settings.join_dm_embed), member.guild, member)) as APIEmbed] } : {})
             }).catch(() => undefined)
         }
         if (settings.join_roles.length > 0) {

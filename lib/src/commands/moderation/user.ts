@@ -52,7 +52,7 @@ const userCommand = <AuxdibotCommand>{
             value: `👋 Join Date: <t:${Math.round((member.joinedTimestamp || Date.now()) / 1000)}>\n📗 Highest Role: <@&${member.roles.highest.id}>\n${member.id == interaction.data.guild.ownerId ? "👑 Owner" : ""}`,
         } : { name: "Member Data Not Found", value: "User is not in this server!" }, {
             name: "Latest Punishments",
-            value: record.slice(0,10).reduce((str, punishment) => {
+            value: record.reverse().slice(0,10).reduce((str, punishment) => {
                 let type = PunishmentNames[punishment.type]
                 return str + `\n**${type.name}** - PID: ${punishment.punishment_id} - <t:${Math.round(punishment.date_unix / 1000)}>`
             }, "\u2800"),

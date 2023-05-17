@@ -47,13 +47,8 @@ const punishmentCommand = <AuxdibotCommand>{
         },
         async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
-            const punishment_id = interaction.options.getNumber('punishment_id') || undefined;
+            const punishment_id = interaction.options.getNumber('punishment_id', true);
             let data = await interaction.data.guildData.fetchData();
-            if (!punishment_id) {
-                let errorEmbed = Embeds.ERROR_EMBED.toJSON();
-                errorEmbed.description = "This punishment does not exist!";
-                return await interaction.reply({ embeds: [errorEmbed] });
-            }
             let punishment = data.punishments.filter(val => val.punishment_id == punishment_id)[0];
             if (!punishment) {
                 let errorEmbed = Embeds.ERROR_EMBED.toJSON();
@@ -81,13 +76,8 @@ const punishmentCommand = <AuxdibotCommand>{
             },
             async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
                 if (!interaction.data) return;
-                const punishment_id = interaction.options.getNumber('punishment_id') || undefined;
+                const punishment_id = interaction.options.getNumber('punishment_id', true);
                 let data = await interaction.data.guildData.fetchData();
-                if (!punishment_id) {
-                    let errorEmbed = Embeds.ERROR_EMBED.toJSON();
-                    errorEmbed.description = "This punishment does not exist!";
-                    return await interaction.reply({ embeds: [errorEmbed] });
-                }
                 let punishment = data.punishments.filter(val => val.punishment_id == punishment_id)[0];
                 if (!punishment) {
                     let errorEmbed = Embeds.ERROR_EMBED.toJSON();

@@ -35,11 +35,10 @@ const banCommand = <AuxdibotCommand>{
     },
     async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData> ) {
         if (!interaction.data) return;
-        const user = interaction.options.getUser('user'),
+        const user = interaction.options.getUser('user', true),
             reason = interaction.options.getString('reason') || "No reason specified.",
             durationOption = interaction.options.getString('duration') || "permanent",
             deleteMessageDays = interaction.options.getNumber('delete_message_days') || 0;
-        if (!user) return await interaction.reply({ embeds: [Embeds.ERROR_EMBED.toJSON()] });
         let data = await interaction.data.guildData.fetchData(), counter = await interaction.data.guildData.fetchCounter();
         let member = interaction.data.guild.members.resolve(user.id)
         if (!member) {

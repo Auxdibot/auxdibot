@@ -34,7 +34,11 @@ const myLevelCommand = < AuxdibotCommand > {
         embed.title = "Your Level";
         
         let data = await interaction.data.guildData.findOrCreateMember(interaction.data.member.id);
-        if (!data) return;
+        if (!data) {
+            embed = Embeds.ERROR_EMBED.toJSON();
+            embed.description = "Member data could not be found! (This is an issue on Auxdibot's end.)";
+            return await interaction.reply({ embeds: [embed] });
+        }
         let levelXP = calcXP(data.level);
         let percent = Math.round(((data.xpTill/levelXP) || 0) * 10);
         if (!isFinite(percent)) percent=0;

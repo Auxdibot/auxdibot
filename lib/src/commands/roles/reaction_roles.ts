@@ -1,4 +1,4 @@
-import {SlashCommandBuilder, APIEmbed, ChannelType, TextChannel, Role, EmbedField, GuildMember, GuildBasedChannel} from "discord.js";
+import {SlashCommandBuilder, APIEmbed, ChannelType, TextChannel, Role, EmbedField, GuildMember, GuildBasedChannel, GuildChannel} from "discord.js";
 import AuxdibotCommand from "../../util/templates/AuxdibotCommand";
 import {IReaction} from "../../mongo/schema/ReactionRoleSchema";
 import Embeds from "../../util/constants/Embeds";
@@ -19,7 +19,7 @@ const reactionRolesCommand = <AuxdibotCommand>{
         .addSubcommand(builder => builder.setName("add")
             .setDescription("Add a reaction role to the server.")
             .addChannelOption(argBuilder => argBuilder.setName("channel")
-                .setDescription("The channel to put the reaction role embed in.")
+                .setDescription("The channel to put the reaction role embed in.").addChannelTypes(ChannelType.GuildText)
                 .setRequired(true))
             .addStringOption(argBuilder => argBuilder.setName("roles")
                 .setDescription("Space between emoji & role. (ex. [emoji] [role] [...emoji2] [...role2])")
@@ -30,7 +30,7 @@ const reactionRolesCommand = <AuxdibotCommand>{
         .addSubcommand(builder => createEmbedParameters(builder.setName("add_custom")
             .setDescription("Add a reaction role to the server.")
             .addChannelOption(argBuilder => argBuilder.setName("channel")
-                .setDescription("The channel to put the reaction role embed in.")
+                .setDescription("The channel to put the reaction role embed in.").addChannelTypes(ChannelType.GuildText)
                 .setRequired(true))
             .addStringOption(argBuilder => argBuilder.setName("roles")
                 .setDescription("Space between emoji & role. (ex. [emoji] [role] [...emoji2] [...role2])")
@@ -38,7 +38,7 @@ const reactionRolesCommand = <AuxdibotCommand>{
         .addSubcommand(builder => builder.setName("add_json")
             .setDescription("Add a reaction role to the server.")
             .addChannelOption(argBuilder => argBuilder.setName("channel")
-                .setDescription("The channel to put the reaction role embed in.")
+                .setDescription("The channel to put the reaction role embed in.").addChannelTypes(ChannelType.GuildText)
                 .setRequired(true))
             .addStringOption(argBuilder => argBuilder.setName("roles")
                 .setDescription("Space between emoji & role. (ex. [emoji] [role] [...emoji2] [...role2])")
@@ -80,20 +80,14 @@ const reactionRolesCommand = <AuxdibotCommand>{
             async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
                 if (!interaction.data) return;
                 let data = await interaction.data.guildData.fetchData();
-                let channel = interaction.options.getChannel("channel"), roles = interaction.options.getString("roles"), title = interaction.options.getString("title") || "React to receive roles!";
-                if (!channel || !roles) return;
-                if (channel.type != ChannelType.GuildText) {
-                    let errorEmbed = Embeds.ERROR_EMBED.toJSON();
-                    errorEmbed.description = "This isn't a text channel!";
-                    return await interaction.reply({ embeds: [errorEmbed] });
-                }
-                channel = channel as TextChannel;
+                let channel = interaction.options.getChannel("channel", true, [ChannelType.GuildText]), 
+                roles = interaction.options.getString("roles", true), 
+                title = interaction.options.getString("title") || "React to receive roles!";
                 let split = roles.split(' ');
                 let builder = [];
                 while (split.length) builder.push(split.splice(0,2));
                 type IReactionAndRole = { emoji: string, role: Role };
                 let reactionsAndRoles: IReactionAndRole[] = await builder.reduce(async (accumulator: Promise<IReactionAndRole[]> | IReactionAndRole[], item: string[]) => {
-
                     let arr: IReactionAndRole[] = await accumulator;
                     if (!interaction.data) return arr;
                     if (!item[0] || !item[1]) return arr;
@@ -106,10 +100,11 @@ const reactionRolesCommand = <AuxdibotCommand>{
                     }
                     return arr;
                 }, [] as Promise<IReactionAndRole[]> | IReactionAndRole[]);
+                let resEmbed = Embeds.SUCCESS_EMBED.toJSON();
                 if (reactionsAndRoles.length <= 0) {
-                    let errorEmbed = Embeds.ERROR_EMBED.toJSON();
-                    errorEmbed.description = "No reactions and roles found! Please use spaces between reactions and roles. (ex. [emoji] [role] [emoji2] [role2] ...)";
-                    return await interaction.reply({ embeds: [errorEmbed] });
+                    resEmbed = Embeds.ERROR_EMBED.toJSON();
+                    resEmbed.description = "No reactions and roles found! Please use spaces between reactions and roles. (ex. [emoji] [role] [emoji2] [role2] ...)";
+                    return await interaction.reply({ embeds: [resEmbed] });
                 }
                 let embed = Embeds.REACTION_ROLE_EMBED.toJSON();
                 embed.title = title;
@@ -118,16 +113,16 @@ const reactionRolesCommand = <AuxdibotCommand>{
 
                 reactionsAndRoles.forEach((item) => message.react(item.emoji));
                 data.addReactionRole({ message_id: message.id, channel_id: message.channel.id, reactions: reactionsAndRoles.map((item) => <IReaction>{ role: item.role.id, emoji: item.emoji }) });
-                let successEmbed = Embeds.SUCCESS_EMBED.toJSON();
-                successEmbed.title = "👈 Created Reaction Role"
-                successEmbed.description = `Created a reaction role in ${channel}`;
+                
+                resEmbed.title = "👈 Created Reaction Role"
+                resEmbed.description = `Created a reaction role in ${channel}`;
                 await interaction.data.guildData.log({
                     user_id: interaction.data.member.id,
                     description: `Created a reaction role in ${channel.name}`,
                     type: LogType.REACTION_ROLE_ADDED,
                     date_unix: Date.now()
                 })
-                return await interaction.reply({ embeds: [successEmbed] });
+                return await interaction.reply({ embeds: [resEmbed] });
             }
         },
         {
@@ -143,17 +138,10 @@ const reactionRolesCommand = <AuxdibotCommand>{
             },
             async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
                 if (!interaction.data) return;
-                let channel = interaction.options.getChannel("channel"), roles = interaction.options.getString("roles"),
+                let channel = interaction.options.getChannel("channel", true, [ChannelType.GuildText]), roles = interaction.options.getString("roles", true),
                     content = interaction.options.getString("content")?.replace(/\\n/g, "\n") || "";
                 
                 let data = await interaction.data.guildData.fetchData();
-                if (!channel || !roles) return;
-                if (channel.type != ChannelType.GuildText) {
-                    let errorEmbed = Embeds.ERROR_EMBED.toJSON();
-                    errorEmbed.description = "This isn't a text channel!";
-                    return await interaction.reply({ embeds: [errorEmbed] });
-                }
-                channel = channel as TextChannel;
                 let split = roles.split(' ');
                 let builder = [];
                 while (split.length) builder.push(split.splice(0,2));
@@ -171,26 +159,26 @@ const reactionRolesCommand = <AuxdibotCommand>{
                     }
                     return arr;
                 }, [] as Promise<IReaction[]> | IReaction[]);
+                let resEmbed = Embeds.SUCCESS_EMBED.toJSON();
                 if (reactionsAndRoles.length <= 0) {
-                    let errorEmbed = Embeds.ERROR_EMBED.toJSON();
-                    errorEmbed.description = "No reactions and roles found! Please use spaces between reactions and roles. (ex. [emoji] [role] [emoji2] [role2] ...)";
-                    return await interaction.reply({ embeds: [errorEmbed] });
+                    resEmbed = Embeds.ERROR_EMBED.toJSON();
+                    resEmbed.description = "No reactions and roles found! Please use spaces between reactions and roles. (ex. [emoji] [role] [emoji2] [role2] ...)";
+                    return await interaction.reply({ embeds: [resEmbed] });
                 }
                 try {
                 let parameters = argumentsToEmbedParameters(interaction);
                 let message = await channel.send({ content: content, embeds: [toAPIEmbed(JSON.parse(await parsePlaceholders(JSON.stringify(parameters), interaction.data.guild, interaction.member as GuildMember | undefined))) as APIEmbed] });
                 reactionsAndRoles.forEach((item) => message ? message.react(item.emoji) : undefined);
                 data.addReactionRole({ message_id: message.id, reactions: reactionsAndRoles });
-                let successEmbed = Embeds.SUCCESS_EMBED.toJSON();
-                successEmbed.title = "👈 Created Reaction Role"
-                successEmbed.description = `Created a reaction role in ${channel}`;
+                resEmbed.title = "👈 Created Reaction Role"
+                resEmbed.description = `Created a reaction role in ${channel}`;
                 await interaction.data.guildData.log({
                     user_id: interaction.data.member.id,
                     description: `Created a reaction role in ${channel.name}`,
                     type: LogType.REACTION_ROLE_ADDED,
                     date_unix: Date.now()
                 })
-                return await interaction.reply({ embeds: [successEmbed] });
+                return await interaction.reply({ embeds: [resEmbed] });
                 } catch (x) {
                     let embed = Embeds.ERROR_EMBED.toJSON();
                     embed.description = `There was an error sending that embed!`;
@@ -211,16 +199,9 @@ const reactionRolesCommand = <AuxdibotCommand>{
             },
             async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
                 if (!interaction.data) return;
-                let channel = interaction.options.getChannel("channel"), roles = interaction.options.getString("roles"),
-                    json = interaction.options.getString("json");
+                let channel = interaction.options.getChannel("channel", true, [ChannelType.GuildText]), roles = interaction.options.getString("roles", true),
+                    json = interaction.options.getString("json", true);
                 let data = await interaction.data.guildData.fetchData();
-                if (!channel || !roles) return;
-                if (channel.type != ChannelType.GuildText) {
-                    let errorEmbed = Embeds.ERROR_EMBED.toJSON();
-                    errorEmbed.description = "This isn't a text channel!";
-                    return await interaction.reply({ embeds: [errorEmbed] });
-                }
-                channel = channel as TextChannel;
                 let split = roles.split(' ');
                 let builder = [];
                 while (split.length) builder.push(split.splice(0,2));
@@ -238,10 +219,11 @@ const reactionRolesCommand = <AuxdibotCommand>{
                     }
                     return arr;
                 }, [] as Promise<IReaction[]> | IReaction[]);
+                let resEmbed = Embeds.SUCCESS_EMBED.toJSON();
                 if (reactionsAndRoles.length <= 0) {
-                    let errorEmbed = Embeds.ERROR_EMBED.toJSON();
-                    errorEmbed.description = "No reactions and roles found! Please use spaces between reactions and roles. (ex. [emoji] [role] [emoji2] [role2] ...)";
-                    return await interaction.reply({ embeds: [errorEmbed] });
+                    resEmbed = Embeds.ERROR_EMBED.toJSON();
+                    resEmbed.description = "No reactions and roles found! Please use spaces between reactions and roles. (ex. [emoji] [role] [emoji2] [role2] ...)";
+                    return await interaction.reply({ embeds: [resEmbed] });
                 }
 
                 let message = await channel.send({ embeds: [JSON.parse(await parsePlaceholders(json || "", interaction.data.guild, interaction.member as GuildMember | undefined)) as APIEmbed] }).catch(() => undefined);
@@ -252,16 +234,16 @@ const reactionRolesCommand = <AuxdibotCommand>{
                 }
                 reactionsAndRoles.forEach((item) => message ? message.react(item.emoji) : undefined);
                 data.addReactionRole({ message_id: message.id, reactions: reactionsAndRoles });
-                let successEmbed = Embeds.SUCCESS_EMBED.toJSON();
-                successEmbed.title = "👈 Created Reaction Role"
-                successEmbed.description = `Created a reaction role in ${channel}`;
+                
+                resEmbed.title = "👈 Created Reaction Role"
+                resEmbed.description = `Created a reaction role in ${channel}`;
                 await interaction.data.guildData.log({
                     user_id: interaction.data.member.id,
                     description: `Created a reaction role in ${channel.name}`,
                     type: LogType.REACTION_ROLE_ADDED,
                     date_unix: Date.now()
                 })
-                return await interaction.reply({ embeds: [successEmbed] });
+                return await interaction.reply({ embeds: [resEmbed] });
             }
         },
         {
@@ -290,7 +272,7 @@ const reactionRolesCommand = <AuxdibotCommand>{
                     embed.description = `Couldn't find that reaction role!`;
                     return await interaction.reply({ embeds: [embed] });
                 }
-                let message_channel: GuildBasedChannel | undefined = rr.channel_id ? interaction.data.guild.channels.cache.get(rr.channel_id) : undefined;
+                let message_channel = rr.channel_id ? interaction.data.guild.channels.cache.get(rr.channel_id) : undefined;
                 let message = message_channel && message_channel.isTextBased() ? message_channel.messages.cache.get(rr.message_id) : await getMessage(interaction.data.guild, rr.message_id);
 
                 if (message) {
@@ -335,8 +317,8 @@ const reactionRolesCommand = <AuxdibotCommand>{
                 help: {
                     commandCategory: "Roles",
                     name: "/reaction_roles edit",
-                    description: "Edit a reaction role on this server.",
-                    usageExample: "/reaction_roles edit [message_id] [index] (roles) [json, overrides embed parameters] [content] [color] [title] [title url] [author] [author icon url] [author url] [description] [fields (split title and description with `\"|d|\"``, and seperate fields with `\"|s|\"`)] [footer] [footer icon url] [image url] [thumbnail url]"
+                    description: "Edit a reaction role's embed on this server.",
+                    usageExample: "/reaction_roles edit [message_id] [index] [json, overrides embed parameters] [content] [color] [title] [title url] [author] [author icon url] [author url] [description] [fields (split title and description with `\"|d|\"``, and seperate fields with `\"|s|\"`)] [footer] [footer icon url] [image url] [thumbnail url]"
                 },
                 permission: "rr.edit"
             },
@@ -358,7 +340,7 @@ const reactionRolesCommand = <AuxdibotCommand>{
                     embed.description = `Couldn't find that reaction role!`;
                     return await interaction.reply({ embeds: [embed] });
                 }
-                let message_channel: GuildBasedChannel | undefined = rr.channel_id ? interaction.data.guild.channels.cache.get(rr.channel_id) : undefined;
+                let message_channel = rr.channel_id ? interaction.data.guild.channels.cache.get(rr.channel_id) : undefined;
                 let message = message_channel && message_channel.isTextBased() ? message_channel.messages.cache.get(rr.message_id) : await getMessage(interaction.data.guild, rr.message_id);
                 if (!message) {
                     let embed = Embeds.ERROR_EMBED.toJSON();
@@ -367,41 +349,43 @@ const reactionRolesCommand = <AuxdibotCommand>{
                 }
                 if (json) {
                     let messageEdit = await message.edit({ ...(content ? {content} : {}), embeds: [JSON.parse(await parsePlaceholders(json || "", interaction.data.guild, interaction.member as GuildMember | undefined)) as APIEmbed]}).catch(() => undefined)
+                    let embed = Embeds.SUCCESS_EMBED.toJSON();
                     if (!messageEdit) {
-                        let embed = Embeds.ERROR_EMBED.toJSON();
+                        embed = Embeds.ERROR_EMBED.toJSON();
                         embed.description = `There was an error sending that embed!`;
                         return await interaction.reply({ embeds: [embed] });
                     }
-                    let successEmbed = Embeds.SUCCESS_EMBED.toJSON();
-                    successEmbed.title = "👈 Edited Reaction Role"
-                    successEmbed.description = `Edited a reaction role${message ? ` in ${message.channel}` : ""}.`;
+                    
+                    embed.title = "👈 Edited Reaction Role"
+                    embed.description = `Edited a reaction role${message ? ` in ${message.channel}` : ""}.`;
                     await interaction.data.guildData.log({
                         user_id: interaction.data.member.id,
                         description: `Edited a reaction role.`,
                         type: LogType.REACTION_ROLE_EDITED,
                         date_unix: Date.now()
                     })
-                    return await interaction.reply({ embeds: [successEmbed] });
+                    return await interaction.reply({ embeds: [embed] });
                 }
 
                 try {
                     let parameters = argumentsToEmbedParameters(interaction);
                     let messageEdit = await message.edit({ ...(content ? {content} : {}), embeds: [toAPIEmbed(JSON.parse(await parsePlaceholders(JSON.stringify(parameters), interaction.data.guild, interaction.member as GuildMember | undefined))) as APIEmbed] }).catch(() => undefined);
+                    let embed = Embeds.SUCCESS_EMBED.toJSON();
                     if (!messageEdit) {
-                        let embed = Embeds.ERROR_EMBED.toJSON();
+                        embed = Embeds.ERROR_EMBED.toJSON();
                         embed.description = `There was an error sending that embed!`;
                         return await interaction.reply({ embeds: [embed] });
                     }
-                    let successEmbed = Embeds.SUCCESS_EMBED.toJSON();
-                    successEmbed.title = "👈 Edited Reaction Role"
-                    successEmbed.description = `Edited a reaction role${message ? ` in ${message.channel}` : ""}.`;
+                    
+                    embed.title = "👈 Edited Reaction Role"
+                    embed.description = `Edited a reaction role${message ? ` in ${message.channel}` : ""}.`;
                     await interaction.data.guildData.log({
                         user_id: interaction.data.member.id,
                         description: `Edited a reaction role.`,
                         type: LogType.REACTION_ROLE_EDITED,
                         date_unix: Date.now()
                     })
-                    return await interaction.reply({ embeds: [successEmbed] });
+                    return await interaction.reply({ embeds: [embed] });
                 } catch (x) {
                     let embed = Embeds.ERROR_EMBED.toJSON();
                     embed.description = `There was an error creating that embed!`;

@@ -28,8 +28,7 @@ const kickCommand = <AuxdibotCommand>{
     },
     async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData> ) {
         if (!interaction.data) return;
-        const user = interaction.options.getUser('user'), reason = interaction.options.getString('reason') || "No reason specified.";
-        if (!user) return await interaction.reply({ embeds: [Embeds.ERROR_EMBED.toJSON()] });
+        const user = interaction.options.getUser('user', true), reason = interaction.options.getString('reason') || "No reason specified.";
         let counter = await interaction.data.guildData.fetchCounter()
         let member = interaction.data.guild.members.resolve(user.id);
         if (!member) {

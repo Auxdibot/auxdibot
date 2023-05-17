@@ -10,7 +10,7 @@ import GuildAuxdibotCommandData from "../../util/types/commandData/GuildAuxdibot
 import createEmbedParameters from "../../util/functions/createEmbedParameters";
 import argumentsToEmbedParameters from "../../util/functions/argumentsToEmbedParameters";
 
-const joinCommand = <AuxdibotCommand>{
+const joinDMCommand = <AuxdibotCommand>{
     data: new SlashCommandBuilder()
         .setName('join_dm')
         .setDescription('Change settings for join DM messages on the server.')
@@ -55,6 +55,7 @@ const joinCommand = <AuxdibotCommand>{
                 embed.title = "Success!";
                 embed.description = `Set the join DM embed.`;
                 await interaction.reply({ embeds: [embed] })
+                if (interaction.channel && interaction.channel.isTextBased()) await interaction.channel.send({ content: `Here's a preview of the new join DM embed!\n${settings.join_dm_text || ""}`, embeds: [JSON.parse(await parsePlaceholders(JSON.stringify(settings.join_dm_embed), interaction.data.guild, interaction.data.member)) as APIEmbed] });
             } catch (x) {
                 let embed = Embeds.ERROR_EMBED.toJSON();
                 embed.description = "Couldn't make that embed!";
@@ -62,12 +63,7 @@ const joinCommand = <AuxdibotCommand>{
             }
             
 
-            if (interaction.channel && (interaction.channel as Channel).isTextBased()) {
-                try {
-                    let channel = (interaction.channel) as TextChannel;
-                    await channel.send({ content: `Here's a preview of the new join DM embed!\n${settings.join_dm_text || ""}`, embeds: [JSON.parse(await parsePlaceholders(JSON.stringify(settings.join_dm_embed), interaction.data.guild, interaction.data.member)) as APIEmbed] });
-                } catch (x) { }
-            }
+            
         }
     },
         {
@@ -83,28 +79,23 @@ const joinCommand = <AuxdibotCommand>{
             },
             async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
                 if (!interaction.data) return;
-                let json = interaction.options.getString('json') || undefined;
+                let json = interaction.options.getString('json', true);
                 let settings = await interaction.data.guildData.fetchSettings();
-                if (!json) return;
-                let jsonEmbed = JSON.parse(json) as APIEmbed;
-                if (!jsonEmbed['type'] || jsonEmbed['type'] != "rich") {
-                    let error = Embeds.ERROR_EMBED.toJSON();
-                    error.description = "This isn't valid Embed JSON!";
-                    return await interaction.reply({ embeds: [error] });
+                try {
+                    let jsonEmbed = JSON.parse(json) as APIEmbed;
+                    let embed = Embeds.SUCCESS_EMBED.toJSON();
+                    settings.setJoinDMEmbed(jsonEmbed);
+                    await settings.save(); 
+                    embed.title = "Success!";
+                    embed.description = `Set the join DM embed.`;
+                    if (interaction.channel && interaction.channel.isTextBased()) await interaction.channel.send({ content: "Here's a preview of the new join DM embed!", ...(Object.entries(settings.join_dm_embed || {}).length != 0 ? { embeds: [JSON.parse(await parsePlaceholders(JSON.stringify(settings.join_dm_embed), interaction.data.guild, interaction.data.member)) as APIEmbed] } : {}) });
+                    return await interaction.reply({ embeds: [embed] });
+                } catch (x) {
+                    let embed = Embeds.ERROR_EMBED.toJSON();
+                    embed.description = "This isn't valid Embed JSON!";
+                    return await interaction.reply({ embeds: [embed] });
                 }
-                settings.setJoinDMEmbed(jsonEmbed);
-                await settings.save();
-                let embed = Embeds.SUCCESS_EMBED.toJSON();
-                embed.title = "Success!";
-                embed.description = `Set the join DM embed.`;
-
-                if (interaction.channel && (interaction.channel as Channel).isTextBased()) {
-                    try {
-                        let channel = (interaction.channel) as TextChannel;
-                        await channel.send({ content: "Here's a preview of the new join DM embed!", embeds: [JSON.parse(await parsePlaceholders(JSON.stringify(settings.join_dm_embed), interaction.data.guild, interaction.data.member)) as APIEmbed] });
-                    } catch (x) { }
-                }
-                return await interaction.reply({ embeds: [embed] });
+                
             }
         },
         {
@@ -122,11 +113,11 @@ const joinCommand = <AuxdibotCommand>{
                 if (!interaction.data) return;
                 let settings = await interaction.data.guildData.fetchSettings();
                 try {
-                    return await interaction.reply({ content: `**EMBED PREVIEW**\r\n${settings.join_dm_text || ""}`, embeds: settings.join_dm_embed ? [JSON.parse(await parsePlaceholders(JSON.stringify(settings.join_dm_embed), interaction.data.guild, interaction.data.member)) as APIEmbed] : [] });
+                    return await interaction.reply({ content: `**EMBED PREVIEW**\r\n${settings.join_dm_text || ""}`, ...(Object.entries(settings.join_dm_embed || {}).length != 0 ? { embeds: [JSON.parse(await parsePlaceholders(JSON.stringify(settings.join_dm_embed), interaction.data.guild, interaction.data.member)) as APIEmbed] } : {}) });
                 } catch (x) {
                     let error = Embeds.ERROR_EMBED.toJSON();
-                    error.description = "This isn't valid! Try changing the Join Embed or Join Text.";
-                    return await interaction.reply({ embeds: [error] });
+                    error.description = "This isn't valid! Try changing the Join DM Embed or Join DM Text.";
+                    return interaction.channel && interaction.channel.isTextBased() ? await interaction.channel.send({ embeds: [error] }) : undefined;
                 }
             }
         }],
@@ -134,4 +125,4 @@ const joinCommand = <AuxdibotCommand>{
         return;
     },
 }
-module.exports = joinCommand;
+module.exports = joinDMCommand;

@@ -35,15 +35,19 @@ const massroleCommand = < AuxdibotCommand > {
         },
         async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
-            let role = interaction.options.getRole("role");
-            if (!role) return;
+            let role = interaction.options.getRole("role", true);
             let embed = Embeds.SUCCESS_EMBED.toJSON();
+            if (role.position >= interaction.data.member.roles.highest.position) {
+                embed = Embeds.ERROR_EMBED.toJSON();
+                embed.description = "This role is higher than your current highest role!"
+                return await interaction.reply({ embeds: [embed] });
+            }
             embed.title = "Success!";
             embed.description = `Currently giving the role...`;
             await interaction.reply({ embeds: [embed] });
             let res = await interaction.data.guild.members.fetch();
             res.forEach((member) => {
-                if (!role || !interaction.data) return;
+                if (!interaction.data) return;
                 if (!member.roles.resolve(role.id) && (interaction.data.guild.members.me && member.roles.highest.comparePositionTo(interaction.data.guild.members.me.roles.highest) < 0) &&
                     member.roles.highest.comparePositionTo(interaction.data.member.roles.highest) < 0) {
                     member.roles.add(role.id).catch(() => undefined);
@@ -52,7 +56,7 @@ const massroleCommand = < AuxdibotCommand > {
             });
             await interaction.data.guildData.log({
                 user_id: interaction.data.member.id,
-                description: `Massrole took ${role} from anyone who had it with lower role hiearchy than Auxdibot.`,
+                description: `Massrole took ${role} from anyone who had it, with lower role hiearchy than Auxdibot.`,
                 type: LogType.MASSROLE_GIVEN,
                 date_unix: Date.now()
             })
@@ -71,15 +75,19 @@ const massroleCommand = < AuxdibotCommand > {
             },
             async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
                 if (!interaction.data) return;
-                let role = interaction.options.getRole("role");
-                if (!role) return;
+                let role = interaction.options.getRole("role", true);
                 let embed = Embeds.SUCCESS_EMBED.toJSON();
+                if (role.position >= interaction.data.member.roles.highest.position) {
+                    embed = Embeds.ERROR_EMBED.toJSON();
+                    embed.description = "This role is higher than your current highest role!"
+                    return await interaction.reply({ embeds: [embed] });
+                }
                 embed.title = "Success!";
                 embed.description = `Currently removing the role...`;
                 await interaction.reply({ embeds: [embed] });
                 let res = await interaction.data.guild.members.fetch();
                 res.forEach((member) => {
-                    if (!role || !interaction.data) return;
+                    if (!interaction.data) return;
                     if (!member.roles.resolve(role.id) && (interaction.data.guild.members.me && member.roles.highest.comparePositionTo(interaction.data.guild.members.me.roles.highest) < 0) &&
                         member.roles.highest.comparePositionTo(interaction.data.member.roles.highest) < 0) {
                         member.roles.remove(role.id).catch(() => undefined);
@@ -87,7 +95,7 @@ const massroleCommand = < AuxdibotCommand > {
                 });
                 await interaction.data.guildData.log({
                     user_id: interaction.data.member.id,
-                    description: `Massrole took ${role} from anyone who had it with lower role hiearchy than Auxdibot.`,
+                    description: `Massrole took ${role} from anyone who had it, with lower role hiearchy than Auxdibot.`,
                     type: LogType.MASSROLE_TAKEN,
                     date_unix: Date.now()
                 })
