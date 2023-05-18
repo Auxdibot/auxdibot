@@ -13,7 +13,7 @@ const recordCommand = <AuxdibotCommand>{
          builder.setName('user').setDescription('The user whose punishments are being displayed. (Optional)'),
       ),
    info: {
-      module: Modules['moderation'],
+      module: Modules['Moderation'],
       description:
          "Displays a user's punishment record. If no user is specified, the user running the command's punishment record.",
       usageExample: '/record [user]',

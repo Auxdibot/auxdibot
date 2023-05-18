@@ -17,7 +17,7 @@ const warnCommand = <AuxdibotCommand>{
          builder.setName('reason').setDescription('Reason for warn (Optional)').setRequired(false),
       ),
    info: {
-      module: Modules['moderation'],
+      module: Modules['Moderation'],
       description:
          'Warns a user, giving them a DM warning (if they have DMs enabled) and adding a warn to their record on the server.',
       usageExample: '/warn (user) [reason]',

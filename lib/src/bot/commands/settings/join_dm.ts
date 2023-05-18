@@ -29,7 +29,7 @@ const joinDMCommand = <AuxdibotCommand>{
       )
       .addSubcommand((builder) => builder.setName('preview').setDescription('Preview the join embed.')),
    info: {
-      module: Modules['settings'],
+      module: Modules['Settings'],
       description:
          'Change settings for join DM messages on the server. (Placeholders are supported. Do /placeholders for a list of placeholders.)',
       usageExample: '/join_dm (message|embed_json|preview)',
@@ -39,7 +39,7 @@ const joinDMCommand = <AuxdibotCommand>{
       {
          name: 'message',
          info: {
-            module: Modules['settings'],
+            module: Modules['Settings'],
             description:
                'Set the join DM message. (Placeholders are supported. Do /placeholders for a list of placeholders.)',
             usageExample:
@@ -84,7 +84,7 @@ const joinDMCommand = <AuxdibotCommand>{
       {
          name: 'embed_json',
          info: {
-            module: Modules['settings'],
+            module: Modules['Settings'],
             description:
                'Add an embed to the join DM message using custom JSON. (Placeholders are supported. Do /placeholders for a list of placeholders.)',
             usageExample: '/join_dm embed_json (json)',
@@ -129,7 +129,7 @@ const joinDMCommand = <AuxdibotCommand>{
       {
          name: 'preview',
          info: {
-            module: Modules['settings'],
+            module: Modules['Settings'],
             description: 'Preview the join DM message.',
             usageExample: '/join_dm preview',
             permission: 'settings.joindm.preview',

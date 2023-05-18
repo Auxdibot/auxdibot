@@ -14,7 +14,7 @@ const unmuteCommand = <AuxdibotCommand>{
       .setDescription('Unmute a user.')
       .addUserOption((builder) => builder.setName('user').setDescription('The user to be unmuted.').setRequired(true)),
    info: {
-      module: Modules['moderation'],
+      module: Modules['Moderation'],
       description: 'Unmutes a user if they are currently muted.',
       usageExample: '/unmute (user)',
       permission: 'moderation.mute.remove',

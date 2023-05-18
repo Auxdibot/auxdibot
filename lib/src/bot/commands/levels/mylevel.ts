@@ -10,7 +10,7 @@ dotenv.config();
 const myLevelCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder().setName('mylevel').setDescription('View your level on this server.'),
    info: {
-      module: Modules['levels'],
+      module: Modules['Levels'],
       description: 'View your level on this server.',
       usageExample: '/mylevel',
       allowedDefault: true,

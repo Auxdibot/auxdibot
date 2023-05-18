@@ -23,7 +23,7 @@ const placeholderCommand = <AuxdibotCommand>{
             .setRequired(true),
       ),
    info: {
-      module: Modules['settings'],
+      module: Modules['Settings'],
       description: "Enable Auxdibot's modules. (/help modules)",
       usageExample: '/enable (module)',
       permission: 'settings.modules.enable',

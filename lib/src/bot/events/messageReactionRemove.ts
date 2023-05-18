@@ -13,7 +13,7 @@ module.exports = {
          settings = await server.fetchSettings();
       const member: GuildMember | null = messageReaction.message.guild.members.resolve(user.id);
       if (!member || !messageReaction.message.guild) return undefined;
-      if (!settings.disabled_modules.find((item) => item == Modules['suggestions'].name)) {
+      if (!settings.disabled_modules.find((item) => item == Modules['Suggestions'].name)) {
          const suggestion = data.suggestions.find((suggestion) => suggestion.message_id == messageReaction.message.id);
          if (suggestion) {
             const findReaction = settings.suggestions_reactions.find(

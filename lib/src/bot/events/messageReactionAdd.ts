@@ -14,7 +14,7 @@ module.exports = {
          settings = await server.fetchSettings();
       const member: GuildMember | null = messageReaction.message.guild.members.resolve(user.id);
       if (!member) return;
-      if (!settings.disabled_modules.find((item) => item == Modules['roles'].name)) {
+      if (!settings.disabled_modules.find((item) => item == Modules['Roles'].name)) {
          const rrData = data.reaction_roles.find((rr: IReactionRole) => messageReaction.message.id == rr.message_id);
          if (rrData) {
             const rr = rrData.reactions.find((react: IReaction) => react.emoji == messageReaction.emoji.toString());
@@ -28,7 +28,7 @@ module.exports = {
             }
          }
       }
-      if (!settings.disabled_modules.find((item) => item == Modules['suggestions'].name)) {
+      if (!settings.disabled_modules.find((item) => item == Modules['Suggestions'].name)) {
          const suggestion = data.suggestions.find((suggestion) => suggestion.message_id == messageReaction.message.id);
          if (suggestion) {
             const findReaction = settings.suggestions_reactions.find(

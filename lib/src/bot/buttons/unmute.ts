@@ -8,7 +8,7 @@ import { LogType } from '@util/types/enums/Log';
 import Modules from '@util/constants/Modules';
 
 module.exports = <AuxdibotButton>{
-   module: Modules['moderation'],
+   module: Modules['Moderation'],
    name: 'unmute',
    permission: 'moderation.mute.remove',
    async execute(interaction: MessageComponentInteraction) {

@@ -5,7 +5,7 @@ import Embeds from '@util/constants/Embeds';
 import Modules from '@util/constants/Modules';
 
 module.exports = <AuxdibotButton>{
-   module: Modules['moderation'],
+   module: Modules['Moderation'],
    name: 'record',
    permission: 'moderation.record',
    async execute(interaction: MessageComponentInteraction) {

@@ -45,7 +45,7 @@ const permissionsCommand = <AuxdibotCommand>{
             .addUserOption((builder) => builder.setName('user').setDescription('The user id to view.')),
       ),
    info: {
-      module: Modules['permissions'],
+      module: Modules['Permissions'],
       description: 'Edit, view, delete or list permission overrides.',
       usageExample: '/permissions [view|create|delete|list]',
       permission: 'permissions',
@@ -54,7 +54,7 @@ const permissionsCommand = <AuxdibotCommand>{
       {
          name: 'view',
          info: {
-            module: Modules['permissions'],
+            module: Modules['Permissions'],
             description: 'View a permission override.',
             usageExample: '/permissions view (override_id)',
             permission: 'permissions.view',
@@ -87,7 +87,7 @@ const permissionsCommand = <AuxdibotCommand>{
       {
          name: 'create',
          info: {
-            module: Modules['permissions'],
+            module: Modules['Permissions'],
             description: 'Create a permission override.',
             usageExample: '/permissions create (permission) (role|user) (allowed)',
             permission: 'permissions.create',
@@ -148,7 +148,7 @@ const permissionsCommand = <AuxdibotCommand>{
       {
          name: 'delete',
          info: {
-            module: Modules['permissions'],
+            module: Modules['Permissions'],
             description: 'Delete a permission override.',
             usageExample: '/permissions delete (override_id)',
             permission: 'permissions.delete',
@@ -190,7 +190,7 @@ const permissionsCommand = <AuxdibotCommand>{
       {
          name: 'list',
          info: {
-            module: Modules['permissions'],
+            module: Modules['Permissions'],
             description: 'List all permission overrides.',
             usageExample: '/permissions list',
             permission: 'permissions.list',

@@ -15,7 +15,7 @@ module.exports = {
       if (settings.message_xp <= 0) return;
       const member = await server.findOrCreateMember(sender.id);
       if (!member) return;
-      if (!settings.disabled_modules.find((item) => item == Modules['levels'].name)) {
+      if (!settings.disabled_modules.find((item) => item == Modules['Levels'].name)) {
          const level = member.level;
          const newLevel = member.addXP(settings.message_xp);
          await member.save();

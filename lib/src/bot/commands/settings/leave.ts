@@ -29,7 +29,7 @@ const leaveCommand = <AuxdibotCommand>{
       )
       .addSubcommand((builder) => builder.setName('preview').setDescription('Preview the leave embed.')),
    info: {
-      module: Modules['settings'],
+      module: Modules['Settings'],
       description:
          'Change settings for leave messages on the server. (Placeholders are supported. Do /placeholders for a list of placeholders.)',
       usageExample: '/leave (message|embed_json|preview)',
@@ -39,7 +39,7 @@ const leaveCommand = <AuxdibotCommand>{
       {
          name: 'message',
          info: {
-            module: Modules['settings'],
+            module: Modules['Settings'],
             description:
                'Set the leave message. (Placeholders are supported. Do /placeholders for a list of placeholders.)',
             usageExample:
@@ -86,7 +86,7 @@ const leaveCommand = <AuxdibotCommand>{
       {
          name: 'embed_json',
          info: {
-            module: Modules['settings'],
+            module: Modules['Settings'],
             description:
                'Add an embed to the join message using custom JSON. (Placeholders are supported. Do /placeholders for a list of placeholders.)',
             usageExample: '/leave embed_json (json)',
@@ -131,7 +131,7 @@ const leaveCommand = <AuxdibotCommand>{
       {
          name: 'preview',
          info: {
-            module: Modules['settings'],
+            module: Modules['Settings'],
             description: 'Preview the leave message.',
             usageExample: '/leave preview',
             permission: 'settings.leave.preview',

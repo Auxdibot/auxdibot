@@ -24,7 +24,7 @@ const helpCommand = <AuxdibotCommand>{
             .setRequired(false),
       ),
    info: {
-      module: Modules['general'],
+      module: Modules['General'],
       description: 'Sends a list of commands or information about a specific command.',
       usageExample: '/help [command_name] [subcommand_name]',
       allowedDefault: true,

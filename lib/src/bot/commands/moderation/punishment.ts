@@ -29,7 +29,7 @@ const punishmentCommand = <AuxdibotCommand>{
       )
       .addSubcommand((subcommand) => subcommand.setName('latest').setDescription('View the last 10 punishments.')),
    info: {
-      module: Modules['moderation'],
+      module: Modules['Moderation'],
       description: 'View or delete a punishment.',
       usageExample: '/punishment [view|delete|latest]',
       permission: 'moderation.punishments',
@@ -38,7 +38,7 @@ const punishmentCommand = <AuxdibotCommand>{
       {
          name: 'view',
          info: {
-            module: Modules['moderation'],
+            module: Modules['Moderation'],
             description: 'View a punishment.',
             usageExample: '/punishment view (punishment_id)',
             permission: 'moderation.punishments.view',
@@ -64,7 +64,7 @@ const punishmentCommand = <AuxdibotCommand>{
       {
          name: 'delete',
          info: {
-            module: Modules['moderation'],
+            module: Modules['Moderation'],
             description: 'Delete a punishment.',
             usageExample: '/punishment delete (punishment_id)',
             permission: 'moderation.punishments.delete',
@@ -99,7 +99,7 @@ const punishmentCommand = <AuxdibotCommand>{
       {
          name: 'latest',
          info: {
-            module: Modules['moderation'],
+            module: Modules['Moderation'],
             description: 'View the last 10 punishments.',
             usageExample: '/punishment latest',
             permission: 'moderation.punishments.latest',
