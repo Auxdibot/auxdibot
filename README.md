@@ -24,11 +24,11 @@
 
 ## About Project
 
-Auxdibot is a multipurpose WIP Discord utility bot, created by Auxdible with the MERN tech stack.
+Auxdibot is a multipurpose WIP Discord utility bot, created by Auxdible with the MERN tech stack using TypeScript.
 
 ### Table of Contents
 
-`/lib` - **Discord.js & Express.js backend, using passport with passport-discord with Discord OAuth2 for authentication.**
+`/lib` - **discord.js & express.js backend, using passport with passport-discord with Discord OAuth2 for authentication with the mongoose ODM for MongoDB.**
 
 `/app` - **React with react-router and Bootstrap frontend using axios for api requests.**
 
@@ -54,15 +54,19 @@ Auxdibot uses Discord's slash command system. If you want to run any command you
 
 * `/punishment` - View a punishment, list the latest server punishments or delete a punishment off of someone's record.
 
+* `/suggestions` - Change the settings for suggestions, or create a suggestion with `/suggestions create`
+
+* `/levels` - Manage levels on your server, or check the leaderboard!
+
 ## How to Run
 
 If you would like to run Auxdibot on your own machine:
 
 * Go to the file where you would like the `auxdibot` file to be stored.
 * Install Git and run `git clone https://github.com/Auxdible/auxdibot.git`
-* Run `npm install --save` in the root `auxdibot` file
-* Run `npm install --save` in the `/lib` file
-* Run `npm install --save` in the `/app` file
+* Run `npm i --save` in the root `auxdibot` file
+* Run `npm i --save` in the `/lib` file
+* Run `npm i --save` in the `/app` file
 * Run `npm run build` in the root `auxdibot` file
 * The frontend build will be located at `/app/dist`
 * The backend build will be located at `/lib/dist`
@@ -88,9 +92,10 @@ If you would like to run Auxdibot on your own machine:
 `👈` *Role Management (Join Roles, Sticky Roles, Massrole, Reaction Roles)*
 
 `🔺` *Suggestions*
-## Planned Features
 
 `🏆` *Levels*
+
+## Planned Features
 
 `⭐` *Starboard*
 
