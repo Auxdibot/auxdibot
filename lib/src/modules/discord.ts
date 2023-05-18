@@ -3,10 +3,9 @@ import { ActivityType, Client, Collection, GatewayIntentBits, Partials, REST, Ro
 import fs from 'fs';
 import path from 'path';
 import dotenv from 'dotenv';
-import Server from '../mongo/model/server/Server';
-import { IAuxdibot } from '../util/templates/IAuxdibot';
-import { client } from '../index';
-import { LogType } from '../util/types/Log';
+import Server from '@models/server/Server';
+import { IAuxdibot } from '@util/templates/IAuxdibot';
+import { LogType } from '@util/types/Log';
 
 // Configure .env
 dotenv.config();
@@ -79,12 +78,12 @@ export class AuxdibotClient {
       const commandFiles = [
          {
             dir: '',
-            files: fs.readdirSync(path.join(__dirname, '..', 'commands')).filter((file) => file.endsWith('.js')),
+            files: fs.readdirSync(path.join(__dirname, '../bot/commands')).filter((file) => file.endsWith('.js')),
          },
       ];
 
       for (const packageString of PACKAGES) {
-         const packageFile = path.join(__dirname, '..', 'commands', packageString);
+         const packageFile = path.join(__dirname, '../bot/commands', packageString);
          if (fs.existsSync(packageFile)) {
             commandFiles.push({
                dir: packageString,
@@ -94,7 +93,7 @@ export class AuxdibotClient {
       }
       for (const packageFile of commandFiles) {
          for (const file of packageFile.files) {
-            const fileRequire = require(`../commands/${packageFile.dir}/${file}`);
+            const fileRequire = require(`../bot/commands/${packageFile.dir}/${file}`);
             if (fileRequire.data) {
                commands.push(fileRequire.data);
                if (client.commands) {
@@ -118,9 +117,9 @@ export class AuxdibotClient {
       // Declare buttons
 
       const buttons = [];
-      const buttonFiles = fs.readdirSync(path.join(__dirname, '..', 'buttons')).filter((file) => file.endsWith('.js'));
+      const buttonFiles = fs.readdirSync(path.join(__dirname, '../bot/buttons')).filter((file) => file.endsWith('.js'));
       for (const file of buttonFiles) {
-         const fileRequire = require(`../buttons/${file}`);
+         const fileRequire = require(`../bot/buttons/${file}`);
          if (fileRequire) {
             buttons.push(fileRequire);
             if (client.buttons) {
@@ -132,10 +131,10 @@ export class AuxdibotClient {
       /********************************************************************************/
       // Declare events
 
-      const eventFiles = fs.readdirSync(path.join(__dirname, '..', '/events')).filter((file) => file.endsWith('.js'));
+      const eventFiles = fs.readdirSync(path.join(__dirname, '../bot/events')).filter((file) => file.endsWith('.js'));
 
       for (const file of eventFiles) {
-         const event = require(`../events/${file}`);
+         const event = require(`../bot/events/${file}`);
          if (event.once) {
             client.once(event.name, (...args) => event.execute(...args, client));
          } else {

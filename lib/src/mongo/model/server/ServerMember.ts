@@ -1,6 +1,6 @@
 import { GuildMember } from 'discord.js';
 import mongoose, { Schema } from 'mongoose';
-import calcXP from '../../../util/functions/calcXP';
+import calcXP from '@util/functions/calcXP';
 
 export interface IServerMember {
    discord_id: string;

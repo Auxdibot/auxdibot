@@ -1,6 +1,6 @@
 import express from 'express';
-import { validateUser } from '../util/middleware';
-import Server from '../mongo/model/server/Server';
+import { validateUser } from '@util/middleware';
+import Server from '@models/server/Server';
 import { GuildInfo } from 'passport-discord';
 
 const guildRouter = express.Router();

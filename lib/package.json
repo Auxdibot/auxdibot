@@ -4,9 +4,9 @@
   "description": "Express API and Discord.js backend for Auxdibot.",
   "main": "index.js",
   "scripts": {
-    "start": "node ./dist/index.js",
+    "start": "nodemon ./dist/index.js",
     "dev": "nodemon ./dist/index.js",
-    "build": "npx tsc",
+    "build": "tsc",
     "lint": "eslint --ignore-path .eslintignore --ext .js,.ts . --quiet --fix"
   },
   "author": "Auxdible",
@@ -32,6 +32,7 @@
     "express": "^4.18.2",
     "express-session": "^1.17.3",
     "form-data": "^4.0.0",
+    "module-alias": "^2.2.2",
     "mongoose": "^7.0.2",
     "mongoose-sequence": "^5.3.1",
     "nodemon": "^2.0.21",
@@ -42,12 +43,17 @@
   },
   "husky": {
     "hooks": {
-        "pre-commit": "lint-staged"
+      "pre-commit": "lint-staged"
     }
   },
   "lint-staged": {
     "*.{js,ts,tsx}": [
-        "eslint --fix"
+      "eslint --fix"
     ]
+  },
+  "_moduleAliases": {
+    "@util": "dist/util",
+    "@schemas": "dist/mongo/schema",
+    "@models": "dist/mongo/model"
   }
 }

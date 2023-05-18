@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import { APIEmbed, EmbedField } from 'discord.js';
+import { EmbedField } from 'discord.js';
 export const PunishmentNames = {
    warn: {
       name: '⚠ Warn',

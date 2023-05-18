@@ -1,5 +1,5 @@
 import { Guild, GuildMember } from 'discord.js';
-import { IServer, IServerMethods } from '../../../mongo/model/server/Server';
+import { IServer, IServerMethods } from '@models/server/Server';
 import BaseAuxdibotCommandData from './BaseAuxdibotCommandData';
 import { HydratedDocument } from 'mongoose';
 

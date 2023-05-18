@@ -1,6 +1,6 @@
 import passport, { Strategy } from 'passport';
 import { Strategy as DiscordStrategy } from 'passport-discord';
-import User from '../mongo/model/User';
+import User from '@models/User';
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
@@ -37,7 +37,7 @@ export class AuxdibotAPI {
                callbackURL: process.env.OAUTH2_REDIRECT_URL,
                scope: scopes,
             },
-            function (accessToken, refreshToken, profile, cb) {
+            function (_accessToken, _refreshToken, profile, cb) {
                User.findOneAndUpdate({ discord_id: profile.id }, {}, { upsert: true, new: true })
                   .then((data) => {
                      if (!data) return cb(new Error('No user found.'), undefined);
@@ -79,7 +79,7 @@ export class AuxdibotAPI {
       app.use(express.urlencoded({ extended: true }));
       app.use(cookieParser());
 
-      app.use((req: express.Request, res: express.Response, next: express.NextFunction) => {
+      app.use((req: express.Request, _res: express.Response, next: express.NextFunction) => {
          console.log(`${req.url} | ${req.ip}`);
          next();
       });

@@ -1,8 +1,8 @@
 import { Guild, GuildMember, PermissionsBitField } from 'discord.js';
-import Server from '../../mongo/model/server/Server';
-import { PunishmentNames } from '../../mongo/schema/PunishmentSchema';
+import Server from '@models/server/Server';
+import { PunishmentNames } from '@schemas/PunishmentSchema';
 import { LogNames, LogType } from '../types/Log';
-import { ISuggestion } from '../../mongo/schema/SuggestionSchema';
+import { ISuggestion } from '@schemas/SuggestionSchema';
 import { SuggestionStateName } from '../types/SuggestionState';
 
 export default async function parsePlaceholders(

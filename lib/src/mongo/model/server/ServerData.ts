@@ -1,13 +1,13 @@
-import LogSchema, { ILog } from '../../schema/LogSchema';
-import punishmentSchema, { IPunishment } from '../../schema/PunishmentSchema';
-import PermissionOverrideSchema, { IPermissionOverride } from '../../schema/PermissionOverrideSchema';
-import ReactionRoleSchema, { IReactionRole } from '../../schema/ReactionRoleSchema';
+import LogSchema, { ILog } from '@schemas/LogSchema';
+import punishmentSchema, { IPunishment } from '@schemas/PunishmentSchema';
+import PermissionOverrideSchema, { IPermissionOverride } from '@schemas/PermissionOverrideSchema';
+import ReactionRoleSchema, { IReactionRole } from '@schemas/ReactionRoleSchema';
 import mongoose from 'mongoose';
-import SuggestionSchema, { ISuggestion } from '../../schema/SuggestionSchema';
+import SuggestionSchema, { ISuggestion } from '@schemas/SuggestionSchema';
 import { APIEmbed, Guild, GuildBasedChannel } from 'discord.js';
-import { getMessage } from '../../../util/functions/getMessage';
-import parsePlaceholders from '../../../util/functions/parsePlaceholder';
-import { SuggestionsColors } from '../../../util/constants/Colors';
+import { getMessage } from '@util/functions/getMessage';
+import parsePlaceholders from '@util/functions/parsePlaceholder';
+import { SuggestionsColors } from '@util/constants/Colors';
 
 export interface IServerData {
    server_id: mongoose.ObjectId;

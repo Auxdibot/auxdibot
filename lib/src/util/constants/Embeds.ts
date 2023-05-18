@@ -1,4 +1,4 @@
-import { APIEmbed, EmbedAuthorOptions, EmbedBuilder } from 'discord.js';
+import { EmbedAuthorOptions, EmbedBuilder } from 'discord.js';
 import Colors from './Colors';
 import dotenv from 'dotenv';
 dotenv.config();

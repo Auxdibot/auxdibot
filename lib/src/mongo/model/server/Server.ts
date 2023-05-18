@@ -5,19 +5,18 @@ import ServerMember, { IServerMember, IServerMemberMethods } from './ServerMembe
 import ServerSettings, { IServerSettings, IServerSettingsMethods } from './ServerSettings';
 import ServerCounter, { IServerCounter, IServerCounterMethods } from './ServerCounter';
 import { ILog } from '../../schema/LogSchema';
-import Embeds from '../../../util/constants/Embeds';
+import Embeds from '@util/constants/Embeds';
 import {
    APIEmbed,
    Collection,
    EmbedField,
-   Guild,
    GuildBasedChannel,
    GuildMember,
    LimitedCollection,
    PermissionsBitField,
 } from 'discord.js';
 import { IPunishment, PunishmentNames, toEmbedField } from '../../schema/PunishmentSchema';
-import { LogNames } from '../../../util/types/Log';
+import { LogNames } from '@util/types/Log';
 import { client } from '../../../index';
 import { ISuggestion } from '../../schema/SuggestionSchema';
 
