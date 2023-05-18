@@ -1,7 +1,7 @@
 import { EmbedField } from 'discord.js';
 import AuxdibotCommandInteraction from '../templates/AuxdibotCommandInteraction';
 import EmbedParameters from '../types/EmbedParameters';
-import GuildAuxdibotCommandData from '../types/commandData/GuildAuxdibotCommandData';
+import { GuildAuxdibotCommandData } from '../types/AuxdibotCommandData';
 
 export default function argumentsToEmbedParameters(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
    const color = interaction.options.getString('color') || null,

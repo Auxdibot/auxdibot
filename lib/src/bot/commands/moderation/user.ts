@@ -3,7 +3,7 @@ import AuxdibotCommand from '@util/templates/AuxdibotCommand';
 import Embeds from '@util/constants/Embeds';
 import { PunishmentNames } from '@schemas/PunishmentSchema';
 import AuxdibotCommandInteraction from '@util/templates/AuxdibotCommandInteraction';
-import GuildAuxdibotCommandData from '@util/types/commandData/GuildAuxdibotCommandData';
+import { GuildAuxdibotCommandData } from '@util/types/AuxdibotCommandData';
 
 const userCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()

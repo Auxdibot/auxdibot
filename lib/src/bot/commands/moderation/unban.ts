@@ -3,7 +3,7 @@ import AuxdibotCommand from '@util/templates/AuxdibotCommand';
 import Embeds from '@util/constants/Embeds';
 import { toEmbedField } from '@schemas/PunishmentSchema';
 import AuxdibotCommandInteraction from '@util/templates/AuxdibotCommandInteraction';
-import GuildAuxdibotCommandData from '@util/types/commandData/GuildAuxdibotCommandData';
+import { GuildAuxdibotCommandData } from '@util/types/AuxdibotCommandData';
 import { LogType } from '@util/types/Log';
 
 const unbanCommand = <AuxdibotCommand>{

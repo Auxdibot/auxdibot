@@ -6,7 +6,7 @@ import { toAPIEmbed } from '@util/types/EmbedParameters';
 import parsePlaceholders from '@util/functions/parsePlaceholder';
 import { getMessage } from '@util/functions/getMessage';
 import AuxdibotCommandInteraction from '@util/templates/AuxdibotCommandInteraction';
-import GuildAuxdibotCommandData from '@util/types/commandData/GuildAuxdibotCommandData';
+import { GuildAuxdibotCommandData } from '@util/types/AuxdibotCommandData';
 import { LogType } from '@util/types/Log';
 import emojiRegex from 'emoji-regex';
 import createEmbedParameters from '@util/functions/createEmbedParameters';

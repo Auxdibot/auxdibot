@@ -5,7 +5,7 @@ import timestampToDuration from '@util/functions/timestampToDuration';
 import canExecute from '@util/functions/canExecute';
 import { IPunishment } from '@schemas/PunishmentSchema';
 import AuxdibotCommandInteraction from '@util/templates/AuxdibotCommandInteraction';
-import GuildAuxdibotCommandData from '@util/types/commandData/GuildAuxdibotCommandData';
+import { GuildAuxdibotCommandData } from '@util/types/AuxdibotCommandData';
 import { LogType } from '@util/types/Log';
 
 const banCommand = <AuxdibotCommand>{

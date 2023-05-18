@@ -4,7 +4,7 @@ import Embeds from '@util/constants/Embeds';
 import parsePlaceholders from '@util/functions/parsePlaceholder';
 import { toAPIEmbed } from '@util/types/EmbedParameters';
 import AuxdibotCommandInteraction from '@util/templates/AuxdibotCommandInteraction';
-import GuildAuxdibotCommandData from '@util/types/commandData/GuildAuxdibotCommandData';
+import { GuildAuxdibotCommandData } from '@util/types/AuxdibotCommandData';
 import createEmbedParameters from '@util/functions/createEmbedParameters';
 import argumentsToEmbedParameters from '@util/functions/argumentsToEmbedParameters';
 

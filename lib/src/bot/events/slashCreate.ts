@@ -2,9 +2,9 @@ import { BaseInteraction, GuildMember } from 'discord.js';
 import { IAuxdibot } from '@util/templates/IAuxdibot';
 import Embeds from '@util/constants/Embeds';
 import Server from '@models/server/Server';
-import DMAuxdibotCommandData from '@util/types/commandData/DMAuxdibotCommandData';
+import { DMAuxdibotCommandData } from '@util/types/AuxdibotCommandData';
 import AuxdibotCommandInteraction from '@util/templates/AuxdibotCommandInteraction';
-import GuildAuxdibotCommandData from '@util/types/commandData/GuildAuxdibotCommandData';
+import { GuildAuxdibotCommandData } from '@util/types/AuxdibotCommandData';
 
 module.exports = {
    name: 'interactionCreate',

@@ -3,7 +3,7 @@ import { SlashCommandBuilder, SlashCommandSubcommandsOnlyBuilder } from 'discord
 import CommandInfo from '../types/CommandInfo';
 import { AuxdibotSubcommand } from '../types/AuxdibotSubcommand';
 import AuxdibotCommandInteraction from './AuxdibotCommandInteraction';
-import BaseAuxdibotCommandData from '../types/commandData/BaseAuxdibotCommandData';
+import { BaseAuxdibotCommandData } from '../types/AuxdibotCommandData';
 
 interface AuxdibotCommand {
    data:

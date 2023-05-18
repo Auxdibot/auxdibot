@@ -1,7 +1,7 @@
 import { SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@util/templates/AuxdibotCommand';
 import AuxdibotCommandInteraction from '@util/templates/AuxdibotCommandInteraction';
-import GuildAuxdibotCommandData from '@util/types/commandData/GuildAuxdibotCommandData';
+import { GuildAuxdibotCommandData } from '@util/types/AuxdibotCommandData';
 import Embeds from '@util/constants/Embeds';
 
 const recordCommand = <AuxdibotCommand>{

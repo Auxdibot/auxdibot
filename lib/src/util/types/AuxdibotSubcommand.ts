@@ -1,6 +1,6 @@
 import CommandInfo from './CommandInfo';
 import AuxdibotCommandInteraction from '../templates/AuxdibotCommandInteraction';
-import BaseAuxdibotCommandData from './commandData/BaseAuxdibotCommandData';
+import { BaseAuxdibotCommandData } from './AuxdibotCommandData';
 
 export interface AuxdibotSubcommand {
    name: string;

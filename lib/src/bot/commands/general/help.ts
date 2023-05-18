@@ -5,7 +5,7 @@ import { IAuxdibot } from '@util/templates/IAuxdibot';
 import HelpCommandInfo from '@util/types/HelpCommandInfo';
 import dotenv from 'dotenv';
 import AuxdibotCommandInteraction from '@util/templates/AuxdibotCommandInteraction';
-import BaseAuxdibotCommandData from '@util/types/commandData/BaseAuxdibotCommandData';
+import { BaseAuxdibotCommandData } from '@util/types/AuxdibotCommandData';
 dotenv.config();
 const helpCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()

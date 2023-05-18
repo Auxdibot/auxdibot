@@ -4,7 +4,7 @@ import Embeds from '@util/constants/Embeds';
 import canExecute from '@util/functions/canExecute';
 import { IPunishment, toEmbedField } from '@schemas/PunishmentSchema';
 import AuxdibotCommandInteraction from '@util/templates/AuxdibotCommandInteraction';
-import GuildAuxdibotCommandData from '@util/types/commandData/GuildAuxdibotCommandData';
+import { GuildAuxdibotCommandData } from '@util/types/AuxdibotCommandData';
 import { LogType } from '@util/types/Log';
 
 const warnCommand = <AuxdibotCommand>{

@@ -4,7 +4,7 @@ import Embeds from '@util/constants/Embeds';
 import dotenv from 'dotenv';
 import Placeholders from '@util/types/Placeholders';
 import AuxdibotCommandInteraction from '@util/templates/AuxdibotCommandInteraction';
-import BaseAuxdibotCommandData from '@util/types/commandData/BaseAuxdibotCommandData';
+import { BaseAuxdibotCommandData } from '@util/types/AuxdibotCommandData';
 dotenv.config();
 const placeholderCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
