@@ -7,6 +7,7 @@ import { IPunishment } from '@schemas/PunishmentSchema';
 import AuxdibotCommandInteraction from '@util/types/templates/AuxdibotCommandInteraction';
 import { GuildAuxdibotCommandData } from '@util/types/AuxdibotCommandData';
 import { LogType } from '@util/types/enums/Log';
+import Modules from '@util/constants/Modules';
 
 const banCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -26,13 +27,10 @@ const banCommand = <AuxdibotCommand>{
             .setRequired(false),
       ),
    info: {
-      help: {
-         commandCategory: 'Moderation',
-         name: '/ban',
-         description:
-            'Bans a user, removing them from the server and adding a ban to their record on the server. Default duration is permanent.',
-         usageExample: '/ban (user) [reason] [duration]',
-      },
+      module: Modules['moderation'],
+      description:
+         'Bans a user, removing them from the server and adding a ban to their record on the server. Default duration is permanent.',
+      usageExample: '/ban (user) [reason] [duration]',
       permission: 'moderation.ban',
    },
    async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {

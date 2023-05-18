@@ -12,6 +12,7 @@ import emojiRegex from 'emoji-regex';
 import { getMessage } from '@util/functions/getMessage';
 import canExecute from '@util/functions/canExecute';
 import { SuggestionsColors } from '@util/constants/Colors';
+import Modules from '@util/constants/Modules';
 async function stateCommand(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>, state: SuggestionState) {
    if (!interaction.data) return;
    const server = interaction.data.guildData;
@@ -240,25 +241,19 @@ const suggestionsCommand = <AuxdibotCommand>{
             ),
       ),
    info: {
-      help: {
-         commandCategory: 'Suggestions',
-         name: '/suggestions',
-         description: 'The main command for handling suggestions on this server.',
-         usageExample:
-            '/suggestions (create|channel|updates_channel|auto_delete|discussion_threads|reactions|remove_reaction|add_reaction|approve|deny|consider|add|ban|unban|delete)',
-      },
+      module: Modules['suggestions'],
+      description: 'The main command for handling suggestions on this server.',
+      usageExample:
+         '/suggestions (create|channel|updates_channel|auto_delete|discussion_threads|reactions|remove_reaction|add_reaction|approve|deny|consider|add|ban|unban|delete)',
       permission: 'suggestions',
    },
    subcommands: [
       {
          name: 'create',
          info: {
-            help: {
-               commandCategory: 'Suggestions',
-               name: '/suggestions create',
-               description: 'Create a suggestion.',
-               usageExample: '/suggestions create (suggestion)',
-            },
+            module: Modules['suggestions'],
+            description: 'Create a suggestion.',
+            usageExample: '/suggestions create (suggestion)',
             permission: 'suggestions.create',
             allowedDefault: true,
          },
@@ -348,12 +343,9 @@ const suggestionsCommand = <AuxdibotCommand>{
       {
          name: 'channel',
          info: {
-            help: {
-               commandCategory: 'Suggestions',
-               name: '/suggestions channel',
-               description: 'Change the channel where suggestions are posted. (None to disable.)',
-               usageExample: '/suggestions channel [channel]',
-            },
+            module: Modules['suggestions'],
+            description: 'Change the channel where suggestions are posted. (None to disable.)',
+            usageExample: '/suggestions channel [channel]',
             permission: 'suggestions.channel',
          },
          async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
@@ -397,12 +389,9 @@ const suggestionsCommand = <AuxdibotCommand>{
       {
          name: 'updates_channel',
          info: {
-            help: {
-               commandCategory: 'Suggestions',
-               name: '/suggestions updates_channel',
-               description: 'Change the channel where updates to suggestions are posted.',
-               usageExample: '/suggestions updates_channel (channel)',
-            },
+            module: Modules['suggestions'],
+            description: 'Change the channel where updates to suggestions are posted.',
+            usageExample: '/suggestions updates_channel (channel)',
             permission: 'suggestions.channel.updates',
          },
          async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
@@ -443,12 +432,9 @@ const suggestionsCommand = <AuxdibotCommand>{
       {
          name: 'auto_delete',
          info: {
-            help: {
-               commandCategory: 'Suggestions',
-               name: '/suggestions auto_delete',
-               description: 'Set whether suggestions are deleted upon being approved, denied, or marked as added.',
-               usageExample: '/suggestions auto_delete (true|false)',
-            },
+            module: Modules['suggestions'],
+            description: 'Set whether suggestions are deleted upon being approved, denied, or marked as added.',
+            usageExample: '/suggestions auto_delete (true|false)',
             permission: 'suggestions.auto_delete',
          },
          async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
@@ -490,12 +476,9 @@ const suggestionsCommand = <AuxdibotCommand>{
       {
          name: 'discussion_threads',
          info: {
-            help: {
-               commandCategory: 'Suggestions',
-               name: '/suggestions discussion_threads',
-               description: 'Set whether a discussion thread is created when a suggestion is created.',
-               usageExample: '/suggestions discussion_threads (true|false)',
-            },
+            module: Modules['suggestions'],
+            description: 'Set whether a discussion thread is created when a suggestion is created.',
+            usageExample: '/suggestions discussion_threads (true|false)',
             permission: 'suggestions.discussion_threads',
          },
          async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
@@ -537,12 +520,9 @@ const suggestionsCommand = <AuxdibotCommand>{
       {
          name: 'reactions',
          info: {
-            help: {
-               commandCategory: 'Suggestions',
-               name: '/suggestions reactions',
-               description: 'List the reactions for suggestions.',
-               usageExample: '/suggestions reactions',
-            },
+            module: Modules['suggestions'],
+            description: 'List the reactions for suggestions.',
+            usageExample: '/suggestions reactions',
             permission: 'suggestions.reactions',
          },
          async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
@@ -561,13 +541,10 @@ const suggestionsCommand = <AuxdibotCommand>{
       {
          name: 'add_reaction',
          info: {
-            help: {
-               commandCategory: 'Suggestions',
-               name: '/suggestions add_reaction',
-               description:
-                  'Add a reaction to the reactions on suggestions, with a specified value for the rating given. Positive numbers are upvotes, negative numbers are downvotes.',
-               usageExample: '/suggestions add_reaction (reaction) (rating)',
-            },
+            module: Modules['suggestions'],
+            description:
+               'Add a reaction to the reactions on suggestions, with a specified value for the rating given. Positive numbers are upvotes, negative numbers are downvotes.',
+            usageExample: '/suggestions add_reaction (reaction) (rating)',
             permission: 'suggestions.reactions.add',
          },
          async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
@@ -606,12 +583,9 @@ const suggestionsCommand = <AuxdibotCommand>{
       {
          name: 'remove_reaction',
          info: {
-            help: {
-               commandCategory: 'Suggestions',
-               name: '/suggestions remove_reaction',
-               description: 'Remove a reaction from the reactions on suggestions.',
-               usageExample: '/suggestions remove_reaction (reaction|index)',
-            },
+            module: Modules['suggestions'],
+            description: 'Remove a reaction from the reactions on suggestions.',
+            usageExample: '/suggestions remove_reaction (reaction|index)',
             permission: 'suggestions.reactions.remove',
          },
          async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
@@ -646,12 +620,9 @@ const suggestionsCommand = <AuxdibotCommand>{
       {
          name: 'approve',
          info: {
-            help: {
-               commandCategory: 'Suggestions',
-               name: '/suggestions approve',
-               description: 'Mark a suggestion as approved.',
-               usageExample: '/suggestions approve (id)',
-            },
+            module: Modules['suggestions'],
+            description: 'Mark a suggestion as approved.',
+            usageExample: '/suggestions approve (id)',
             permission: 'suggestions.state.approve',
          },
          execute: (interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) =>
@@ -660,12 +631,9 @@ const suggestionsCommand = <AuxdibotCommand>{
       {
          name: 'deny',
          info: {
-            help: {
-               commandCategory: 'Suggestions',
-               name: '/suggestions deny',
-               description: 'Mark a suggestion as denied.',
-               usageExample: '/suggestions deny (id)',
-            },
+            module: Modules['suggestions'],
+            description: 'Mark a suggestion as denied.',
+            usageExample: '/suggestions deny (id)',
             permission: 'suggestions.state.deny',
          },
          execute: (interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) =>
@@ -674,12 +642,9 @@ const suggestionsCommand = <AuxdibotCommand>{
       {
          name: 'consider',
          info: {
-            help: {
-               commandCategory: 'Suggestions',
-               name: '/suggestions consider',
-               description: 'Mark a suggestion as considered.',
-               usageExample: '/suggestions consider (id)',
-            },
+            module: Modules['suggestions'],
+            description: 'Mark a suggestion as considered.',
+            usageExample: '/suggestions consider (id)',
             permission: 'suggestions.state.consider',
          },
          execute: (interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) =>
@@ -688,12 +653,9 @@ const suggestionsCommand = <AuxdibotCommand>{
       {
          name: 'add',
          info: {
-            help: {
-               commandCategory: 'Suggestions',
-               name: '/suggestions add',
-               description: 'Mark a suggestion as added.',
-               usageExample: '/suggestions add (id)',
-            },
+            module: Modules['suggestions'],
+            description: 'Mark a suggestion as added.',
+            usageExample: '/suggestions add (id)',
             permission: 'suggestions.state.add',
          },
          execute: (interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) =>
@@ -702,12 +664,9 @@ const suggestionsCommand = <AuxdibotCommand>{
       {
          name: 'ban',
          info: {
-            help: {
-               commandCategory: 'Suggestions',
-               name: '/suggestions ban',
-               description: 'Ban a user from using suggestions.',
-               usageExample: '/suggestions ban (user)',
-            },
+            module: Modules['suggestions'],
+            description: 'Ban a user from using suggestions.',
+            usageExample: '/suggestions ban (user)',
             permission: 'suggestions.ban',
          },
          async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
@@ -749,12 +708,9 @@ const suggestionsCommand = <AuxdibotCommand>{
       {
          name: 'unban',
          info: {
-            help: {
-               commandCategory: 'Suggestions',
-               name: '/suggestions unban',
-               description: 'Unban a user, allowing them to use suggestions.',
-               usageExample: '/suggestions unban (user)',
-            },
+            module: Modules['suggestions'],
+            description: 'Unban a user, allowing them to use suggestions.',
+            usageExample: '/suggestions unban (user)',
             permission: 'suggestions.ban.remove',
          },
          async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
@@ -796,12 +752,9 @@ const suggestionsCommand = <AuxdibotCommand>{
       {
          name: 'delete',
          info: {
-            help: {
-               commandCategory: 'Suggestions',
-               name: '/suggestions delete',
-               description: 'Delete a suggestion.',
-               usageExample: '/suggestions delete (id)',
-            },
+            module: Modules['suggestions'],
+            description: 'Delete a suggestion.',
+            usageExample: '/suggestions delete (id)',
             permission: 'suggestions.delete',
          },
          async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {

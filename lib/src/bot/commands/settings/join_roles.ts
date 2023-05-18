@@ -4,6 +4,7 @@ import Embeds from '@util/constants/Embeds';
 import AuxdibotCommandInteraction from '@util/types/templates/AuxdibotCommandInteraction';
 import { GuildAuxdibotCommandData } from '@util/types/AuxdibotCommandData';
 import { LogType } from '@util/types/enums/Log';
+import Modules from '@util/constants/Modules';
 
 const joinRolesCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -39,24 +40,18 @@ const joinRolesCommand = <AuxdibotCommand>{
          builder.setName('list').setDescription('List the roles that are assigned when a member joins the server.'),
       ),
    info: {
-      help: {
-         commandCategory: 'Settings',
-         name: '/join_roles',
-         description: 'Change the roles given when a member joins the server.',
-         usageExample: '/join_roles (add|remove|list)',
-      },
+      module: Modules['settings'],
+      description: 'Change the roles given when a member joins the server.',
+      usageExample: '/join_roles (add|remove|list)',
       permission: 'settings.join_roles',
    },
    subcommands: [
       {
          name: 'add',
          info: {
-            help: {
-               commandCategory: 'Settings',
-               name: '/join_roles add',
-               description: 'Add a role to be assigned when a member joins the server.',
-               usageExample: '/join_roles add (role)',
-            },
+            module: Modules['settings'],
+            description: 'Add a role to be assigned when a member joins the server.',
+            usageExample: '/join_roles add (role)',
             permission: 'settings.join_roles.add',
          },
          async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
@@ -107,13 +102,10 @@ const joinRolesCommand = <AuxdibotCommand>{
       {
          name: 'remove',
          info: {
-            help: {
-               commandCategory: 'Settings',
-               name: '/join_roles remove',
-               description:
-                  "Remove a role that is assigned when a member joins the server. If you've deleted the role, use the index parameter, which is the placement of the item on /join_roles list.",
-               usageExample: '/join_roles remove [role] [index]',
-            },
+            module: Modules['settings'],
+            description:
+               "Remove a role that is assigned when a member joins the server. If you've deleted the role, use the index parameter, which is the placement of the item on /join_roles list.",
+            usageExample: '/join_roles remove [role] [index]',
             permission: 'settings.join_roles.remove',
          },
          async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
@@ -170,12 +162,9 @@ const joinRolesCommand = <AuxdibotCommand>{
       {
          name: 'list',
          info: {
-            help: {
-               commandCategory: 'Settings',
-               name: '/join_roles list',
-               description: 'List the roles that are assigned when a member joins the server.',
-               usageExample: '/join_roles list',
-            },
+            module: Modules['settings'],
+            description: 'List the roles that are assigned when a member joins the server.',
+            usageExample: '/join_roles list',
             permission: 'settings.join_roles.list',
          },
          async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {

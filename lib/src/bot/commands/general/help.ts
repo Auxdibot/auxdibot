@@ -2,10 +2,10 @@ import { ActionRowBuilder, ButtonBuilder, SlashCommandBuilder } from 'discord.js
 import AuxdibotCommand from '@util/types/templates/AuxdibotCommand';
 import Embeds from '@util/constants/Embeds';
 import { IAuxdibot } from '@util/types/templates/IAuxdibot';
-import HelpCommandInfo from '@util/types/HelpCommandInfo';
 import dotenv from 'dotenv';
 import AuxdibotCommandInteraction from '@util/types/templates/AuxdibotCommandInteraction';
 import { BaseAuxdibotCommandData } from '@util/types/AuxdibotCommandData';
+import Modules from '@util/constants/Modules';
 dotenv.config();
 const helpCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -24,12 +24,9 @@ const helpCommand = <AuxdibotCommand>{
             .setRequired(false),
       ),
    info: {
-      help: {
-         commandCategory: 'General',
-         name: '/help',
-         description: 'Sends a list of commands or information about a specific command.',
-         usageExample: '/help [command_name] [subcommand_name]',
-      },
+      module: Modules['general'],
+      description: 'Sends a list of commands or information about a specific command.',
+      usageExample: '/help [command_name] [subcommand_name]',
       allowedDefault: true,
       permission: 'commands.help',
       dmableCommand: true,
@@ -44,25 +41,23 @@ const helpCommand = <AuxdibotCommand>{
             .reduce(
                (accumulator, value) => {
                   if (!value.info) return accumulator;
-                  accumulator.filter((i) => i.name == value.info.help.commandCategory).length > 0
-                     ? accumulator
-                          .filter((i) => i.name == value.info.help.commandCategory)[0]
-                          .commands.push(value.info.help)
+                  accumulator.filter((i) => i.name == value.info.module.name).length > 0
+                     ? accumulator.filter((i) => i.name == value.info.module.name)[0].commands.push(value)
                      : accumulator.push({
-                          name: value.info.help.commandCategory,
-                          commands: [value.info.help],
+                          name: value.info.module.name,
+                          commands: [value],
                        });
                   return accumulator;
                },
                [] as {
                   name: string;
-                  commands: HelpCommandInfo[];
+                  commands: AuxdibotCommand[];
                }[],
             )
             .map((i) => {
                let stringBuilder = '';
                for (const item of i.commands) {
-                  stringBuilder = stringBuilder + `• **${item.name}** - ${item.description}\n\n`;
+                  stringBuilder = stringBuilder + `• **/${item.data.name}** - ${item.info.description}\n\n`;
                }
                return {
                   name: i.name + '\n\n',
@@ -102,18 +97,18 @@ const helpCommand = <AuxdibotCommand>{
       }
 
       const helpCommandEmbed = Embeds.INFO_EMBED.toJSON();
-      helpCommandEmbed.title = `❔ ${info.help.name}`;
+      helpCommandEmbed.title = `❔ /${command.data.name} ${subcommand ? subcommand.name : ''}`;
       helpCommandEmbed.author = {
-         name: `Category: ${info.help.commandCategory}`,
+         name: `Category: ${info.module.name}`,
       };
       helpCommandEmbed.fields = [
          {
             name: 'Command Info',
-            value: `${info.help.description}`,
+            value: `${info.description}`,
          },
          {
             name: 'Usage',
-            value: `\`${info.help.usageExample}\``,
+            value: `\`${info.usageExample}\``,
          },
       ];
       helpCommandEmbed.footer = {

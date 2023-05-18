@@ -6,6 +6,7 @@ import { IPunishment } from '@schemas/PunishmentSchema';
 import AuxdibotCommandInteraction from '@util/types/templates/AuxdibotCommandInteraction';
 import { GuildAuxdibotCommandData } from '@util/types/AuxdibotCommandData';
 import { LogType } from '@util/types/enums/Log';
+import Modules from '@util/constants/Modules';
 
 const kickCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -16,12 +17,9 @@ const kickCommand = <AuxdibotCommand>{
          builder.setName('reason').setDescription('Reason for kick (Optional)').setRequired(false),
       ),
    info: {
-      help: {
-         commandCategory: 'Moderation',
-         name: '/kick',
-         description: 'Kicks a user, removing them from the server and adding a kick to their record on the server.',
-         usageExample: '/kick (user) [reason]',
-      },
+      module: Modules['moderation'],
+      description: 'Kicks a user, removing them from the server and adding a kick to their record on the server.',
+      usageExample: '/kick (user) [reason]',
       permission: 'moderation.kick',
    },
    async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {

@@ -6,6 +6,7 @@ import { IPunishment, toEmbedField } from '@schemas/PunishmentSchema';
 import AuxdibotCommandInteraction from '@util/types/templates/AuxdibotCommandInteraction';
 import { GuildAuxdibotCommandData } from '@util/types/AuxdibotCommandData';
 import { LogType } from '@util/types/enums/Log';
+import Modules from '@util/constants/Modules';
 
 const warnCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -16,13 +17,10 @@ const warnCommand = <AuxdibotCommand>{
          builder.setName('reason').setDescription('Reason for warn (Optional)').setRequired(false),
       ),
    info: {
-      help: {
-         commandCategory: 'Moderation',
-         name: '/warn',
-         description:
-            'Warns a user, giving them a DM warning (if they have DMs enabled) and adding a warn to their record on the server.',
-         usageExample: '/warn (user) [reason]',
-      },
+      module: Modules['moderation'],
+      description:
+         'Warns a user, giving them a DM warning (if they have DMs enabled) and adding a warn to their record on the server.',
+      usageExample: '/warn (user) [reason]',
       permission: 'moderation.warn',
    },
    async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {

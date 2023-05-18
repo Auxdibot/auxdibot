@@ -4,6 +4,7 @@ import Embeds from '@util/constants/Embeds';
 import AuxdibotCommandInteraction from '@util/types/templates/AuxdibotCommandInteraction';
 import { GuildAuxdibotCommandData } from '@util/types/AuxdibotCommandData';
 import { LogType } from '@util/types/enums/Log';
+import Modules from '@util/constants/Modules';
 
 const massroleCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -26,24 +27,18 @@ const massroleCommand = <AuxdibotCommand>{
             ),
       ),
    info: {
-      help: {
-         commandCategory: 'Roles',
-         name: '/massrole',
-         description: 'Give everybody a role, or take a role away from anyone that has it.',
-         usageExample: '/massrole (give|take)',
-      },
+      module: Modules['roles'],
+      description: 'Give everybody a role, or take a role away from anyone that has it.',
+      usageExample: '/massrole (give|take)',
       permission: 'massrole',
    },
    subcommands: [
       {
          name: 'give',
          info: {
-            help: {
-               commandCategory: 'Roles',
-               name: '/massrole',
-               description: 'Give everybody a role.',
-               usageExample: '/massrole give (role)',
-            },
+            module: Modules['roles'],
+            description: 'Give everybody a role.',
+            usageExample: '/massrole give (role)',
             permission: 'massrole.give',
          },
          async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
@@ -81,12 +76,9 @@ const massroleCommand = <AuxdibotCommand>{
       {
          name: 'take',
          info: {
-            help: {
-               commandCategory: 'Roles',
-               name: '/massrole',
-               description: 'Take away a role from every user.',
-               usageExample: '/massrole take (role)',
-            },
+            module: Modules['roles'],
+            description: 'Take away a role from every user.',
+            usageExample: '/massrole take (role)',
             permission: 'massrole.take',
          },
          async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {

@@ -5,16 +5,14 @@ import dotenv from 'dotenv';
 import AuxdibotCommandInteraction from '@util/types/templates/AuxdibotCommandInteraction';
 import { GuildAuxdibotCommandData } from '@util/types/AuxdibotCommandData';
 import calcXP from '@util/functions/calcXP';
+import Modules from '@util/constants/Modules';
 dotenv.config();
 const myLevelCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder().setName('mylevel').setDescription('View your level on this server.'),
    info: {
-      help: {
-         commandCategory: 'Levels',
-         name: '/mylevel',
-         description: 'View your level on this server.',
-         usageExample: '/mylevel',
-      },
+      module: Modules['levels'],
+      description: 'View your level on this server.',
+      usageExample: '/mylevel',
       allowedDefault: true,
       permission: 'levels.mylevel',
    },

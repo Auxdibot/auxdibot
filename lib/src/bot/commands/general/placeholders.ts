@@ -5,18 +5,16 @@ import dotenv from 'dotenv';
 import Placeholders from '@util/types/enums/Placeholders';
 import AuxdibotCommandInteraction from '@util/types/templates/AuxdibotCommandInteraction';
 import { BaseAuxdibotCommandData } from '@util/types/AuxdibotCommandData';
+import Modules from '@util/constants/Modules';
 dotenv.config();
 const placeholderCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
       .setName('placeholders')
       .setDescription('View a list of placeholders and what they do.'),
    info: {
-      help: {
-         commandCategory: 'General',
-         name: '/placeholders',
-         description: 'View a list of placeholders and what they do.',
-         usageExample: '/placeholders',
-      },
+      module: Modules['general'],
+      description: 'View a list of placeholders and what they do.',
+      usageExample: '/placeholders',
       permission: 'commands.placeholders',
       dmableCommand: true,
    },

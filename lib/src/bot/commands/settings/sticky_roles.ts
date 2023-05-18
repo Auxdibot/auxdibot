@@ -4,6 +4,7 @@ import Embeds from '@util/constants/Embeds';
 import AuxdibotCommandInteraction from '@util/types/templates/AuxdibotCommandInteraction';
 import { GuildAuxdibotCommandData } from '@util/types/AuxdibotCommandData';
 import { LogType } from '@util/types/enums/Log';
+import Modules from '@util/constants/Modules';
 
 const stickyRolesCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -39,24 +40,18 @@ const stickyRolesCommand = <AuxdibotCommand>{
          builder.setName('list').setDescription('List the roles that are kept when a member rejoins the server.'),
       ),
    info: {
-      help: {
-         commandCategory: 'Settings',
-         name: '/sticky_roles',
-         description: 'Change the roles that are kept when a member rejoins the server.',
-         usageExample: '/sticky_roles (add|remove|list)',
-      },
+      module: Modules['settings'],
+      description: 'Change the roles that are kept when a member rejoins the server.',
+      usageExample: '/sticky_roles (add|remove|list)',
       permission: 'settings.sticky_roles',
    },
    subcommands: [
       {
          name: 'add',
          info: {
-            help: {
-               commandCategory: 'Settings',
-               name: '/sticky_roles add',
-               description: 'Add a role to be kept when a member rejoins the server.',
-               usageExample: '/sticky_roles add (role)',
-            },
+            module: Modules['settings'],
+            description: 'Add a role to be kept when a member rejoins the server.',
+            usageExample: '/sticky_roles add (role)',
             permission: 'settings.sticky_roles.add',
          },
          async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
@@ -112,13 +107,10 @@ const stickyRolesCommand = <AuxdibotCommand>{
       {
          name: 'remove',
          info: {
-            help: {
-               commandCategory: 'Settings',
-               name: '/sticky_roles remove',
-               description:
-                  "Remove a role that is kept when a member rejoins the server. If you've deleted the role, use the index parameter, which is the placement of the item on /sticky_roles list.",
-               usageExample: '/sticky_roles remove [role] [index]',
-            },
+            module: Modules['settings'],
+            description:
+               "Remove a role that is kept when a member rejoins the server. If you've deleted the role, use the index parameter, which is the placement of the item on /sticky_roles list.",
+            usageExample: '/sticky_roles remove [role] [index]',
             permission: 'settings.sticky_roles.remove',
          },
          async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
@@ -182,12 +174,9 @@ const stickyRolesCommand = <AuxdibotCommand>{
       {
          name: 'list',
          info: {
-            help: {
-               commandCategory: 'Settings',
-               name: '/sticky_roles list',
-               description: 'List the roles that are kept when a member rejoins the server.',
-               usageExample: '/sticky_roles list',
-            },
+            module: Modules['settings'],
+            description: 'List the roles that are kept when a member rejoins the server.',
+            usageExample: '/sticky_roles list',
             permission: 'settings.sticky_roles.list',
          },
          async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {

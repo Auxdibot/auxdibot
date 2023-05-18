@@ -11,6 +11,7 @@ import { LogType } from '@util/types/enums/Log';
 import emojiRegex from 'emoji-regex';
 import createEmbedParameters from '@util/functions/createEmbedParameters';
 import argumentsToEmbedParameters from '@util/functions/argumentsToEmbedParameters';
+import Modules from '@util/constants/Modules';
 
 const reactionRolesCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -122,24 +123,18 @@ const reactionRolesCommand = <AuxdibotCommand>{
       )
       .addSubcommand((builder) => builder.setName('list').setDescription('List the reaction roles on this server.')),
    info: {
-      help: {
-         commandCategory: 'Roles',
-         name: '/reaction_roles',
-         description: 'Create, edit, remove, or list the currently active reaction roles.',
-         usageExample: '/reaction_roles (add|remove|edit|list)',
-      },
+      module: Modules['roles'],
+      description: 'Create, edit, remove, or list the currently active reaction roles.',
+      usageExample: '/reaction_roles (add|remove|edit|list)',
       permission: 'rr',
    },
    subcommands: [
       {
          name: 'add',
          info: {
-            help: {
-               commandCategory: 'Roles',
-               name: '/reaction_roles add',
-               description: 'Add a reaction role to the server.',
-               usageExample: '/reaction_roles add (channel) (roles)',
-            },
+            module: Modules['roles'],
+            description: 'Add a reaction role to the server.',
+            usageExample: '/reaction_roles add (channel) (roles)',
             permission: 'rr.add',
          },
          async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
@@ -207,13 +202,10 @@ const reactionRolesCommand = <AuxdibotCommand>{
       {
          name: 'add_custom',
          info: {
-            help: {
-               commandCategory: 'Roles',
-               name: '/reaction_roles add_custom',
-               description: 'Add a reaction role to the server with custom Embed parameters.',
-               usageExample:
-                  '/reaction_roles add_custom (channel) (roles) [content] [color] [title] [title url] [author] [author icon url] [author url] [description] [fields (split title and description with `"|d|"``, and seperate fields with `"|s|"`)] [footer] [footer icon url] [image url] [thumbnail url]',
-            },
+            module: Modules['roles'],
+            description: 'Add a reaction role to the server with custom Embed parameters.',
+            usageExample:
+               '/reaction_roles add_custom (channel) (roles) [content] [color] [title] [title url] [author] [author icon url] [author url] [description] [fields (split title and description with `"|d|"``, and seperate fields with `"|s|"`)] [footer] [footer icon url] [image url] [thumbnail url]',
             permission: 'rr.add.custom',
          },
          async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
@@ -289,12 +281,9 @@ const reactionRolesCommand = <AuxdibotCommand>{
       {
          name: 'add_json',
          info: {
-            help: {
-               commandCategory: 'Roles',
-               name: '/reaction_roles add_json',
-               description: 'Add a reaction role to the server with custom Discord Embed JSON.',
-               usageExample: '/reaction_roles add_json (channel) (roles) (json)',
-            },
+            module: Modules['roles'],
+            description: 'Add a reaction role to the server with custom Discord Embed JSON.',
+            usageExample: '/reaction_roles add_json (channel) (roles) (json)',
             permission: 'rr.add.json',
          },
          async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
@@ -367,12 +356,9 @@ const reactionRolesCommand = <AuxdibotCommand>{
       {
          name: 'remove',
          info: {
-            help: {
-               commandCategory: 'Roles',
-               name: '/reaction_roles remove',
-               description: 'Remove a role that is assigned when a member joins the server.',
-               usageExample: '/reaction_roles remove [message_id] [index]',
-            },
+            module: Modules['roles'],
+            description: 'Remove a role that is assigned when a member joins the server.',
+            usageExample: '/reaction_roles remove [message_id] [index]',
             permission: 'rr.remove',
          },
          async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
@@ -421,12 +407,9 @@ const reactionRolesCommand = <AuxdibotCommand>{
       {
          name: 'list',
          info: {
-            help: {
-               commandCategory: 'Roles',
-               name: '/reaction_roles list',
-               description: 'List the reaction roles on this server.',
-               usageExample: '/reaction_roles list',
-            },
+            module: Modules['roles'],
+            description: 'List the reaction roles on this server.',
+            usageExample: '/reaction_roles list',
             permission: 'rr.list',
          },
          async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
@@ -450,13 +433,10 @@ const reactionRolesCommand = <AuxdibotCommand>{
       {
          name: 'edit',
          info: {
-            help: {
-               commandCategory: 'Roles',
-               name: '/reaction_roles edit',
-               description: "Edit a reaction role's embed on this server.",
-               usageExample:
-                  '/reaction_roles edit [message_id] [index] [json, overrides embed parameters] [content] [color] [title] [title url] [author] [author icon url] [author url] [description] [fields (split title and description with `"|d|"``, and seperate fields with `"|s|"`)] [footer] [footer icon url] [image url] [thumbnail url]',
-            },
+            module: Modules['roles'],
+            description: "Edit a reaction role's embed on this server.",
+            usageExample:
+               '/reaction_roles edit [message_id] [index] [json, overrides embed parameters] [content] [color] [title] [title url] [author] [author icon url] [author url] [description] [fields (split title and description with `"|d|"``, and seperate fields with `"|s|"`)] [footer] [footer icon url] [image url] [thumbnail url]',
             permission: 'rr.edit',
          },
          async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {

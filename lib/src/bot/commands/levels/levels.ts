@@ -4,6 +4,7 @@ import AuxdibotCommandInteraction from '@util/types/templates/AuxdibotCommandInt
 import { GuildAuxdibotCommandData } from '@util/types/AuxdibotCommandData';
 import Embeds from '@util/constants/Embeds';
 import { ILevelReward } from '@schemas/LevelRewardSchema';
+import Modules from '@util/constants/Modules';
 const levelCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
       .setName('levels')
@@ -70,24 +71,18 @@ const levelCommand = <AuxdibotCommand>{
             ),
       ),
    info: {
-      help: {
-         commandCategory: 'Levels',
-         name: '/levels',
-         description: 'Change settings for leveling on this server.',
-         usageExample: '/levels (leaderboard|add_reward|rewards|remove_reward|give_xp|reset|remove_xp|message_xp)',
-      },
+      module: Modules['levels'],
+      description: 'Change settings for leveling on this server.',
+      usageExample: '/levels (leaderboard|add_reward|rewards|remove_reward|give_xp|reset|remove_xp|message_xp)',
       permission: 'levels',
    },
    subcommands: [
       {
          name: 'leaderboard',
          info: {
-            help: {
-               commandCategory: 'Levels',
-               name: '/leaderboard',
-               description: 'View the top levelled members on this server.',
-               usageExample: '/leaderboard',
-            },
+            module: Modules['levels'],
+            description: 'View the top levelled members on this server.',
+            usageExample: '/levels leaderboard',
             allowedDefault: true,
             permission: 'levels.leaderboard',
          },
@@ -110,12 +105,9 @@ const levelCommand = <AuxdibotCommand>{
       {
          name: 'add_reward',
          info: {
-            help: {
-               commandCategory: 'Levels',
-               name: '/levels add_reward',
-               description: 'Add a reward to the Level Rewards.',
-               usageExample: '/levels add_reward (level) (role)',
-            },
+            module: Modules['levels'],
+            description: 'Add a reward to the Level Rewards.',
+            usageExample: '/levels add_reward (level) (role)',
             permission: 'levels.rewards.add',
          },
          async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
@@ -164,12 +156,9 @@ const levelCommand = <AuxdibotCommand>{
       {
          name: 'remove_reward',
          info: {
-            help: {
-               commandCategory: 'Levels',
-               name: '/levels remove_reward',
-               description: 'Remove a reward from the Level Rewards.',
-               usageExample: '/levels remove_reward (level)',
-            },
+            module: Modules['levels'],
+            description: 'Remove a reward from the Level Rewards.',
+            usageExample: '/levels remove_reward (level)',
             permission: 'levels.rewards.remove',
          },
          async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
@@ -193,12 +182,9 @@ const levelCommand = <AuxdibotCommand>{
       {
          name: 'rewards',
          info: {
-            help: {
-               commandCategory: 'Levels',
-               name: '/levels rewards',
-               description: 'View the Level Rewards for this server.',
-               usageExample: '/levels rewards',
-            },
+            module: Modules['levels'],
+            description: 'View the Level Rewards for this server.',
+            usageExample: '/levels rewards',
             permission: 'levels.rewards',
          },
          async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
@@ -217,12 +203,9 @@ const levelCommand = <AuxdibotCommand>{
       {
          name: 'reset',
          info: {
-            help: {
-               commandCategory: 'Levels',
-               name: '/levels reset',
-               description: "Reset a user's level and XP.",
-               usageExample: '/levels reset (user)',
-            },
+            module: Modules['levels'],
+            description: "Reset a user's level and XP.",
+            usageExample: '/levels reset (user)',
             permission: 'levels.xp.reset',
          },
          async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
@@ -248,12 +231,9 @@ const levelCommand = <AuxdibotCommand>{
       {
          name: 'give_xp',
          info: {
-            help: {
-               commandCategory: 'Levels',
-               name: '/levels give_xp',
-               description: 'Give a user XP points.',
-               usageExample: '/levels give_xp (xp) (user)',
-            },
+            module: Modules['levels'],
+            description: 'Give a user XP points.',
+            usageExample: '/levels give_xp (xp) (user)',
             permission: 'levels.xp.give',
          },
          async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
@@ -280,6 +260,7 @@ const levelCommand = <AuxdibotCommand>{
       {
          name: 'remove_xp',
          info: {
+            module: Modules['levels'],
             help: {
                commandCategory: 'Levels',
                name: '/levels remove_xp',
@@ -312,12 +293,9 @@ const levelCommand = <AuxdibotCommand>{
       {
          name: 'message_xp',
          info: {
-            help: {
-               commandCategory: 'Levels',
-               name: '/levels message_xp',
-               description: 'Set the amount of XP given for sending a message.',
-               usageExample: '/levels message_xp (xp)',
-            },
+            module: Modules['levels'],
+            description: 'Set the amount of XP given for sending a message.',
+            usageExample: '/levels message_xp (xp)',
             permission: 'levels.message_xp',
          },
          async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {

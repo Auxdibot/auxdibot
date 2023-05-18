@@ -7,6 +7,7 @@ import { IPunishment, toEmbedField } from '@schemas/PunishmentSchema';
 import AuxdibotCommandInteraction from '@util/types/templates/AuxdibotCommandInteraction';
 import { GuildAuxdibotCommandData } from '@util/types/AuxdibotCommandData';
 import { LogType } from '@util/types/enums/Log';
+import Modules from '@util/constants/Modules';
 
 const muteCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -20,13 +21,10 @@ const muteCommand = <AuxdibotCommand>{
          builder.setName('duration').setDescription('Duration as a timestamp (Optional)').setRequired(false),
       ),
    info: {
-      help: {
-         commandCategory: 'Moderation',
-         name: '/mute',
-         description:
-            'Mutes a user, making them unable to talk in the server and adding a mute to their record on the server. Default duration is permanent.',
-         usageExample: '/mute (user) [reason] [duration]',
-      },
+      module: Modules['moderation'],
+      description:
+         'Mutes a user, making them unable to talk in the server and adding a mute to their record on the server. Default duration is permanent.',
+      usageExample: '/mute (user) [reason] [duration]',
       permission: 'moderation.mute',
    },
    async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {

@@ -5,6 +5,7 @@ import { IPermissionOverride } from '@schemas/PermissionOverrideSchema';
 import AuxdibotCommandInteraction from '@util/types/templates/AuxdibotCommandInteraction';
 import { GuildAuxdibotCommandData } from '@util/types/AuxdibotCommandData';
 import { LogType } from '@util/types/enums/Log';
+import Modules from '@util/constants/Modules';
 
 const permissionsCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -44,24 +45,18 @@ const permissionsCommand = <AuxdibotCommand>{
             .addUserOption((builder) => builder.setName('user').setDescription('The user id to view.')),
       ),
    info: {
-      help: {
-         commandCategory: 'Permissions',
-         name: '/permissions',
-         description: 'Edit, view, delete or list permission overrides.',
-         usageExample: '/permissions [view|create|delete|list]',
-      },
+      module: Modules['permissions'],
+      description: 'Edit, view, delete or list permission overrides.',
+      usageExample: '/permissions [view|create|delete|list]',
       permission: 'permissions',
    },
    subcommands: [
       {
          name: 'view',
          info: {
-            help: {
-               commandCategory: 'Permissions',
-               name: '/permissions view',
-               description: 'View a permission override.',
-               usageExample: '/permissions view (override_id)',
-            },
+            module: Modules['permissions'],
+            description: 'View a permission override.',
+            usageExample: '/permissions view (override_id)',
             permission: 'permissions.view',
          },
          async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
@@ -92,12 +87,9 @@ const permissionsCommand = <AuxdibotCommand>{
       {
          name: 'create',
          info: {
-            help: {
-               commandCategory: 'Permissions',
-               name: '/permissions create',
-               description: 'Create a permission override.',
-               usageExample: '/permissions create (permission) (role|user) (allowed)',
-            },
+            module: Modules['permissions'],
+            description: 'Create a permission override.',
+            usageExample: '/permissions create (permission) (role|user) (allowed)',
             permission: 'permissions.create',
          },
          async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
@@ -156,12 +148,9 @@ const permissionsCommand = <AuxdibotCommand>{
       {
          name: 'delete',
          info: {
-            help: {
-               commandCategory: 'Permissions',
-               name: '/permissions delete',
-               description: 'Delete a permission override.',
-               usageExample: '/permissions delete (override_id)',
-            },
+            module: Modules['permissions'],
+            description: 'Delete a permission override.',
+            usageExample: '/permissions delete (override_id)',
             permission: 'permissions.delete',
          },
          async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
@@ -201,12 +190,9 @@ const permissionsCommand = <AuxdibotCommand>{
       {
          name: 'list',
          info: {
-            help: {
-               commandCategory: 'Permissions',
-               name: '/permissions list',
-               description: 'List all permission overrides.',
-               usageExample: '/permissions list',
-            },
+            module: Modules['permissions'],
+            description: 'List all permission overrides.',
+            usageExample: '/permissions list',
             permission: 'permissions.list',
          },
          async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {

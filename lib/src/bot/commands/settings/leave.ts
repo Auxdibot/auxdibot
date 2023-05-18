@@ -7,6 +7,7 @@ import AuxdibotCommandInteraction from '@util/types/templates/AuxdibotCommandInt
 import { GuildAuxdibotCommandData } from '@util/types/AuxdibotCommandData';
 import createEmbedParameters from '@util/functions/createEmbedParameters';
 import argumentsToEmbedParameters from '@util/functions/argumentsToEmbedParameters';
+import Modules from '@util/constants/Modules';
 
 const leaveCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -28,27 +29,21 @@ const leaveCommand = <AuxdibotCommand>{
       )
       .addSubcommand((builder) => builder.setName('preview').setDescription('Preview the leave embed.')),
    info: {
-      help: {
-         commandCategory: 'Settings',
-         name: '/leave',
-         description:
-            'Change settings for leave messages on the server. (Placeholders are supported. Do /placeholders for a list of placeholders.)',
-         usageExample: '/leave (message|embed_json|preview)',
-      },
+      module: Modules['settings'],
+      description:
+         'Change settings for leave messages on the server. (Placeholders are supported. Do /placeholders for a list of placeholders.)',
+      usageExample: '/leave (message|embed_json|preview)',
       permission: 'settings.leave',
    },
    subcommands: [
       {
          name: 'message',
          info: {
-            help: {
-               commandCategory: 'Settings',
-               name: '/leave message',
-               description:
-                  'Set the leave message. (Placeholders are supported. Do /placeholders for a list of placeholders.)',
-               usageExample:
-                  '/leave message [content] [color] [title] [title url] [author] [author icon url] [author url] [description] [fields (split title and description with "|d|", and seperate fields with "|s|")] [footer] [footer icon url] [image url] [thumbnail url]',
-            },
+            module: Modules['settings'],
+            description:
+               'Set the leave message. (Placeholders are supported. Do /placeholders for a list of placeholders.)',
+            usageExample:
+               '/leave message [content] [color] [title] [title url] [author] [author icon url] [author url] [description] [fields (split title and description with "|d|", and seperate fields with "|s|")] [footer] [footer icon url] [image url] [thumbnail url]',
             permission: 'settings.leave.message',
          },
          async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
@@ -91,13 +86,10 @@ const leaveCommand = <AuxdibotCommand>{
       {
          name: 'embed_json',
          info: {
-            help: {
-               commandCategory: 'Settings',
-               name: '/leave embed_json',
-               description:
-                  'Add an embed to the join message using custom JSON. (Placeholders are supported. Do /placeholders for a list of placeholders.)',
-               usageExample: '/leave embed_json (json)',
-            },
+            module: Modules['settings'],
+            description:
+               'Add an embed to the join message using custom JSON. (Placeholders are supported. Do /placeholders for a list of placeholders.)',
+            usageExample: '/leave embed_json (json)',
             permission: 'settings.leave.embed_json',
          },
          async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
@@ -139,12 +131,9 @@ const leaveCommand = <AuxdibotCommand>{
       {
          name: 'preview',
          info: {
-            help: {
-               commandCategory: 'Settings',
-               name: '/leave preview',
-               description: 'Preview the leave message.',
-               usageExample: '/leave preview',
-            },
+            module: Modules['settings'],
+            description: 'Preview the leave message.',
+            usageExample: '/leave preview',
             permission: 'settings.leave.preview',
          },
          async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {

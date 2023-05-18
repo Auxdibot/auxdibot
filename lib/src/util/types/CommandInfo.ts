@@ -1,8 +1,10 @@
-import HelpCommandInfo from './HelpCommandInfo';
+import AuxdibotFeatureModule from './AuxdibotFeatureModule';
 
 export default interface CommandInfo {
-   help: HelpCommandInfo;
+   module: AuxdibotFeatureModule;
    permission?: string;
+   usageExample: string;
+   description: string;
    allowedDefault?: boolean;
    dmableCommand?: boolean;
 }

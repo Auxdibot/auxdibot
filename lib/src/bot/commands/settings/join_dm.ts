@@ -7,6 +7,7 @@ import AuxdibotCommandInteraction from '@util/types/templates/AuxdibotCommandInt
 import { GuildAuxdibotCommandData } from '@util/types/AuxdibotCommandData';
 import createEmbedParameters from '@util/functions/createEmbedParameters';
 import argumentsToEmbedParameters from '@util/functions/argumentsToEmbedParameters';
+import Modules from '@util/constants/Modules';
 
 const joinDMCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -28,27 +29,21 @@ const joinDMCommand = <AuxdibotCommand>{
       )
       .addSubcommand((builder) => builder.setName('preview').setDescription('Preview the join embed.')),
    info: {
-      help: {
-         commandCategory: 'Settings',
-         name: '/join_dm',
-         description:
-            'Change settings for join DM messages on the server. (Placeholders are supported. Do /placeholders for a list of placeholders.)',
-         usageExample: '/join_dm (message|embed_json|preview)',
-      },
+      module: Modules['settings'],
+      description:
+         'Change settings for join DM messages on the server. (Placeholders are supported. Do /placeholders for a list of placeholders.)',
+      usageExample: '/join_dm (message|embed_json|preview)',
       permission: 'settings.joindm',
    },
    subcommands: [
       {
          name: 'message',
          info: {
-            help: {
-               commandCategory: 'Settings',
-               name: '/join_dm message',
-               description:
-                  'Set the join DM message. (Placeholders are supported. Do /placeholders for a list of placeholders.)',
-               usageExample:
-                  '/join_dm message [content] [color] [title] [title url] [author] [author icon url] [author url] [description] [fields (split title and description with `"|d|"``, and seperate fields with `"|s|"`)] [footer] [footer icon url] [image url] [thumbnail url]',
-            },
+            module: Modules['settings'],
+            description:
+               'Set the join DM message. (Placeholders are supported. Do /placeholders for a list of placeholders.)',
+            usageExample:
+               '/join_dm message [content] [color] [title] [title url] [author] [author icon url] [author url] [description] [fields (split title and description with `"|d|"``, and seperate fields with `"|s|"`)] [footer] [footer icon url] [image url] [thumbnail url]',
             permission: 'settings.joindm.message',
          },
          async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
@@ -89,13 +84,10 @@ const joinDMCommand = <AuxdibotCommand>{
       {
          name: 'embed_json',
          info: {
-            help: {
-               commandCategory: 'Settings',
-               name: '/join_dm embed_json',
-               description:
-                  'Add an embed to the join DM message using custom JSON. (Placeholders are supported. Do /placeholders for a list of placeholders.)',
-               usageExample: '/join_dm embed_json (json)',
-            },
+            module: Modules['settings'],
+            description:
+               'Add an embed to the join DM message using custom JSON. (Placeholders are supported. Do /placeholders for a list of placeholders.)',
+            usageExample: '/join_dm embed_json (json)',
             permission: 'settings.joindm.embed_json',
          },
          async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
@@ -137,12 +129,9 @@ const joinDMCommand = <AuxdibotCommand>{
       {
          name: 'preview',
          info: {
-            help: {
-               commandCategory: 'Settings',
-               name: '/join_dm preview',
-               description: 'Preview the join DM message.',
-               usageExample: '/join_dm preview',
-            },
+            module: Modules['settings'],
+            description: 'Preview the join DM message.',
+            usageExample: '/join_dm preview',
             permission: 'settings.joindm.preview',
          },
          async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {

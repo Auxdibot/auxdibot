@@ -7,6 +7,7 @@ import AuxdibotCommandInteraction from '@util/types/templates/AuxdibotCommandInt
 import { GuildAuxdibotCommandData } from '@util/types/AuxdibotCommandData';
 import createEmbedParameters from '@util/functions/createEmbedParameters';
 import argumentsToEmbedParameters from '@util/functions/argumentsToEmbedParameters';
+import Modules from '@util/constants/Modules';
 
 const joinCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -36,27 +37,21 @@ const joinCommand = <AuxdibotCommand>{
       )
       .addSubcommand((builder) => builder.setName('preview').setDescription('Preview the join embed.')),
    info: {
-      help: {
-         commandCategory: 'Settings',
-         name: '/join',
-         description:
-            'Change settings for join messages on the server. (Placeholders are supported. Do /placeholders for a list of placeholders.)',
-         usageExample: '/join (message|embed_json|preview)',
-      },
+      module: Modules['settings'],
+      description:
+         'Change settings for join messages on the server. (Placeholders are supported. Do /placeholders for a list of placeholders.)',
+      usageExample: '/join (message|embed_json|preview)',
       permission: 'settings.join',
    },
    subcommands: [
       {
          name: 'message',
          info: {
-            help: {
-               commandCategory: 'Settings',
-               name: '/join message',
-               description:
-                  'Set the join message. (Placeholders are supported. Do /placeholders for a list of placeholders.)',
-               usageExample:
-                  '/join message [content] [color] [title] [title url] [author] [author icon url] [author url] [description] [fields (split title and description with "|d|", and seperate fields with "|s|")] [footer] [footer icon url] [image url] [thumbnail url]',
-            },
+            module: Modules['settings'],
+            description:
+               'Set the join message. (Placeholders are supported. Do /placeholders for a list of placeholders.)',
+            usageExample:
+               '/join message [content] [color] [title] [title url] [author] [author icon url] [author url] [description] [fields (split title and description with "|d|", and seperate fields with "|s|")] [footer] [footer icon url] [image url] [thumbnail url]',
             permission: 'settings.join.message',
          },
          async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
@@ -100,13 +95,10 @@ const joinCommand = <AuxdibotCommand>{
       {
          name: 'embed_json',
          info: {
-            help: {
-               commandCategory: 'Settings',
-               name: '/join embed_json',
-               description:
-                  'Add an embed to the join message using custom JSON. (Placeholders are supported. Do /placeholders for a list of placeholders.)',
-               usageExample: '/join embed_json (json)',
-            },
+            module: Modules['settings'],
+            description:
+               'Add an embed to the join message using custom JSON. (Placeholders are supported. Do /placeholders for a list of placeholders.)',
+            usageExample: '/join embed_json (json)',
             permission: 'settings.join.embed_json',
          },
          async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
@@ -148,12 +140,9 @@ const joinCommand = <AuxdibotCommand>{
       {
          name: 'preview',
          info: {
-            help: {
-               commandCategory: 'Settings',
-               name: '/join preview',
-               description: 'Preview the join message.',
-               usageExample: '/join preview',
-            },
+            module: Modules['settings'],
+            description: 'Preview the join message.',
+            usageExample: '/join preview',
             permission: 'settings.join.preview',
          },
          async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {

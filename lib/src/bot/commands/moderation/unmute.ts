@@ -6,6 +6,7 @@ import { toEmbedField } from '@schemas/PunishmentSchema';
 import AuxdibotCommandInteraction from '@util/types/templates/AuxdibotCommandInteraction';
 import { GuildAuxdibotCommandData } from '@util/types/AuxdibotCommandData';
 import { LogType } from '@util/types/enums/Log';
+import Modules from '@util/constants/Modules';
 
 const unmuteCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -13,12 +14,9 @@ const unmuteCommand = <AuxdibotCommand>{
       .setDescription('Unmute a user.')
       .addUserOption((builder) => builder.setName('user').setDescription('The user to be unmuted.').setRequired(true)),
    info: {
-      help: {
-         commandCategory: 'Moderation',
-         name: '/unmute',
-         description: 'Unmutes a user if they are currently muted.',
-         usageExample: '/unmute (user)',
-      },
+      module: Modules['moderation'],
+      description: 'Unmutes a user if they are currently muted.',
+      usageExample: '/unmute (user)',
       permission: 'moderation.mute.remove',
    },
    async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {

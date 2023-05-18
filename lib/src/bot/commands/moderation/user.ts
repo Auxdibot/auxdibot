@@ -4,6 +4,7 @@ import Embeds from '@util/constants/Embeds';
 import { PunishmentNames } from '@schemas/PunishmentSchema';
 import AuxdibotCommandInteraction from '@util/types/templates/AuxdibotCommandInteraction';
 import { GuildAuxdibotCommandData } from '@util/types/AuxdibotCommandData';
+import Modules from '@util/constants/Modules';
 
 const userCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -11,13 +12,10 @@ const userCommand = <AuxdibotCommand>{
       .setDescription("View and edit a user's data.")
       .addUserOption((builder) => builder.setName('user').setDescription('The user to view.')),
    info: {
-      help: {
-         commandCategory: 'Moderation',
-         name: '/user',
-         description:
-            "Displays an easy to use embed where you can view and edit a user's data, including punishments on their record.",
-         usageExample: '/user [user]',
-      },
+      module: Modules['moderation'],
+      description:
+         "Displays an easy to use embed where you can view and edit a user's data, including punishments on their record.",
+      usageExample: '/user [user]',
       permission: 'moderation.user',
    },
    async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {

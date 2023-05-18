@@ -18,6 +18,7 @@ import AuxdibotCommandInteraction from '@util/types/templates/AuxdibotCommandInt
 import { GuildAuxdibotCommandData } from '@util/types/AuxdibotCommandData';
 import createEmbedParameters from '@util/functions/createEmbedParameters';
 import argumentsToEmbedParameters from '@util/functions/argumentsToEmbedParameters';
+import Modules from '@util/constants/Modules';
 
 dotenv.config();
 const embedCommand = <AuxdibotCommand>{
@@ -98,25 +99,19 @@ const embedCommand = <AuxdibotCommand>{
             ),
       ),
    info: {
-      help: {
-         commandCategory: 'Embed',
-         name: '/embed',
-         description: 'Create or edit a Discord Embed with Auxdibot, as well as obtain the JSON data of any Embed.',
-         usageExample: '/embed (create|custom|edit|edit_custom|json)',
-      },
+      module: Modules['embeds'],
+      description: 'Create or edit a Discord Embed with Auxdibot, as well as obtain the JSON data of any Embed.',
+      usageExample: '/embed (create|custom|edit|edit_custom|json)',
       permission: 'embed',
    },
    subcommands: [
       {
          name: 'create',
          info: {
-            help: {
-               commandCategory: 'Embed',
-               name: '/embed create',
-               usageExample:
-                  '/embed create (channel) [content] [color] [title] [title url] [author] [author icon url] [author url] [description] [fields (split title and description with `"|d|"``, and seperate fields with `"|s|"`)] [footer] [footer icon url] [image url] [thumbnail url]',
-               description: 'Create an embed with Auxdibot.',
-            },
+            module: Modules['embeds'],
+            usageExample:
+               '/embed create (channel) [content] [color] [title] [title url] [author] [author icon url] [author url] [description] [fields (split title and description with `"|d|"``, and seperate fields with `"|s|"`)] [footer] [footer icon url] [image url] [thumbnail url]',
+            description: 'Create an embed with Auxdibot.',
             permission: 'embed.create',
          },
          async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
@@ -154,12 +149,9 @@ const embedCommand = <AuxdibotCommand>{
       {
          name: 'create_json',
          info: {
-            help: {
-               commandCategory: 'Embed',
-               name: '/embed create_json',
-               usageExample: '/embed create_json (channel) (json)',
-               description: 'Create an embed with Auxdibot using valid Discord Embed JSON data.',
-            },
+            module: Modules['embeds'],
+            usageExample: '/embed create_json (channel) (json)',
+            description: 'Create an embed with Auxdibot using valid Discord Embed JSON data.',
             permission: 'embed.create.json',
          },
          async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
@@ -194,13 +186,10 @@ const embedCommand = <AuxdibotCommand>{
       {
          name: 'edit',
          info: {
-            help: {
-               commandCategory: 'Embed',
-               name: '/embed edit',
-               usageExample:
-                  '/embed edit (message_id) [content] [color] [title] [title url] [author] [author icon url] [author url] [description] [fields (split title and description with `"|d|"``, and seperate fields with `"|s|"`)] [footer] [footer icon url] [image url] [thumbnail url]',
-               description: 'Edit an existing Embed by Auxdibot.',
-            },
+            module: Modules['embeds'],
+            usageExample:
+               '/embed edit (message_id) [content] [color] [title] [title url] [author] [author icon url] [author url] [description] [fields (split title and description with `"|d|"``, and seperate fields with `"|s|"`)] [footer] [footer icon url] [image url] [thumbnail url]',
+            description: 'Edit an existing Embed by Auxdibot.',
             permission: 'embed.edit',
          },
          async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
@@ -265,12 +254,9 @@ const embedCommand = <AuxdibotCommand>{
       {
          name: 'edit_json',
          info: {
-            help: {
-               commandCategory: 'Embed',
-               name: '/embed edit_json',
-               usageExample: '/embed edit_json (message_id) (json)',
-               description: 'Edit an existing Embed by Auxdibot using valid Discord Embed JSON data.',
-            },
+            module: Modules['embeds'],
+            usageExample: '/embed edit_json (message_id) (json)',
+            description: 'Edit an existing Embed by Auxdibot using valid Discord Embed JSON data.',
             permission: 'embed.edit.json',
          },
          async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
@@ -315,12 +301,9 @@ const embedCommand = <AuxdibotCommand>{
       {
          name: 'json',
          info: {
-            help: {
-               commandCategory: 'Embed',
-               name: '/embed json',
-               usageExample: '/embed json (message_id)',
-               description: 'Get the Discord Embed JSON data of any Embed on your server.',
-            },
+            module: Modules['embeds'],
+            usageExample: '/embed json (message_id)',
+            description: 'Get the Discord Embed JSON data of any Embed on your server.',
             permission: 'embed.json',
          },
          async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {

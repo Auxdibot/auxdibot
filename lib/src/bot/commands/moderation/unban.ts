@@ -5,6 +5,7 @@ import { toEmbedField } from '@schemas/PunishmentSchema';
 import AuxdibotCommandInteraction from '@util/types/templates/AuxdibotCommandInteraction';
 import { GuildAuxdibotCommandData } from '@util/types/AuxdibotCommandData';
 import { LogType } from '@util/types/enums/Log';
+import Modules from '@util/constants/Modules';
 
 const unbanCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -17,12 +18,9 @@ const unbanCommand = <AuxdibotCommand>{
             .setRequired(true),
       ),
    info: {
-      help: {
-         commandCategory: 'Moderation',
-         name: '/unban',
-         description: 'Unbans a user if they are currently banned. For banned members, use their user ID.',
-         usageExample: '/unban (user)',
-      },
+      module: Modules['moderation'],
+      description: 'Unbans a user if they are currently banned. For banned members, use their user ID.',
+      usageExample: '/unban (user)',
       permission: 'moderation.ban.remove',
    },
    async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {

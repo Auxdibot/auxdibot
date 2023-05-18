@@ -4,6 +4,7 @@ import Embeds from '@util/constants/Embeds';
 import AuxdibotCommandInteraction from '@util/types/templates/AuxdibotCommandInteraction';
 import { GuildAuxdibotCommandData } from '@util/types/AuxdibotCommandData';
 import { LogType } from '@util/types/enums/Log';
+import Modules from '@util/constants/Modules';
 
 const settingsCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -39,24 +40,18 @@ const settingsCommand = <AuxdibotCommand>{
       )
       .addSubcommand((builder) => builder.setName('view').setDescription("View this server's settings.")),
    info: {
-      help: {
-         commandCategory: 'Settings',
-         name: '/settings',
-         description: 'Change settings for the server.',
-         usageExample: '/settings (view|log_channel|mute_role)',
-      },
+      module: Modules['settings'],
+      description: 'Change settings for the server.',
+      usageExample: '/settings (view|log_channel|mute_role)',
       permission: 'settings',
    },
    subcommands: [
       {
          name: 'view',
          info: {
-            help: {
-               commandCategory: 'Settings',
-               name: '/settings view',
-               description: 'View all settings for the server.',
-               usageExample: '/settings view',
-            },
+            module: Modules['settings'],
+            description: 'View all settings for the server.',
+            usageExample: '/settings view',
             permission: 'settings.view',
          },
          async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
@@ -111,12 +106,9 @@ const settingsCommand = <AuxdibotCommand>{
       {
          name: 'log_channel',
          info: {
-            help: {
-               commandCategory: 'Settings',
-               name: '/settings log_channel',
-               description: 'Change the log channel for the server, where all actions are logged to.',
-               usageExample: '/settings log_channel (channel)',
-            },
+            module: Modules['settings'],
+            description: 'Change the log channel for the server, where all actions are logged to.',
+            usageExample: '/settings log_channel (channel)',
             permission: 'settings.log_channel',
          },
          async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
@@ -156,12 +148,9 @@ const settingsCommand = <AuxdibotCommand>{
       {
          name: 'join_leave_channel',
          info: {
-            help: {
-               commandCategory: 'Settings',
-               name: '/settings join_leave_channel',
-               description: 'Change the channel where join and leave messages are broadcast.',
-               usageExample: '/settings join_leave_channel (channel)',
-            },
+            module: Modules['settings'],
+            description: 'Change the channel where join and leave messages are broadcast.',
+            usageExample: '/settings join_leave_channel (channel)',
             permission: 'settings.join_leave_channel',
          },
          async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
@@ -200,12 +189,9 @@ const settingsCommand = <AuxdibotCommand>{
       {
          name: 'mute_role',
          info: {
-            help: {
-               commandCategory: 'Settings',
-               name: '/settings mute_role',
-               description: 'Change the mute role for the server, which is automatically assigned to muted users.',
-               usageExample: '/settings mute_role (role)',
-            },
+            module: Modules['settings'],
+            description: 'Change the mute role for the server, which is automatically assigned to muted users.',
+            usageExample: '/settings mute_role (role)',
             permission: 'settings.mute_role',
          },
          async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {

@@ -5,6 +5,7 @@ import { PunishmentNames, toEmbedField } from '@schemas/PunishmentSchema';
 import AuxdibotCommandInteraction from '@util/types/templates/AuxdibotCommandInteraction';
 import { GuildAuxdibotCommandData } from '@util/types/AuxdibotCommandData';
 import { LogType } from '@util/types/enums/Log';
+import Modules from '@util/constants/Modules';
 
 const punishmentCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -28,24 +29,18 @@ const punishmentCommand = <AuxdibotCommand>{
       )
       .addSubcommand((subcommand) => subcommand.setName('latest').setDescription('View the last 10 punishments.')),
    info: {
-      help: {
-         commandCategory: 'Moderation',
-         name: '/punishment',
-         description: 'View or delete a punishment.',
-         usageExample: '/punishment [view|delete|latest]',
-      },
+      module: Modules['moderation'],
+      description: 'View or delete a punishment.',
+      usageExample: '/punishment [view|delete|latest]',
       permission: 'moderation.punishments',
    },
    subcommands: [
       {
          name: 'view',
          info: {
-            help: {
-               commandCategory: 'Moderation',
-               name: '/punishment view',
-               description: 'View a punishment.',
-               usageExample: '/punishment view (punishment_id)',
-            },
+            module: Modules['moderation'],
+            description: 'View a punishment.',
+            usageExample: '/punishment view (punishment_id)',
             permission: 'moderation.punishments.view',
          },
          async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
@@ -69,12 +64,9 @@ const punishmentCommand = <AuxdibotCommand>{
       {
          name: 'delete',
          info: {
-            help: {
-               commandCategory: 'Moderation',
-               name: '/punishment delete',
-               description: 'Delete a punishment.',
-               usageExample: '/punishment delete (punishment_id)',
-            },
+            module: Modules['moderation'],
+            description: 'Delete a punishment.',
+            usageExample: '/punishment delete (punishment_id)',
             permission: 'moderation.punishments.delete',
          },
          async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
@@ -107,12 +99,9 @@ const punishmentCommand = <AuxdibotCommand>{
       {
          name: 'latest',
          info: {
-            help: {
-               commandCategory: 'Moderation',
-               name: '/punishment latest',
-               description: 'View the last 10 punishments.',
-               usageExample: '/punishment latest',
-            },
+            module: Modules['moderation'],
+            description: 'View the last 10 punishments.',
+            usageExample: '/punishment latest',
             permission: 'moderation.punishments.latest',
          },
          async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
