@@ -28,27 +28,8 @@ export interface IServerSettings {
    suggestions_update_embed?: APIEmbed;
    suggestions_discussion_threads: boolean;
 }
-export interface IServerSettingsMethods {
-   removeJoinRole(index: number): boolean;
-   removeStickyRole(index: number): boolean;
-   addJoinRole(role: string): boolean;
-   addStickyRole(role: string): boolean;
-   setMuteRole(mute_role_id: string | undefined): boolean;
-   setLogChannel(log_channel_id: string | undefined): boolean;
-   setJoinLeaveChannel(join_leave_channel_id: string | undefined): boolean;
-   setJoinEmbed(join_embed: APIEmbed): boolean;
-   setJoinText(join_text: string): boolean;
-   setJoinDMEmbed(join_dm_embed: APIEmbed): boolean;
-   setJoinDMText(join_dm_text: string): boolean;
-   setLeaveEmbed(leave_embed: APIEmbed): boolean;
-   setLeaveText(leave_text: string): boolean;
-   addSuggestionsReaction(reaction: ISuggestionReaction): ISuggestionReaction[];
-   removeSuggestionsReaction(suggestion_reaction: ISuggestionReaction): ISuggestionReaction[];
-   getSuggestionsReaction(emoji: string): ISuggestionReaction;
-}
-export type IServerSettingsModel = mongoose.Model<IServerSettings, unknown, IServerSettingsMethods>;
 
-export const ServerSettingsSchema = new mongoose.Schema<IServerSettings, IServerSettingsModel>({
+export const ServerSettingsSchema = new mongoose.Schema<IServerSettings>({
    server_id: { type: mongoose.Schema.Types.ObjectId, ref: 'server', required: true },
    mute_role: { type: String },
    log_channel: { type: String },
@@ -145,81 +126,5 @@ export const ServerSettingsSchema = new mongoose.Schema<IServerSettings, IServer
    },
 });
 
-ServerSettingsSchema.method('addJoinRole', function (role: string) {
-   this.join_roles.push(role);
-   this.save();
-   return true;
-});
-ServerSettingsSchema.method('addStickyRole', function (role: string) {
-   this.sticky_roles.push(role);
-   this.save();
-   return true;
-});
-ServerSettingsSchema.method('removeJoinRole', function (index: number) {
-   this.join_roles.splice(index, 1);
-   this.save();
-   return true;
-});
-ServerSettingsSchema.method('removeStickyRole', function (index: number) {
-   this.sticky_roles.splice(index, 1);
-   this.save();
-   return true;
-});
-ServerSettingsSchema.method('setMuteRole', function (mute_role_id: string | undefined) {
-   this.mute_role = mute_role_id;
-   this.save();
-   return true;
-});
-ServerSettingsSchema.method('setLogChannel', function (log_channel_id: string | undefined) {
-   this.log_channel = log_channel_id;
-   this.save();
-   return true;
-});
-ServerSettingsSchema.method('setJoinLeaveChannel', function (join_leave_channel_id: string | undefined) {
-   this.join_leave_channel = join_leave_channel_id;
-   this.save();
-   return true;
-});
-ServerSettingsSchema.method('setJoinEmbed', function (join_embed: APIEmbed) {
-   this.join_embed = join_embed;
-   return true;
-});
-ServerSettingsSchema.method('setJoinDMEmbed', function (join_dm_embed: APIEmbed) {
-   this.join_dm_embed = join_dm_embed;
-   return true;
-});
-ServerSettingsSchema.method('setLeaveEmbed', function (leave_embed: APIEmbed) {
-   this.leave_embed = leave_embed;
-   return true;
-});
-ServerSettingsSchema.method('setJoinText', function (join_text: string) {
-   this.join_text = join_text;
-   return true;
-});
-ServerSettingsSchema.method('setJoinDMText', function (join_dm_text: string) {
-   this.join_dm_text = join_dm_text;
-   return true;
-});
-ServerSettingsSchema.method('setLeaveText', function (leave_text: string) {
-   this.leave_text = leave_text;
-   return true;
-});
-ServerSettingsSchema.method('addSuggestionsReaction', function (reaction: ISuggestionReaction) {
-   this.suggestions_reactions.push(reaction);
-   this.save().catch(() => undefined);
-   return this.suggestions_reactions;
-});
-ServerSettingsSchema.method('getSuggestionsReaction', function (emoji: string) {
-   return this.suggestions_reactions.find(
-      (suggestion_reaction: ISuggestionReaction) => suggestion_reaction.emoji == emoji,
-   );
-});
-ServerSettingsSchema.method('removeSuggestionsReaction', function (suggestion_reaction: ISuggestionReaction) {
-   if (this.suggestions_reactions.indexOf(suggestion_reaction) == -1) return this.suggestions_reactions;
-   this.suggestions_reactions.splice(this.suggestions_reactions.indexOf(suggestion_reaction), 1);
-   this.save();
-   return this.suggestions_reactions;
-});
-
-const ServerSettings = mongoose.model<IServerSettings, IServerSettingsModel>('server_settings', ServerSettingsSchema);
+const ServerSettings = mongoose.model<IServerSettings>('server_settings', ServerSettingsSchema);
 export default ServerSettings;

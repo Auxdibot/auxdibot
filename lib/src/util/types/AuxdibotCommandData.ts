@@ -1,6 +1,6 @@
-import { IServer, IServerMethods } from "@models/server/Server";
-import { Guild, GuildMember, User } from "discord.js";
-import { HydratedDocument } from "mongoose";
+import { IServer, IServerMethods } from '@models/server/Server';
+import { Guild, GuildMember, User } from 'discord.js';
+import { HydratedDocument } from 'mongoose';
 
 export interface BaseAuxdibotCommandData {
    dmCommand?: boolean;

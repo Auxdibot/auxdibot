@@ -328,7 +328,7 @@ const suggestionsCommand = <AuxdibotCommand>{
                         .catch(() => undefined);
                      if (thread) suggestion.discussion_thread_id = thread.id;
                   }
-                  await server.addSuggestion(suggestion);
+                  server.addSuggestion(suggestion);
                   await server.log({
                      user_id: interaction.data.member.id,
                      description: `${interaction.data.member.user.tag} created Suggestion #${suggestion.suggestion_id}`,
@@ -596,7 +596,8 @@ const suggestionsCommand = <AuxdibotCommand>{
                errorEmbed.description = "This isn't a valid reaction!";
                return await interaction.reply({ embeds: [errorEmbed] });
             }
-            settings.addSuggestionsReaction({ emoji: reaction, rating });
+            settings.suggestions_reactions.push({ emoji: reaction, rating });
+            await settings.save();
             const successEmbed = Embeds.SUCCESS_EMBED.toJSON();
             successEmbed.description = `Added ${reaction} as a suggestion reaction, awarding ${rating} to any suggestion rating.`;
             return await interaction.reply({ embeds: [successEmbed] });
@@ -632,7 +633,11 @@ const suggestionsCommand = <AuxdibotCommand>{
                errorEmbed.description = "Couldn't find that suggestion reaction!";
                return await interaction.reply({ embeds: [errorEmbed] });
             }
-            settings.removeSuggestionsReaction(suggestionReaction);
+            const suggestionsIndex = settings.suggestions_reactions.indexOf(suggestionReaction);
+            if (suggestionsIndex != -1) {
+               settings.suggestions_reactions.splice(suggestionsIndex, 1);
+               await settings.save();
+            }
             const successEmbed = Embeds.SUCCESS_EMBED.toJSON();
             successEmbed.description = `Removed ${suggestionReaction.emoji} from the reactions.`;
             return await interaction.reply({ embeds: [successEmbed] });

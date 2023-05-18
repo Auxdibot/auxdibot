@@ -23,7 +23,8 @@ module.exports = {
          });
       }
       if (rr) {
-         data.removeReactionRole(data.reaction_roles.indexOf(rr));
+         data.reaction_roles.splice(data.reaction_roles.indexOf(rr), 1);
+         await data.save();
          await server.log({
             user_id: sender.id,
             description: `Deleted a reaction role${message ? ` in ${message.channel || 'a channel'}` : ''}.`,

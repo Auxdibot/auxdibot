@@ -10,6 +10,6 @@ export const SuggestionStateName = {
    1: '✅ Approved',
    2: '❌ Denied',
    3: '💭 Considered',
-   4: '➕ Added',
+   4: '🔨 Added',
 };
 export default SuggestionState;

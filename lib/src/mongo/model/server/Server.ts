@@ -2,7 +2,7 @@ import * as mongoose from 'mongoose';
 import ServerData, { IServerData, IServerDataMethods } from './ServerData';
 import { HydratedDocument } from 'mongoose';
 import ServerMember, { IServerMember, IServerMemberMethods } from './ServerMember';
-import ServerSettings, { IServerSettings, IServerSettingsMethods } from './ServerSettings';
+import ServerSettings, { IServerSettings } from './ServerSettings';
 import ServerCounter, { IServerCounter, IServerCounterMethods } from './ServerCounter';
 import { ILog } from '../../schema/LogSchema';
 import Embeds from '@util/constants/Embeds';
@@ -33,7 +33,7 @@ export interface IServerMethods {
    fetchData(): Promise<HydratedDocument<IServerData, IServerDataMethods>>;
    fetchMembers(): Promise<HydratedDocument<IServerMember, IServerMemberMethods>>[];
    findOrCreateMember(discord_id: string): Promise<HydratedDocument<IServerMember, IServerMemberMethods>> | undefined;
-   fetchSettings(): Promise<HydratedDocument<IServerSettings, IServerSettingsMethods>>;
+   fetchSettings(): Promise<HydratedDocument<IServerSettings>>;
    fetchCounter(): Promise<HydratedDocument<IServerCounter, IServerCounterMethods>>;
    log(log: ILog, use_user_thumbnail?: boolean): Promise<APIEmbed | undefined>;
    recordAsEmbed(user_id: string): Promise<APIEmbed | undefined>;
@@ -162,7 +162,8 @@ ServerSchema.method('log', async function (log: ILog, use_user_thumbnail?: boole
    const settings = await this.fetchSettings(),
       data = await this.fetchData();
    const guild = await (await client).guilds.fetch(this.discord_id).catch(() => undefined);
-   data.updateLog(log);
+   data.latest_log = log;
+   await data.save();
    if (!guild || !guild.available || !settings.log_channel) return undefined;
    const channel: GuildBasedChannel | undefined = guild.channels.cache.get(settings.log_channel);
    if (!channel || !channel.isTextBased()) return undefined;
@@ -251,7 +252,9 @@ ServerSchema.method('recordAsEmbed', async function (user_id: string) {
    return embed;
 });
 ServerSchema.method('punish', async function (punishment: IPunishment): Promise<APIEmbed | undefined> {
-   (await this.fetchData()).addPunishment(punishment);
+   const data = await this.fetchData();
+   data.punishments.push(punishment);
+   await data.save().catch(() => undefined);
    const embed = Embeds.PUNISHED_EMBED.toJSON();
    embed.title = PunishmentNames[punishment.type].name;
    embed.description = `User was ${PunishmentNames[punishment.type].action}.`;

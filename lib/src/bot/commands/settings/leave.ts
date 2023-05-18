@@ -57,9 +57,9 @@ const leaveCommand = <AuxdibotCommand>{
             const content = interaction.options.getString('content');
             const parameters = argumentsToEmbedParameters(interaction);
             try {
-               settings.setLeaveEmbed(toAPIEmbed(parameters));
+               settings.leave_embed = toAPIEmbed(parameters);
                if (content) {
-                  settings.setLeaveText(content);
+                  settings.leave_text = content;
                }
                await settings.save();
                const embed = Embeds.SUCCESS_EMBED.toJSON();
@@ -107,7 +107,7 @@ const leaveCommand = <AuxdibotCommand>{
             try {
                const jsonEmbed = JSON.parse(json) as APIEmbed;
                const embed = Embeds.SUCCESS_EMBED.toJSON();
-               settings.setLeaveEmbed(jsonEmbed);
+               settings.leave_embed = jsonEmbed;
                await settings.save();
                embed.title = 'Success!';
                embed.description = `Set the leave embed.`;

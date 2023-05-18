@@ -119,7 +119,8 @@ const permissionsCommand = <AuxdibotCommand>{
                permission: permission,
                allowed,
             };
-            data.addPermissionOverride(permissionOverride);
+            data.permission_overrides.push(permissionOverride);
+            await data.save();
             const embed = Embeds.SUCCESS_EMBED.toJSON();
             embed.title = '✋ Added Permission Override';
             embed.description = `Created a new permission override for ${
@@ -169,7 +170,8 @@ const permissionsCommand = <AuxdibotCommand>{
             const data = await interaction.data.guildData.fetchData();
             const permission = data.permission_overrides[override_id - 1];
             if (permission) {
-               data.removePermissionOverride(override_id - 1);
+               data.permission_overrides.splice(override_id - 1, 1);
+               await data.save();
                const embed = Embeds.SUCCESS_EMBED.toJSON();
                embed.title = '✋ Deleted Permission Override';
                embed.description = `Deleted permission override with override id \`${override_id}\`.`;

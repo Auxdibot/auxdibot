@@ -65,9 +65,9 @@ const joinCommand = <AuxdibotCommand>{
             const content = interaction.options.getString('content');
             const parameters = argumentsToEmbedParameters(interaction);
             try {
-               settings.setJoinEmbed(toAPIEmbed(parameters));
+               settings.join_embed = toAPIEmbed(parameters);
                if (content) {
-                  settings.setJoinText(content);
+                  settings.join_text = content;
                }
                await settings.save();
                const embed = Embeds.SUCCESS_EMBED.toJSON();
@@ -116,7 +116,7 @@ const joinCommand = <AuxdibotCommand>{
             try {
                const jsonEmbed = JSON.parse(json) as APIEmbed;
                const embed = Embeds.SUCCESS_EMBED.toJSON();
-               settings.setJoinEmbed(jsonEmbed);
+               settings.join_embed = jsonEmbed;
                await settings.save();
                embed.title = 'Success!';
                embed.description = `Set the join embed.`;

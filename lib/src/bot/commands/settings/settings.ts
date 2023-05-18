@@ -121,7 +121,7 @@ const settingsCommand = <AuxdibotCommand>{
          },
          async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
-            const channel = interaction.options.getChannel('channel', true, [ChannelType.GuildText]);
+            const channel = interaction.options.getChannel('channel', false, [ChannelType.GuildText]);
             const settings = await interaction.data.guildData.fetchSettings();
             const embed = Embeds.SUCCESS_EMBED.toJSON();
             embed.title = '⚙️ Log Channel Change';
@@ -133,7 +133,8 @@ const settingsCommand = <AuxdibotCommand>{
                   embeds: [embed],
                });
             }
-            settings.setLogChannel(channel ? channel.id : undefined);
+            settings.log_channel = channel ? channel.id : undefined;
+            await settings.save();
             embed.description = `The log channel for this server has been changed.\r\n\r\nFormerly: ${
                formerChannel ? `<#${formerChannel.id}>` : 'None'
             }\r\n\r\nNow: ${channel || 'None (Disabled)'}`;
@@ -165,7 +166,7 @@ const settingsCommand = <AuxdibotCommand>{
          },
          async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
-            const channel = interaction.options.getChannel('channel', true, [ChannelType.GuildText]);
+            const channel = interaction.options.getChannel('channel', false, [ChannelType.GuildText]);
             const settings = await interaction.data.guildData.fetchSettings();
             const embed = Embeds.SUCCESS_EMBED.toJSON();
             embed.title = '⚙️ Join/Leave Channel Change';
@@ -176,7 +177,8 @@ const settingsCommand = <AuxdibotCommand>{
                   embeds: [embed],
                });
             }
-            settings.setJoinLeaveChannel(channel ? channel.id : undefined);
+            settings.join_leave_channel = channel ? channel.id : undefined;
+            await settings.save();
             embed.description = `The Join/Leave channel for this server has been changed.\r\n\r\nFormerly: ${
                formerChannel ? `<#${formerChannel.id}>` : 'None'
             }\r\n\r\nNow: ${channel || 'None (Disabled)'}`;
@@ -264,7 +266,8 @@ const settingsCommand = <AuxdibotCommand>{
                   now: role.id,
                },
             });
-            settings.setMuteRole(role.id);
+            settings.mute_role = role.id;
+            await settings.save();
             embed.description = `The mute role for this server has been changed.\r\n\r\nFormerly: ${
                formerRole ? `<@&${formerRole.id}>` : 'None'
             }\r\n\r\nNow: <@&${role.id}>`;

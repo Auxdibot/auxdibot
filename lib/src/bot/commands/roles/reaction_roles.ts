@@ -187,12 +187,12 @@ const reactionRolesCommand = <AuxdibotCommand>{
             const message = await channel.send({ embeds: [embed] });
 
             reactionsAndRoles.forEach((item) => message.react(item.emoji));
-            data.addReactionRole({
+            data.reaction_roles.push({
                message_id: message.id,
                channel_id: message.channel.id,
                reactions: reactionsAndRoles.map((item) => <IReaction>{ role: item.role.id, emoji: item.emoji }),
             });
-
+            await data.save();
             resEmbed.title = '👈 Created Reaction Role';
             resEmbed.description = `Created a reaction role in ${channel}`;
             await interaction.data.guildData.log({
@@ -268,7 +268,8 @@ const reactionRolesCommand = <AuxdibotCommand>{
                   ],
                });
                reactionsAndRoles.forEach((item) => (message ? message.react(item.emoji) : undefined));
-               data.addReactionRole({ message_id: message.id, reactions: reactionsAndRoles });
+               data.reaction_roles.push({ message_id: message.id, reactions: reactionsAndRoles });
+               await data.save();
                resEmbed.title = '👈 Created Reaction Role';
                resEmbed.description = `Created a reaction role in ${channel}`;
                await interaction.data.guildData.log({
@@ -350,8 +351,8 @@ const reactionRolesCommand = <AuxdibotCommand>{
                return await interaction.reply({ embeds: [embed] });
             }
             reactionsAndRoles.forEach((item) => (message ? message.react(item.emoji) : undefined));
-            data.addReactionRole({ message_id: message.id, reactions: reactionsAndRoles });
-
+            data.reaction_roles.push({ message_id: message.id, reactions: reactionsAndRoles });
+            await data.save();
             resEmbed.title = '👈 Created Reaction Role';
             resEmbed.description = `Created a reaction role in ${channel}`;
             await interaction.data.guildData.log({
@@ -403,7 +404,8 @@ const reactionRolesCommand = <AuxdibotCommand>{
             if (message) {
                await message.delete();
             }
-            data.removeReactionRole(data.reaction_roles.indexOf(rr));
+            data.reaction_roles.splice(data.reaction_roles.indexOf(rr), 1);
+            await data.save();
             const successEmbed = Embeds.SUCCESS_EMBED.toJSON();
             successEmbed.title = '👈 Deleted Reaction Role';
             successEmbed.description = `Deleted a reaction role${message ? ` in ${message.channel}` : ''}.`;

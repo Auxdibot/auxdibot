@@ -95,7 +95,8 @@ const stickyRolesCommand = <AuxdibotCommand>{
                errorEmbed.description = "This role is higher than Auxdibot's highest role!";
                return await interaction.reply({ embeds: [errorEmbed] });
             }
-            settings.addStickyRole(role.id);
+            settings.sticky_roles.push(role.id);
+            await settings.save();
             const successEmbed = Embeds.SUCCESS_EMBED.toJSON();
             successEmbed.title = '📝 Added Sticky Role';
             successEmbed.description = `Added <@&${role.id}> to the sticky roles.`;
@@ -164,7 +165,8 @@ const stickyRolesCommand = <AuxdibotCommand>{
                }
             }
 
-            settings.removeStickyRole(settings.sticky_roles.indexOf(stickyRoleID));
+            settings.sticky_roles.splice(settings.sticky_roles.indexOf(stickyRoleID), 1);
+            await settings.save();
             const successEmbed = Embeds.SUCCESS_EMBED.toJSON();
             successEmbed.title = '📝 Removed Sticky Role';
             successEmbed.description = `Removed <@&${stickyRoleID}> from the sticky roles.`;

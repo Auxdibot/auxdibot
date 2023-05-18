@@ -13,6 +13,9 @@ module.exports = {
       const permissionOverride = data.permission_overrides.find(
          (override: IPermissionOverride) => override.role_id == role.id,
       );
-      if (permissionOverride) data.removePermissionOverride(data.permission_overrides.indexOf(permissionOverride));
+      if (permissionOverride) {
+         data.permission_overrides.splice(data.permission_overrides.indexOf(permissionOverride));
+         await data.save();
+      }
    },
 };

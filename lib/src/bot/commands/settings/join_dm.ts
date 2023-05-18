@@ -57,9 +57,9 @@ const joinDMCommand = <AuxdibotCommand>{
             const content = interaction.options.getString('content');
             const parameters = argumentsToEmbedParameters(interaction);
             try {
-               settings.setJoinDMEmbed(toAPIEmbed(parameters));
+               settings.join_dm_embed = toAPIEmbed(parameters);
                if (content) {
-                  settings.setJoinDMText(content);
+                  settings.join_dm_text = content;
                }
                await settings.save();
                const embed = Embeds.SUCCESS_EMBED.toJSON();
@@ -105,7 +105,7 @@ const joinDMCommand = <AuxdibotCommand>{
             try {
                const jsonEmbed = JSON.parse(json) as APIEmbed;
                const embed = Embeds.SUCCESS_EMBED.toJSON();
-               settings.setJoinDMEmbed(jsonEmbed);
+               settings.join_dm_embed = jsonEmbed;
                await settings.save();
                embed.title = 'Success!';
                embed.description = `Set the join DM embed.`;
