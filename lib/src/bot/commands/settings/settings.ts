@@ -1,9 +1,9 @@
 import { ChannelType, SlashCommandBuilder } from 'discord.js';
-import AuxdibotCommand from '@util/templates/AuxdibotCommand';
+import AuxdibotCommand from '@util/types/templates/AuxdibotCommand';
 import Embeds from '@util/constants/Embeds';
-import AuxdibotCommandInteraction from '@util/templates/AuxdibotCommandInteraction';
+import AuxdibotCommandInteraction from '@util/types/templates/AuxdibotCommandInteraction';
 import { GuildAuxdibotCommandData } from '@util/types/AuxdibotCommandData';
-import { LogType } from '@util/types/Log';
+import { LogType } from '@util/types/enums/Log';
 
 const settingsCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -138,7 +138,7 @@ const settingsCommand = <AuxdibotCommand>{
             embed.description = `The log channel for this server has been changed.\r\n\r\nFormerly: ${
                formerChannel ? `<#${formerChannel.id}>` : 'None'
             }\r\n\r\nNow: ${channel || 'None (Disabled)'}`;
-            await interaction.data.guildData.log({
+            await interaction.data.guildData.log(interaction.data.guild, {
                type: LogType.LOG_CHANNEL_CHANGED,
                user_id: interaction.data.member.id,
                date_unix: Date.now(),
@@ -182,7 +182,7 @@ const settingsCommand = <AuxdibotCommand>{
             embed.description = `The Join/Leave channel for this server has been changed.\r\n\r\nFormerly: ${
                formerChannel ? `<#${formerChannel.id}>` : 'None'
             }\r\n\r\nNow: ${channel || 'None (Disabled)'}`;
-            await interaction.data.guildData.log({
+            await interaction.data.guildData.log(interaction.data.guild, {
                type: LogType.JOIN_LEAVE_CHANNEL_CHANGED,
                user_id: interaction.data.member.id,
                date_unix: Date.now(),
@@ -256,7 +256,7 @@ const settingsCommand = <AuxdibotCommand>{
                      });
                });
             }
-            await interaction.data.guildData.log({
+            await interaction.data.guildData.log(interaction.data.guild, {
                type: LogType.MUTE_ROLE_CHANGED,
                user_id: interaction.data.member.id,
                date_unix: Date.now(),

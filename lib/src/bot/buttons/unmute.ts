@@ -4,7 +4,7 @@ import canExecute from '@util/functions/canExecute';
 import Embeds from '@util/constants/Embeds';
 import Server from '@models/server/Server';
 import { toEmbedField } from '@schemas/PunishmentSchema';
-import { LogType } from '@util/types/Log';
+import { LogType } from '@util/types/enums/Log';
 
 module.exports = <AuxdibotButton>{
    name: 'unmute',
@@ -52,6 +52,7 @@ module.exports = <AuxdibotButton>{
       embed.description = `User was unmuted.`;
       embed.fields = [toEmbedField(muted)];
       await server.log(
+         interaction.guild,
          {
             user_id: interaction.user.id,
             description: 'A user was unmuted.',

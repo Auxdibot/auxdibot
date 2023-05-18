@@ -4,16 +4,15 @@ import fs from 'fs';
 import path from 'path';
 import dotenv from 'dotenv';
 import Server from '@models/server/Server';
-import { IAuxdibot } from '@util/templates/IAuxdibot';
-import { LogType } from '@util/types/Log';
+import { IAuxdibot } from '@util/types/templates/IAuxdibot';
+import { LogType } from '@util/types/enums/Log';
 
 // Configure .env
 dotenv.config();
 export const TOKEN = process.env.DISCORD_BOT_TOKEN;
 export const CLIENT_ID = process.env.DISCORD_BOT_CLIENT_ID;
 export class AuxdibotClient {
-   public client: IAuxdibot | undefined;
-   async init() {
+   constructor() {
       if (!TOKEN) throw new Error('You need to include a discord token in .env!');
       if (!CLIENT_ID) throw new Error('You need to include a client id in .env!');
       /********************************************************************************/
@@ -102,16 +101,17 @@ export class AuxdibotClient {
             }
          }
       }
-      await (async () => {
-         try {
-            console.log(`Started refreshing ${commands.length} slash commands.`);
-            await rest.put(Routes.applicationCommands(CLIENT_ID), {
-               body: commands,
-            });
-         } catch (x) {
+      rest
+         .put(Routes.applicationCommands(CLIENT_ID), {
+            body: commands,
+         })
+         .then(() => {
+            console.log(`Refreshed ${commands.length} slash commands.`);
+         })
+         .catch((x) => {
+            console.error('Failed to load commands!');
             console.error(x);
-         }
-      })();
+         });
 
       /********************************************************************************/
       // Declare buttons
@@ -156,7 +156,7 @@ export class AuxdibotClient {
                   const expired = serverData.checkExpired();
                   if (expired) {
                      for (const expiredPunishment of expired) {
-                        await server.log({
+                        await server.log(guild, {
                            type: LogType.PUNISHMENT_EXPIRED,
                            description: `Punishment ID ${expiredPunishment.punishment_id} has expired.`,
                            date_unix: Date.now(),
@@ -181,7 +181,6 @@ export class AuxdibotClient {
             console.log('Error signing into into Auxdibot!');
             console.error(reason);
          });
-      this.client = client;
       return client;
    }
 }

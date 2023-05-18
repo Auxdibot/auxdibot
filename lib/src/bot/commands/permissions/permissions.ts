@@ -1,10 +1,10 @@
 import { SlashCommandBuilder } from 'discord.js';
-import AuxdibotCommand from '@util/templates/AuxdibotCommand';
+import AuxdibotCommand from '@util/types/templates/AuxdibotCommand';
 import Embeds from '@util/constants/Embeds';
 import { IPermissionOverride } from '@schemas/PermissionOverrideSchema';
-import AuxdibotCommandInteraction from '@util/templates/AuxdibotCommandInteraction';
+import AuxdibotCommandInteraction from '@util/types/templates/AuxdibotCommandInteraction';
 import { GuildAuxdibotCommandData } from '@util/types/AuxdibotCommandData';
-import { LogType } from '@util/types/Log';
+import { LogType } from '@util/types/enums/Log';
 
 const permissionsCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -142,7 +142,7 @@ const permissionsCommand = <AuxdibotCommand>{
                   }`,
                },
             ];
-            await interaction.data.guildData.log({
+            await interaction.data.guildData.log(interaction.data.guild, {
                type: LogType.PERMISSION_CREATED,
                permission_override: permissionOverride,
                date_unix: Date.now(),
@@ -187,7 +187,7 @@ const permissionsCommand = <AuxdibotCommand>{
                      }`,
                   },
                ];
-               await interaction.data.guildData.log({
+               await interaction.data.guildData.log(interaction.data.guild, {
                   type: LogType.PERMISSION_DELETED,
                   permission_override: permission,
                   date_unix: Date.now(),

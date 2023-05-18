@@ -1,9 +1,9 @@
 import { SlashCommandBuilder, APIEmbed } from 'discord.js';
-import AuxdibotCommand from '@util/templates/AuxdibotCommand';
+import AuxdibotCommand from '@util/types/templates/AuxdibotCommand';
 import Embeds from '@util/constants/Embeds';
 import { toAPIEmbed } from '@util/types/EmbedParameters';
 import parsePlaceholders from '@util/functions/parsePlaceholder';
-import AuxdibotCommandInteraction from '@util/templates/AuxdibotCommandInteraction';
+import AuxdibotCommandInteraction from '@util/types/templates/AuxdibotCommandInteraction';
 import { GuildAuxdibotCommandData } from '@util/types/AuxdibotCommandData';
 import createEmbedParameters from '@util/functions/createEmbedParameters';
 import argumentsToEmbedParameters from '@util/functions/argumentsToEmbedParameters';

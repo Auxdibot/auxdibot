@@ -1,9 +1,9 @@
 import { BaseInteraction, GuildMember } from 'discord.js';
-import { IAuxdibot } from '@util/templates/IAuxdibot';
+import { IAuxdibot } from '@util/types/templates/IAuxdibot';
 import Embeds from '@util/constants/Embeds';
 import Server from '@models/server/Server';
 import { DMAuxdibotCommandData } from '@util/types/AuxdibotCommandData';
-import AuxdibotCommandInteraction from '@util/templates/AuxdibotCommandInteraction';
+import AuxdibotCommandInteraction from '@util/types/templates/AuxdibotCommandInteraction';
 import { GuildAuxdibotCommandData } from '@util/types/AuxdibotCommandData';
 
 module.exports = {

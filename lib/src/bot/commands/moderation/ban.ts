@@ -1,12 +1,12 @@
 import { SlashCommandBuilder } from 'discord.js';
-import AuxdibotCommand from '@util/templates/AuxdibotCommand';
+import AuxdibotCommand from '@util/types/templates/AuxdibotCommand';
 import Embeds from '@util/constants/Embeds';
 import timestampToDuration from '@util/functions/timestampToDuration';
 import canExecute from '@util/functions/canExecute';
 import { IPunishment } from '@schemas/PunishmentSchema';
-import AuxdibotCommandInteraction from '@util/templates/AuxdibotCommandInteraction';
+import AuxdibotCommandInteraction from '@util/types/templates/AuxdibotCommandInteraction';
 import { GuildAuxdibotCommandData } from '@util/types/AuxdibotCommandData';
-import { LogType } from '@util/types/Log';
+import { LogType } from '@util/types/enums/Log';
 
 const banCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -90,6 +90,7 @@ const banCommand = <AuxdibotCommand>{
             interaction.data.guildData.punish(banData).then(async (embed) => {
                if (!embed || !interaction.data) return;
                await interaction.data.guildData.log(
+                  interaction.data.guild,
                   {
                      user_id: interaction.user.id,
                      description: 'A user was banned.',

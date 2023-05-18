@@ -26,16 +26,14 @@ declare module 'express-session' {
    }
 }
 export class AuxdibotAPI {
-   async init() {
-      const scopes = ['identify', 'guilds'];
-
+   constructor(oauth_scopes: string[]) {
       passport.use(
          new DiscordStrategy(
             {
                clientID: process.env.OAUTH2_CLIENT_ID || '',
                clientSecret: process.env.OAUTH2_CLIENT_SECRET || '',
                callbackURL: process.env.OAUTH2_REDIRECT_URL,
-               scope: scopes,
+               scope: oauth_scopes,
             },
             function (_accessToken, _refreshToken, profile, cb) {
                User.findOneAndUpdate({ discord_id: profile.id }, {}, { upsert: true, new: true })

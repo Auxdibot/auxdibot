@@ -1,13 +1,13 @@
 import { SlashCommandBuilder, APIEmbed, ChannelType, Role, GuildMember } from 'discord.js';
-import AuxdibotCommand from '@util/templates/AuxdibotCommand';
+import AuxdibotCommand from '@util/types/templates/AuxdibotCommand';
 import { IReaction } from '@schemas/ReactionRoleSchema';
 import Embeds from '@util/constants/Embeds';
 import { toAPIEmbed } from '@util/types/EmbedParameters';
 import parsePlaceholders from '@util/functions/parsePlaceholder';
 import { getMessage } from '@util/functions/getMessage';
-import AuxdibotCommandInteraction from '@util/templates/AuxdibotCommandInteraction';
+import AuxdibotCommandInteraction from '@util/types/templates/AuxdibotCommandInteraction';
 import { GuildAuxdibotCommandData } from '@util/types/AuxdibotCommandData';
-import { LogType } from '@util/types/Log';
+import { LogType } from '@util/types/enums/Log';
 import emojiRegex from 'emoji-regex';
 import createEmbedParameters from '@util/functions/createEmbedParameters';
 import argumentsToEmbedParameters from '@util/functions/argumentsToEmbedParameters';
@@ -195,7 +195,7 @@ const reactionRolesCommand = <AuxdibotCommand>{
             await data.save();
             resEmbed.title = '👈 Created Reaction Role';
             resEmbed.description = `Created a reaction role in ${channel}`;
-            await interaction.data.guildData.log({
+            await interaction.data.guildData.log(interaction.data.guild, {
                user_id: interaction.data.member.id,
                description: `Created a reaction role in ${channel.name}`,
                type: LogType.REACTION_ROLE_ADDED,
@@ -272,7 +272,7 @@ const reactionRolesCommand = <AuxdibotCommand>{
                await data.save();
                resEmbed.title = '👈 Created Reaction Role';
                resEmbed.description = `Created a reaction role in ${channel}`;
-               await interaction.data.guildData.log({
+               await interaction.data.guildData.log(interaction.data.guild, {
                   user_id: interaction.data.member.id,
                   description: `Created a reaction role in ${channel.name}`,
                   type: LogType.REACTION_ROLE_ADDED,
@@ -355,7 +355,7 @@ const reactionRolesCommand = <AuxdibotCommand>{
             await data.save();
             resEmbed.title = '👈 Created Reaction Role';
             resEmbed.description = `Created a reaction role in ${channel}`;
-            await interaction.data.guildData.log({
+            await interaction.data.guildData.log(interaction.data.guild, {
                user_id: interaction.data.member.id,
                description: `Created a reaction role in ${channel.name}`,
                type: LogType.REACTION_ROLE_ADDED,
@@ -409,7 +409,7 @@ const reactionRolesCommand = <AuxdibotCommand>{
             const successEmbed = Embeds.SUCCESS_EMBED.toJSON();
             successEmbed.title = '👈 Deleted Reaction Role';
             successEmbed.description = `Deleted a reaction role${message ? ` in ${message.channel}` : ''}.`;
-            await interaction.data.guildData.log({
+            await interaction.data.guildData.log(interaction.data.guild, {
                user_id: interaction.data.member.id,
                description: `Deleted a reaction role${message ? ` in ${message.channel || 'a channel'}` : ''}.`,
                type: LogType.REACTION_ROLE_REMOVED,
@@ -515,7 +515,7 @@ const reactionRolesCommand = <AuxdibotCommand>{
 
                embed.title = '👈 Edited Reaction Role';
                embed.description = `Edited a reaction role${message ? ` in ${message.channel}` : ''}.`;
-               await interaction.data.guildData.log({
+               await interaction.data.guildData.log(interaction.data.guild, {
                   user_id: interaction.data.member.id,
                   description: `Edited a reaction role.`,
                   type: LogType.REACTION_ROLE_EDITED,
@@ -551,7 +551,7 @@ const reactionRolesCommand = <AuxdibotCommand>{
 
                embed.title = '👈 Edited Reaction Role';
                embed.description = `Edited a reaction role${message ? ` in ${message.channel}` : ''}.`;
-               await interaction.data.guildData.log({
+               await interaction.data.guildData.log(interaction.data.guild, {
                   user_id: interaction.data.member.id,
                   description: `Edited a reaction role.`,
                   type: LogType.REACTION_ROLE_EDITED,

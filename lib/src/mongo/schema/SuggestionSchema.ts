@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import SuggestionState from '@util/types/SuggestionState';
+import SuggestionState from '@util/types/enums/SuggestionState';
 
 export interface ISuggestion {
    suggestion_id: number;

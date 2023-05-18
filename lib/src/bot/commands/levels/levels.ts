@@ -1,6 +1,6 @@
 import { PermissionsBitField, SlashCommandBuilder } from 'discord.js';
-import AuxdibotCommand from '@util/templates/AuxdibotCommand';
-import AuxdibotCommandInteraction from '@util/templates/AuxdibotCommandInteraction';
+import AuxdibotCommand from '@util/types/templates/AuxdibotCommand';
+import AuxdibotCommandInteraction from '@util/types/templates/AuxdibotCommandInteraction';
 import { GuildAuxdibotCommandData } from '@util/types/AuxdibotCommandData';
 import Embeds from '@util/constants/Embeds';
 import { ILevelReward } from '@schemas/LevelRewardSchema';

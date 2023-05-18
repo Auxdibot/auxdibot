@@ -1,6 +1,6 @@
 import { Message } from 'discord.js';
 import Server from '@models/server/Server';
-import { LogType } from '@util/types/Log';
+import { LogType } from '@util/types/enums/Log';
 import { IReactionRole } from '@schemas/ReactionRoleSchema';
 
 module.exports = {
@@ -15,7 +15,7 @@ module.exports = {
       const suggestion = data.suggestions.find((suggestion) => suggestion.message_id == message.id);
       if (suggestion) {
          data.removeSuggestion(suggestion.suggestion_id);
-         await server.log({
+         await server.log(message.guild, {
             user_id: sender.id,
             description: `${sender.user.tag} deleted Suggestion #${suggestion.suggestion_id}`,
             type: LogType.SUGGESTION_DELETED,
@@ -25,14 +25,14 @@ module.exports = {
       if (rr) {
          data.reaction_roles.splice(data.reaction_roles.indexOf(rr), 1);
          await data.save();
-         await server.log({
+         await server.log(message.guild, {
             user_id: sender.id,
             description: `Deleted a reaction role${message ? ` in ${message.channel || 'a channel'}` : ''}.`,
             type: LogType.REACTION_ROLE_REMOVED,
             date_unix: Date.now(),
          });
       }
-      await server.log({
+      await server.log(message.guild, {
          type: LogType.MESSAGE_DELETED,
          date_unix: Date.now(),
          description: `A message by ${sender.user.tag} was deleted.`,

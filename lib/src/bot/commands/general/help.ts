@@ -1,10 +1,10 @@
 import { ActionRowBuilder, ButtonBuilder, SlashCommandBuilder } from 'discord.js';
-import AuxdibotCommand from '@util/templates/AuxdibotCommand';
+import AuxdibotCommand from '@util/types/templates/AuxdibotCommand';
 import Embeds from '@util/constants/Embeds';
-import { IAuxdibot } from '@util/templates/IAuxdibot';
+import { IAuxdibot } from '@util/types/templates/IAuxdibot';
 import HelpCommandInfo from '@util/types/HelpCommandInfo';
 import dotenv from 'dotenv';
-import AuxdibotCommandInteraction from '@util/templates/AuxdibotCommandInteraction';
+import AuxdibotCommandInteraction from '@util/types/templates/AuxdibotCommandInteraction';
 import { BaseAuxdibotCommandData } from '@util/types/AuxdibotCommandData';
 dotenv.config();
 const helpCommand = <AuxdibotCommand>{

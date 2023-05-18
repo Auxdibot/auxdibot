@@ -1,9 +1,9 @@
 import { SlashCommandBuilder } from 'discord.js';
-import AuxdibotCommand from '@util/templates/AuxdibotCommand';
+import AuxdibotCommand from '@util/types/templates/AuxdibotCommand';
 import Embeds from '@util/constants/Embeds';
 import dotenv from 'dotenv';
-import Placeholders from '@util/types/Placeholders';
-import AuxdibotCommandInteraction from '@util/templates/AuxdibotCommandInteraction';
+import Placeholders from '@util/types/enums/Placeholders';
+import AuxdibotCommandInteraction from '@util/types/templates/AuxdibotCommandInteraction';
 import { BaseAuxdibotCommandData } from '@util/types/AuxdibotCommandData';
 dotenv.config();
 const placeholderCommand = <AuxdibotCommand>{

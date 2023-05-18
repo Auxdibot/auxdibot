@@ -1,10 +1,10 @@
 import { SlashCommandBuilder } from 'discord.js';
-import AuxdibotCommand from '@util/templates/AuxdibotCommand';
+import AuxdibotCommand from '@util/types/templates/AuxdibotCommand';
 import Embeds from '@util/constants/Embeds';
 import { toEmbedField } from '@schemas/PunishmentSchema';
-import AuxdibotCommandInteraction from '@util/templates/AuxdibotCommandInteraction';
+import AuxdibotCommandInteraction from '@util/types/templates/AuxdibotCommandInteraction';
 import { GuildAuxdibotCommandData } from '@util/types/AuxdibotCommandData';
-import { LogType } from '@util/types/Log';
+import { LogType } from '@util/types/enums/Log';
 
 const unbanCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -44,6 +44,7 @@ const unbanCommand = <AuxdibotCommand>{
       embed.description = `User was unbanned.`;
       embed.fields = [toEmbedField(banned)];
       await interaction.data.guildData.log(
+         interaction.data.guild,
          {
             user_id: interaction.user.id,
             description: 'A user was unbanned.',

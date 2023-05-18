@@ -1,9 +1,9 @@
 import { SlashCommandBuilder, PermissionsBitField } from 'discord.js';
-import AuxdibotCommand from '@util/templates/AuxdibotCommand';
+import AuxdibotCommand from '@util/types/templates/AuxdibotCommand';
 import Embeds from '@util/constants/Embeds';
-import AuxdibotCommandInteraction from '@util/templates/AuxdibotCommandInteraction';
+import AuxdibotCommandInteraction from '@util/types/templates/AuxdibotCommandInteraction';
 import { GuildAuxdibotCommandData } from '@util/types/AuxdibotCommandData';
-import { LogType } from '@util/types/Log';
+import { LogType } from '@util/types/enums/Log';
 
 const joinRolesCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -95,7 +95,7 @@ const joinRolesCommand = <AuxdibotCommand>{
             const successEmbed = Embeds.SUCCESS_EMBED.toJSON();
             successEmbed.title = '👋 Added Join Role';
             successEmbed.description = `Added <@&${role.id}> to the join roles.`;
-            await interaction.data.guildData.log({
+            await interaction.data.guildData.log(interaction.data.guild, {
                user_id: interaction.data.member.id,
                description: `Added (Role ID: ${role.id}) to the join roles.`,
                type: LogType.JOIN_ROLE_ADDED,
@@ -158,7 +158,7 @@ const joinRolesCommand = <AuxdibotCommand>{
             const successEmbed = Embeds.SUCCESS_EMBED.toJSON();
             successEmbed.title = '👋 Removed Join Role';
             successEmbed.description = `Removed <@&${joinRoleID}> from the join roles.`;
-            await interaction.data.guildData.log({
+            await interaction.data.guildData.log(interaction.data.guild, {
                user_id: interaction.data.member.id,
                description: `Removed (Role ID: ${joinRoleID}) from the sticky roles.`,
                type: LogType.JOIN_ROLE_REMOVED,

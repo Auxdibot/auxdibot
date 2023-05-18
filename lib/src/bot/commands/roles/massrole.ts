@@ -1,9 +1,9 @@
 import { SlashCommandBuilder } from 'discord.js';
-import AuxdibotCommand from '@util/templates/AuxdibotCommand';
+import AuxdibotCommand from '@util/types/templates/AuxdibotCommand';
 import Embeds from '@util/constants/Embeds';
-import AuxdibotCommandInteraction from '@util/templates/AuxdibotCommandInteraction';
+import AuxdibotCommandInteraction from '@util/types/templates/AuxdibotCommandInteraction';
 import { GuildAuxdibotCommandData } from '@util/types/AuxdibotCommandData';
-import { LogType } from '@util/types/Log';
+import { LogType } from '@util/types/enums/Log';
 
 const massroleCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -70,7 +70,7 @@ const massroleCommand = <AuxdibotCommand>{
                   member.roles.add(role.id).catch(() => undefined);
                }
             });
-            await interaction.data.guildData.log({
+            await interaction.data.guildData.log(interaction.data.guild, {
                user_id: interaction.data.member.id,
                description: `Massrole took ${role} from anyone who had it, with lower role hiearchy than Auxdibot.`,
                type: LogType.MASSROLE_GIVEN,
@@ -113,7 +113,7 @@ const massroleCommand = <AuxdibotCommand>{
                   member.roles.remove(role.id).catch(() => undefined);
                }
             });
-            await interaction.data.guildData.log({
+            await interaction.data.guildData.log(interaction.data.guild, {
                user_id: interaction.data.member.id,
                description: `Massrole took ${role} from anyone who had it, with lower role hiearchy than Auxdibot.`,
                type: LogType.MASSROLE_TAKEN,

@@ -1,7 +1,7 @@
 import { Guild } from 'discord.js';
 import Embeds from '@util/constants/Embeds';
 import Server from '@models/server/Server';
-import { IAuxdibot } from '@util/templates/IAuxdibot';
+import { IAuxdibot } from '@util/types/templates/IAuxdibot';
 
 module.exports = {
    name: 'guildCreate',

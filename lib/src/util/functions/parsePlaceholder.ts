@@ -1,9 +1,9 @@
 import { Guild, GuildMember, PermissionsBitField } from 'discord.js';
 import Server from '@models/server/Server';
 import { PunishmentNames } from '@schemas/PunishmentSchema';
-import { LogNames, LogType } from '../types/Log';
+import { LogNames, LogType } from '../types/enums/Log';
 import { ISuggestion } from '@schemas/SuggestionSchema';
-import { SuggestionStateName } from '../types/SuggestionState';
+import { SuggestionStateName } from '../types/enums/SuggestionState';
 
 export default async function parsePlaceholders(
    msg: string,

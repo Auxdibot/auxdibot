@@ -1,7 +1,7 @@
 import { APIEmbed, GuildMember, TextChannel } from 'discord.js';
 import Server from '@models/server/Server';
 import parsePlaceholders from '@util/functions/parsePlaceholder';
-import { LogType } from '@util/types/Log';
+import { LogType } from '@util/types/enums/Log';
 
 module.exports = {
    name: 'guildMemberAdd',
@@ -60,6 +60,7 @@ module.exports = {
          await memberData.joinServer(member);
       }
       await server.log(
+         member.guild,
          {
             user_id: member.id,
             description: `<@${member.id}> joined the server! (Total Members: **${member.guild.memberCount}**)`,

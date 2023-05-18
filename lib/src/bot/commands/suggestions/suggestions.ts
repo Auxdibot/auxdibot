@@ -1,12 +1,12 @@
 import { APIEmbed, ChannelType, GuildBasedChannel, SlashCommandBuilder } from 'discord.js';
-import AuxdibotCommand from '@util/templates/AuxdibotCommand';
-import AuxdibotCommandInteraction from '@util/templates/AuxdibotCommandInteraction';
+import AuxdibotCommand from '@util/types/templates/AuxdibotCommand';
+import AuxdibotCommandInteraction from '@util/types/templates/AuxdibotCommandInteraction';
 import { GuildAuxdibotCommandData } from '@util/types/AuxdibotCommandData';
-import SuggestionState, { SuggestionStateName } from '@util/types/SuggestionState';
+import SuggestionState, { SuggestionStateName } from '@util/types/enums/SuggestionState';
 import Embeds from '@util/constants/Embeds';
 import { ISuggestion } from '@schemas/SuggestionSchema';
 import parsePlaceholders from '@util/functions/parsePlaceholder';
-import { LogType } from '@util/types/Log';
+import { LogType } from '@util/types/enums/Log';
 import { ISuggestionReaction } from '@schemas/SuggestionReactionSchema';
 import emojiRegex from 'emoji-regex';
 import { getMessage } from '@util/functions/getMessage';
@@ -48,7 +48,7 @@ async function stateCommand(interaction: AuxdibotCommandInteraction<GuildAuxdibo
    if (settings.suggestions_auto_delete) {
       data.removeSuggestion(suggestion.suggestion_id);
       await message.delete().catch(() => undefined);
-      await server.log({
+      await server.log(interaction.data.guild, {
          user_id: interaction.data.member.id,
          description: `${interaction.data.member.user.tag} deleted Suggestion #${suggestion.suggestion_id}`,
          type: LogType.SUGGESTION_DELETED,
@@ -329,7 +329,7 @@ const suggestionsCommand = <AuxdibotCommand>{
                      if (thread) suggestion.discussion_thread_id = thread.id;
                   }
                   server.addSuggestion(suggestion);
-                  await server.log({
+                  await server.log(interaction.data.guild, {
                      user_id: interaction.data.member.id,
                      description: `${interaction.data.member.user.tag} created Suggestion #${suggestion.suggestion_id}`,
                      type: LogType.SUGGESTION_CREATED,
@@ -379,7 +379,7 @@ const suggestionsCommand = <AuxdibotCommand>{
                formerChannel ? `<#${formerChannel.id}>` : 'None'
             }\r\n\r\nNow: ${channel || 'None (Disabled)'}`;
 
-            await interaction.data.guildData.log({
+            await interaction.data.guildData.log(interaction.data.guild, {
                type: LogType.SUGGESTIONS_CHANNEL_CHANGED,
                user_id: interaction.data.member.id,
                date_unix: Date.now(),
@@ -425,7 +425,7 @@ const suggestionsCommand = <AuxdibotCommand>{
                formerChannel ? `<#${formerChannel.id}>` : 'None'
             }\r\n\r\nNow: ${channel || 'None (Disabled)'}`;
 
-            await interaction.data.guildData.log({
+            await interaction.data.guildData.log(interaction.data.guild, {
                type: LogType.SUGGESTIONS_UPDATES_CHANNEL_CHANGED,
                user_id: interaction.data.member.id,
                date_unix: Date.now(),
@@ -474,7 +474,7 @@ const suggestionsCommand = <AuxdibotCommand>{
                deleteSuggestions ? 'Delete' : 'Do not Delete'
             }\r\n\r\nNow: ${deleteBool ? 'Delete' : 'Do not Delete'}`;
 
-            await interaction.data.guildData.log({
+            await interaction.data.guildData.log(interaction.data.guild, {
                type: LogType.SUGGESTIONS_AUTO_DELETE_CHANGED,
                user_id: interaction.data.member.id,
                date_unix: Date.now(),
@@ -521,7 +521,7 @@ const suggestionsCommand = <AuxdibotCommand>{
                discussionThreads ? 'Create Thread.' : 'Do not create a Thread.'
             }\r\n\r\nNow: ${create_thread ? 'Create Thread.' : 'Do not create a Thread.'}`;
 
-            await interaction.data.guildData.log({
+            await interaction.data.guildData.log(interaction.data.guild, {
                type: LogType.SUGGESTIONS_THREAD_CREATION_CHANGED,
                user_id: interaction.data.member.id,
                date_unix: Date.now(),
@@ -830,7 +830,7 @@ const suggestionsCommand = <AuxdibotCommand>{
                   await thread.setArchived(true, 'Suggestion has been deleted.').catch(() => undefined);
                }
                await message.delete().catch(() => undefined);
-               await server.log({
+               await server.log(interaction.data.guild, {
                   user_id: interaction.data.member.id,
                   description: `${interaction.data.member.user.tag} deleted Suggestion #${suggestion.suggestion_id}`,
                   type: LogType.SUGGESTION_DELETED,

@@ -4,7 +4,7 @@ import canExecute from '@util/functions/canExecute';
 import Embeds from '@util/constants/Embeds';
 import { IPunishment } from '@schemas/PunishmentSchema';
 import Server from '@models/server/Server';
-import { LogType } from '@util/types/Log';
+import { LogType } from '@util/types/enums/Log';
 
 module.exports = <AuxdibotButton>{
    name: 'kick',
@@ -44,6 +44,7 @@ module.exports = <AuxdibotButton>{
             server.punish(kickData).then(async (embed) => {
                if (!embed || !interaction.guild) return;
                await server.log(
+                  interaction.guild,
                   {
                      user_id: interaction.user.id,
                      description: 'A user was kicked.',

@@ -1,6 +1,6 @@
 import { Message } from 'discord.js';
 import Server from '@models/server/Server';
-import { LogType } from '@util/types/Log';
+import { LogType } from '@util/types/enums/Log';
 
 module.exports = {
    name: 'messageUpdate',
@@ -11,7 +11,7 @@ module.exports = {
       if (newMessage.member && newMessage.member.user.id == newMessage.client.user.id) return undefined;
       const server = await Server.findOrCreateServer(newMessage.guild.id);
       if (oldMessage.content != newMessage.content) {
-         return await server.log({
+         return await server.log(newMessage.guild, {
             type: LogType.MESSAGE_EDITED,
             date_unix: Date.now(),
             description: `A message by ${sender.user.tag} was edited.`,

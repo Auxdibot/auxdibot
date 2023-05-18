@@ -1,9 +1,9 @@
 import { SlashCommandBuilder, SlashCommandSubcommandsOnlyBuilder } from 'discord.js';
 
-import CommandInfo from '../types/CommandInfo';
-import { AuxdibotSubcommand } from '../types/AuxdibotSubcommand';
+import CommandInfo from '../CommandInfo';
+import { AuxdibotSubcommand } from '../AuxdibotSubcommand';
 import AuxdibotCommandInteraction from './AuxdibotCommandInteraction';
-import { BaseAuxdibotCommandData } from '../types/AuxdibotCommandData';
+import { BaseAuxdibotCommandData } from '../AuxdibotCommandData';
 
 interface AuxdibotCommand {
    data:

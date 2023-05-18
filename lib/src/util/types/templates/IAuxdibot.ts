@@ -1,6 +1,6 @@
 import { Client, ClientPresence, Collection } from 'discord.js';
 import AuxdibotCommand from './AuxdibotCommand';
-import AuxdibotButton from '../types/AuxdibotButton';
+import AuxdibotButton from '../AuxdibotButton';
 
 export interface IAuxdibot extends Client {
    commands?: Collection<string, AuxdibotCommand>;

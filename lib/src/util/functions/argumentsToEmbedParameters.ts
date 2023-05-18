@@ -1,5 +1,5 @@
 import { EmbedField } from 'discord.js';
-import AuxdibotCommandInteraction from '../templates/AuxdibotCommandInteraction';
+import AuxdibotCommandInteraction from '../types/templates/AuxdibotCommandInteraction';
 import EmbedParameters from '../types/EmbedParameters';
 import { GuildAuxdibotCommandData } from '../types/AuxdibotCommandData';
 

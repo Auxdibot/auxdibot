@@ -1,11 +1,11 @@
 import { SlashCommandBuilder } from 'discord.js';
-import AuxdibotCommand from '@util/templates/AuxdibotCommand';
+import AuxdibotCommand from '@util/types/templates/AuxdibotCommand';
 import Embeds from '@util/constants/Embeds';
 import canExecute from '@util/functions/canExecute';
 import { toEmbedField } from '@schemas/PunishmentSchema';
-import AuxdibotCommandInteraction from '@util/templates/AuxdibotCommandInteraction';
+import AuxdibotCommandInteraction from '@util/types/templates/AuxdibotCommandInteraction';
 import { GuildAuxdibotCommandData } from '@util/types/AuxdibotCommandData';
-import { LogType } from '@util/types/Log';
+import { LogType } from '@util/types/enums/Log';
 
 const unmuteCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -61,6 +61,7 @@ const unmuteCommand = <AuxdibotCommand>{
       embed.description = `User was unmuted.`;
       embed.fields = [toEmbedField(muted)];
       await interaction.data.guildData.log(
+         interaction.data.guild,
          {
             user_id: interaction.user.id,
             description: 'A user was unmuted.',

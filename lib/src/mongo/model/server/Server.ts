@@ -10,14 +10,14 @@ import {
    APIEmbed,
    Collection,
    EmbedField,
+   Guild,
    GuildBasedChannel,
    GuildMember,
    LimitedCollection,
    PermissionsBitField,
 } from 'discord.js';
 import { IPunishment, PunishmentNames, toEmbedField } from '../../schema/PunishmentSchema';
-import { LogNames } from '@util/types/Log';
-import { client } from '../../../index';
+import { LogNames } from '@util/types/enums/Log';
 import { ISuggestion } from '../../schema/SuggestionSchema';
 
 export interface IServer {
@@ -35,7 +35,7 @@ export interface IServerMethods {
    findOrCreateMember(discord_id: string): Promise<HydratedDocument<IServerMember, IServerMemberMethods>> | undefined;
    fetchSettings(): Promise<HydratedDocument<IServerSettings>>;
    fetchCounter(): Promise<HydratedDocument<IServerCounter, IServerCounterMethods>>;
-   log(log: ILog, use_user_thumbnail?: boolean): Promise<APIEmbed | undefined>;
+   log(guild: Guild, log: ILog, use_user_thumbnail?: boolean): Promise<APIEmbed | undefined>;
    recordAsEmbed(user_id: string): Promise<APIEmbed | undefined>;
    punish(punishment: IPunishment): Promise<APIEmbed | undefined>;
    testPermission(permission: string | undefined, executor: GuildMember, defaultAllowed: boolean): Promise<boolean>;
@@ -158,10 +158,9 @@ ServerSchema.method('fetchCounter', async function () {
    }
    return counter;
 });
-ServerSchema.method('log', async function (log: ILog, use_user_thumbnail?: boolean) {
+ServerSchema.method('log', async function (guild: Guild, log: ILog, use_user_thumbnail?: boolean) {
    const settings = await this.fetchSettings(),
       data = await this.fetchData();
-   const guild = await (await client).guilds.fetch(this.discord_id).catch(() => undefined);
    data.latest_log = log;
    await data.save();
    if (!guild || !guild.available || !settings.log_channel) return undefined;
@@ -170,8 +169,8 @@ ServerSchema.method('log', async function (log: ILog, use_user_thumbnail?: boole
    const embed = Embeds.LOG_EMBED.toJSON();
    if (use_user_thumbnail && log.user_id) {
       const user = log.punishment
-         ? await (await client).users.cache.get(log.punishment.user_id)
-         : await (await client).users.cache.get(log.user_id);
+         ? guild.client.users.cache.get(log.punishment.user_id)
+         : guild.client.users.cache.get(log.user_id);
       if (user) {
          const avatar = user.avatarURL({ size: 128 });
          embed.thumbnail = avatar ? { url: avatar } : undefined;

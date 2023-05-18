@@ -3,7 +3,7 @@ import { MessageComponentInteraction } from 'discord.js';
 import Embeds from '@util/constants/Embeds';
 import { toEmbedField } from '@schemas/PunishmentSchema';
 import Server from '@models/server/Server';
-import { LogType } from '@util/types/Log';
+import { LogType } from '@util/types/enums/Log';
 
 module.exports = <AuxdibotButton>{
    name: 'unban',
@@ -29,6 +29,7 @@ module.exports = <AuxdibotButton>{
       embed.description = `User was unbanned.`;
       embed.fields = [toEmbedField(banned)];
       await server.log(
+         interaction.guild,
          {
             user_id: interaction.user.id,
             description: 'A user was unbanned.',
