@@ -17,6 +17,7 @@ module.exports = {
       if (interaction.guild && interaction.member) {
          const interactionData: AuxdibotCommandInteraction<GuildAuxdibotCommandData> = interaction;
          const server = await Server.findOrCreateServer(interaction.guild.id);
+         const settings = await server.fetchSettings();
          interactionData.data = <GuildAuxdibotCommandData>{
             dmCommand: false,
             date: new Date(),
@@ -28,7 +29,8 @@ module.exports = {
             const subcommand = command.subcommands.find(
                (subcommand) => subcommand.name == interaction.options.getSubcommand(),
             );
-
+            if (settings.disabled_modules.find((item) => item == subcommand.info.module.name))
+               return await interaction.reply({ embeds: [Embeds.DISABLED_EMBED.toJSON()] });
             if (subcommand) {
                if (
                   !(await server.testPermission(
@@ -47,6 +49,8 @@ module.exports = {
                return await subcommand.execute(interactionData);
             }
          }
+         if (settings.disabled_modules.find((item) => item == command.info.module.name))
+            return await interaction.reply({ embeds: [Embeds.DISABLED_EMBED.toJSON()] });
          if (
             !(await server.testPermission(
                command.info.permission,

@@ -99,7 +99,7 @@ const embedCommand = <AuxdibotCommand>{
             ),
       ),
    info: {
-      module: Modules['embeds'],
+      module: Modules['Embeds'],
       description: 'Create or edit a Discord Embed with Auxdibot, as well as obtain the JSON data of any Embed.',
       usageExample: '/embed (create|custom|edit|edit_custom|json)',
       permission: 'embed',
@@ -108,7 +108,7 @@ const embedCommand = <AuxdibotCommand>{
       {
          name: 'create',
          info: {
-            module: Modules['embeds'],
+            module: Modules['Embeds'],
             usageExample:
                '/embed create (channel) [content] [color] [title] [title url] [author] [author icon url] [author url] [description] [fields (split title and description with `"|d|"``, and seperate fields with `"|s|"`)] [footer] [footer icon url] [image url] [thumbnail url]',
             description: 'Create an embed with Auxdibot.',
@@ -149,7 +149,7 @@ const embedCommand = <AuxdibotCommand>{
       {
          name: 'create_json',
          info: {
-            module: Modules['embeds'],
+            module: Modules['Embeds'],
             usageExample: '/embed create_json (channel) (json)',
             description: 'Create an embed with Auxdibot using valid Discord Embed JSON data.',
             permission: 'embed.create.json',
@@ -186,7 +186,7 @@ const embedCommand = <AuxdibotCommand>{
       {
          name: 'edit',
          info: {
-            module: Modules['embeds'],
+            module: Modules['Embeds'],
             usageExample:
                '/embed edit (message_id) [content] [color] [title] [title url] [author] [author icon url] [author url] [description] [fields (split title and description with `"|d|"``, and seperate fields with `"|s|"`)] [footer] [footer icon url] [image url] [thumbnail url]',
             description: 'Edit an existing Embed by Auxdibot.',
@@ -254,7 +254,7 @@ const embedCommand = <AuxdibotCommand>{
       {
          name: 'edit_json',
          info: {
-            module: Modules['embeds'],
+            module: Modules['Embeds'],
             usageExample: '/embed edit_json (message_id) (json)',
             description: 'Edit an existing Embed by Auxdibot using valid Discord Embed JSON data.',
             permission: 'embed.edit.json',
@@ -301,7 +301,7 @@ const embedCommand = <AuxdibotCommand>{
       {
          name: 'json',
          info: {
-            module: Modules['embeds'],
+            module: Modules['Embeds'],
             usageExample: '/embed json (message_id)',
             description: 'Get the Discord Embed JSON data of any Embed on your server.',
             permission: 'embed.json',

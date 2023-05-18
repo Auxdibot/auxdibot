@@ -2,8 +2,10 @@ import AuxdibotButton from '@util/types/AuxdibotButton';
 import { MessageComponentInteraction } from 'discord.js';
 import Server from '@models/server/Server';
 import Embeds from '@util/constants/Embeds';
+import Modules from '@util/constants/Modules';
 
 module.exports = <AuxdibotButton>{
+   module: Modules['Moderation'],
    name: 'record',
    permission: 'moderation.record',
    async execute(interaction: MessageComponentInteraction) {

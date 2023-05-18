@@ -123,7 +123,7 @@ const reactionRolesCommand = <AuxdibotCommand>{
       )
       .addSubcommand((builder) => builder.setName('list').setDescription('List the reaction roles on this server.')),
    info: {
-      module: Modules['roles'],
+      module: Modules['Roles'],
       description: 'Create, edit, remove, or list the currently active reaction roles.',
       usageExample: '/reaction_roles (add|remove|edit|list)',
       permission: 'rr',
@@ -132,7 +132,7 @@ const reactionRolesCommand = <AuxdibotCommand>{
       {
          name: 'add',
          info: {
-            module: Modules['roles'],
+            module: Modules['Roles'],
             description: 'Add a reaction role to the server.',
             usageExample: '/reaction_roles add (channel) (roles)',
             permission: 'rr.add',
@@ -202,7 +202,7 @@ const reactionRolesCommand = <AuxdibotCommand>{
       {
          name: 'add_custom',
          info: {
-            module: Modules['roles'],
+            module: Modules['Roles'],
             description: 'Add a reaction role to the server with custom Embed parameters.',
             usageExample:
                '/reaction_roles add_custom (channel) (roles) [content] [color] [title] [title url] [author] [author icon url] [author url] [description] [fields (split title and description with `"|d|"``, and seperate fields with `"|s|"`)] [footer] [footer icon url] [image url] [thumbnail url]',
@@ -281,7 +281,7 @@ const reactionRolesCommand = <AuxdibotCommand>{
       {
          name: 'add_json',
          info: {
-            module: Modules['roles'],
+            module: Modules['Roles'],
             description: 'Add a reaction role to the server with custom Discord Embed JSON.',
             usageExample: '/reaction_roles add_json (channel) (roles) (json)',
             permission: 'rr.add.json',
@@ -356,7 +356,7 @@ const reactionRolesCommand = <AuxdibotCommand>{
       {
          name: 'remove',
          info: {
-            module: Modules['roles'],
+            module: Modules['Roles'],
             description: 'Remove a role that is assigned when a member joins the server.',
             usageExample: '/reaction_roles remove [message_id] [index]',
             permission: 'rr.remove',
@@ -407,7 +407,7 @@ const reactionRolesCommand = <AuxdibotCommand>{
       {
          name: 'list',
          info: {
-            module: Modules['roles'],
+            module: Modules['Roles'],
             description: 'List the reaction roles on this server.',
             usageExample: '/reaction_roles list',
             permission: 'rr.list',
@@ -433,7 +433,7 @@ const reactionRolesCommand = <AuxdibotCommand>{
       {
          name: 'edit',
          info: {
-            module: Modules['roles'],
+            module: Modules['Roles'],
             description: "Edit a reaction role's embed on this server.",
             usageExample:
                '/reaction_roles edit [message_id] [index] [json, overrides embed parameters] [content] [color] [title] [title url] [author] [author icon url] [author url] [description] [fields (split title and description with `"|d|"``, and seperate fields with `"|s|"`)] [footer] [footer icon url] [image url] [thumbnail url]',

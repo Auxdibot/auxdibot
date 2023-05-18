@@ -5,6 +5,7 @@ import AuxdibotCommandInteraction from '@util/types/templates/AuxdibotCommandInt
 import { GuildAuxdibotCommandData } from '@util/types/AuxdibotCommandData';
 import { LogType } from '@util/types/enums/Log';
 import Modules from '@util/constants/Modules';
+import { ILevelReward } from '@schemas/LevelRewardSchema';
 
 const settingsCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -40,7 +41,7 @@ const settingsCommand = <AuxdibotCommand>{
       )
       .addSubcommand((builder) => builder.setName('view').setDescription("View this server's settings.")),
    info: {
-      module: Modules['settings'],
+      module: Modules['Settings'],
       description: 'Change settings for the server.',
       usageExample: '/settings (view|log_channel|mute_role)',
       permission: 'settings',
@@ -49,7 +50,7 @@ const settingsCommand = <AuxdibotCommand>{
       {
          name: 'view',
          info: {
-            module: Modules['settings'],
+            module: Modules['Settings'],
             description: 'View all settings for the server.',
             usageExample: '/settings view',
             permission: 'settings.view',
@@ -97,6 +98,23 @@ const settingsCommand = <AuxdibotCommand>{
                        settings.suggestions_discussion_threads ? 'Create Thread.' : 'Do not create a Thread.'
                     }\``,
                },
+               {
+                  name: '⛔ Disabled Features',
+                  value: settings.disabled_modules.reduce(
+                     (accumulator: string, val: string) => `${accumulator}\r\n> *${Modules[val]?.name || 'Unknown'}*`,
+                     '',
+                  ),
+                  inline: true,
+               },
+               {
+                  name: '🏆 Level Reward Roles',
+                  value: settings.level_rewards.reduce(
+                     (accumulator: string, val: ILevelReward, index: number) =>
+                        `${accumulator}\r\n> **${index + 1})** <@&${val.role_id}> (\`Level ${val.level}\`)`,
+                     '',
+                  ),
+                  inline: true,
+               },
             ];
             return await interaction.reply({
                embeds: [embed],
@@ -106,7 +124,7 @@ const settingsCommand = <AuxdibotCommand>{
       {
          name: 'log_channel',
          info: {
-            module: Modules['settings'],
+            module: Modules['Settings'],
             description: 'Change the log channel for the server, where all actions are logged to.',
             usageExample: '/settings log_channel (channel)',
             permission: 'settings.log_channel',
@@ -148,7 +166,7 @@ const settingsCommand = <AuxdibotCommand>{
       {
          name: 'join_leave_channel',
          info: {
-            module: Modules['settings'],
+            module: Modules['Settings'],
             description: 'Change the channel where join and leave messages are broadcast.',
             usageExample: '/settings join_leave_channel (channel)',
             permission: 'settings.join_leave_channel',
@@ -189,7 +207,7 @@ const settingsCommand = <AuxdibotCommand>{
       {
          name: 'mute_role',
          info: {
-            module: Modules['settings'],
+            module: Modules['Settings'],
             description: 'Change the mute role for the server, which is automatically assigned to muted users.',
             usageExample: '/settings mute_role (role)',
             permission: 'settings.mute_role',

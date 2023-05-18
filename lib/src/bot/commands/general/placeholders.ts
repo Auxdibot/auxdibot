@@ -12,7 +12,7 @@ const placeholderCommand = <AuxdibotCommand>{
       .setName('placeholders')
       .setDescription('View a list of placeholders and what they do.'),
    info: {
-      module: Modules['general'],
+      module: Modules['General'],
       description: 'View a list of placeholders and what they do.',
       usageExample: '/placeholders',
       permission: 'commands.placeholders',

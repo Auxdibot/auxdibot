@@ -40,7 +40,7 @@ const stickyRolesCommand = <AuxdibotCommand>{
          builder.setName('list').setDescription('List the roles that are kept when a member rejoins the server.'),
       ),
    info: {
-      module: Modules['settings'],
+      module: Modules['Settings'],
       description: 'Change the roles that are kept when a member rejoins the server.',
       usageExample: '/sticky_roles (add|remove|list)',
       permission: 'settings.sticky_roles',
@@ -49,7 +49,7 @@ const stickyRolesCommand = <AuxdibotCommand>{
       {
          name: 'add',
          info: {
-            module: Modules['settings'],
+            module: Modules['Settings'],
             description: 'Add a role to be kept when a member rejoins the server.',
             usageExample: '/sticky_roles add (role)',
             permission: 'settings.sticky_roles.add',
@@ -107,7 +107,7 @@ const stickyRolesCommand = <AuxdibotCommand>{
       {
          name: 'remove',
          info: {
-            module: Modules['settings'],
+            module: Modules['Settings'],
             description:
                "Remove a role that is kept when a member rejoins the server. If you've deleted the role, use the index parameter, which is the placement of the item on /sticky_roles list.",
             usageExample: '/sticky_roles remove [role] [index]',
@@ -174,7 +174,7 @@ const stickyRolesCommand = <AuxdibotCommand>{
       {
          name: 'list',
          info: {
-            module: Modules['settings'],
+            module: Modules['Settings'],
             description: 'List the roles that are kept when a member rejoins the server.',
             usageExample: '/sticky_roles list',
             permission: 'settings.sticky_roles.list',

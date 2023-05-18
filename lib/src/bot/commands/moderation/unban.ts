@@ -18,7 +18,7 @@ const unbanCommand = <AuxdibotCommand>{
             .setRequired(true),
       ),
    info: {
-      module: Modules['moderation'],
+      module: Modules['Moderation'],
       description: 'Unbans a user if they are currently banned. For banned members, use their user ID.',
       usageExample: '/unban (user)',
       permission: 'moderation.ban.remove',

@@ -241,7 +241,7 @@ const suggestionsCommand = <AuxdibotCommand>{
             ),
       ),
    info: {
-      module: Modules['suggestions'],
+      module: Modules['Suggestions'],
       description: 'The main command for handling suggestions on this server.',
       usageExample:
          '/suggestions (create|channel|updates_channel|auto_delete|discussion_threads|reactions|remove_reaction|add_reaction|approve|deny|consider|add|ban|unban|delete)',
@@ -251,7 +251,7 @@ const suggestionsCommand = <AuxdibotCommand>{
       {
          name: 'create',
          info: {
-            module: Modules['suggestions'],
+            module: Modules['Suggestions'],
             description: 'Create a suggestion.',
             usageExample: '/suggestions create (suggestion)',
             permission: 'suggestions.create',
@@ -343,7 +343,7 @@ const suggestionsCommand = <AuxdibotCommand>{
       {
          name: 'channel',
          info: {
-            module: Modules['suggestions'],
+            module: Modules['Suggestions'],
             description: 'Change the channel where suggestions are posted. (None to disable.)',
             usageExample: '/suggestions channel [channel]',
             permission: 'suggestions.channel',
@@ -389,7 +389,7 @@ const suggestionsCommand = <AuxdibotCommand>{
       {
          name: 'updates_channel',
          info: {
-            module: Modules['suggestions'],
+            module: Modules['Suggestions'],
             description: 'Change the channel where updates to suggestions are posted.',
             usageExample: '/suggestions updates_channel (channel)',
             permission: 'suggestions.channel.updates',
@@ -432,7 +432,7 @@ const suggestionsCommand = <AuxdibotCommand>{
       {
          name: 'auto_delete',
          info: {
-            module: Modules['suggestions'],
+            module: Modules['Suggestions'],
             description: 'Set whether suggestions are deleted upon being approved, denied, or marked as added.',
             usageExample: '/suggestions auto_delete (true|false)',
             permission: 'suggestions.auto_delete',
@@ -476,7 +476,7 @@ const suggestionsCommand = <AuxdibotCommand>{
       {
          name: 'discussion_threads',
          info: {
-            module: Modules['suggestions'],
+            module: Modules['Suggestions'],
             description: 'Set whether a discussion thread is created when a suggestion is created.',
             usageExample: '/suggestions discussion_threads (true|false)',
             permission: 'suggestions.discussion_threads',
@@ -520,7 +520,7 @@ const suggestionsCommand = <AuxdibotCommand>{
       {
          name: 'reactions',
          info: {
-            module: Modules['suggestions'],
+            module: Modules['Suggestions'],
             description: 'List the reactions for suggestions.',
             usageExample: '/suggestions reactions',
             permission: 'suggestions.reactions',
@@ -541,7 +541,7 @@ const suggestionsCommand = <AuxdibotCommand>{
       {
          name: 'add_reaction',
          info: {
-            module: Modules['suggestions'],
+            module: Modules['Suggestions'],
             description:
                'Add a reaction to the reactions on suggestions, with a specified value for the rating given. Positive numbers are upvotes, negative numbers are downvotes.',
             usageExample: '/suggestions add_reaction (reaction) (rating)',
@@ -583,7 +583,7 @@ const suggestionsCommand = <AuxdibotCommand>{
       {
          name: 'remove_reaction',
          info: {
-            module: Modules['suggestions'],
+            module: Modules['Suggestions'],
             description: 'Remove a reaction from the reactions on suggestions.',
             usageExample: '/suggestions remove_reaction (reaction|index)',
             permission: 'suggestions.reactions.remove',
@@ -620,7 +620,7 @@ const suggestionsCommand = <AuxdibotCommand>{
       {
          name: 'approve',
          info: {
-            module: Modules['suggestions'],
+            module: Modules['Suggestions'],
             description: 'Mark a suggestion as approved.',
             usageExample: '/suggestions approve (id)',
             permission: 'suggestions.state.approve',
@@ -631,7 +631,7 @@ const suggestionsCommand = <AuxdibotCommand>{
       {
          name: 'deny',
          info: {
-            module: Modules['suggestions'],
+            module: Modules['Suggestions'],
             description: 'Mark a suggestion as denied.',
             usageExample: '/suggestions deny (id)',
             permission: 'suggestions.state.deny',
@@ -642,7 +642,7 @@ const suggestionsCommand = <AuxdibotCommand>{
       {
          name: 'consider',
          info: {
-            module: Modules['suggestions'],
+            module: Modules['Suggestions'],
             description: 'Mark a suggestion as considered.',
             usageExample: '/suggestions consider (id)',
             permission: 'suggestions.state.consider',
@@ -653,7 +653,7 @@ const suggestionsCommand = <AuxdibotCommand>{
       {
          name: 'add',
          info: {
-            module: Modules['suggestions'],
+            module: Modules['Suggestions'],
             description: 'Mark a suggestion as added.',
             usageExample: '/suggestions add (id)',
             permission: 'suggestions.state.add',
@@ -664,7 +664,7 @@ const suggestionsCommand = <AuxdibotCommand>{
       {
          name: 'ban',
          info: {
-            module: Modules['suggestions'],
+            module: Modules['Suggestions'],
             description: 'Ban a user from using suggestions.',
             usageExample: '/suggestions ban (user)',
             permission: 'suggestions.ban',
@@ -708,7 +708,7 @@ const suggestionsCommand = <AuxdibotCommand>{
       {
          name: 'unban',
          info: {
-            module: Modules['suggestions'],
+            module: Modules['Suggestions'],
             description: 'Unban a user, allowing them to use suggestions.',
             usageExample: '/suggestions unban (user)',
             permission: 'suggestions.ban.remove',
@@ -752,7 +752,7 @@ const suggestionsCommand = <AuxdibotCommand>{
       {
          name: 'delete',
          info: {
-            module: Modules['suggestions'],
+            module: Modules['Suggestions'],
             description: 'Delete a suggestion.',
             usageExample: '/suggestions delete (id)',
             permission: 'suggestions.delete',

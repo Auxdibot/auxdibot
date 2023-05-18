@@ -21,7 +21,7 @@ const muteCommand = <AuxdibotCommand>{
          builder.setName('duration').setDescription('Duration as a timestamp (Optional)').setRequired(false),
       ),
    info: {
-      module: Modules['moderation'],
+      module: Modules['Moderation'],
       description:
          'Mutes a user, making them unable to talk in the server and adding a mute to their record on the server. Default duration is permanent.',
       usageExample: '/mute (user) [reason] [duration]',

@@ -22,6 +22,11 @@ const Embeds = {
       .setColor(Colors.DENIED_COLOR)
       .setTitle('⛔ Error!')
       .setDescription('An error occurred trying to do this. Try again later!'),
+   DISABLED_EMBED: new EmbedBuilder()
+      .setAuthor(AUTHOR)
+      .setColor(Colors.DENIED_COLOR)
+      .setTitle('⛔ Disabled')
+      .setDescription('This feature is disabled on this server!'),
    DEFAULT_EMBED: new EmbedBuilder().setAuthor(AUTHOR).setColor(Colors.DEFAULT_COLOR),
    SUCCESS_EMBED: new EmbedBuilder().setAuthor(AUTHOR).setColor(Colors.ACCEPTED_COLOR),
    DENIED_EMBED: new EmbedBuilder().setAuthor(AUTHOR).setColor(Colors.DENIED_COLOR),

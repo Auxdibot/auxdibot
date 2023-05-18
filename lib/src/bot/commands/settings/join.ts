@@ -37,7 +37,7 @@ const joinCommand = <AuxdibotCommand>{
       )
       .addSubcommand((builder) => builder.setName('preview').setDescription('Preview the join embed.')),
    info: {
-      module: Modules['settings'],
+      module: Modules['Settings'],
       description:
          'Change settings for join messages on the server. (Placeholders are supported. Do /placeholders for a list of placeholders.)',
       usageExample: '/join (message|embed_json|preview)',
@@ -47,7 +47,7 @@ const joinCommand = <AuxdibotCommand>{
       {
          name: 'message',
          info: {
-            module: Modules['settings'],
+            module: Modules['Settings'],
             description:
                'Set the join message. (Placeholders are supported. Do /placeholders for a list of placeholders.)',
             usageExample:
@@ -95,7 +95,7 @@ const joinCommand = <AuxdibotCommand>{
       {
          name: 'embed_json',
          info: {
-            module: Modules['settings'],
+            module: Modules['Settings'],
             description:
                'Add an embed to the join message using custom JSON. (Placeholders are supported. Do /placeholders for a list of placeholders.)',
             usageExample: '/join embed_json (json)',
@@ -140,7 +140,7 @@ const joinCommand = <AuxdibotCommand>{
       {
          name: 'preview',
          info: {
-            module: Modules['settings'],
+            module: Modules['Settings'],
             description: 'Preview the join message.',
             usageExample: '/join preview',
             permission: 'settings.join.preview',

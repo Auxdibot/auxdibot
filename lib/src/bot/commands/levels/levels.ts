@@ -71,7 +71,7 @@ const levelCommand = <AuxdibotCommand>{
             ),
       ),
    info: {
-      module: Modules['levels'],
+      module: Modules['Levels'],
       description: 'Change settings for leveling on this server.',
       usageExample: '/levels (leaderboard|add_reward|rewards|remove_reward|give_xp|reset|remove_xp|message_xp)',
       permission: 'levels',
@@ -80,7 +80,7 @@ const levelCommand = <AuxdibotCommand>{
       {
          name: 'leaderboard',
          info: {
-            module: Modules['levels'],
+            module: Modules['Levels'],
             description: 'View the top levelled members on this server.',
             usageExample: '/levels leaderboard',
             allowedDefault: true,
@@ -105,7 +105,7 @@ const levelCommand = <AuxdibotCommand>{
       {
          name: 'add_reward',
          info: {
-            module: Modules['levels'],
+            module: Modules['Levels'],
             description: 'Add a reward to the Level Rewards.',
             usageExample: '/levels add_reward (level) (role)',
             permission: 'levels.rewards.add',
@@ -156,7 +156,7 @@ const levelCommand = <AuxdibotCommand>{
       {
          name: 'remove_reward',
          info: {
-            module: Modules['levels'],
+            module: Modules['Levels'],
             description: 'Remove a reward from the Level Rewards.',
             usageExample: '/levels remove_reward (level)',
             permission: 'levels.rewards.remove',
@@ -182,7 +182,7 @@ const levelCommand = <AuxdibotCommand>{
       {
          name: 'rewards',
          info: {
-            module: Modules['levels'],
+            module: Modules['Levels'],
             description: 'View the Level Rewards for this server.',
             usageExample: '/levels rewards',
             permission: 'levels.rewards',
@@ -203,7 +203,7 @@ const levelCommand = <AuxdibotCommand>{
       {
          name: 'reset',
          info: {
-            module: Modules['levels'],
+            module: Modules['Levels'],
             description: "Reset a user's level and XP.",
             usageExample: '/levels reset (user)',
             permission: 'levels.xp.reset',
@@ -231,7 +231,7 @@ const levelCommand = <AuxdibotCommand>{
       {
          name: 'give_xp',
          info: {
-            module: Modules['levels'],
+            module: Modules['Levels'],
             description: 'Give a user XP points.',
             usageExample: '/levels give_xp (xp) (user)',
             permission: 'levels.xp.give',
@@ -260,7 +260,7 @@ const levelCommand = <AuxdibotCommand>{
       {
          name: 'remove_xp',
          info: {
-            module: Modules['levels'],
+            module: Modules['Levels'],
             help: {
                commandCategory: 'Levels',
                name: '/levels remove_xp',
@@ -293,7 +293,7 @@ const levelCommand = <AuxdibotCommand>{
       {
          name: 'message_xp',
          info: {
-            module: Modules['levels'],
+            module: Modules['Levels'],
             description: 'Set the amount of XP given for sending a message.',
             usageExample: '/levels message_xp (xp)',
             permission: 'levels.message_xp',

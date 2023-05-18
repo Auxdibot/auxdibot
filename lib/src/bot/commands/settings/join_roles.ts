@@ -40,7 +40,7 @@ const joinRolesCommand = <AuxdibotCommand>{
          builder.setName('list').setDescription('List the roles that are assigned when a member joins the server.'),
       ),
    info: {
-      module: Modules['settings'],
+      module: Modules['Settings'],
       description: 'Change the roles given when a member joins the server.',
       usageExample: '/join_roles (add|remove|list)',
       permission: 'settings.join_roles',
@@ -49,7 +49,7 @@ const joinRolesCommand = <AuxdibotCommand>{
       {
          name: 'add',
          info: {
-            module: Modules['settings'],
+            module: Modules['Settings'],
             description: 'Add a role to be assigned when a member joins the server.',
             usageExample: '/join_roles add (role)',
             permission: 'settings.join_roles.add',
@@ -102,7 +102,7 @@ const joinRolesCommand = <AuxdibotCommand>{
       {
          name: 'remove',
          info: {
-            module: Modules['settings'],
+            module: Modules['Settings'],
             description:
                "Remove a role that is assigned when a member joins the server. If you've deleted the role, use the index parameter, which is the placement of the item on /join_roles list.",
             usageExample: '/join_roles remove [role] [index]',
@@ -162,7 +162,7 @@ const joinRolesCommand = <AuxdibotCommand>{
       {
          name: 'list',
          info: {
-            module: Modules['settings'],
+            module: Modules['Settings'],
             description: 'List the roles that are assigned when a member joins the server.',
             usageExample: '/join_roles list',
             permission: 'settings.join_roles.list',

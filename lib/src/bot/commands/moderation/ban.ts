@@ -27,7 +27,7 @@ const banCommand = <AuxdibotCommand>{
             .setRequired(false),
       ),
    info: {
-      module: Modules['moderation'],
+      module: Modules['Moderation'],
       description:
          'Bans a user, removing them from the server and adding a ban to their record on the server. Default duration is permanent.',
       usageExample: '/ban (user) [reason] [duration]',

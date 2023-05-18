@@ -27,7 +27,7 @@ const massroleCommand = <AuxdibotCommand>{
             ),
       ),
    info: {
-      module: Modules['roles'],
+      module: Modules['Roles'],
       description: 'Give everybody a role, or take a role away from anyone that has it.',
       usageExample: '/massrole (give|take)',
       permission: 'massrole',
@@ -36,7 +36,7 @@ const massroleCommand = <AuxdibotCommand>{
       {
          name: 'give',
          info: {
-            module: Modules['roles'],
+            module: Modules['Roles'],
             description: 'Give everybody a role.',
             usageExample: '/massrole give (role)',
             permission: 'massrole.give',
@@ -76,7 +76,7 @@ const massroleCommand = <AuxdibotCommand>{
       {
          name: 'take',
          info: {
-            module: Modules['roles'],
+            module: Modules['Roles'],
             description: 'Take away a role from every user.',
             usageExample: '/massrole take (role)',
             permission: 'massrole.take',

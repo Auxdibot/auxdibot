@@ -12,7 +12,7 @@ const userCommand = <AuxdibotCommand>{
       .setDescription("View and edit a user's data.")
       .addUserOption((builder) => builder.setName('user').setDescription('The user to view.')),
    info: {
-      module: Modules['moderation'],
+      module: Modules['Moderation'],
       description:
          "Displays an easy to use embed where you can view and edit a user's data, including punishments on their record.",
       usageExample: '/user [user]',
