@@ -10,9 +10,13 @@ module.exports = {
       if (!interaction.isButton() || !interaction.guild || !interaction.member) return;
       const client: IAuxdibot = interaction.client;
       const server = await Server.findOrCreateServer(interaction.guild.id);
+      const settings = await server.fetchSettings();
       if (client.buttons) {
          const button = client.buttons.get(interaction.customId.split('-')[0]);
          if (button) {
+            if (settings.disabled_modules.find((item) => item == button.module.name))
+               return await interaction.reply({ embeds: [Embeds.DISABLED_EMBED.toJSON()] });
+
             if (button.permission) {
                if (
                   !server.testPermission(

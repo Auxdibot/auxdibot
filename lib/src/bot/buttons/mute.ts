@@ -5,8 +5,10 @@ import Embeds from '@util/constants/Embeds';
 import { IPunishment, toEmbedField } from '@schemas/PunishmentSchema';
 import Server from '@models/server/Server';
 import { LogType } from '@util/types/enums/Log';
+import Modules from '@util/constants/Modules';
 
 module.exports = <AuxdibotButton>{
+   module: Modules['moderation'],
    name: 'mute',
    permission: 'moderation.mute',
    async execute(interaction: MessageComponentInteraction) {

@@ -1,5 +1,6 @@
 import { GuildMember, MessageReaction, User } from 'discord.js';
 import Server from '@models/server/Server';
+import Modules from '@util/constants/Modules';
 
 module.exports = {
    name: 'messageReactionRemove',
@@ -12,15 +13,17 @@ module.exports = {
          settings = await server.fetchSettings();
       const member: GuildMember | null = messageReaction.message.guild.members.resolve(user.id);
       if (!member || !messageReaction.message.guild) return undefined;
-      const suggestion = data.suggestions.find((suggestion) => suggestion.message_id == messageReaction.message.id);
-      if (suggestion) {
-         const findReaction = settings.suggestions_reactions.find(
-            (reaction) => reaction.emoji == messageReaction.emoji.toString(),
-         );
-         if (findReaction) {
-            suggestion.rating -= findReaction.rating;
-            await data.save();
-            await data.updateSuggestion(messageReaction.message.guild, suggestion);
+      if (!settings.disabled_modules.find((item) => item == Modules['suggestions'].name)) {
+         const suggestion = data.suggestions.find((suggestion) => suggestion.message_id == messageReaction.message.id);
+         if (suggestion) {
+            const findReaction = settings.suggestions_reactions.find(
+               (reaction) => reaction.emoji == messageReaction.emoji.toString(),
+            );
+            if (findReaction) {
+               suggestion.rating -= findReaction.rating;
+               await data.save();
+               await data.updateSuggestion(messageReaction.message.guild, suggestion);
+            }
          }
       }
    },

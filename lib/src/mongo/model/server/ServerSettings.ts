@@ -27,6 +27,7 @@ export interface IServerSettings {
    suggestions_embed?: APIEmbed;
    suggestions_update_embed?: APIEmbed;
    suggestions_discussion_threads: boolean;
+   disabled_modules: string[];
 }
 
 export const ServerSettingsSchema = new mongoose.Schema<IServerSettings>({
@@ -124,6 +125,7 @@ export const ServerSettingsSchema = new mongoose.Schema<IServerSettings>({
          { emoji: '🔽', rating: -1 },
       ],
    },
+   disabled_modules: { type: [String], default: [] },
 });
 
 const ServerSettings = mongoose.model<IServerSettings>('server_settings', ServerSettingsSchema);
