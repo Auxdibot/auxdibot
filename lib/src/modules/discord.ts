@@ -57,9 +57,7 @@ export class AuxdibotClient {
                activities: [
                   {
                      type: ActivityType.Watching,
-                     name: `${this.guilds.cache.size} servers | ${
-                        this.getMembers ? await this.getMembers() : '0'
-                     } members`,
+                     name: `${this.guilds.cache.size.toLocaleString()} servers`,
                   },
                ],
             });
