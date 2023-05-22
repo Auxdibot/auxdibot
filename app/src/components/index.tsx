@@ -24,7 +24,7 @@ export default function Index() {
                 />
                 <h1 className={"fw-normal m-2 text-center lh-1"}>Auxdibot <Badge className={"text-bg-danger bg-danger"}>{APP_VERSION}</Badge></h1>
                 <p className={"fs-3 fw-light m-0 text-center"}>A slash command only multipurpose Discord bot!</p>
-                <Button className={"my-4"} href={import.meta.env['VITE_API_URL'] + "/api/auth/discord"} target="_blank"><BsDiscord className={"d-inline-block align-top mx-1 fs-4"}/> Login with Discord</Button>
+                <Button className={"my-4"} href={"https://discord.gg/tnsFW9CQEn"} target="_blank"><BsDiscord className={"d-inline-block align-top mx-1 fs-4"}/> Join the Server</Button>
             </div>
             <Container className={"text-bg-body"}>
                 <Container fluid={"md"} className={"w-100 h-100 my-5 d-flex flex-column my-auto"}>
@@ -37,7 +37,7 @@ export default function Index() {
 
                             <h1 className={"h1 fs-3 d-block"}><CgWebsite className={"d-inline-block align-middle h1 fs-3"} /> Dashboard <Badge className={"text-bg-warning bg-warning"}>WIP</Badge></h1>
                             <p className={"fs-6"}>Customize every feature of Auxdibot using our robust and easy-to-use dashboard site! Auxdibot's dashboard is mobile-friendly and is accessible from anywhere with Discord! No password or signup is needed.</p>
-                            <Button className={"mt-auto me-auto w-auto"} href={"/dashboard"}><BsSend className={"d-inline-block align-top mx-1 fs-4"}/> Dashboard</Button>
+                            <Button className={"mt-auto me-auto w-auto"} href={import.meta.env['VITE_API_URL'] + "/api/auth/discord"}><BsDiscord className={"d-inline-block align-top mx-1 fs-4"}/> Login with Discord</Button>
                         </Col>
                         <Col className={"border-start flex-column d-flex"}>
 
@@ -73,7 +73,7 @@ export default function Index() {
                         </Carousel.Item>
                         <Carousel.Item className={"mh-100"}>
 
-                            <h1 className={"h2"}><BsPen className={"h2"} /> Role Management <Badge className={"text-bg-success bg-success"}>NEW!</Badge></h1>
+                            <h1 className={"h2"}><BsPen className={"h2"} /> Role Management</h1>
                             <p className={"w-50 mx-auto d-block"}>With Auxdibot, everything from Reaction Roles to Sticky Roles and Join roles is possible! Make your roles feel like roles with Auxdibot.</p>
                         </Carousel.Item>
                         <Carousel.Item className={"mh-100"}>
@@ -83,7 +83,7 @@ export default function Index() {
                         </Carousel.Item>
                         <Carousel.Item className={"mh-100"}>
 
-                            <h1 className={"h2"}><IoMedalOutline className={"h2"} /> Levels <Badge className={"text-bg-warning bg-warning"}>WIP</Badge></h1>
+                            <h1 className={"h2"}><IoMedalOutline className={"h2"} /> Levels <Badge className={"text-bg-success bg-success"}>NEW!</Badge></h1>
                             <p className={"w-50 mx-auto d-block"}>Auxdibot has a completely custom leveling system with reward roles, custom XP rates, and more!</p>
                         </Carousel.Item>
                         <Carousel.Item className={"mh-100"}>
