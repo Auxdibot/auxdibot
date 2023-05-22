@@ -24,7 +24,7 @@ module.exports = {
       }
       if (rr) {
          data.reaction_roles.splice(data.reaction_roles.indexOf(rr), 1);
-         await data.save();
+         await data.save({ validateModifiedOnly: true });
          await server.log(message.guild, {
             user_id: sender.id,
             description: `Deleted a reaction role${message ? ` in ${message.channel || 'a channel'}` : ''}.`,

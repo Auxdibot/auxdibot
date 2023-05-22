@@ -323,7 +323,12 @@ const suggestionsCommand = <AuxdibotCommand>{
                         .catch(() => undefined);
                      if (thread) suggestion.discussion_thread_id = thread.id;
                   }
-                  server.addSuggestion(suggestion);
+                  const add_suggestion = await server.addSuggestion(suggestion);
+                  if ('error' in add_suggestion) {
+                     const errorEmbed = Embeds.ERROR_EMBED.toJSON();
+                     errorEmbed.description = add_suggestion.error;
+                     return await interaction.reply({ embeds: [errorEmbed] });
+                  }
                   await server.log(interaction.data.guild, {
                      user_id: interaction.data.member.id,
                      description: `${interaction.data.member.user.tag} created Suggestion #${suggestion.suggestion_id}`,
@@ -573,8 +578,12 @@ const suggestionsCommand = <AuxdibotCommand>{
                errorEmbed.description = "This isn't a valid reaction!";
                return await interaction.reply({ embeds: [errorEmbed] });
             }
-            settings.suggestions_reactions.push({ emoji: reaction, rating });
-            await settings.save();
+            const add_reaction = await server.addSuggestionReaction({ emoji: reaction, rating });
+            if ('error' in add_reaction) {
+               const errorEmbed = Embeds.ERROR_EMBED.toJSON();
+               errorEmbed.description = add_reaction.error;
+               return await interaction.reply({ embeds: [errorEmbed] });
+            }
             const successEmbed = Embeds.SUCCESS_EMBED.toJSON();
             successEmbed.description = `Added ${reaction} as a suggestion reaction, awarding ${rating} to any suggestion rating.`;
             return await interaction.reply({ embeds: [successEmbed] });

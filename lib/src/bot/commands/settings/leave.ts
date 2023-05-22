@@ -56,7 +56,7 @@ const leaveCommand = <AuxdibotCommand>{
                if (content) {
                   settings.leave_text = content;
                }
-               await settings.save();
+               await settings.save({ validateModifiedOnly: true });
                const embed = Embeds.SUCCESS_EMBED.toJSON();
                embed.title = 'Success!';
                embed.description = `Set the leave embed.`;
@@ -100,7 +100,7 @@ const leaveCommand = <AuxdibotCommand>{
                const jsonEmbed = JSON.parse(json) as APIEmbed;
                const embed = Embeds.SUCCESS_EMBED.toJSON();
                settings.leave_embed = jsonEmbed;
-               await settings.save();
+               await settings.save({ validateModifiedOnly: true });
                embed.title = 'Success!';
                embed.description = `Set the leave embed.`;
                if (interaction.channel && interaction.channel.isTextBased())

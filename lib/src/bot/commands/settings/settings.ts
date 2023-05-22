@@ -144,7 +144,7 @@ const settingsCommand = <AuxdibotCommand>{
                });
             }
             settings.log_channel = channel ? channel.id : undefined;
-            await settings.save();
+            await settings.save({ validateModifiedOnly: true });
             embed.description = `The log channel for this server has been changed.\r\n\r\nFormerly: ${
                formerChannel ? `<#${formerChannel.id}>` : 'None'
             }\r\n\r\nNow: ${channel || 'None (Disabled)'}`;
@@ -185,7 +185,7 @@ const settingsCommand = <AuxdibotCommand>{
                });
             }
             settings.join_leave_channel = channel ? channel.id : undefined;
-            await settings.save();
+            await settings.save({ validateModifiedOnly: true });
             embed.description = `The Join/Leave channel for this server has been changed.\r\n\r\nFormerly: ${
                formerChannel ? `<#${formerChannel.id}>` : 'None'
             }\r\n\r\nNow: ${channel || 'None (Disabled)'}`;
@@ -271,7 +271,7 @@ const settingsCommand = <AuxdibotCommand>{
                },
             });
             settings.mute_role = role.id;
-            await settings.save();
+            await settings.save({ validateModifiedOnly: true });
             embed.description = `The mute role for this server has been changed.\r\n\r\nFormerly: ${
                formerRole ? `<@&${formerRole.id}>` : 'None'
             }\r\n\r\nNow: <@&${role.id}>`;

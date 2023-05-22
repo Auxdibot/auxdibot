@@ -1,5 +1,5 @@
 import LogSchema, { ILog } from '@schemas/LogSchema';
-import punishmentSchema, { IPunishment } from '@schemas/PunishmentSchema';
+import PunishmentSchema, { IPunishment } from '@schemas/PunishmentSchema';
 import PermissionOverrideSchema, { IPermissionOverride } from '@schemas/PermissionOverrideSchema';
 import ReactionRoleSchema, { IReactionRole } from '@schemas/ReactionRoleSchema';
 import mongoose from 'mongoose';
@@ -8,6 +8,8 @@ import { APIEmbed, Guild, GuildBasedChannel } from 'discord.js';
 import { getMessage } from '@util/functions/getMessage';
 import parsePlaceholders from '@util/functions/parsePlaceholder';
 import { SuggestionsColors } from '@util/constants/Colors';
+import { testLimit } from '@util/functions/testLimit';
+import Limits from '@util/types/enums/Limits';
 
 export interface IServerData {
    server_id: mongoose.ObjectId;
@@ -28,11 +30,39 @@ export interface IServerDataMethods {
 export type IServerDataModel = mongoose.Model<IServerData, unknown, IServerDataMethods>;
 
 export const ServerDataSchema = new mongoose.Schema<IServerData, IServerDataModel>({
-   punishments: { type: [punishmentSchema], default: [] },
-   permission_overrides: { type: [PermissionOverrideSchema], default: [] },
+   punishments: {
+      type: [PunishmentSchema],
+      default: [],
+      validate: {
+         validator: (v) => testLimit(v, Limits.ACTIVE_PUNISHMENTS_DEFAULT_LIMIT, true),
+         message: () => `You have reached the limit of active punishments!`,
+      },
+   },
+   permission_overrides: {
+      type: [PermissionOverrideSchema],
+      default: [],
+      validate: {
+         validator: (v) => testLimit(v, Limits.PERMISSION_OVERRIDES_DEFAULT_LIMIT),
+         message: () => `You have reached the limit of permission overrides!`,
+      },
+   },
    latest_log: { type: LogSchema },
-   reaction_roles: { type: [ReactionRoleSchema], default: [] },
-   suggestions: { type: [SuggestionSchema], default: [] },
+   reaction_roles: {
+      type: [ReactionRoleSchema],
+      default: [],
+      validate: {
+         validator: (v) => testLimit(v, Limits.REACTION_ROLE_DEFAULT_LIMIT),
+         message: () => `You have reached the limit of reaction roles!`,
+      },
+   },
+   suggestions: {
+      type: [SuggestionSchema],
+      default: [],
+      validate: {
+         validator: (v) => testLimit(v, Limits.ACTIVE_SUGGESTIONS_DEFAULT_LIMIT, true),
+         message: () => `You have reached the limit of active punishments!`,
+      },
+   },
    server_id: { type: mongoose.Schema.Types.ObjectId, ref: 'server', required: true },
 });
 ServerDataSchema.method('getPunishment', function (user_id: string, type?: 'warn' | 'kick' | 'mute' | 'ban') {

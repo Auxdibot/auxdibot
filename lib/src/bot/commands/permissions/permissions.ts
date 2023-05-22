@@ -98,7 +98,6 @@ const permissionsCommand = <AuxdibotCommand>{
                permission = interaction.options.getString('permission', true),
                role = interaction.options.getRole('role'),
                allowed = interaction.options.getBoolean('allowed', true);
-            const data = await interaction.data.guildData.fetchData();
             if (!role && !user) {
                const errorEmbed = Embeds.ERROR_EMBED.toJSON();
                errorEmbed.description = 'No arguments provided for the role or user!';
@@ -111,8 +110,13 @@ const permissionsCommand = <AuxdibotCommand>{
                permission: permission,
                allowed,
             };
-            data.permission_overrides.push(permissionOverride);
-            await data.save();
+            const add_permission_override = await interaction.data.guildData.addPermissionOverride(permissionOverride);
+            if ('error' in add_permission_override) {
+               const errorEmbed = Embeds.ERROR_EMBED.toJSON();
+               errorEmbed.description = add_permission_override.error;
+               return await interaction.reply({ embeds: [errorEmbed] });
+            }
+            const data = await interaction.data.guildData.fetchData();
             const embed = Embeds.SUCCESS_EMBED.toJSON();
             embed.title = '✋ Added Permission Override';
             embed.description = `Created a new permission override for ${
@@ -158,33 +162,36 @@ const permissionsCommand = <AuxdibotCommand>{
             const override_id = interaction.options.getNumber('override_id', true);
             const data = await interaction.data.guildData.fetchData();
             const permission = data.permission_overrides[override_id - 1];
-            if (permission) {
-               data.permission_overrides.splice(override_id - 1, 1);
-               await data.save();
-               const embed = Embeds.SUCCESS_EMBED.toJSON();
-               embed.title = '✋ Deleted Permission Override';
-               embed.description = `Deleted permission override with override id \`${override_id}\`.`;
-               embed.fields = [
-                  {
-                     name: 'Permission Override',
-                     value: `${permission.allowed ? '✅' : '❎'} \`${permission.permission}\` - ${
-                        permission.role_id
-                           ? `<@&${permission.role_id}>`
-                           : permission.user_id
-                           ? `<@${permission.user_id}>`
-                           : ''
-                     }`,
-                  },
-               ];
-               await interaction.data.guildData.log(interaction.data.guild, {
-                  type: LogType.PERMISSION_DELETED,
-                  permission_override: permission,
-                  date_unix: Date.now(),
-                  user_id: interaction.user.id,
-                  description: `${interaction.user.tag} deleted a permission override. (OID: ${override_id})`,
-               });
+            if (!permission) {
+               const embed = Embeds.ERROR_EMBED.toJSON();
+               embed.description = "This permission override doesn't exist!";
                return await interaction.reply({ embeds: [embed] });
             }
+            data.permission_overrides.splice(override_id - 1, 1);
+            await data.save({ validateBeforeSave: false });
+            const embed = Embeds.SUCCESS_EMBED.toJSON();
+            embed.title = '✋ Deleted Permission Override';
+            embed.description = `Deleted permission override with override id \`${override_id}\`.`;
+            embed.fields = [
+               {
+                  name: 'Permission Override',
+                  value: `${permission.allowed ? '✅' : '❎'} \`${permission.permission}\` - ${
+                     permission.role_id
+                        ? `<@&${permission.role_id}>`
+                        : permission.user_id
+                        ? `<@${permission.user_id}>`
+                        : ''
+                  }`,
+               },
+            ];
+            await interaction.data.guildData.log(interaction.data.guild, {
+               type: LogType.PERMISSION_DELETED,
+               permission_override: permission,
+               date_unix: Date.now(),
+               user_id: interaction.user.id,
+               description: `${interaction.user.tag} deleted a permission override. (OID: ${override_id})`,
+            });
+            return await interaction.reply({ embeds: [embed] });
          },
       },
       {

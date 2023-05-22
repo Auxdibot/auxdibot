@@ -21,7 +21,7 @@ module.exports = {
             );
             if (findReaction) {
                suggestion.rating -= findReaction.rating;
-               await data.save();
+               await data.save({ validateModifiedOnly: true });
                await data.updateSuggestion(messageReaction.message.guild, suggestion);
             }
          }

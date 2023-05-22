@@ -26,7 +26,7 @@ module.exports = <AuxdibotButton>{
       const embed = Embeds.SUCCESS_EMBED.toJSON();
 
       banned.expired = true;
-      await server.save();
+      await data.save();
       embed.title = `📥 Unbanned ${user ? user.tag : `<@${user_id}>`}`;
       embed.description = `User was unbanned.`;
       embed.fields = [toEmbedField(banned)];
