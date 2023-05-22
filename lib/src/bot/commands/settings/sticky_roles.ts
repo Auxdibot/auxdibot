@@ -90,8 +90,12 @@ const stickyRolesCommand = <AuxdibotCommand>{
                errorEmbed.description = "This role is higher than Auxdibot's highest role!";
                return await interaction.reply({ embeds: [errorEmbed] });
             }
-            settings.sticky_roles.push(role.id);
-            await settings.save();
+            const add_sticky_role = await interaction.data.guildData.addStickyRole(role.id);
+            if (typeof add_sticky_role == 'object' && 'error' in add_sticky_role) {
+               const errorEmbed = Embeds.ERROR_EMBED.toJSON();
+               errorEmbed.description = add_sticky_role.error;
+               return await interaction.reply({ embeds: [errorEmbed] });
+            }
             const successEmbed = Embeds.SUCCESS_EMBED.toJSON();
             successEmbed.title = '📝 Added Sticky Role';
             successEmbed.description = `Added <@&${role.id}> to the sticky roles.`;
@@ -158,7 +162,7 @@ const stickyRolesCommand = <AuxdibotCommand>{
             }
 
             settings.sticky_roles.splice(settings.sticky_roles.indexOf(stickyRoleID), 1);
-            await settings.save();
+            await settings.save({ validateBeforeSave: false });
             const successEmbed = Embeds.SUCCESS_EMBED.toJSON();
             successEmbed.title = '📝 Removed Sticky Role';
             successEmbed.description = `Removed <@&${stickyRoleID}> from the sticky roles.`;

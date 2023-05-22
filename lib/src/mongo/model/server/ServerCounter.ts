@@ -19,12 +19,12 @@ const ServerCounterSchema = new mongoose.Schema<IServerCounter, IServerCounterMo
 });
 ServerCounterSchema.method('incrementPunishmentID', function () {
    this.punishment_id++;
-   this.save();
+   this.save({ validateModifiedOnly: true });
    return this.punishment_id;
 });
 ServerCounterSchema.method('incrementSuggestionID', function () {
    this.suggestion_id++;
-   this.save();
+   this.save({ validateModifiedOnly: true });
    return this.suggestion_id;
 });
 const ServerCounter = mongoose.model<IServerCounter, IServerCounterModel>('server_counter', ServerCounterSchema);

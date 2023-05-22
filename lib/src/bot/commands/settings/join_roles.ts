@@ -85,8 +85,12 @@ const joinRolesCommand = <AuxdibotCommand>{
                errorEmbed.description = "This role is higher than Auxdibot's highest role!";
                return await interaction.reply({ embeds: [errorEmbed] });
             }
-            settings.join_roles.push(role.id);
-            await settings.save();
+            const add_join_role = await interaction.data.guildData.addJoinRole(role.id);
+            if (typeof add_join_role == 'object' && 'error' in add_join_role) {
+               const errorEmbed = Embeds.ERROR_EMBED.toJSON();
+               errorEmbed.description = add_join_role.error;
+               return await interaction.reply({ embeds: [errorEmbed] });
+            }
             const successEmbed = Embeds.SUCCESS_EMBED.toJSON();
             successEmbed.title = '👋 Added Join Role';
             successEmbed.description = `Added <@&${role.id}> to the join roles.`;
@@ -146,7 +150,7 @@ const joinRolesCommand = <AuxdibotCommand>{
                return await interaction.reply({ embeds: [errorEmbed] });
             }
             settings.join_roles.splice(settings.join_roles.indexOf(joinRoleID), 1);
-            await settings.save();
+            await settings.save({ validateBeforeSave: false });
             const successEmbed = Embeds.SUCCESS_EMBED.toJSON();
             successEmbed.title = '👋 Removed Join Role';
             successEmbed.description = `Removed <@&${joinRoleID}> from the join roles.`;

@@ -35,7 +35,7 @@ const unbanCommand = <AuxdibotCommand>{
       }
       interaction.data.guild.bans.remove(user.id).catch(() => undefined);
       banned.expired = true;
-      await interaction.data.guildData.save();
+      await data.save();
 
       const embed = Embeds.SUCCESS_EMBED.toJSON();
       embed.title = `📥 Unbanned ${user.tag}`;

@@ -45,7 +45,7 @@ const placeholderCommand = <AuxdibotCommand>{
          return await interaction.reply({ embeds: [embed] });
       }
       settings.disabled_modules.splice(settings.disabled_modules.indexOf(module.name), 1);
-      await settings.save();
+      await settings.save({ validateModifiedOnly: true });
       embed.title = 'Success!';
       embed.description = `Successfully enabled the ${module.name} module. Its functionality & commands will now work on this server.`;
       return await interaction.reply({ embeds: [embed] });

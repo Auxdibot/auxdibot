@@ -146,8 +146,12 @@ const levelCommand = <AuxdibotCommand>{
                embed.description = 'This reward role already exists, or there is already a reward for that level!';
                return await interaction.reply({ embeds: [embed] });
             }
-            settings.level_rewards.push({ level, role_id: role.id });
-            await settings.save();
+            const add_level_reward = await server.addLevelReward({ level, role_id: role.id });
+            if ('error' in add_level_reward) {
+               const errorEmbed = Embeds.ERROR_EMBED.toJSON();
+               errorEmbed.description = add_level_reward.error;
+               return await interaction.reply({ embeds: [errorEmbed] });
+            }
             embed = Embeds.SUCCESS_EMBED.toJSON();
             embed.description = `Successfully added <@&${role.id}> as a role reward!`;
             return await interaction.reply({ embeds: [embed] });
@@ -173,7 +177,7 @@ const levelCommand = <AuxdibotCommand>{
                return await interaction.reply({ embeds: [embed] });
             }
             settings.level_rewards.splice(settings.level_rewards.indexOf(reward), 1);
-            await settings.save();
+            await settings.save({ validateBeforeSave: false });
             embed = Embeds.SUCCESS_EMBED.toJSON();
             embed.description = `Successfully removed <@&${reward.role_id}> from the role rewards!`;
             return await interaction.reply({ embeds: [embed] });

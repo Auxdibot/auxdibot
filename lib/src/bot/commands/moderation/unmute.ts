@@ -48,7 +48,7 @@ const unmuteCommand = <AuxdibotCommand>{
          member.roles.remove(interaction.data.guild.roles.resolve(settings.mute_role) || '').catch(() => undefined);
       }
       muted.expired = true;
-      await interaction.data.guildData.save();
+      await data.save({ validateModifiedOnly: true });
       const dmEmbed = Embeds.SUCCESS_EMBED.toJSON();
       dmEmbed.title = '🔊 Unmuted';
       dmEmbed.description = `You were unmuted on ${interaction.data.guild.name}.`;

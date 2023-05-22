@@ -50,7 +50,7 @@ const placeholderCommand = <AuxdibotCommand>{
          return await interaction.reply({ embeds: [embed] });
       }
       settings.disabled_modules.push(module.name);
-      await settings.save();
+      await settings.save({ validateModifiedOnly: true });
       embed.title = 'Success!';
       embed.description = `Successfully disabled the ${module.name} module. Its functionality & commands will no longer work until re-enabled.`;
       return await interaction.reply({ embeds: [embed] });

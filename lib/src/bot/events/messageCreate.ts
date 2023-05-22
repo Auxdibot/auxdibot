@@ -18,7 +18,7 @@ module.exports = {
       if (!settings.disabled_modules.find((item) => item == Modules['Levels'].name)) {
          const level = member.level;
          const newLevel = member.addXP(settings.message_xp);
-         await member.save();
+         await member.save({ validateModifiedOnly: true });
          if (newLevel > level) {
             try {
                if (!message.guild || !message.member) return;

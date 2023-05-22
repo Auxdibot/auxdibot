@@ -1,4 +1,4 @@
-import { IPunishment, punishmentSchema } from './PunishmentSchema';
+import { IPunishment, PunishmentSchema } from './PunishmentSchema';
 import mongoose from 'mongoose';
 import PermissionOverrideSchema, { IPermissionOverride } from './PermissionOverrideSchema';
 import { ChangeSchema, IChange } from './ChangeSchema';
@@ -24,7 +24,7 @@ const LogSchema = new mongoose.Schema<ILog>(
       mute_role: { type: ChangeSchema },
       channel: { type: ChangeSchema },
       message_edit: { type: ChangeSchema },
-      punishment: { type: punishmentSchema },
+      punishment: { type: PunishmentSchema },
       permission_override: { type: PermissionOverrideSchema },
       date_unix: { type: Number, required: true },
       description: { type: String, required: true },

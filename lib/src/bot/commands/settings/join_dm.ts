@@ -56,7 +56,7 @@ const joinDMCommand = <AuxdibotCommand>{
                if (content) {
                   settings.join_dm_text = content;
                }
-               await settings.save();
+               await settings.save({ validateModifiedOnly: true });
                const embed = Embeds.SUCCESS_EMBED.toJSON();
                embed.title = 'Success!';
                embed.description = `Set the join DM embed.`;
@@ -98,7 +98,7 @@ const joinDMCommand = <AuxdibotCommand>{
                const jsonEmbed = JSON.parse(json) as APIEmbed;
                const embed = Embeds.SUCCESS_EMBED.toJSON();
                settings.join_dm_embed = jsonEmbed;
-               await settings.save();
+               await settings.save({ validateModifiedOnly: true });
                embed.title = 'Success!';
                embed.description = `Set the join DM embed.`;
                if (interaction.channel && interaction.channel.isTextBased())

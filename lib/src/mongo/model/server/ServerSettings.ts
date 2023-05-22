@@ -2,6 +2,16 @@ import mongoose from 'mongoose';
 import { APIEmbed } from 'discord.js';
 import SuggestionReactionSchema, { ISuggestionReaction } from '../../schema/SuggestionReactionSchema';
 import { ILevelReward, LevelRewardSchema } from '../../schema/LevelRewardSchema';
+import {
+   DEFAULT_JOIN_DM_EMBED,
+   DEFAULT_JOIN_EMBED,
+   DEFAULT_LEAVE_EMBED,
+   DEFAULT_LEVELUP_EMBED,
+   DEFAULT_SUGGESTION_EMBED,
+   DEFAULT_SUGGESTION_UPDATE_EMBED,
+} from '@util/constants/DefaultEmbeds';
+import { testLimit } from '@util/functions/testLimit';
+import Limits from '@util/types/enums/Limits';
 
 export interface IServerSettings {
    _id: mongoose.ObjectId;
@@ -37,55 +47,46 @@ export const ServerSettingsSchema = new mongoose.Schema<IServerSettings>({
    join_leave_channel: { type: String },
    join_embed: {
       type: Object,
-      default: {
-         type: 'rich',
-         title: '👋 Member joined! (%server_members% members.)',
-         thumbnail: { url: '%member_avatar_128%' },
-         footer: { text: '%server_name%' },
-         description: '%member_mention% joined the server.',
-         color: 9159498,
-         author: { name: '%message_date%' },
-      },
+      default: DEFAULT_JOIN_EMBED,
    },
    join_dm_embed: {
       type: Object,
-      default: {
-         type: 'rich',
-         title: '👋 Welcome to %server_name%!',
-         thumbnail: { url: '%server_icon_128%' },
-         footer: { text: '%server_name%' },
-         description: 'Welcome, %member_mention%! We hope you enjoy our server.',
-         color: 9159498,
-         author: { name: '%message_date%' },
-      },
+      default: DEFAULT_JOIN_DM_EMBED,
    },
    leave_embed: {
       type: Object,
-      default: {
-         type: 'rich',
-         title: '👋 Member left! (%server_members% members.)',
-         thumbnail: { url: '%member_avatar_128%' },
-         footer: { text: '%server_name%' },
-         description: '%member_mention% left the server.',
-         color: 16007990,
-         author: { name: '%message_date%' },
-      },
+      default: DEFAULT_LEAVE_EMBED,
    },
    join_text: { type: String, default: 'Somebody joined the server!' },
    join_dm_text: { type: String, default: 'Welcome!' },
    leave_text: { type: String, default: 'Somebody left the server!' },
-   join_roles: { type: [String], default: [] },
-   sticky_roles: { type: [String], default: [] },
-   level_rewards: { type: [LevelRewardSchema], default: [] },
+   join_roles: {
+      type: [String],
+      default: [],
+      validate: {
+         validator: (v) => testLimit(v, Limits.JOIN_ROLE_DEFAULT_LIMIT),
+         message: () => `You have reached the limit of join roles!`,
+      },
+   },
+   sticky_roles: {
+      type: [String],
+      default: [],
+      validate: {
+         validator: (v) => testLimit(v, Limits.STICKY_ROLE_DEFAULT_LIMIT),
+         message: () => `You have reached the limit of sticky roles!`,
+      },
+   },
+   level_rewards: {
+      type: [LevelRewardSchema],
+      default: [],
+      validate: {
+         validator: (v) => testLimit(v, Limits.LEVEL_REWARDS_DEFAULT_LIMIT),
+         message: () => `You have reached the limit of level rewards!`,
+      },
+   },
    levelup_embed: {
       type: Object,
-      default: {
-         type: 'rich',
-         title: '🏆 Level Up!',
-         description: '%member_mention% levelled up.\n\n🏅 Experience: `%member_experience% XP`\n\n🏆 %levelup%',
-         color: 15845147,
-         author: { name: '%member_tag%', icon_url: '%member_avatar_128%' },
-      },
+      default: DEFAULT_LEVELUP_EMBED,
    },
    message_xp: { type: Number, default: 20 },
    suggestions_channel: { type: String },
@@ -94,28 +95,11 @@ export const ServerSettingsSchema = new mongoose.Schema<IServerSettings>({
    suggestions_discussion_threads: { type: Boolean, default: true },
    suggestions_embed: {
       type: Object,
-      default: {
-         type: 'rich',
-         title: 'Suggestion #%suggestion_id%',
-         footer: { text: '👍 Rating: %suggestion_rating%' },
-         description: '🕰️ Date: %suggestion_date_formatted%\n%suggestion_state%',
-         fields: [{ value: '%suggestion_content%', name: 'Suggestion', inline: false }],
-         color: 6052956,
-         author: { name: '%member_tag%', icon_url: '%member_avatar_128%' },
-      },
+      default: DEFAULT_SUGGESTION_EMBED,
    },
    suggestions_update_embed: {
       type: Object,
-      default: {
-         type: 'rich',
-         title: '%suggestion_state% Suggestion #%suggestion_id%',
-         footer: { text: '👍 Rating: %suggestion_rating%' },
-         fields: [{ value: '%suggestion_handled_reason%', name: 'Reason', inline: false }],
-         description:
-            '🕰️ Date: %suggestion_date_formatted%\n🧍 Handled by: %suggestion_handler_mention% \n\n%suggestion_content%',
-         color: 6052956,
-         author: { name: '%member_tag%', icon_url: '%member_avatar_128%' },
-      },
+      default: DEFAULT_SUGGESTION_UPDATE_EMBED,
    },
    suggestions_reactions: {
       type: [SuggestionReactionSchema],
@@ -124,6 +108,10 @@ export const ServerSettingsSchema = new mongoose.Schema<IServerSettings>({
          { emoji: '🟦', rating: 0 },
          { emoji: '🔽', rating: -1 },
       ],
+      validate: {
+         validator: (v) => testLimit(v, Limits.SUGGESTIONS_REACTIONS_DEFAULT_LIMIT),
+         message: () => `You have reached the limit of suggestions reactions!`,
+      },
    },
    disabled_modules: { type: [String], default: [] },
 });

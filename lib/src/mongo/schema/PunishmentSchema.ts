@@ -31,9 +31,13 @@ export interface IPunishment {
    punishment_id: number;
 }
 
-export const punishmentSchema = new mongoose.Schema<IPunishment>(
+export const PunishmentSchema = new mongoose.Schema<IPunishment>(
    {
-      type: { type: String, required: true },
+      type: {
+         type: String,
+         required: true,
+         enum: { values: ['warn', 'kick', 'mute', 'ban'], message: "{VALUE} isn't a valid punishment type." },
+      },
       date_unix: { type: Number, default: Math.round(Date.now() / 1000) },
       expires_date_unix: { type: Number },
       expired: { type: Boolean, default: false },
@@ -59,4 +63,4 @@ export function toEmbedField(punishment: IPunishment): EmbedField {
       }`,
    };
 }
-export default punishmentSchema;
+export default PunishmentSchema;

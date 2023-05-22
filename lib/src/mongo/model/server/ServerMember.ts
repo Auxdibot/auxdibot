@@ -43,7 +43,7 @@ ServerMemberSchema.method('leaveServer', async function (member: GuildMember) {
       );
    }
    this.in_server = false;
-   await this.save();
+   await this.save({ validateModifiedOnly: true });
    return true;
 });
 ServerMemberSchema.method('joinServer', async function (member: GuildMember): Promise<boolean> {
@@ -56,7 +56,7 @@ ServerMemberSchema.method('joinServer', async function (member: GuildMember): Pr
    this.sticky_roles.forEach(async (role: string) =>
       server && settings.sticky_roles.indexOf(role) != -1 ? member.roles.add(role).catch(() => undefined) : undefined,
    );
-   await this.save();
+   await this.save({ validateModifiedOnly: true });
    return true;
 });
 ServerMemberSchema.method('takeXP', function (xp: number) {

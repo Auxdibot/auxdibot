@@ -49,7 +49,7 @@ module.exports = <AuxdibotButton>{
       }
       const user = interaction.client.users.resolve(user_id);
       muted.expired = true;
-      await server.save();
+      await data.save();
       embed.title = `🔊 Unmuted ${user ? user.tag : `<@${user_id}>`}`;
       embed.description = `User was unmuted.`;
       embed.fields = [toEmbedField(muted)];

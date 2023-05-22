@@ -19,6 +19,10 @@ import {
 import { IPunishment, PunishmentNames, toEmbedField } from '../../schema/PunishmentSchema';
 import { LogNames } from '@util/types/enums/Log';
 import { ISuggestion } from '../../schema/SuggestionSchema';
+import { IReactionRole } from '@schemas/ReactionRoleSchema';
+import { IPermissionOverride } from '@schemas/PermissionOverrideSchema';
+import { ILevelReward } from '@schemas/LevelRewardSchema';
+import { ISuggestionReaction } from '@schemas/SuggestionReactionSchema';
 
 export interface IServer {
    _id: mongoose.ObjectId;
@@ -37,14 +41,21 @@ export interface IServerMethods {
    fetchCounter(): Promise<HydratedDocument<IServerCounter, IServerCounterMethods>>;
    log(guild: Guild, log: ILog, use_user_thumbnail?: boolean): Promise<APIEmbed | undefined>;
    recordAsEmbed(user_id: string): Promise<APIEmbed | undefined>;
-   punish(punishment: IPunishment): Promise<APIEmbed | undefined>;
-   testPermission(permission: string | undefined, executor: GuildMember, defaultAllowed: boolean): Promise<boolean>;
-   addSuggestion(suggestion: ISuggestion): ISuggestion;
    createLeaderboard(
       top?: number,
    ):
       | LimitedCollection<HydratedDocument<IServerMember, IServerMemberMethods>, number>
       | Collection<HydratedDocument<IServerMember, IServerMemberMethods>, number>;
+   punish(punishment: IPunishment): Promise<APIEmbed | undefined>;
+   testPermission(permission: string | undefined, executor: GuildMember, defaultAllowed: boolean): Promise<boolean>;
+   addSuggestion(suggestion: ISuggestion): Promise<ISuggestion | { error: string }>;
+   addPunishment(suggestion: IPunishment): Promise<IPunishment | { error: string }>;
+   addPermissionOverride(suggestion: IPermissionOverride): Promise<IPermissionOverride | { error: string }>;
+   addReactionRole(suggestion: IReactionRole): Promise<IReactionRole | { error: string }>;
+   addJoinRole(join_role: string): Promise<string | { error: string }>;
+   addStickyRole(sticky_role: string): Promise<string | { error: string }>;
+   addLevelReward(level_reward: ILevelReward): Promise<ILevelReward | { error: string }>;
+   addSuggestionReaction(suggestion_reaction: ISuggestionReaction): Promise<ISuggestionReaction | { error: string }>;
 }
 export interface IServerModel extends mongoose.Model<IServer, unknown, IServerMethods> {
    findOrCreateServer(discord_id: string): Promise<mongoose.HydratedDocument<IServer, IServerMethods>>;
@@ -57,6 +68,9 @@ export const ServerSchema = new mongoose.Schema<IServer, IServerModel>({
    settings: { type: mongoose.Schema.Types.ObjectId, ref: 'server_settings' },
    counter: { type: mongoose.Schema.Types.ObjectId, ref: 'server_counter' },
 });
+/*
+   STATICS
+*/
 ServerSchema.static('findOrCreateServer', async function (discord_id: string) {
    return await this.findOneAndUpdate({ discord_id }, {}, { upsert: true, new: true }).exec();
 });
@@ -80,6 +94,10 @@ ServerSchema.static('deleteByDiscordId', async function (discord_id: string) {
          return doc;
       });
 });
+/*
+   FETCH SUB-DOCUMENT METHODS
+*/
+
 ServerSchema.method('fetchData', async function () {
    let data = await this.populate('data')
       .then((doc: any) => doc.data)
@@ -89,11 +107,12 @@ ServerSchema.method('fetchData', async function () {
          () => undefined,
       );
       if (!data) return;
-      await data.save();
+      await data.save({ validateModifiedOnly: true });
       this.data = data._id;
    }
    return data;
 });
+
 ServerSchema.method('fetchSettings', async function () {
    let settings = await this.populate('settings')
       .then((doc: any) => doc.settings)
@@ -103,17 +122,19 @@ ServerSchema.method('fetchSettings', async function () {
          () => undefined,
       );
       if (!settings) return undefined;
-      await settings.save();
+      await settings.save({ validateModifiedOnly: true });
       this.settings = settings._id;
-      await this.save();
+      await this.save({ validateModifiedOnly: true });
    }
    return settings;
 });
+
 ServerSchema.method('fetchMembers', async function () {
    return await this.populate('members')
       .then((doc: any) => doc.members)
       .catch(() => undefined);
 });
+
 ServerSchema.method('findOrCreateMember', async function (discord_id: string) {
    const members = await this.populate('members')
       .then((doc: any) => doc.members)
@@ -132,17 +153,18 @@ ServerSchema.method('findOrCreateMember', async function (discord_id: string) {
       ).catch(() => undefined);
       if (!member) return undefined;
       return member
-         .save()
+         .save({ validateModifiedOnly: true })
          .then(() => {
             if (!member) return undefined;
             this.members.push(member._id);
-            this.save();
+            this.save({ validateModifiedOnly: true });
             return member;
          })
          .catch(() => undefined);
    }
    return undefined;
 });
+
 ServerSchema.method('fetchCounter', async function () {
    let counter = await this.populate('counter')
       .then((doc: any) => doc.counter)
@@ -152,17 +174,22 @@ ServerSchema.method('fetchCounter', async function () {
          () => undefined,
       );
       if (!counter) return undefined;
-      await counter.save();
+      await counter.save({ validateModifiedOnly: true });
       this.counter = counter._id;
-      await this.save();
+      await this.save({ validateModifiedOnly: true });
    }
    return counter;
 });
+
+/*
+   ACTION METHODS
+*/
+
 ServerSchema.method('log', async function (guild: Guild, log: ILog, use_user_thumbnail?: boolean) {
    const settings = await this.fetchSettings(),
       data = await this.fetchData();
    data.latest_log = log;
-   await data.save();
+   await data.save({ validateModifiedOnly: true });
    if (!guild || !guild.available || !settings.log_channel) return undefined;
    const channel: GuildBasedChannel | undefined = guild.channels.cache.get(settings.log_channel);
    if (!channel || !channel.isTextBased()) return undefined;
@@ -231,6 +258,7 @@ ServerSchema.method('log', async function (guild: Guild, log: ILog, use_user_thu
       .then(() => embed)
       .catch(() => undefined);
 });
+
 ServerSchema.method('recordAsEmbed', async function (user_id: string) {
    const embed = Embeds.DEFAULT_EMBED.toJSON();
    const record = (await this.fetchData()).userRecord(user_id).reverse();
@@ -251,9 +279,12 @@ ServerSchema.method('recordAsEmbed', async function (user_id: string) {
    return embed;
 });
 ServerSchema.method('punish', async function (punishment: IPunishment): Promise<APIEmbed | undefined> {
-   const data = await this.fetchData();
-   data.punishments.push(punishment);
-   await data.save().catch(() => undefined);
+   const add_punishment = this.addPunishment(punishment);
+   if ('error' in add_punishment) {
+      const errorEmbed = Embeds.ERROR_EMBED.toJSON();
+      errorEmbed.description = add_punishment.error;
+      return errorEmbed;
+   }
    const embed = Embeds.PUNISHED_EMBED.toJSON();
    embed.title = PunishmentNames[punishment.type].name;
    embed.description = `User was ${PunishmentNames[punishment.type].action}.`;
@@ -263,6 +294,23 @@ ServerSchema.method('punish', async function (punishment: IPunishment): Promise<
    };
    return embed;
 });
+
+ServerSchema.method('createLeaderboard', async function (top?: number) {
+   const members: HydratedDocument<IServerMember, IServerMemberMethods>[] = await this.fetchMembers();
+   const leaderboard = members
+      .reduce(
+         (
+            acc: Collection<HydratedDocument<IServerMember, IServerMemberMethods>, number>,
+            member: HydratedDocument<IServerMember, IServerMemberMethods>,
+         ) => {
+            return acc.set(member, member.xp);
+         },
+         new Collection(),
+      )
+      .sort((a, b) => b - a);
+   return top ? new LimitedCollection({ maxSize: top }, leaderboard) : leaderboard;
+});
+
 ServerSchema.method(
    'testPermission',
    async function (permission: string | undefined, executor: GuildMember, defaultAllowed: boolean) {
@@ -297,25 +345,72 @@ ServerSchema.method(
       return accessible != undefined ? accessible : defaultAllowed;
    },
 );
+/*
+   DATA MODIFY METHODS
+*/
 ServerSchema.method('addSuggestion', async function (suggestion: ISuggestion) {
    const data: HydratedDocument<IServerData, IServerDataMethods> = await this.fetchData();
    data.suggestions.push(suggestion);
-   await data.save();
+   return await data
+      .save({ validateModifiedOnly: true })
+      .then(() => suggestion)
+      .catch((x) => ({ error: x['errors']['suggestions'].message }));
 });
-ServerSchema.method('createLeaderboard', async function (top?: number) {
-   const members: HydratedDocument<IServerMember, IServerMemberMethods>[] = await this.fetchMembers();
-   const leaderboard = members
-      .reduce(
-         (
-            acc: Collection<HydratedDocument<IServerMember, IServerMemberMethods>, number>,
-            member: HydratedDocument<IServerMember, IServerMemberMethods>,
-         ) => {
-            return acc.set(member, member.xp);
-         },
-         new Collection(),
-      )
-      .sort((a, b) => b - a);
-   return top ? new LimitedCollection({ maxSize: top }, leaderboard) : leaderboard;
+ServerSchema.method('addPunishment', async function (punishment: IPunishment) {
+   const data: HydratedDocument<IServerData, IServerDataMethods> = await this.fetchData();
+   data.punishments.push(punishment);
+   return await data
+      .save({ validateModifiedOnly: true })
+      .then(() => punishment)
+      .catch((x) => ({ error: x['errors']['punishments'].message }));
+});
+ServerSchema.method('addPermissionOverride', async function (permission_override: IPermissionOverride) {
+   const data: HydratedDocument<IServerData, IServerDataMethods> = await this.fetchData();
+   data.permission_overrides.push(permission_override);
+   return await data
+      .save({ validateModifiedOnly: true })
+      .then(() => permission_override)
+      .catch((x) => ({ error: x['errors']['permission_overrides'].message }));
+});
+ServerSchema.method('addReactionRole', async function (rr: IReactionRole) {
+   const data: HydratedDocument<IServerData, IServerDataMethods> = await this.fetchData();
+   data.reaction_roles.push(rr);
+   return await data
+      .save({ validateModifiedOnly: true })
+      .then(() => rr)
+      .catch((x) => ({ error: x['errors']['reaction_roles'].message }));
+});
+ServerSchema.method('addJoinRole', async function (join_role: string) {
+   const settings: HydratedDocument<IServerSettings> = await this.fetchSettings();
+   settings.join_roles.push(join_role);
+   return await settings
+      .save({ validateModifiedOnly: true })
+      .then(() => join_role)
+      .catch((x) => ({ error: x['errors']['join_roles'].message }));
+});
+ServerSchema.method('addStickyRole', async function (sticky_role: string) {
+   const settings: HydratedDocument<IServerSettings> = await this.fetchSettings();
+   settings.sticky_roles.push(sticky_role);
+   return await settings
+      .save({ validateModifiedOnly: true })
+      .then(() => sticky_role)
+      .catch((x) => ({ error: x['errors']['sticky_roles'].message }));
+});
+ServerSchema.method('addLevelReward', async function (level_reward: ILevelReward) {
+   const settings: HydratedDocument<IServerSettings> = await this.fetchSettings();
+   settings.level_rewards.push(level_reward);
+   return await settings
+      .save({ validateModifiedOnly: true })
+      .then(() => level_reward)
+      .catch((x) => ({ error: x['errors']['level_rewards'].message }));
+});
+ServerSchema.method('addSuggestionsReaction', async function (suggestions_reaction: ISuggestionReaction) {
+   const settings: HydratedDocument<IServerSettings> = await this.fetchSettings();
+   settings.suggestions_reactions.push(suggestions_reaction);
+   return await settings
+      .save({ validateModifiedOnly: true })
+      .then(() => suggestions_reaction)
+      .catch((x) => ({ error: x['errors']['suggestions_reactions'].message }));
 });
 const Server = mongoose.model<IServer, IServerModel>('server', ServerSchema);
 export default Server;

@@ -81,7 +81,7 @@ const punishmentCommand = <AuxdibotCommand>{
             }
             const type = PunishmentNames[punishment.type].name;
             data.punishments.splice(data.punishments.indexOf(punishment), 1);
-            await interaction.data.guildData.save();
+            await data.save();
             const embed = Embeds.SUCCESS_EMBED.toJSON();
             embed.title = `${type} deleted. (PID: ${punishment.punishment_id})`;
             embed.description = `${interaction.user} deleted a punishment assigned to <@${punishment.user_id}>.`;

@@ -15,7 +15,7 @@ module.exports = {
       );
       if (permissionOverride) {
          data.permission_overrides.splice(data.permission_overrides.indexOf(permissionOverride));
-         await data.save();
+         await data.save({ validateModifiedOnly: true });
       }
    },
 };
