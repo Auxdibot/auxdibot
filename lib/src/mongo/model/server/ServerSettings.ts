@@ -37,6 +37,9 @@ export interface IServerSettings {
    suggestions_embed?: APIEmbed;
    suggestions_update_embed?: APIEmbed;
    suggestions_discussion_threads: boolean;
+   starboard_channel?: string;
+   starboard_reaction_count: number;
+   starboard_reaction?: string;
    disabled_modules: string[];
 }
 
@@ -113,6 +116,9 @@ export const ServerSettingsSchema = new mongoose.Schema<IServerSettings>({
          message: () => `You have reached the limit of suggestions reactions!`,
       },
    },
+   starboard_channel: { type: String },
+   starboard_reaction_count: { type: Number, default: 5 },
+   starboard_reaction: { type: String, default: '⭐' },
    disabled_modules: { type: [String], default: [] },
 });
 

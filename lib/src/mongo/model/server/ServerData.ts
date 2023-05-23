@@ -18,6 +18,8 @@ export interface IServerData {
    permission_overrides: IPermissionOverride[];
    reaction_roles: IReactionRole[];
    suggestions: ISuggestion[];
+   total_starred_messages: number;
+   total_stars: number;
 }
 export interface IServerDataMethods {
    userRecord(user_id: string): IPunishment[];
@@ -63,6 +65,8 @@ export const ServerDataSchema = new mongoose.Schema<IServerData, IServerDataMode
          message: () => `You have reached the limit of active punishments!`,
       },
    },
+   total_starred_messages: { type: Number, default: 0 },
+   total_stars: { type: Number, default: 0 },
    server_id: { type: mongoose.Schema.Types.ObjectId, ref: 'server', required: true },
 });
 ServerDataSchema.method('getPunishment', function (user_id: string, type?: 'warn' | 'kick' | 'mute' | 'ban') {

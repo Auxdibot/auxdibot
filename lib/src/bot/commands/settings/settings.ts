@@ -115,6 +115,14 @@ const settingsCommand = <AuxdibotCommand>{
                   ),
                   inline: true,
                },
+               {
+                  name: '⭐ Starboard',
+                  value: `> Channel: ${
+                     settings.starboard_channel ? `<#${settings.starboard_channel}>` : '`None (Starboard is disabled.)`'
+                  }
+                    > Reaction: ${settings.starboard_reaction || '`None (Starboard is disabled.)`'}
+                    > Reaction Count: \`${settings.starboard_reaction_count}\``,
+               },
             ];
             return await interaction.reply({
                embeds: [embed],

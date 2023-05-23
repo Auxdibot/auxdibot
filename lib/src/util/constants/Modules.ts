@@ -41,5 +41,10 @@ const Modules = {
       description: 'Module for setting up, handling, and creating suggestions on your server.',
       disableable: true,
    },
+   Starboard: <AuxdibotFeatureModule>{
+      name: 'Starboard',
+      description: "Module for setting up and handling the server's starboard.",
+      disableable: true,
+   },
 };
 export default Modules;
