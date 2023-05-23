@@ -2,10 +2,17 @@
    <a href="https://bot.auxdible.me">
       <img src="https://github.com/Auxdible/auxdibot/blob/main/app/public/icon.png?raw=true" alt="Auxdibot icon" width=250/>
    </a>
+   
    <div id="badges">
       <div id="badges-row1">
          <a href="https://discord.gg/tnsFW9CQEn">
             <img src="https://img.shields.io/badge/Auxdibot%20Discord-7289DA?style=for-the-badge&logo=discord&logoColor=white" width=150/>
+         </a>
+         <a href="https://discord.com/oauth2/authorize?client_id=776496457867591711&scope=bot&permissions=329035279606">
+            <img src="https://img.shields.io/badge/Invite%20Auxdibot-7289DA?style=for-the-badge&logo=discord&logoColor=white" width=150/>
+         </a>
+         <a href="https://trello.com/b/5lSIUz50/auxdibot">
+            <img src="https://img.shields.io/badge/Auxdibot%20Trello-007AC0?style=for-the-badge&logo=trello&logoColor=white" alt="Auxdibot trello" width=150/>
          </a>
       </div>
       <div id="badges-row2">
@@ -77,7 +84,7 @@ If you would like to run Auxdibot on your own machine:
 * For production, move the frontend build to a web server (ex. NGINX or Apache). Run the `/lib/dist/index.js` file to start the bot & express server.
 
 
-## Completed/Testing Features
+## Features
 
 `🔨` *Punishments & Moderation*
 
@@ -95,15 +102,7 @@ If you would like to run Auxdibot on your own machine:
 
 `🏆` *Levels*
 
-## Planned Features
-
 `⭐` *Starboard*
-
-`🧰` *Easy Setup Command*
-
-`🧑‍💻` *Express REST API*
-
-`🖥️` *Dashboard*
 
 ## Credits
 
