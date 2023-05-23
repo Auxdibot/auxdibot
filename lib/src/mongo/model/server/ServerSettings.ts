@@ -7,6 +7,7 @@ import {
    DEFAULT_JOIN_EMBED,
    DEFAULT_LEAVE_EMBED,
    DEFAULT_LEVELUP_EMBED,
+   DEFAULT_STARBOARD_MESSAGE_EMBED,
    DEFAULT_SUGGESTION_EMBED,
    DEFAULT_SUGGESTION_UPDATE_EMBED,
 } from '@util/constants/DefaultEmbeds';
@@ -37,6 +38,10 @@ export interface IServerSettings {
    suggestions_embed?: APIEmbed;
    suggestions_update_embed?: APIEmbed;
    suggestions_discussion_threads: boolean;
+   starboard_embed: APIEmbed;
+   starboard_channel?: string;
+   starboard_reaction_count: number;
+   starboard_reaction?: string;
    disabled_modules: string[];
 }
 
@@ -113,6 +118,13 @@ export const ServerSettingsSchema = new mongoose.Schema<IServerSettings>({
          message: () => `You have reached the limit of suggestions reactions!`,
       },
    },
+   starboard_embed: {
+      type: Object,
+      default: DEFAULT_STARBOARD_MESSAGE_EMBED,
+   },
+   starboard_channel: { type: String },
+   starboard_reaction_count: { type: Number, default: 5 },
+   starboard_reaction: { type: String, default: '⭐' },
    disabled_modules: { type: [String], default: [] },
 });
 

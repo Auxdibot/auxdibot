@@ -10,6 +10,8 @@ export interface IServerMember {
    xp: number;
    xpTill: number;
    level: number;
+   total_starred_messages: number;
+   total_stars: number;
    suggestions_banned: boolean;
 }
 export interface IServerMemberMethods {

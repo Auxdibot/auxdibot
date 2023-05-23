@@ -1,24 +1,28 @@
-import { Guild, GuildMember, PermissionsBitField } from 'discord.js';
+import { Guild, GuildMember, Message, PartialMessage, PermissionsBitField } from 'discord.js';
 import Server from '@models/server/Server';
 import { PunishmentNames } from '@schemas/PunishmentSchema';
 import { LogNames, LogType } from '../types/enums/Log';
 import { ISuggestion } from '@schemas/SuggestionSchema';
 import { SuggestionStateName } from '../types/enums/SuggestionState';
 
+// todo change to have message data for starboard
 export default async function parsePlaceholders(
    msg: string,
    guild?: Guild,
    guildMember?: GuildMember,
    suggestion?: ISuggestion,
+   starred_message?: Message<boolean> | PartialMessage,
 ) {
    const server = guild ? await Server.findOrCreateServer(guild.id) : undefined;
    const data = server ? await server.fetchData() : undefined;
+   const settings = server ? await server.fetchSettings() : undefined;
    let member = guildMember;
    if (suggestion?.creator_id && guild && guild.members.cache.get(suggestion.creator_id))
       member = guild.members.cache.get(suggestion.creator_id);
    const latest_punishment = data && member ? data.userRecord(member.user.id).reverse()[0] : undefined;
    const memberData = member && server ? await server.findOrCreateMember(member.id) : undefined;
-   const PLACEHOLDERS: any = {
+   if (starred_message) member = starred_message.member;
+   const PLACEHOLDERS = {
       ...(guild
          ? {
               server_members: guild.memberCount,
@@ -108,11 +112,22 @@ export default async function parsePlaceholders(
               suggestion_rating: suggestion.rating,
               suggestion_handler_mention: suggestion.handler_id ? `<@${suggestion.handler_id}>` : 'None',
               suggestion_handled_reason: suggestion.handled_reason || 'No reason given.',
-              suggestion_content: suggestion.content,
+              suggestion_content: suggestion.content.replaceAll(/"/g, '\\"'),
               suggestion_date: new Date(suggestion.date_unix).toDateString(),
               suggestion_date_formatted: `<t:${Math.round(suggestion.date_unix / 1000)}>`,
               suggestion_date_utc: new Date(suggestion.date_unix).toUTCString(),
               suggestion_date_iso: new Date(suggestion.date_unix).toISOString(),
+           }
+         : undefined),
+      ...(starred_message && settings
+         ? {
+              starboard_message_id: starred_message.id,
+              starboard_message_content: starred_message.content.replaceAll(/"/g, '\\"'),
+              starboard_message_stars: starred_message.reactions.cache.get(settings.starboard_reaction).count,
+              starboard_message_date: new Date(starred_message.createdTimestamp).toDateString(),
+              starboard_message_date_formatted: `<t:${Math.round(starred_message.createdTimestamp / 1000)}>`,
+              starboard_message_date_utc: new Date(starred_message.createdTimestamp).toUTCString(),
+              starboard_message_date_iso: new Date(starred_message.createdTimestamp).toISOString(),
            }
          : undefined),
       message_date: new Date().toDateString(),

@@ -71,7 +71,17 @@ export class AuxdibotClient {
       }).setToken(TOKEN);
 
       const commands = [];
-      const PACKAGES = ['general', 'moderation', 'settings', 'permissions', 'embeds', 'roles', 'suggestions', 'levels'];
+      const PACKAGES = [
+         'general',
+         'moderation',
+         'settings',
+         'permissions',
+         'embeds',
+         'roles',
+         'suggestions',
+         'levels',
+         'starboard',
+      ];
       const commandFiles = [
          {
             dir: '',

@@ -78,7 +78,7 @@ export default function Index() {
                         </Carousel.Item>
                         <Carousel.Item className={"mh-100"}>
 
-                            <h1 className={"h2"}><AiOutlineQuestionCircle className={"h2"} /> Suggestions <Badge className={"text-bg-success bg-success"}>NEW!</Badge></h1>
+                            <h1 className={"h2"}><AiOutlineQuestionCircle className={"h2"} /> Suggestions</h1>
                             <p className={"w-50 mx-auto d-block"}>Want feedback from your members? Auxdibot features an easy to setup suggestions system, allowing users to upvote or downvote suggestions, or discuss a suggestion in a Discord thread!</p>
                         </Carousel.Item>
                         <Carousel.Item className={"mh-100"}>
@@ -88,7 +88,7 @@ export default function Index() {
                         </Carousel.Item>
                         <Carousel.Item className={"mh-100"}>
 
-                            <h1 className={"h2"}><AiOutlineStar className={"h2"} /> Starboard <Badge className={"text-bg-warning bg-warning"}>WIP</Badge></h1>
+                            <h1 className={"h2"}><AiOutlineStar className={"h2"} /> Starboard <Badge className={"text-bg-success bg-success"}>NEW!</Badge></h1>
                             <p className={"w-50 mx-auto d-block"}>Want to highlight the funniest and best posts on your server? Auxdibot makes it easy! Auxdibot's starboard feature allows for users to react to a post enough times to have it show up in a channel of your choice!</p>
                         </Carousel.Item>
                     </Carousel>
