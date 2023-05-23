@@ -112,7 +112,7 @@ export default async function parsePlaceholders(
               suggestion_rating: suggestion.rating,
               suggestion_handler_mention: suggestion.handler_id ? `<@${suggestion.handler_id}>` : 'None',
               suggestion_handled_reason: suggestion.handled_reason || 'No reason given.',
-              suggestion_content: suggestion.content,
+              suggestion_content: suggestion.content.replaceAll(/"/g, '\\"'),
               suggestion_date: new Date(suggestion.date_unix).toDateString(),
               suggestion_date_formatted: `<t:${Math.round(suggestion.date_unix / 1000)}>`,
               suggestion_date_utc: new Date(suggestion.date_unix).toUTCString(),
@@ -122,7 +122,7 @@ export default async function parsePlaceholders(
       ...(starred_message && settings
          ? {
               starboard_message_id: starred_message.id,
-              starboard_message_content: starred_message.content,
+              starboard_message_content: starred_message.content.replaceAll(/"/g, '\\"'),
               starboard_message_stars: starred_message.reactions.cache.get(settings.starboard_reaction).count,
               starboard_message_date: new Date(starred_message.createdTimestamp).toDateString(),
               starboard_message_date_formatted: `<t:${Math.round(starred_message.createdTimestamp / 1000)}>`,

@@ -61,8 +61,7 @@ module.exports = {
                         undefined,
                         undefined,
                         messageReaction.message,
-                     ),
-                  ) as APIEmbed;
+                     )) as APIEmbed;
                   const message = await starboard_channel.send({
                      content: `**${starCount} ${settings.starboard_reaction || 'No Emoji'}** | ${
                         messageReaction.message.channel

@@ -34,6 +34,7 @@ export enum LogType {
    'STARBOARD_CHANNEL_CHANGED',
    'STARBOARD_REACTION_CHANGED',
    'STARBOARD_REACTION_COUNT_CHANGED',
+   'STARBOARD_MESSAGE_DELETED',
 }
 
 export const LogNames = {
@@ -72,4 +73,5 @@ export const LogNames = {
    32: '⭐ Starboard Channel Changed',
    33: '⭐ Starboard Reaction Changed',
    34: '⭐ Starboard Reaction Count Changed',
+   35: '⭐ Starboard Message Deleted',
 };
