@@ -51,3 +51,15 @@ export const DEFAULT_SUGGESTION_UPDATE_EMBED = {
    color: 6052956,
    author: { name: '%member_tag%', icon_url: '%member_avatar_128%' },
 };
+export const DEFAULT_STARBOARD_MESSAGE_EMBED = {
+   type: 'rich',
+   footer: {
+      text: 'Message ID: %starboard_message_id% | %starboard_message_date_utc%',
+   },
+   description: '%starboard_message_content%',
+   color: 16764160,
+   author: {
+      name: '%member_tag%',
+      icon_url: '%member_avatar_128%',
+   },
+};

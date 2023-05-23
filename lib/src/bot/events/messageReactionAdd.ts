@@ -1,7 +1,8 @@
-import { GuildMember, MessageReaction, User } from 'discord.js';
+import { APIEmbed, GuildMember, MessageReaction, User } from 'discord.js';
 import Server from '@models/server/Server';
 import { IReaction, IReactionRole } from '@schemas/ReactionRoleSchema';
 import Modules from '@util/constants/Modules';
+import parsePlaceholders from '@util/functions/parsePlaceholder';
 
 module.exports = {
    name: 'messageReactionAdd',
@@ -38,6 +39,67 @@ module.exports = {
                suggestion.rating += findReaction.rating;
                await data.save({ validateModifiedOnly: true });
                await data.updateSuggestion(messageReaction.message.guild, suggestion);
+            }
+         }
+      }
+      if (!settings.disabled_modules.find((item) => item == Modules['Starboard'].name)) {
+         const starred = data.starred_messages.find((i) => i.starred_message_id == messageReaction.message.id);
+         const starboard_channel = messageReaction.message.guild.channels.cache.get(settings.starboard_channel);
+         const starCount =
+            (await messageReaction.message.reactions.cache.get(settings.starboard_reaction)?.fetch())?.count || 0;
+         if (starboard_channel && starboard_channel.isTextBased()) {
+            if (starred && !starboard_channel.messages.cache.get(starred.message_id)) {
+               data.starred_messages.splice(data.starred_messages.indexOf(starred), 1);
+               await data.save({ validateBeforeSave: false });
+            }
+            if (!starred && starCount >= settings.starboard_reaction_count) {
+               try {
+                  const embed = JSON.parse(
+                     await parsePlaceholders(
+                        JSON.stringify(settings.starboard_embed),
+                        messageReaction.message.guild,
+                        undefined,
+                        undefined,
+                        messageReaction.message,
+                     ),
+                  ) as APIEmbed;
+                  const message = await starboard_channel.send({
+                     content: `**${starCount} ${settings.starboard_reaction || 'No Emoji'}** | ${
+                        messageReaction.message.channel
+                     }`,
+                     embeds: [embed],
+                  });
+                  const add_starred_message = await server.addStarredMessage({
+                     message_id: message.id,
+                     starred_message_id: messageReaction.message.id,
+                  });
+                  if ('error' in add_starred_message) {
+                     await message.delete();
+                  }
+               } catch (x) {
+                  console.log(x);
+               }
+            } else if (starred) {
+               const message = starboard_channel.messages.cache.get(starred.message_id);
+               if (message) {
+                  try {
+                     const embed = JSON.parse(
+                        await parsePlaceholders(
+                           JSON.stringify(settings.starboard_embed),
+                           messageReaction.message.guild,
+                           undefined,
+                           undefined,
+                           messageReaction.message,
+                        ),
+                     ) as APIEmbed;
+                     await message.edit({
+                        content: `**${starCount} ${settings.starboard_reaction || 'No Emoji'}** | ${
+                           messageReaction.message.channel
+                        }`,
+                        embeds: [embed],
+                     });
+                  } catch (x) {}
+               }
             }
          }
       }

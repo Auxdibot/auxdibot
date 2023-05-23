@@ -1,3 +1,4 @@
+import { IStarredMessage } from './../../schema/StarredMessageSchema';
 import * as mongoose from 'mongoose';
 import ServerData, { IServerData, IServerDataMethods } from './ServerData';
 import { HydratedDocument } from 'mongoose';
@@ -56,6 +57,7 @@ export interface IServerMethods {
    addStickyRole(sticky_role: string): Promise<string | { error: string }>;
    addLevelReward(level_reward: ILevelReward): Promise<ILevelReward | { error: string }>;
    addSuggestionReaction(suggestion_reaction: ISuggestionReaction): Promise<ISuggestionReaction | { error: string }>;
+   addStarredMessage(starred_message: IStarredMessage): Promise<IStarredMessage | { error: string }>;
 }
 export interface IServerModel extends mongoose.Model<IServer, unknown, IServerMethods> {
    findOrCreateServer(discord_id: string): Promise<mongoose.HydratedDocument<IServer, IServerMethods>>;
@@ -411,6 +413,14 @@ ServerSchema.method('addSuggestionsReaction', async function (suggestions_reacti
       .save({ validateModifiedOnly: true })
       .then(() => suggestions_reaction)
       .catch((x) => ({ error: x['errors']['suggestions_reactions'].message }));
+});
+ServerSchema.method('addStarredMessage', async function (starred_message: IStarredMessage) {
+   const data: HydratedDocument<IServerData, IServerDataMethods> = await this.fetchData();
+   data.starred_messages.push(starred_message);
+   return await data
+      .save({ validateModifiedOnly: true })
+      .then(() => starred_message)
+      .catch((x) => ({ error: x['errors']['starred_messages'].message }));
 });
 const Server = mongoose.model<IServer, IServerModel>('server', ServerSchema);
 export default Server;

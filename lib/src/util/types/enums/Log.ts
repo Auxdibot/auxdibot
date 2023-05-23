@@ -31,6 +31,9 @@ export enum LogType {
    'SUGGESTIONS_AUTO_DELETE_CHANGED',
    'SUGGESTIONS_THREAD_CREATION_CHANGED',
    'SUGGESTION_DELETED',
+   'STARBOARD_CHANNEL_CHANGED',
+   'STARBOARD_REACTION_CHANGED',
+   'STARBOARD_REACTION_COUNT_CHANGED',
 }
 
 export const LogNames = {
@@ -66,4 +69,7 @@ export const LogNames = {
    29: '❓ Suggestions Auto Delete Changed',
    30: '❓ Suggestions Thread Creation Changed',
    31: '❓ Suggestion Deleted',
+   32: '⭐ Starboard Channel Changed',
+   33: '⭐ Starboard Reaction Changed',
+   34: '⭐ Starboard Reaction Count Changed',
 };

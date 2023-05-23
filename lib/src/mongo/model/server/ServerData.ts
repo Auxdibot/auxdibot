@@ -10,6 +10,7 @@ import parsePlaceholders from '@util/functions/parsePlaceholder';
 import { SuggestionsColors } from '@util/constants/Colors';
 import { testLimit } from '@util/functions/testLimit';
 import Limits from '@util/types/enums/Limits';
+import StarredMessageSchema, { IStarredMessage } from '@schemas/StarredMessageSchema';
 
 export interface IServerData {
    server_id: mongoose.ObjectId;
@@ -18,8 +19,7 @@ export interface IServerData {
    permission_overrides: IPermissionOverride[];
    reaction_roles: IReactionRole[];
    suggestions: ISuggestion[];
-   total_starred_messages: number;
-   total_stars: number;
+   starred_messages: IStarredMessage[];
 }
 export interface IServerDataMethods {
    userRecord(user_id: string): IPunishment[];
@@ -62,11 +62,17 @@ export const ServerDataSchema = new mongoose.Schema<IServerData, IServerDataMode
       default: [],
       validate: {
          validator: (v) => testLimit(v, Limits.ACTIVE_SUGGESTIONS_DEFAULT_LIMIT, true),
-         message: () => `You have reached the limit of active punishments!`,
+         message: () => `You have reached the limit of active suggestions!`,
       },
    },
-   total_starred_messages: { type: Number, default: 0 },
-   total_stars: { type: Number, default: 0 },
+   starred_messages: {
+      type: [StarredMessageSchema],
+      default: [],
+      validate: {
+         validator: (v) => testLimit(v, Limits.ACTIVE_STARRED_MESSAGES_DEFAULT_LIMIT, true),
+         message: () => `You have reached the limit of active starred messages!`,
+      },
+   },
    server_id: { type: mongoose.Schema.Types.ObjectId, ref: 'server', required: true },
 });
 ServerDataSchema.method('getPunishment', function (user_id: string, type?: 'warn' | 'kick' | 'mute' | 'ban') {

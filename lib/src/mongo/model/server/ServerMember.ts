@@ -27,8 +27,6 @@ export const ServerMemberSchema = new Schema<IServerMember, IServerMemberModel>(
    xp: { type: Number, default: 0 },
    xpTill: { type: Number, default: 0 },
    level: { type: Number, default: 0 },
-   total_starred_messages: { type: Number, default: 0 },
-   total_stars: { type: Number, default: 0 },
    sticky_roles: { type: [String], default: [] },
    in_server: { type: Boolean, default: true },
    suggestions_banned: { type: Boolean, default: false },
