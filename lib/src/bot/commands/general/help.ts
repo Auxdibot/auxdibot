@@ -145,7 +145,7 @@ const helpCommand = <AuxdibotCommand>{
                   value: commands.reduce((acc, i) => acc + ` **/${i.data.name}**\n> ${i.info.description}\n\n`, ''),
                },
             ];
-            return await interaction.reply({ embeds: [embed] });
+            return await interaction.reply({ embeds: [embed], components: [PROMO_ROW.toJSON()] });
          },
       },
       {
@@ -196,6 +196,7 @@ const helpCommand = <AuxdibotCommand>{
             };
             return await interaction.reply({
                embeds: [helpCommandEmbed],
+               components: [PROMO_ROW.toJSON()],
             });
          },
       },
