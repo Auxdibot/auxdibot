@@ -7,7 +7,7 @@ module.exports = {
    once: false,
    async execute(message: Message) {
       const sender = message.member;
-      
+
       if (!sender || !message.guild) return;
       const server = await Server.findOrCreateServer(message.guild.id);
       const data = await server.fetchData();
