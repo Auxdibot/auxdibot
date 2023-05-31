@@ -1,7 +1,6 @@
 import { Guild } from 'discord.js';
-import Embeds from '@/config/embeds/Embeds';
 import Server from '@/mongo/model/server/Server';
-import { IAuxdibot } from '@/interfaces/IAuxdibot';
+import { Auxdibot } from '@/interfaces/Auxdibot';
 
 module.exports = {
    name: 'guildCreate',
@@ -11,8 +10,8 @@ module.exports = {
       await Server.findOrCreateServer(guild.id.toString());
       const channel = guild.systemChannel;
       if (!channel) return;
-      const client: IAuxdibot = guild.client;
-      if (client.updateDiscordStatus) await client.updateDiscordStatus();
-      return await channel.send({ embeds: [Embeds.WELCOME_EMBED.toJSON()] });
+      const auxdibot = guild.client as Auxdibot;
+      if (auxdibot.updateDiscordStatus) await auxdibot.updateDiscordStatus();
+      return await channel.send({ embeds: [auxdibot.embeds.welcome.toJSON()] });
    },
 };

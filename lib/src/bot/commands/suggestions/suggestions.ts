@@ -1,9 +1,8 @@
-import { APIEmbed, ChannelType, GuildBasedChannel, SlashCommandBuilder } from 'discord.js';
+import { EmbedBuilder, APIEmbed, ChannelType, GuildBasedChannel, SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import SuggestionState, { SuggestionStateName } from '@/config/SuggestionState';
-import Embeds from '@/config/embeds/Embeds';
 import { ISuggestion } from '@/mongo/schema/SuggestionSchema';
 import parsePlaceholders from '@/util/parsePlaceholder';
 import { LogType } from '@/config/Log';
@@ -11,9 +10,14 @@ import { ISuggestionReaction } from '@/mongo/schema/SuggestionReactionSchema';
 import emojiRegex from 'emoji-regex';
 import { getMessage } from '@/util/getMessage';
 import canExecute from '@/util/canExecute';
-import { SuggestionsColors } from '@/config/embeds/Colors';
 import Modules from '@/config/Modules';
-async function stateCommand(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>, state: SuggestionState) {
+import { Auxdibot } from '@/interfaces/Auxdibot';
+
+async function stateCommand(
+   auxdibot: Auxdibot,
+   interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>,
+   state: SuggestionState,
+) {
    if (!interaction.data) return;
    const server = interaction.data.guildData;
    const data = await server.fetchData(),
@@ -22,7 +26,7 @@ async function stateCommand(interaction: AuxdibotCommandInteraction<GuildAuxdibo
       reason = interaction.options.getString('reason');
    const suggestion = data.suggestions.find((sugg) => sugg.suggestion_id == id);
    if (!suggestion) {
-      const errorEmbed = Embeds.ERROR_EMBED.toJSON();
+      const errorEmbed = auxdibot.embeds.error.toJSON();
       errorEmbed.description = "Couldn't find that suggestion!";
       return await interaction.reply({ embeds: [errorEmbed] });
    }
@@ -40,7 +44,7 @@ async function stateCommand(interaction: AuxdibotCommandInteraction<GuildAuxdibo
       : undefined;
    if (!message) {
       data.removeSuggestion(suggestion.suggestion_id);
-      const errorEmbed = Embeds.ERROR_EMBED.toJSON();
+      const errorEmbed = auxdibot.embeds.error.toJSON();
       errorEmbed.description = "Couldn't find the message for the suggestion!";
       return await interaction.reply({ embeds: [errorEmbed] });
    }
@@ -58,7 +62,7 @@ async function stateCommand(interaction: AuxdibotCommandInteraction<GuildAuxdibo
    } else {
       const edit = await data.updateSuggestion(interaction.data.guild, suggestion);
       if (!edit) {
-         const errorEmbed = Embeds.ERROR_EMBED.toJSON();
+         const errorEmbed = auxdibot.embeds.error.toJSON();
          errorEmbed.description = "Couldn't edit that suggestion!";
          return await interaction.reply({ embeds: [errorEmbed] });
       }
@@ -74,11 +78,11 @@ async function stateCommand(interaction: AuxdibotCommandInteraction<GuildAuxdibo
                suggestion,
             ),
          ) as APIEmbed;
-         embed.color = SuggestionsColors[suggestion.status];
+         embed.color = auxdibot.colors.suggestions[suggestion.status];
          await channel.send({ embeds: [embed] });
       }
    }
-   const successEmbed = Embeds.SUCCESS_EMBED.toJSON();
+   const successEmbed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
    successEmbed.title = 'Successfully edited suggestion.';
    successEmbed.description = `The suggestion #${suggestion.suggestion_id} has been updated. (Now: ${
       SuggestionStateName[suggestion.status]
@@ -257,7 +261,7 @@ const suggestionsCommand = <AuxdibotCommand>{
             permission: 'suggestions.create',
             allowedDefault: true,
          },
-         async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+         async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
             const server = interaction.data.guildData;
             const settings = await server.fetchSettings(),
@@ -265,7 +269,7 @@ const suggestionsCommand = <AuxdibotCommand>{
             const content = interaction.options.getString('suggestion', true);
             const member = await server.findOrCreateMember(interaction.data.member.id);
             if (member && member.suggestions_banned) {
-               const errorEmbed = Embeds.ERROR_EMBED.toJSON();
+               const errorEmbed = auxdibot.embeds.error.toJSON();
                errorEmbed.description = 'You are banned from making suggestions!';
                return await interaction.reply({ embeds: [errorEmbed] });
             }
@@ -273,13 +277,13 @@ const suggestionsCommand = <AuxdibotCommand>{
                ? await interaction.data.guild.channels.fetch(settings.suggestions_channel)
                : undefined;
             if (!suggestions_channel || !suggestions_channel.isTextBased()) {
-               const errorEmbed = Embeds.ERROR_EMBED.toJSON();
+               const errorEmbed = auxdibot.embeds.error.toJSON();
                errorEmbed.description =
                   'No working suggestions channel was found! Ask an admin to enable suggestions by setting a suggestions channel.';
                return await interaction.reply({ embeds: [errorEmbed] });
             }
             if (!settings.suggestions_embed || settings.suggestions_reactions.length < 1) {
-               const errorEmbed = Embeds.ERROR_EMBED.toJSON();
+               const errorEmbed = auxdibot.embeds.error.toJSON();
                errorEmbed.description = 'No suggestions reactions or suggestions embed could be found!';
                return await interaction.reply({ embeds: [errorEmbed] });
             }
@@ -292,7 +296,7 @@ const suggestionsCommand = <AuxdibotCommand>{
                date_unix: Date.now(),
             };
             const embed = settings.suggestions_embed;
-            const successEmbed = Embeds.SUCCESS_EMBED.toJSON();
+            const successEmbed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             successEmbed.description = `Created a new suggestion (#${counter.suggestion_id}).`;
 
             await interaction.reply({ ephemeral: true, embeds: [successEmbed] });
@@ -325,7 +329,7 @@ const suggestionsCommand = <AuxdibotCommand>{
                   }
                   const add_suggestion = await server.addSuggestion(suggestion);
                   if ('error' in add_suggestion) {
-                     const errorEmbed = Embeds.ERROR_EMBED.toJSON();
+                     const errorEmbed = auxdibot.embeds.error.toJSON();
                      errorEmbed.description = add_suggestion.error;
                      return await interaction.reply({ embeds: [errorEmbed] });
                   }
@@ -337,7 +341,7 @@ const suggestionsCommand = <AuxdibotCommand>{
                   });
                })
                .catch(async () => {
-                  const errorEmbed = Embeds.ERROR_EMBED.toJSON();
+                  const errorEmbed = auxdibot.embeds.error.toJSON();
                   counter.suggestion_id = counter.suggestion_id - 1;
                   await counter.save();
                   errorEmbed.description = 'An error occurred trying to add this!';
@@ -353,11 +357,11 @@ const suggestionsCommand = <AuxdibotCommand>{
             usageExample: '/suggestions channel [channel]',
             permission: 'suggestions.channel',
          },
-         async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+         async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
             const channel = interaction.options.getChannel('channel', false, [ChannelType.GuildText]);
             const settings = await interaction.data.guildData.fetchSettings();
-            const embed = Embeds.SUCCESS_EMBED.toJSON();
+            const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.title = '⚙️ Suggestions Channel Changed';
 
             const formerChannel = interaction.data.guild.channels.resolve(settings.suggestions_channel || '');
@@ -399,11 +403,11 @@ const suggestionsCommand = <AuxdibotCommand>{
             usageExample: '/suggestions updates_channel (channel)',
             permission: 'suggestions.channel.updates',
          },
-         async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+         async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
             const channel = interaction.options.getChannel('channel', false, [ChannelType.GuildText]);
             const settings = await interaction.data.guildData.fetchSettings();
-            const embed = Embeds.SUCCESS_EMBED.toJSON();
+            const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.title = '⚙️ Suggestions Updates Channel Changed';
 
             const formerChannel = interaction.data.guild.channels.resolve(settings.suggestions_updates_channel || '');
@@ -442,15 +446,15 @@ const suggestionsCommand = <AuxdibotCommand>{
             usageExample: '/suggestions auto_delete (true|false)',
             permission: 'suggestions.auto_delete',
          },
-         async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+         async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
             const deleteBool = interaction.options.getBoolean('delete');
             const settings = await interaction.data.guildData.fetchSettings();
             if (deleteBool == null)
                return await interaction.reply({
-                  embeds: [Embeds.ERROR_EMBED.toJSON()],
+                  embeds: [auxdibot.embeds.error.toJSON()],
                });
-            const embed = Embeds.SUCCESS_EMBED.toJSON();
+            const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.title = '⚙️ Suggestions Auto Delete Changed';
             const deleteSuggestions = settings.suggestions_auto_delete;
             if (deleteBool == deleteSuggestions) {
@@ -486,15 +490,15 @@ const suggestionsCommand = <AuxdibotCommand>{
             usageExample: '/suggestions discussion_threads (true|false)',
             permission: 'suggestions.discussion_threads',
          },
-         async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+         async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
             const create_thread = interaction.options.getBoolean('create_thread');
             const settings = await interaction.data.guildData.fetchSettings();
             if (create_thread == null)
                return await interaction.reply({
-                  embeds: [Embeds.ERROR_EMBED.toJSON()],
+                  embeds: [auxdibot.embeds.error.toJSON()],
                });
-            const embed = Embeds.SUCCESS_EMBED.toJSON();
+            const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.title = '⚙️ Suggestions Discussion Threads Changed';
             const discussionThreads = settings.suggestions_discussion_threads;
             if (create_thread == discussionThreads) {
@@ -530,9 +534,9 @@ const suggestionsCommand = <AuxdibotCommand>{
             usageExample: '/suggestions reactions',
             permission: 'suggestions.reactions',
          },
-         async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+         async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
-            const infoEmbed = Embeds.INFO_EMBED.toJSON();
+            const infoEmbed = new EmbedBuilder().setColor(auxdibot.colors.info).toJSON();
             const settings = await interaction.data.guildData.fetchSettings();
             infoEmbed.title = '❓ Suggestions Reactions';
             infoEmbed.description = settings.suggestions_reactions.reduce(
@@ -552,19 +556,19 @@ const suggestionsCommand = <AuxdibotCommand>{
             usageExample: '/suggestions add_reaction (reaction) (rating)',
             permission: 'suggestions.reactions.add',
          },
-         async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+         async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
             const server = interaction.data.guildData;
             const settings = await server.fetchSettings();
             const reaction = interaction.options.getString('reaction'),
                rating = interaction.options.getNumber('rating');
             if (!rating || !reaction) {
-               const errorEmbed = Embeds.ERROR_EMBED.toJSON();
+               const errorEmbed = auxdibot.embeds.error.toJSON();
                errorEmbed.description = 'You need to specify a valid reaction AND rating!';
                return await interaction.reply({ embeds: [errorEmbed] });
             }
             if (settings.suggestions_reactions.find((suggestionReaction) => suggestionReaction.emoji == reaction)) {
-               const errorEmbed = Embeds.ERROR_EMBED.toJSON();
+               const errorEmbed = auxdibot.embeds.error.toJSON();
                errorEmbed.description = 'This suggestion reaction already exists!';
                return await interaction.reply({ embeds: [errorEmbed] });
             }
@@ -574,17 +578,17 @@ const suggestionsCommand = <AuxdibotCommand>{
                interaction.client.emojis.cache.find((i) => i.toString() == reaction) ||
                (emojis != null ? emojis[0] : null);
             if (!emoji) {
-               const errorEmbed = Embeds.ERROR_EMBED.toJSON();
+               const errorEmbed = auxdibot.embeds.error.toJSON();
                errorEmbed.description = "This isn't a valid reaction!";
                return await interaction.reply({ embeds: [errorEmbed] });
             }
             const add_reaction = await server.addSuggestionReaction({ emoji: reaction, rating });
             if ('error' in add_reaction) {
-               const errorEmbed = Embeds.ERROR_EMBED.toJSON();
+               const errorEmbed = auxdibot.embeds.error.toJSON();
                errorEmbed.description = add_reaction.error;
                return await interaction.reply({ embeds: [errorEmbed] });
             }
-            const successEmbed = Embeds.SUCCESS_EMBED.toJSON();
+            const successEmbed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             successEmbed.description = `Added ${reaction} as a suggestion reaction, awarding ${rating} to any suggestion rating.`;
             return await interaction.reply({ embeds: [successEmbed] });
          },
@@ -597,14 +601,14 @@ const suggestionsCommand = <AuxdibotCommand>{
             usageExample: '/suggestions remove_reaction (reaction|index)',
             permission: 'suggestions.reactions.remove',
          },
-         async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+         async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
             const server = interaction.data.guildData;
             const settings = await server.fetchSettings();
             const reaction = interaction.options.getString('reaction'),
                index = interaction.options.getNumber('index');
             if (!index && !reaction) {
-               const errorEmbed = Embeds.ERROR_EMBED.toJSON();
+               const errorEmbed = auxdibot.embeds.error.toJSON();
                errorEmbed.description = 'You need to specify a valid reaction or index!';
                return await interaction.reply({ embeds: [errorEmbed] });
             }
@@ -612,7 +616,7 @@ const suggestionsCommand = <AuxdibotCommand>{
                (i) => (index ? settings.suggestions_reactions.indexOf(i) == index - 1 : false) || i.emoji == reaction,
             );
             if (!suggestionReaction) {
-               const errorEmbed = Embeds.ERROR_EMBED.toJSON();
+               const errorEmbed = auxdibot.embeds.error.toJSON();
                errorEmbed.description = "Couldn't find that suggestion reaction!";
                return await interaction.reply({ embeds: [errorEmbed] });
             }
@@ -621,7 +625,7 @@ const suggestionsCommand = <AuxdibotCommand>{
                settings.suggestions_reactions.splice(suggestionsIndex, 1);
                await settings.save();
             }
-            const successEmbed = Embeds.SUCCESS_EMBED.toJSON();
+            const successEmbed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             successEmbed.description = `Removed ${suggestionReaction.emoji} from the reactions.`;
             return await interaction.reply({ embeds: [successEmbed] });
          },
@@ -634,8 +638,8 @@ const suggestionsCommand = <AuxdibotCommand>{
             usageExample: '/suggestions approve (id)',
             permission: 'suggestions.state.approve',
          },
-         execute: (interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) =>
-            stateCommand(interaction, SuggestionState.APPROVED),
+         execute: (auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) =>
+            stateCommand(auxdibot, interaction, SuggestionState.APPROVED),
       },
       {
          name: 'deny',
@@ -645,8 +649,8 @@ const suggestionsCommand = <AuxdibotCommand>{
             usageExample: '/suggestions deny (id)',
             permission: 'suggestions.state.deny',
          },
-         execute: (interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) =>
-            stateCommand(interaction, SuggestionState.DENIED),
+         execute: (auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) =>
+            stateCommand(auxdibot, interaction, SuggestionState.DENIED),
       },
       {
          name: 'consider',
@@ -656,8 +660,8 @@ const suggestionsCommand = <AuxdibotCommand>{
             usageExample: '/suggestions consider (id)',
             permission: 'suggestions.state.consider',
          },
-         execute: (interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) =>
-            stateCommand(interaction, SuggestionState.CONSIDERED),
+         execute: (auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) =>
+            stateCommand(auxdibot, interaction, SuggestionState.CONSIDERED),
       },
       {
          name: 'add',
@@ -667,8 +671,8 @@ const suggestionsCommand = <AuxdibotCommand>{
             usageExample: '/suggestions add (id)',
             permission: 'suggestions.state.add',
          },
-         execute: (interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) =>
-            stateCommand(interaction, SuggestionState.ADDED),
+         execute: (auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) =>
+            stateCommand(auxdibot, interaction, SuggestionState.ADDED),
       },
       {
          name: 'ban',
@@ -678,37 +682,37 @@ const suggestionsCommand = <AuxdibotCommand>{
             usageExample: '/suggestions ban (user)',
             permission: 'suggestions.ban',
          },
-         async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+         async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
             const server = interaction.data.guildData;
             const user = interaction.options.getUser('user', true);
             const executed = interaction.data.guild.members.cache.get(user.id);
             if (!executed) {
-               const errorEmbed = Embeds.ERROR_EMBED.toJSON();
+               const errorEmbed = auxdibot.embeds.error.toJSON();
                errorEmbed.description = "Couldn't find that member on this server!";
                return await interaction.reply({ embeds: [errorEmbed] });
             }
             if (!canExecute(interaction.data.guild, interaction.data.member, executed)) {
-               const noPermissionEmbed = Embeds.DENIED_EMBED.toJSON();
+               const noPermissionEmbed = new EmbedBuilder().setColor(auxdibot.colors.denied).toJSON();
                noPermissionEmbed.title = '⛔ No Permission!';
                noPermissionEmbed.description = `This user has a higher role than you or owns this server!`;
                return await interaction.reply({ embeds: [noPermissionEmbed] });
             }
             const member = await server.findOrCreateMember(user.id);
             if (!member) {
-               const errorEmbed = Embeds.ERROR_EMBED.toJSON();
+               const errorEmbed = auxdibot.embeds.error.toJSON();
                errorEmbed.description =
                   "Couldn't find that member's data! If this error persists, please seek support in our Discord server.";
                return await interaction.reply({ embeds: [errorEmbed] });
             }
             if (member.suggestions_banned) {
-               const errorEmbed = Embeds.ERROR_EMBED.toJSON();
+               const errorEmbed = auxdibot.embeds.error.toJSON();
                errorEmbed.description = 'This member is already suggestions banned!';
                return await interaction.reply({ embeds: [errorEmbed] });
             }
             member.suggestions_banned = true;
             await member.save();
-            const successEmbed = Embeds.SUCCESS_EMBED.toJSON();
+            const successEmbed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             successEmbed.title = 'Success!';
             successEmbed.description = `<@${user.id}> has been banned from suggestions.`;
             return await interaction.reply({ embeds: [successEmbed] });
@@ -722,37 +726,37 @@ const suggestionsCommand = <AuxdibotCommand>{
             usageExample: '/suggestions unban (user)',
             permission: 'suggestions.ban.remove',
          },
-         async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+         async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
             const server = interaction.data.guildData;
             const user = interaction.options.getUser('user', true);
             const executed = interaction.data.guild.members.cache.get(user.id);
             if (!executed) {
-               const errorEmbed = Embeds.ERROR_EMBED.toJSON();
+               const errorEmbed = auxdibot.embeds.error.toJSON();
                errorEmbed.description = "Couldn't find that member on this server!";
                return await interaction.reply({ embeds: [errorEmbed] });
             }
             if (!canExecute(interaction.data.guild, interaction.data.member, executed)) {
-               const noPermissionEmbed = Embeds.DENIED_EMBED.toJSON();
+               const noPermissionEmbed = new EmbedBuilder().setColor(auxdibot.colors.denied).toJSON();
                noPermissionEmbed.title = '⛔ No Permission!';
                noPermissionEmbed.description = `This user has a higher role than you or owns this server!`;
                return await interaction.reply({ embeds: [noPermissionEmbed] });
             }
             const member = await server.findOrCreateMember(user.id);
             if (!member) {
-               const errorEmbed = Embeds.ERROR_EMBED.toJSON();
+               const errorEmbed = auxdibot.embeds.error.toJSON();
                errorEmbed.description =
                   "Couldn't find that member's data! If this error persists, please seek support in our Discord server.";
                return await interaction.reply({ embeds: [errorEmbed] });
             }
             if (!member.suggestions_banned) {
-               const errorEmbed = Embeds.ERROR_EMBED.toJSON();
+               const errorEmbed = auxdibot.embeds.error.toJSON();
                errorEmbed.description = "This member isn't suggestions banned!";
                return await interaction.reply({ embeds: [errorEmbed] });
             }
             member.suggestions_banned = false;
             await member.save();
-            const successEmbed = Embeds.SUCCESS_EMBED.toJSON();
+            const successEmbed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             successEmbed.title = 'Success!';
             successEmbed.description = `<@${user.id}> has been unbanned from suggestions.`;
             return await interaction.reply({ embeds: [successEmbed] });
@@ -766,14 +770,14 @@ const suggestionsCommand = <AuxdibotCommand>{
             usageExample: '/suggestions delete (id)',
             permission: 'suggestions.delete',
          },
-         async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+         async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
             const server = interaction.data.guildData;
             const data = await server.fetchData();
             const id = interaction.options.getNumber('id', true);
             const suggestion = data.suggestions.find((sugg) => sugg.suggestion_id == id);
             if (!suggestion) {
-               const errorEmbed = Embeds.ERROR_EMBED.toJSON();
+               const errorEmbed = auxdibot.embeds.error.toJSON();
                errorEmbed.description = "Couldn't find that suggestion!";
                return await interaction.reply({ embeds: [errorEmbed] });
             }
@@ -800,7 +804,7 @@ const suggestionsCommand = <AuxdibotCommand>{
                });
             }
             data.removeSuggestion(suggestion.suggestion_id);
-            const successEmbed = Embeds.SUCCESS_EMBED.toJSON();
+            const successEmbed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             successEmbed.title = 'Success';
             successEmbed.description = `Successfully deleted Suggestion #${suggestion.suggestion_id}.`;
             return await interaction.reply({ embeds: [successEmbed] });

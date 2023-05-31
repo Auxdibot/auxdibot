@@ -1,10 +1,10 @@
-import { SlashCommandBuilder, PermissionsBitField } from 'discord.js';
+import { EmbedBuilder, SlashCommandBuilder, PermissionsBitField } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
-import Embeds from '@/config/embeds/Embeds';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import { LogType } from '@/config/Log';
 import Modules from '@/config/Modules';
+import { Auxdibot } from '@/interfaces/Auxdibot';
 
 const stickyRolesCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -54,17 +54,17 @@ const stickyRolesCommand = <AuxdibotCommand>{
             usageExample: '/sticky_roles add (role)',
             permission: 'settings.sticky_roles.add',
          },
-         async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+         async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data || !interaction.memberPermissions) return;
             const role = interaction.options.getRole('role', true);
             const settings = await interaction.data.guildData.fetchSettings();
             if (role.id == interaction.data.guild.roles.everyone.id) {
-               const errorEmbed = Embeds.ERROR_EMBED.toJSON();
+               const errorEmbed = auxdibot.embeds.error.toJSON();
                errorEmbed.description = "This is the everyone role or the role doesn't exist!";
                return await interaction.reply({ embeds: [errorEmbed] });
             }
             if (settings.sticky_roles.find((val: string) => role != null && val == role.id)) {
-               const errorEmbed = Embeds.ERROR_EMBED.toJSON();
+               const errorEmbed = auxdibot.embeds.error.toJSON();
                errorEmbed.description = 'This role is already added!';
                return await interaction.reply({ embeds: [errorEmbed] });
             }
@@ -74,7 +74,7 @@ const stickyRolesCommand = <AuxdibotCommand>{
                !interaction.memberPermissions.has(PermissionsBitField.Flags.Administrator) &&
                interaction.data.guild.roles.comparePositions(role.id, interaction.data.member.roles.highest) <= 0
             ) {
-               const errorEmbed = Embeds.ERROR_EMBED.toJSON();
+               const errorEmbed = auxdibot.embeds.error.toJSON();
                errorEmbed.description = 'This role is higher than yours!';
                return await interaction.reply({ embeds: [errorEmbed] });
             }
@@ -86,17 +86,17 @@ const stickyRolesCommand = <AuxdibotCommand>{
                   interaction.data.guild.members.me.roles.highest,
                ) >= 0
             ) {
-               const errorEmbed = Embeds.ERROR_EMBED.toJSON();
+               const errorEmbed = auxdibot.embeds.error.toJSON();
                errorEmbed.description = "This role is higher than Auxdibot's highest role!";
                return await interaction.reply({ embeds: [errorEmbed] });
             }
             const add_sticky_role = await interaction.data.guildData.addStickyRole(role.id);
             if (typeof add_sticky_role == 'object' && 'error' in add_sticky_role) {
-               const errorEmbed = Embeds.ERROR_EMBED.toJSON();
+               const errorEmbed = auxdibot.embeds.error.toJSON();
                errorEmbed.description = add_sticky_role.error;
                return await interaction.reply({ embeds: [errorEmbed] });
             }
-            const successEmbed = Embeds.SUCCESS_EMBED.toJSON();
+            const successEmbed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             successEmbed.title = '📝 Added Sticky Role';
             successEmbed.description = `Added <@&${role.id}> to the sticky roles.`;
             await interaction.data.guildData.log(interaction.data.guild, {
@@ -117,13 +117,13 @@ const stickyRolesCommand = <AuxdibotCommand>{
             usageExample: '/sticky_roles remove [role] [index]',
             permission: 'settings.sticky_roles.remove',
          },
-         async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+         async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data || !interaction.memberPermissions) return;
             const role = interaction.options.getRole('role'),
                index = interaction.options.getNumber('index');
             const settings = await interaction.data.guildData.fetchSettings();
             if (!role && !index) {
-               const errorEmbed = Embeds.ERROR_EMBED.toJSON();
+               const errorEmbed = auxdibot.embeds.error.toJSON();
                errorEmbed.description = 'Please specify a role or index!';
                return await interaction.reply({ embeds: [errorEmbed] });
             }
@@ -135,7 +135,7 @@ const stickyRolesCommand = <AuxdibotCommand>{
                   ? settings.sticky_roles[index - 1]
                   : undefined;
             if (!stickyRoleID) {
-               const errorEmbed = Embeds.ERROR_EMBED.toJSON();
+               const errorEmbed = auxdibot.embeds.error.toJSON();
                errorEmbed.description = "This join role doesn't exist!";
                return await interaction.reply({ embeds: [errorEmbed] });
             }
@@ -146,7 +146,7 @@ const stickyRolesCommand = <AuxdibotCommand>{
                   !interaction.memberPermissions.has(PermissionsBitField.Flags.Administrator) &&
                   stickyRole.comparePositionTo(interaction.data.member.roles.highest) <= 0
                ) {
-                  const errorEmbed = Embeds.ERROR_EMBED.toJSON();
+                  const errorEmbed = auxdibot.embeds.error.toJSON();
                   errorEmbed.description = 'This role is higher than yours!';
                   return await interaction.reply({ embeds: [errorEmbed] });
                }
@@ -155,7 +155,7 @@ const stickyRolesCommand = <AuxdibotCommand>{
                   interaction.data.guild.members.me &&
                   stickyRole.comparePositionTo(interaction.data.guild.members.me.roles.highest) >= 0
                ) {
-                  const errorEmbed = Embeds.ERROR_EMBED.toJSON();
+                  const errorEmbed = auxdibot.embeds.error.toJSON();
                   errorEmbed.description = "This role is higher than Auxdibot's highest role!";
                   return await interaction.reply({ embeds: [errorEmbed] });
                }
@@ -163,7 +163,7 @@ const stickyRolesCommand = <AuxdibotCommand>{
 
             settings.sticky_roles.splice(settings.sticky_roles.indexOf(stickyRoleID), 1);
             await settings.save({ validateBeforeSave: false });
-            const successEmbed = Embeds.SUCCESS_EMBED.toJSON();
+            const successEmbed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             successEmbed.title = '📝 Removed Sticky Role';
             successEmbed.description = `Removed <@&${stickyRoleID}> from the sticky roles.`;
             await interaction.data.guildData.log(interaction.data.guild, {
@@ -183,10 +183,10 @@ const stickyRolesCommand = <AuxdibotCommand>{
             usageExample: '/sticky_roles list',
             permission: 'settings.sticky_roles.list',
          },
-         async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+         async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
             const settings = await interaction.data.guildData.fetchSettings();
-            const successEmbed = Embeds.INFO_EMBED.toJSON();
+            const successEmbed = new EmbedBuilder().setColor(auxdibot.colors.info).toJSON();
             successEmbed.title = '📝 Sticky Roles';
             successEmbed.description = settings.sticky_roles.reduce(
                (accumulator: string, value: string, index: number) => `${accumulator}\n**${index + 1})** <@&${value}>`,

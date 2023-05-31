@@ -1,11 +1,11 @@
-import { ChannelType, SlashCommandBuilder } from 'discord.js';
+import { EmbedBuilder, ChannelType, SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import Modules from '@/config/Modules';
 import { LogType } from '@/config/Log';
-import Embeds from '@/config/embeds/Embeds';
 import emojiRegex from 'emoji-regex';
+import { Auxdibot } from '@/interfaces/Auxdibot';
 
 const starboardCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -59,11 +59,11 @@ const starboardCommand = <AuxdibotCommand>{
             usageExample: '/starboard channel (channel)',
             permission: 'starboard.settings.channel',
          },
-         async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+         async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
             const channel = interaction.options.getChannel('channel', false, [ChannelType.GuildText]);
             const settings = await interaction.data.guildData.fetchSettings();
-            const embed = Embeds.SUCCESS_EMBED.toJSON();
+            const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.title = '⚙️ Starboard Channel Changed';
 
             const formerChannel = interaction.data.guild.channels.resolve(settings.starboard_channel || '');
@@ -102,7 +102,7 @@ const starboardCommand = <AuxdibotCommand>{
             usageExample: '/starboard reaction (reaction)',
             permission: 'starboard.settings.reaction',
          },
-         async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+         async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
             const server = interaction.data.guildData;
             const settings = await server.fetchSettings();
@@ -113,12 +113,12 @@ const starboardCommand = <AuxdibotCommand>{
                interaction.client.emojis.cache.find((i) => i.toString() == reaction) ||
                (emojis != null ? emojis[0] : null);
             if (!emoji) {
-               const errorEmbed = Embeds.ERROR_EMBED.toJSON();
+               const errorEmbed = auxdibot.embeds.error.toJSON();
                errorEmbed.description = "This isn't a valid reaction!";
                return await interaction.reply({ embeds: [errorEmbed] });
             }
             if (settings.starboard_reaction == emoji) {
-               const errorEmbed = Embeds.ERROR_EMBED.toJSON();
+               const errorEmbed = auxdibot.embeds.error.toJSON();
                errorEmbed.description = 'The starboard reaction is the same as the one specified!';
                return await interaction.reply({ embeds: [errorEmbed] });
             }
@@ -130,7 +130,7 @@ const starboardCommand = <AuxdibotCommand>{
                date_unix: Date.now(),
                description: `The starboard reaction for this server has been set to ${emoji}.`,
             });
-            const successEmbed = Embeds.SUCCESS_EMBED.toJSON();
+            const successEmbed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             successEmbed.description = `Set ${emoji} as the starboard reaction.`;
             return await interaction.reply({ embeds: [successEmbed] });
          },
@@ -143,18 +143,18 @@ const starboardCommand = <AuxdibotCommand>{
             usageExample: '/starboard reaction_count (reaction_count)',
             permission: 'starboard.settings.reaction_count',
          },
-         async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+         async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
             const server = interaction.data.guildData;
             const settings = await server.fetchSettings();
             const reaction_count = interaction.options.getNumber('reaction_count', true);
             if (reaction_count <= 0) {
-               const errorEmbed = Embeds.ERROR_EMBED.toJSON();
+               const errorEmbed = auxdibot.embeds.error.toJSON();
                errorEmbed.description = 'The reaction count cannot be less than or equal to zero!';
                return await interaction.reply({ embeds: [errorEmbed] });
             }
             if (settings.starboard_reaction_count == reaction_count) {
-               const errorEmbed = Embeds.ERROR_EMBED.toJSON();
+               const errorEmbed = auxdibot.embeds.error.toJSON();
                errorEmbed.description = 'The starboard reaction count is the same as the one specified!';
                return await interaction.reply({ embeds: [errorEmbed] });
             }
@@ -166,7 +166,7 @@ const starboardCommand = <AuxdibotCommand>{
                date_unix: Date.now(),
                description: `The starboard reaction count for this server has been set to ${reaction_count}.`,
             });
-            const successEmbed = Embeds.SUCCESS_EMBED.toJSON();
+            const successEmbed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             successEmbed.description = `Set ${reaction_count} as the starboard reaction count. When a message is reacted with the starboard reaction ${reaction_count} times, it will be added to the starboard.`;
             return await interaction.reply({ embeds: [successEmbed] });
          },

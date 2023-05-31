@@ -2,8 +2,8 @@ import { SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
-import Embeds from '@/config/embeds/Embeds';
 import Modules from '@/config/Modules';
+import { Auxdibot } from '@/interfaces/Auxdibot';
 
 const recordCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -19,11 +19,11 @@ const recordCommand = <AuxdibotCommand>{
       usageExample: '/record [user]',
       permission: 'moderation.record',
    },
-   async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+   async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;
       const user = interaction.options.getUser('user') || interaction.user;
       const embed = await interaction.data.guildData.recordAsEmbed(user.id);
-      if (!embed) return await interaction.reply({ embeds: [Embeds.ERROR_EMBED.toJSON()] });
+      if (!embed) return await interaction.reply({ embeds: [auxdibot.embeds.error.toJSON()] });
       await interaction.reply({ embeds: [embed] });
    },
 };

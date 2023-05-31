@@ -1,11 +1,11 @@
-import { SlashCommandBuilder } from 'discord.js';
+import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
-import Embeds from '@/config/embeds/Embeds';
 import { toEmbedField } from '@/mongo/schema/PunishmentSchema';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import { LogType } from '@/config/Log';
 import Modules from '@/config/Modules';
+import { Auxdibot } from '@/interfaces/Auxdibot';
 
 const unbanCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -23,13 +23,13 @@ const unbanCommand = <AuxdibotCommand>{
       usageExample: '/unban (user)',
       permission: 'moderation.ban.remove',
    },
-   async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+   async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;
       const user = interaction.options.getUser('user', true);
       const data = await interaction.data.guildData.fetchData();
       const banned = data.getPunishment(user.id, 'ban');
       if (!banned) {
-         const errorEmbed = Embeds.ERROR_EMBED.toJSON();
+         const errorEmbed = auxdibot.embeds.error.toJSON();
          errorEmbed.description = "This user isn't banned!";
          return await interaction.reply({ embeds: [errorEmbed] });
       }
@@ -37,7 +37,7 @@ const unbanCommand = <AuxdibotCommand>{
       banned.expired = true;
       await data.save();
 
-      const embed = Embeds.SUCCESS_EMBED.toJSON();
+      const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
       embed.title = `📥 Unbanned ${user.tag}`;
       embed.description = `User was unbanned.`;
       embed.fields = [toEmbedField(banned)];

@@ -1,10 +1,10 @@
-import { PermissionsBitField, SlashCommandBuilder } from 'discord.js';
+import { EmbedBuilder, PermissionsBitField, SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
-import Embeds from '@/config/embeds/Embeds';
 import { ILevelReward } from '@/mongo/schema/LevelRewardSchema';
 import Modules from '@/config/Modules';
+import { Auxdibot } from '@/interfaces/Auxdibot';
 const levelCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
       .setName('levels')
@@ -86,11 +86,11 @@ const levelCommand = <AuxdibotCommand>{
             allowedDefault: true,
             permission: 'levels.leaderboard',
          },
-         async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+         async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
             const server = interaction.data.guildData;
             const leaderboard = await server.createLeaderboard(20);
-            const embed = Embeds.LEVELS_EMBED.toJSON();
+            const embed = new EmbedBuilder().setColor(auxdibot.colors.levels).toJSON();
             embed.title = '🎖️ Top Members';
             let placement = 0;
             embed.description = leaderboard.reduce((acc, _xp, member) => {
@@ -110,14 +110,14 @@ const levelCommand = <AuxdibotCommand>{
             usageExample: '/levels add_reward (level) (role)',
             permission: 'levels.rewards.add',
          },
-         async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+         async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
             const role = interaction.options.getRole('role', true),
                level = interaction.options.getNumber('level', true);
             const server = interaction.data.guildData;
             const settings = await server.fetchSettings();
             const reward = settings.level_rewards.find((reward) => reward.role_id == role.id || reward.level == level);
-            let embed = Embeds.ERROR_EMBED.toJSON();
+            let embed = auxdibot.embeds.error.toJSON();
             if (role.id == interaction.data.guild.roles.everyone.id) {
                embed.description = 'This is the everyone role, silly!';
                return await interaction.reply({ embeds: [embed] });
@@ -129,7 +129,7 @@ const levelCommand = <AuxdibotCommand>{
                !interaction.memberPermissions.has(PermissionsBitField.Flags.Administrator) &&
                role.position >= interaction.data.member.roles.highest.position
             ) {
-               const errorEmbed = Embeds.ERROR_EMBED.toJSON();
+               const errorEmbed = auxdibot.embeds.error.toJSON();
                errorEmbed.description = 'This role is higher than yours!';
                return await interaction.reply({ embeds: [errorEmbed] });
             }
@@ -138,7 +138,7 @@ const levelCommand = <AuxdibotCommand>{
                interaction.data.guild.members.me &&
                role.position >= interaction.data.guild.members.me.roles.highest.position
             ) {
-               const errorEmbed = Embeds.ERROR_EMBED.toJSON();
+               const errorEmbed = auxdibot.embeds.error.toJSON();
                errorEmbed.description = "This role is higher than Auxdibot's highest role!";
                return await interaction.reply({ embeds: [errorEmbed] });
             }
@@ -148,11 +148,11 @@ const levelCommand = <AuxdibotCommand>{
             }
             const add_level_reward = await server.addLevelReward({ level, role_id: role.id });
             if ('error' in add_level_reward) {
-               const errorEmbed = Embeds.ERROR_EMBED.toJSON();
+               const errorEmbed = auxdibot.embeds.error.toJSON();
                errorEmbed.description = add_level_reward.error;
                return await interaction.reply({ embeds: [errorEmbed] });
             }
-            embed = Embeds.SUCCESS_EMBED.toJSON();
+            embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.description = `Successfully added <@&${role.id}> as a role reward!`;
             return await interaction.reply({ embeds: [embed] });
          },
@@ -165,20 +165,20 @@ const levelCommand = <AuxdibotCommand>{
             usageExample: '/levels remove_reward (level)',
             permission: 'levels.rewards.remove',
          },
-         async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+         async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
             const level = interaction.options.getNumber('level', true);
             const server = interaction.data.guildData;
             const settings = await server.fetchSettings();
             const reward = settings.level_rewards.find((reward) => reward.level == level);
-            let embed = Embeds.ERROR_EMBED.toJSON();
+            let embed = auxdibot.embeds.error.toJSON();
             if (!reward) {
                embed.description = "This reward role doesn't exist!";
                return await interaction.reply({ embeds: [embed] });
             }
             settings.level_rewards.splice(settings.level_rewards.indexOf(reward), 1);
             await settings.save({ validateBeforeSave: false });
-            embed = Embeds.SUCCESS_EMBED.toJSON();
+            embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.description = `Successfully removed <@&${reward.role_id}> from the role rewards!`;
             return await interaction.reply({ embeds: [embed] });
          },
@@ -191,9 +191,9 @@ const levelCommand = <AuxdibotCommand>{
             usageExample: '/levels rewards',
             permission: 'levels.rewards',
          },
-         async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+         async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
-            const successEmbed = Embeds.INFO_EMBED.toJSON();
+            const successEmbed = new EmbedBuilder().setColor(auxdibot.colors.info).toJSON();
             const settings = await interaction.data.guildData.fetchSettings();
             successEmbed.title = '🏆 Level Rewards';
             successEmbed.description = settings.level_rewards.reduce(
@@ -212,11 +212,11 @@ const levelCommand = <AuxdibotCommand>{
             usageExample: '/levels reset (user)',
             permission: 'levels.xp.reset',
          },
-         async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+         async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
             const user = interaction.options.getUser('user', true);
             const member = interaction.data.guild.members.cache.get(user.id);
-            let embed = Embeds.ERROR_EMBED.toJSON();
+            let embed = auxdibot.embeds.error.toJSON();
             if (!member) {
                embed.description = "This person isn't on the server!";
                return await interaction.reply({ embeds: [embed] });
@@ -226,7 +226,7 @@ const levelCommand = <AuxdibotCommand>{
                (data.xp = 0), (data.level = 0), (data.xpTill = 0);
                await data.save();
             }
-            embed = Embeds.SUCCESS_EMBED.toJSON();
+            embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.description = `Successfully reset ${member}'s Level and XP.`;
             embed.title = 'Success!';
             return await interaction.reply({ embeds: [embed] });
@@ -240,12 +240,12 @@ const levelCommand = <AuxdibotCommand>{
             usageExample: '/levels give_xp (xp) (user)',
             permission: 'levels.xp.give',
          },
-         async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+         async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
             const xp = interaction.options.getNumber('xp', true),
                user = interaction.options.getUser('user', true);
             const member = interaction.data.guild.members.cache.get(user.id);
-            let embed = Embeds.ERROR_EMBED.toJSON();
+            let embed = auxdibot.embeds.error.toJSON();
             if (!member) {
                embed.description = "This person isn't on the server!";
                return await interaction.reply({ embeds: [embed] });
@@ -255,7 +255,7 @@ const levelCommand = <AuxdibotCommand>{
                data.addXP(xp);
                await data.save();
             }
-            embed = Embeds.SUCCESS_EMBED.toJSON();
+            embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.description = `Successfully gave ${member} ${xp.toLocaleString()} XP.`;
             embed.title = 'Success!';
             return await interaction.reply({ embeds: [embed] });
@@ -273,12 +273,12 @@ const levelCommand = <AuxdibotCommand>{
             },
             permission: 'levels.xp.remove',
          },
-         async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+         async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
             const xp = interaction.options.getNumber('xp', true),
                user = interaction.options.getUser('user', true);
             const member = interaction.data.guild.members.cache.get(user.id);
-            let embed = Embeds.ERROR_EMBED.toJSON();
+            let embed = auxdibot.embeds.error.toJSON();
             if (!member) {
                embed.description = "This person isn't on the server!";
                return await interaction.reply({ embeds: [embed] });
@@ -288,7 +288,7 @@ const levelCommand = <AuxdibotCommand>{
                data.takeXP(xp);
                await data.save();
             }
-            embed = Embeds.SUCCESS_EMBED.toJSON();
+            embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.description = `Successfully took ${xp.toLocaleString()} XP from ${member}.`;
             embed.title = 'Success!';
             return await interaction.reply({ embeds: [embed] });
@@ -302,13 +302,13 @@ const levelCommand = <AuxdibotCommand>{
             usageExample: '/levels message_xp (xp)',
             permission: 'levels.message_xp',
          },
-         async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+         async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
             const xp = interaction.options.getNumber('xp', true);
             const settings = await interaction.data.guildData.fetchSettings();
             settings.message_xp = xp;
             await settings.save();
-            const embed = Embeds.SUCCESS_EMBED.toJSON();
+            const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.description = `Members will now get ${xp.toLocaleString()} XP from chatting.`;
             embed.title = 'Success!';
             return await interaction.reply({ embeds: [embed] });

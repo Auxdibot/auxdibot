@@ -7,9 +7,9 @@ import {
    EmbedFooterOptions,
    GuildMember,
    SlashCommandBuilder,
+   EmbedBuilder,
 } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
-import Embeds from '@/config/embeds/Embeds';
 import dotenv from 'dotenv';
 import { toAPIEmbed } from '@/interfaces/embeds/EmbedParameters';
 import { getMessage } from '@/util/getMessage';
@@ -19,6 +19,7 @@ import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandD
 import createEmbedParameters from '@/util/createEmbedParameters';
 import argumentsToEmbedParameters from '@/util/argumentsToEmbedParameters';
 import Modules from '@/config/Modules';
+import { Auxdibot } from '@/interfaces/Auxdibot';
 
 dotenv.config();
 const embedCommand = <AuxdibotCommand>{
@@ -114,7 +115,7 @@ const embedCommand = <AuxdibotCommand>{
             description: 'Create an embed with Auxdibot.',
             permission: 'embed.create',
          },
-         async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+         async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
             const channel = interaction.options.getChannel('channel', true, [ChannelType.GuildText]);
             const content = interaction.options.getString('content')?.replace(/\\n/g, '\n') || '';
@@ -135,12 +136,12 @@ const embedCommand = <AuxdibotCommand>{
                   ],
                });
             } catch (x) {
-               const embed = Embeds.ERROR_EMBED.toJSON();
+               const embed = auxdibot.embeds.error.toJSON();
                embed.description = `There was an error sending that embed!`;
                return await interaction.reply({ embeds: [embed] });
             }
 
-            const embed = Embeds.SUCCESS_EMBED.toJSON();
+            const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.title = 'Success!';
             embed.description = `Sent embed to ${channel}.`;
             return await interaction.reply({ embeds: [embed] });
@@ -154,11 +155,11 @@ const embedCommand = <AuxdibotCommand>{
             description: 'Create an embed with Auxdibot using valid Discord Embed JSON data.',
             permission: 'embed.create.json',
          },
-         async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+         async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
             const channel = interaction.options.getChannel('channel', true, [ChannelType.GuildText]);
             const json = interaction.options.getString('json');
-            if (!json) return await interaction.reply({ embeds: [Embeds.ERROR_EMBED.toJSON()] });
+            if (!json) return await interaction.reply({ embeds: [auxdibot.embeds.error.toJSON()] });
             try {
                await channel.send({
                   embeds: [
@@ -172,12 +173,12 @@ const embedCommand = <AuxdibotCommand>{
                   ],
                });
             } catch (x) {
-               const embed = Embeds.ERROR_EMBED.toJSON();
+               const embed = auxdibot.embeds.error.toJSON();
                embed.description = `There was an error sending that embed! (Most likely due to malformed JSON.)`;
                return await interaction.reply({ embeds: [embed] });
             }
 
-            const embed = Embeds.SUCCESS_EMBED.toJSON();
+            const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.title = 'Success!';
             embed.description = `Sent embed to ${channel}.`;
             return await interaction.reply({ embeds: [embed] });
@@ -192,7 +193,7 @@ const embedCommand = <AuxdibotCommand>{
             description: 'Edit an existing Embed by Auxdibot.',
             permission: 'embed.edit',
          },
-         async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+         async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
             const message_id = interaction.options.getString('message_id', true);
             const guild = interaction.data.guild;
@@ -200,12 +201,12 @@ const embedCommand = <AuxdibotCommand>{
             const content = interaction.options.getString('content')?.replace(/\\n/g, '\n') || '';
             const parameters = argumentsToEmbedParameters(interaction);
             if (!message) {
-               const error = Embeds.ERROR_EMBED.toJSON();
+               const error = auxdibot.embeds.error.toJSON();
                error.description = "Couldn't find that message!";
                return await interaction.reply({ embeds: [error] });
             }
             if (message.embeds.length <= 0) {
-               const error = Embeds.ERROR_EMBED.toJSON();
+               const error = auxdibot.embeds.error.toJSON();
                error.description = 'No embeds exist on this message!';
                return await interaction.reply({ embeds: [error] });
             }
@@ -241,11 +242,11 @@ const embedCommand = <AuxdibotCommand>{
 
                await message.edit({ ...(content ? { content } : {}), embeds: [embed] });
             } catch (x) {
-               const embed = Embeds.ERROR_EMBED.toJSON();
+               const embed = auxdibot.embeds.error.toJSON();
                embed.description = `There was an error sending that embed! (Auxdibot cannot edit this!)`;
                return await interaction.reply({ embeds: [embed] });
             }
-            const success_embed = Embeds.SUCCESS_EMBED.toJSON();
+            const success_embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             success_embed.title = 'Success!';
             success_embed.description = `Edited embed in ${message.channel}.`;
             return await interaction.reply({ embeds: [success_embed] });
@@ -259,19 +260,19 @@ const embedCommand = <AuxdibotCommand>{
             description: 'Edit an existing Embed by Auxdibot using valid Discord Embed JSON data.',
             permission: 'embed.edit.json',
          },
-         async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+         async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
             const message_id = interaction.options.getString('message_id', true);
             const json = interaction.options.getString('json', true);
             const guild = interaction.data.guild;
             const message = await getMessage(guild, message_id);
             if (!message) {
-               const error = Embeds.ERROR_EMBED.toJSON();
+               const error = auxdibot.embeds.error.toJSON();
                error.description = "Couldn't find that message!";
                return await interaction.reply({ embeds: [error] });
             }
             if (message.embeds.length <= 0) {
-               const error = Embeds.ERROR_EMBED.toJSON();
+               const error = auxdibot.embeds.error.toJSON();
                error.description = 'No embeds exist on this message!';
                return await interaction.reply({ embeds: [error] });
             }
@@ -288,11 +289,11 @@ const embedCommand = <AuxdibotCommand>{
                   ],
                });
             } catch (x) {
-               const embed = Embeds.ERROR_EMBED.toJSON();
+               const embed = auxdibot.embeds.error.toJSON();
                embed.description = `There was an error sending that embed! (Most likely due to malformed JSON, or this message wasn't made by Auxdibot!)`;
                return await interaction.reply({ embeds: [embed] });
             }
-            const embed = Embeds.SUCCESS_EMBED.toJSON();
+            const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.title = 'Success!';
             embed.description = `Edited embed in ${message.channel}.`;
             return await interaction.reply({ embeds: [embed] });
@@ -306,22 +307,22 @@ const embedCommand = <AuxdibotCommand>{
             description: 'Get the Discord Embed JSON data of any Embed on your server.',
             permission: 'embed.json',
          },
-         async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+         async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
             const message_id = interaction.options.getString('message_id', true);
             const guild = interaction.data.guild;
             const message = await getMessage(guild, message_id);
             if (!message) {
-               const error = Embeds.ERROR_EMBED.toJSON();
+               const error = auxdibot.embeds.error.toJSON();
                error.description = "Couldn't find that message!";
                return await interaction.reply({ embeds: [error] });
             }
             if (message.embeds.length <= 0) {
-               const error = Embeds.ERROR_EMBED.toJSON();
+               const error = auxdibot.embeds.error.toJSON();
                error.description = 'No embeds exist on this message!';
                return await interaction.reply({ embeds: [error] });
             }
-            const embed = Embeds.SUCCESS_EMBED.toJSON();
+            const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             try {
                embed.fields = message.embeds.map(
                   (embed: Embed, index: number) =>
@@ -333,7 +334,7 @@ const embedCommand = <AuxdibotCommand>{
                embed.title = 'Embed JSON Data';
                return await interaction.reply({ embeds: [embed] });
             } catch (x) {
-               const error = Embeds.ERROR_EMBED.toJSON();
+               const error = auxdibot.embeds.error.toJSON();
                error.description = 'Embed is too big!';
                return await interaction.reply({ embeds: [error] });
             }

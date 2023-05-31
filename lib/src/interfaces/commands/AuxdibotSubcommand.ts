@@ -1,9 +1,10 @@
 import CommandInfo from './CommandInfo';
 import AuxdibotCommandInteraction from './AuxdibotCommandInteraction';
 import { BaseAuxdibotCommandData } from './AuxdibotCommandData';
+import { Auxdibot } from '../Auxdibot';
 
 export interface AuxdibotSubcommand {
    name: string;
    info: CommandInfo;
-   execute(interaction: AuxdibotCommandInteraction<BaseAuxdibotCommandData>): any;
+   execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<BaseAuxdibotCommandData>): any;
 }

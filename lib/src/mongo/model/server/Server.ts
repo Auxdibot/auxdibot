@@ -10,6 +10,7 @@ import Embeds from '@/config/embeds/Embeds';
 import {
    APIEmbed,
    Collection,
+   EmbedBuilder,
    EmbedField,
    Guild,
    GuildBasedChannel,
@@ -24,6 +25,7 @@ import { IReactionRole } from '@/mongo/schema/ReactionRoleSchema';
 import { IPermissionOverride } from '@/mongo/schema/PermissionOverrideSchema';
 import { ILevelReward } from '@/mongo/schema/LevelRewardSchema';
 import { ISuggestionReaction } from '@/mongo/schema/SuggestionReactionSchema';
+import { Auxdibot } from '@/interfaces/Auxdibot';
 
 export interface IServer {
    _id: mongoose.ObjectId;
@@ -195,7 +197,7 @@ ServerSchema.method('log', async function (guild: Guild, log: ILog, use_user_thu
    if (!guild || !guild.available || !settings.log_channel) return undefined;
    const channel: GuildBasedChannel | undefined = guild.channels.cache.get(settings.log_channel);
    if (!channel || !channel.isTextBased()) return undefined;
-   const embed = Embeds.LOG_EMBED.toJSON();
+   const embed = new EmbedBuilder().setColor((guild.client as Auxdibot).colors.log).toJSON();
    if (use_user_thumbnail && log.user_id) {
       const user = log.punishment
          ? guild.client.users.cache.get(log.punishment.user_id)
@@ -262,7 +264,8 @@ ServerSchema.method('log', async function (guild: Guild, log: ILog, use_user_thu
 });
 
 ServerSchema.method('recordAsEmbed', async function (user_id: string) {
-   const embed = Embeds.DEFAULT_EMBED.toJSON();
+   // todo placeholder for when i replace everything with prisma (the color)
+   const embed = new EmbedBuilder().setColor(0xfe8a00).toJSON();
    const record = (await this.fetchData()).userRecord(user_id).reverse();
    embed.title = '📜 Record';
    embed.description = `This is the record for <@${user_id}>.\nWant to check more info about a punishment? Do \`/punishment view (id)\`.`;
@@ -287,7 +290,7 @@ ServerSchema.method('punish', async function (punishment: IPunishment): Promise<
       errorEmbed.description = add_punishment.error;
       return errorEmbed;
    }
-   const embed = Embeds.PUNISHED_EMBED.toJSON();
+   const embed = new EmbedBuilder().setColor(0x9c0e11).toJSON();
    embed.title = PunishmentNames[punishment.type].name;
    embed.description = `User was ${PunishmentNames[punishment.type].action}.`;
    embed.fields = [toEmbedField(punishment)];

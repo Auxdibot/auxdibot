@@ -1,6 +1,5 @@
-import { SlashCommandBuilder } from 'discord.js';
+import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
-import Embeds from '@/config/embeds/Embeds';
 import timestampToDuration from '@/util/timestampToDuration';
 import canExecute from '@/util/canExecute';
 import { IPunishment } from '@/mongo/schema/PunishmentSchema';
@@ -8,6 +7,7 @@ import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInt
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import { LogType } from '@/config/Log';
 import Modules from '@/config/Modules';
+import { Auxdibot } from '@/interfaces/Auxdibot';
 
 const banCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -33,7 +33,7 @@ const banCommand = <AuxdibotCommand>{
       usageExample: '/ban (user) [reason] [duration]',
       permission: 'moderation.ban',
    },
-   async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+   async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;
       const user = interaction.options.getUser('user', true),
          reason = interaction.options.getString('reason') || 'No reason specified.',
@@ -43,18 +43,18 @@ const banCommand = <AuxdibotCommand>{
          counter = await interaction.data.guildData.fetchCounter();
       const member = interaction.data.guild.members.resolve(user.id);
       if (!member) {
-         const errorEmbed = Embeds.ERROR_EMBED.toJSON();
+         const errorEmbed = auxdibot.embeds.error.toJSON();
          errorEmbed.description = 'This user is not on the server!';
          return await interaction.reply({ embeds: [errorEmbed] });
       }
       if (!canExecute(interaction.data.guild, interaction.data.member, member)) {
-         const noPermissionEmbed = Embeds.DENIED_EMBED.toJSON();
+         const noPermissionEmbed = new EmbedBuilder().setColor(auxdibot.colors.denied).toJSON();
          noPermissionEmbed.title = '⛔ No Permission!';
          noPermissionEmbed.description = `This user has a higher role than you or owns this server!`;
          return await interaction.reply({ embeds: [noPermissionEmbed] });
       }
       if (data.getPunishment(user.id, 'ban')) {
-         const errorEmbed = Embeds.ERROR_EMBED.toJSON();
+         const errorEmbed = auxdibot.embeds.error.toJSON();
          errorEmbed.description = 'This user is already banned!';
          return await interaction.reply({ embeds: [errorEmbed] });
       }
@@ -62,7 +62,7 @@ const banCommand = <AuxdibotCommand>{
       const duration = timestampToDuration(durationOption);
 
       if (!duration) {
-         const errorEmbed = Embeds.ERROR_EMBED.toJSON();
+         const errorEmbed = auxdibot.embeds.error.toJSON();
          errorEmbed.description = 'The timestamp provided is invalid! (ex. "1m" for 1 minute, "5d" for 5 days.)';
          return await interaction.reply({ embeds: [errorEmbed] });
       }
@@ -102,7 +102,7 @@ const banCommand = <AuxdibotCommand>{
             });
          })
          .catch(async () => {
-            const errorEmbed = Embeds.ERROR_EMBED.toJSON();
+            const errorEmbed = auxdibot.embeds.error.toJSON();
             errorEmbed.description = "Couldn't ban that user. Check and see if they have a higher role than Auxdibot.";
             return await interaction.reply({ embeds: [errorEmbed] });
          });

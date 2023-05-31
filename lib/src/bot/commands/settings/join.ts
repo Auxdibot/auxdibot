@@ -1,6 +1,6 @@
-import { SlashCommandBuilder, APIEmbed } from 'discord.js';
+import { EmbedBuilder, SlashCommandBuilder, APIEmbed } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
-import Embeds from '@/config/embeds/Embeds';
+
 import { toAPIEmbed } from '@/interfaces/embeds/EmbedParameters';
 import parsePlaceholders from '@/util/parsePlaceholder';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
@@ -8,6 +8,7 @@ import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandD
 import createEmbedParameters from '@/util/createEmbedParameters';
 import argumentsToEmbedParameters from '@/util/argumentsToEmbedParameters';
 import Modules from '@/config/Modules';
+import { Auxdibot } from '@/interfaces/Auxdibot';
 
 const joinCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -54,7 +55,7 @@ const joinCommand = <AuxdibotCommand>{
                '/join message [content] [color] [title] [title url] [author] [author icon url] [author url] [description] [fields (split title and description with "|d|", and seperate fields with "|s|")] [footer] [footer icon url] [image url] [thumbnail url]',
             permission: 'settings.join.message',
          },
-         async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+         async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
             const settings = await interaction.data.guildData.fetchSettings();
             const content = interaction.options.getString('content');
@@ -65,7 +66,7 @@ const joinCommand = <AuxdibotCommand>{
                   settings.join_text = content;
                }
                await settings.save({ validateModifiedOnly: true });
-               const embed = Embeds.SUCCESS_EMBED.toJSON();
+               const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
                embed.title = 'Success!';
                embed.description = `Set the join embed.`;
                await interaction.reply({ embeds: [embed] });
@@ -83,7 +84,7 @@ const joinCommand = <AuxdibotCommand>{
                      ],
                   });
             } catch (x) {
-               const embed = Embeds.ERROR_EMBED.toJSON();
+               const embed = auxdibot.embeds.error.toJSON();
                embed.description = "Couldn't make that embed!";
                return interaction.channel && interaction.channel.isTextBased()
                   ? await interaction.channel.send({ embeds: [embed] })
@@ -101,13 +102,13 @@ const joinCommand = <AuxdibotCommand>{
             usageExample: '/join embed_json (json)',
             permission: 'settings.join.embed_json',
          },
-         async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+         async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
             const json = interaction.options.getString('json', true);
             const settings = await interaction.data.guildData.fetchSettings();
             try {
                const jsonEmbed = JSON.parse(json) as APIEmbed;
-               const embed = Embeds.SUCCESS_EMBED.toJSON();
+               const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
                settings.join_embed = jsonEmbed;
                await settings.save({ validateModifiedOnly: true });
                embed.title = 'Success!';
@@ -131,7 +132,7 @@ const joinCommand = <AuxdibotCommand>{
                   });
                return await interaction.reply({ embeds: [embed] });
             } catch (x) {
-               const embed = Embeds.ERROR_EMBED.toJSON();
+               const embed = auxdibot.embeds.error.toJSON();
                embed.description = "This isn't valid Embed JSON!";
                return await interaction.reply({ embeds: [embed] });
             }
@@ -145,7 +146,7 @@ const joinCommand = <AuxdibotCommand>{
             usageExample: '/join preview',
             permission: 'settings.join.preview',
          },
-         async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+         async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
             const settings = await interaction.data.guildData.fetchSettings();
             try {
@@ -167,7 +168,7 @@ const joinCommand = <AuxdibotCommand>{
                });
             } catch (x) {
                console.log(x);
-               const error = Embeds.ERROR_EMBED.toJSON();
+               const error = auxdibot.embeds.error.toJSON();
                error.description = "This isn't valid! Try changing the Join Embed or Join Text.";
                return interaction.channel && interaction.channel.isTextBased()
                   ? await interaction.channel.send({ embeds: [error] })

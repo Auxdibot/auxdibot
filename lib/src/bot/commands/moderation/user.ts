@@ -1,10 +1,10 @@
-import { ActionRowBuilder, ButtonBuilder, SlashCommandBuilder } from 'discord.js';
+import { EmbedBuilder, ActionRowBuilder, ButtonBuilder, SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
-import Embeds from '@/config/embeds/Embeds';
 import { PunishmentNames } from '@/mongo/schema/PunishmentSchema';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import Modules from '@/config/Modules';
+import { Auxdibot } from '@/interfaces/Auxdibot';
 
 const userCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -18,7 +18,7 @@ const userCommand = <AuxdibotCommand>{
       usageExample: '/user [user]',
       permission: 'moderation.user',
    },
-   async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+   async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data || !interaction.channel) return;
       const user = interaction.options.getUser('user') || interaction.user;
       const member = interaction.data.guild.members.resolve(user.id);
@@ -27,7 +27,7 @@ const userCommand = <AuxdibotCommand>{
          banned = data.getPunishment(user.id, 'ban'),
          muted = data.getPunishment(user.id, 'mute');
       let overrides = data.getPermissionOverride(undefined, undefined, user.id);
-      const embed = Embeds.INFO_EMBED.toJSON();
+      const embed = new EmbedBuilder().setColor(auxdibot.colors.info).toJSON();
       if (member) {
          for (const role of member.roles.cache.values()) {
             overrides = overrides.concat(data.getPermissionOverride(undefined, role.id));

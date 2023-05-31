@@ -4,13 +4,14 @@ import CommandInfo from './CommandInfo';
 import { AuxdibotSubcommand } from './AuxdibotSubcommand';
 import AuxdibotCommandInteraction from './AuxdibotCommandInteraction';
 import { BaseAuxdibotCommandData } from './AuxdibotCommandData';
+import { Auxdibot } from '../Auxdibot';
 
 interface AuxdibotCommand {
    data:
       | SlashCommandBuilder
       | SlashCommandSubcommandsOnlyBuilder
       | Omit<SlashCommandBuilder, 'addSubcommandGroup' | 'addSubcommand'>;
-   execute(interaction: AuxdibotCommandInteraction<BaseAuxdibotCommandData>): any;
+   execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<BaseAuxdibotCommandData>): any;
    info: CommandInfo;
    subcommands?: AuxdibotSubcommand[];
 }

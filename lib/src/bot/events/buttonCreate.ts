@@ -1,6 +1,5 @@
-import { GuildMember, MessageComponentInteraction } from 'discord.js';
-import { IAuxdibot } from '@/interfaces/IAuxdibot';
-import Embeds from '@/config/embeds/Embeds';
+import { EmbedBuilder, GuildMember, MessageComponentInteraction } from 'discord.js';
+import { Auxdibot } from '@/interfaces/Auxdibot';
 import Server from '@/mongo/model/server/Server';
 
 module.exports = {
@@ -8,14 +7,14 @@ module.exports = {
    once: false,
    async execute(interaction: MessageComponentInteraction) {
       if (!interaction.isButton() || !interaction.guild || !interaction.member) return;
-      const client: IAuxdibot = interaction.client;
+      const auxdibot = interaction.client as Auxdibot;
       const server = await Server.findOrCreateServer(interaction.guild.id);
       const settings = await server.fetchSettings();
-      if (client.buttons) {
-         const button = client.buttons.get(interaction.customId.split('-')[0]);
+      if (auxdibot.buttons) {
+         const button = auxdibot.buttons.get(interaction.customId.split('-')[0]);
          if (button) {
             if (settings.disabled_modules.find((item) => item == button.module.name))
-               return await interaction.reply({ embeds: [Embeds.DISABLED_EMBED.toJSON()] });
+               return await interaction.reply({ embeds: [auxdibot.embeds.disabled.toJSON()] });
 
             if (button.permission) {
                if (
@@ -25,7 +24,7 @@ module.exports = {
                      button.allowedDefault || false,
                   )
                ) {
-                  const noPermissionEmbed = Embeds.DENIED_EMBED.toJSON();
+                  const noPermissionEmbed = new EmbedBuilder().setColor(auxdibot.colors.denied).toJSON();
                   noPermissionEmbed.title = '⛔ No Permission!';
                   noPermissionEmbed.description = `You do not have permission to use this button. (Missing permission: \`${button.permission}\`)`;
                   return await interaction.reply({
@@ -33,7 +32,7 @@ module.exports = {
                   });
                }
             }
-            await button.execute(interaction);
+            await button.execute(auxdibot, interaction);
          }
       }
    },

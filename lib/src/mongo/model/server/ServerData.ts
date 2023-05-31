@@ -7,7 +7,7 @@ import SuggestionSchema, { ISuggestion } from '@/mongo/schema/SuggestionSchema';
 import { APIEmbed, Guild, GuildBasedChannel } from 'discord.js';
 import { getMessage } from '@/util/getMessage';
 import parsePlaceholders from '@/util/parsePlaceholder';
-import { SuggestionsColors } from '@/config/embeds/Colors';
+import { SuggestionsColors } from '@/config/embeds/SuggestionsColors';
 import { testLimit } from '@/util/testLimit';
 import Limits from '@/config/database/Limits';
 import StarredMessageSchema, { IStarredMessage } from '@/mongo/schema/StarredMessageSchema';

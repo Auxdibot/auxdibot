@@ -1,11 +1,11 @@
-import { SlashCommandBuilder } from 'discord.js';
+import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
-import Embeds from '@/config/embeds/Embeds';
 import { PunishmentNames, toEmbedField } from '@/mongo/schema/PunishmentSchema';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import { LogType } from '@/config/Log';
 import Modules from '@/config/Modules';
+import { Auxdibot } from '@/interfaces/Auxdibot';
 
 const punishmentCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -43,18 +43,18 @@ const punishmentCommand = <AuxdibotCommand>{
             usageExample: '/punishment view (punishment_id)',
             permission: 'moderation.punishments.view',
          },
-         async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+         async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
             const punishment_id = interaction.options.getNumber('punishment_id', true);
             const data = await interaction.data.guildData.fetchData();
             const punishment = data.punishments.filter((val) => val.punishment_id == punishment_id)[0];
             if (!punishment) {
-               const errorEmbed = Embeds.ERROR_EMBED.toJSON();
+               const errorEmbed = auxdibot.embeds.error.toJSON();
                errorEmbed.description = 'This punishment does not exist!';
                return await interaction.reply({ embeds: [errorEmbed] });
             }
             const type = PunishmentNames[punishment.type].name;
-            const embed = Embeds.INFO_EMBED.toJSON();
+            const embed = new EmbedBuilder().setColor(auxdibot.colors.info).toJSON();
             embed.title = `${type} Information (PID: ${punishment.punishment_id})`;
             embed.description = `This is the punishment information for <@${punishment.user_id}>`;
             embed.fields = [toEmbedField(punishment)];
@@ -69,20 +69,20 @@ const punishmentCommand = <AuxdibotCommand>{
             usageExample: '/punishment delete (punishment_id)',
             permission: 'moderation.punishments.delete',
          },
-         async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+         async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
             const punishment_id = interaction.options.getNumber('punishment_id', true);
             const data = await interaction.data.guildData.fetchData();
             const punishment = data.punishments.filter((val) => val.punishment_id == punishment_id)[0];
             if (!punishment) {
-               const errorEmbed = Embeds.ERROR_EMBED.toJSON();
+               const errorEmbed = auxdibot.embeds.error.toJSON();
                errorEmbed.description = 'This punishment does not exist!';
                return await interaction.reply({ embeds: [errorEmbed] });
             }
             const type = PunishmentNames[punishment.type].name;
             data.punishments.splice(data.punishments.indexOf(punishment), 1);
             await data.save();
-            const embed = Embeds.SUCCESS_EMBED.toJSON();
+            const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.title = `${type} deleted. (PID: ${punishment.punishment_id})`;
             embed.description = `${interaction.user} deleted a punishment assigned to <@${punishment.user_id}>.`;
             embed.fields = [toEmbedField(punishment)];
@@ -104,11 +104,11 @@ const punishmentCommand = <AuxdibotCommand>{
             usageExample: '/punishment latest',
             permission: 'moderation.punishments.latest',
          },
-         async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+         async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
             const data = await interaction.data.guildData.fetchData();
             const punishments = data.punishments.reverse().slice(0, 10);
-            const embed = Embeds.DEFAULT_EMBED.toJSON();
+            const embed = new EmbedBuilder().setColor(auxdibot.colors.default).toJSON();
             embed.title = '🔨 Latest Punishments';
             embed.fields = [
                {

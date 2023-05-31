@@ -1,11 +1,11 @@
-import { ChannelType, SlashCommandBuilder } from 'discord.js';
+import { EmbedBuilder, ChannelType, SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
-import Embeds from '@/config/embeds/Embeds';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import { LogType } from '@/config/Log';
 import Modules from '@/config/Modules';
 import { ILevelReward } from '@/mongo/schema/LevelRewardSchema';
+import { Auxdibot } from '@/interfaces/Auxdibot';
 
 const settingsCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -55,11 +55,11 @@ const settingsCommand = <AuxdibotCommand>{
             usageExample: '/settings view',
             permission: 'settings.view',
          },
-         async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+         async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
             const server = interaction.data.guildData;
             const settings = await server.fetchSettings();
-            const embed = Embeds.INFO_EMBED.toJSON();
+            const embed = new EmbedBuilder().setColor(auxdibot.colors.info).toJSON();
             embed.title = '⚙️ Server Settings';
             embed.description = `🗒️ Log Channel: ${settings.log_channel ? `<#${settings.log_channel}>` : '`None`'}
             \r\n📩 Join/Leave Channel: ${settings.join_leave_channel ? `<#${settings.join_leave_channel}>` : '`None`'}
@@ -137,11 +137,11 @@ const settingsCommand = <AuxdibotCommand>{
             usageExample: '/settings log_channel (channel)',
             permission: 'settings.log_channel',
          },
-         async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+         async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
             const channel = interaction.options.getChannel('channel', false, [ChannelType.GuildText]);
             const settings = await interaction.data.guildData.fetchSettings();
-            const embed = Embeds.SUCCESS_EMBED.toJSON();
+            const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.title = '⚙️ Log Channel Change';
 
             const formerChannel = interaction.data.guild.channels.resolve(settings.log_channel || '');
@@ -179,11 +179,11 @@ const settingsCommand = <AuxdibotCommand>{
             usageExample: '/settings join_leave_channel (channel)',
             permission: 'settings.join_leave_channel',
          },
-         async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+         async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
             const channel = interaction.options.getChannel('channel', false, [ChannelType.GuildText]);
             const settings = await interaction.data.guildData.fetchSettings();
-            const embed = Embeds.SUCCESS_EMBED.toJSON();
+            const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.title = '⚙️ Join/Leave Channel Change';
             const formerChannel = interaction.data.guild.channels.resolve(settings.join_leave_channel || '');
             if (channel && channel.id == settings.join_leave_channel) {
@@ -220,7 +220,7 @@ const settingsCommand = <AuxdibotCommand>{
             usageExample: '/settings mute_role (role)',
             permission: 'settings.mute_role',
          },
-         async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+         async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
             const role = interaction.options.getRole('role', true);
             const settings = await interaction.data.guildData.fetchSettings();
@@ -228,7 +228,7 @@ const settingsCommand = <AuxdibotCommand>{
                interaction.data.member.id != interaction.data.guild.ownerId &&
                interaction.data.guild.roles.comparePositions(interaction.data.member.roles.highest, role.id) <= 0
             ) {
-               const noPermissionEmbed = Embeds.DENIED_EMBED.toJSON();
+               const noPermissionEmbed = new EmbedBuilder().setColor(auxdibot.colors.denied).toJSON();
                noPermissionEmbed.title = '⛔ No Permission!';
                noPermissionEmbed.description = `This role is higher than yours!`;
                return await interaction.reply({
@@ -236,14 +236,14 @@ const settingsCommand = <AuxdibotCommand>{
                });
             }
             if (interaction.data.guild.roles.comparePositions(interaction.data.member.roles.highest, role.id) <= 0) {
-               const noPermissionEmbed = Embeds.DENIED_EMBED.toJSON();
+               const noPermissionEmbed = new EmbedBuilder().setColor(auxdibot.colors.denied).toJSON();
                noPermissionEmbed.title = '⛔ No Permission!';
                noPermissionEmbed.description = `This role is higher up on the role hierarchy than Auxdibot's roles!`;
                return await interaction.reply({
                   embeds: [noPermissionEmbed],
                });
             }
-            const embed = Embeds.SUCCESS_EMBED.toJSON();
+            const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.title = '⚙️ Mute Role Change';
             if (role.id == settings.mute_role) {
                embed.description = `Nothing changed. Mute role is the same as one specified in settings.`;

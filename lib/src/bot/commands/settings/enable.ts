@@ -1,11 +1,11 @@
-import { APIApplicationCommandOptionChoice, SlashCommandBuilder } from 'discord.js';
+import { EmbedBuilder, APIApplicationCommandOptionChoice, SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
-import Embeds from '@/config/embeds/Embeds';
 import dotenv from 'dotenv';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import Modules from '@/config/Modules';
 import AuxdibotFeatureModule from '@/interfaces/commands/AuxdibotFeatureModule';
+import { Auxdibot } from '@/interfaces/Auxdibot';
 dotenv.config();
 const placeholderCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -28,19 +28,19 @@ const placeholderCommand = <AuxdibotCommand>{
       usageExample: '/enable (module)',
       permission: 'settings.modules.enable',
    },
-   async execute(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+   async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;
       const settings = await interaction.data.guildData.fetchSettings();
       const key = interaction.options.getString('module', true);
       const module: AuxdibotFeatureModule | undefined = Modules[key];
-      let embed = Embeds.SUCCESS_EMBED.toJSON();
+      let embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
       if (!module) {
-         embed = Embeds.ERROR_EMBED.toJSON();
+         embed = auxdibot.embeds.error.toJSON();
          embed.description = 'This module does not exist! Do /help modules for a list of every Auxdibot module.';
          return await interaction.reply({ embeds: [embed] });
       }
       if (!settings.disabled_modules.find((item) => item == module.name)) {
-         embed = Embeds.ERROR_EMBED.toJSON();
+         embed = auxdibot.embeds.error.toJSON();
          embed.description = 'This module is already enabled!';
          return await interaction.reply({ embeds: [embed] });
       }

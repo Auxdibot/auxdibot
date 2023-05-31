@@ -1,7 +1,12 @@
-import { APIApplicationCommandOptionChoice, ActionRowBuilder, ButtonBuilder, SlashCommandBuilder } from 'discord.js';
+import {
+   EmbedBuilder,
+   APIApplicationCommandOptionChoice,
+   ActionRowBuilder,
+   ButtonBuilder,
+   SlashCommandBuilder,
+} from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
-import Embeds from '@/config/embeds/Embeds';
-import { IAuxdibot } from '@/interfaces/IAuxdibot';
+import { Auxdibot } from '@/interfaces/Auxdibot';
 import dotenv from 'dotenv';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import {
@@ -77,8 +82,11 @@ const helpCommand = <AuxdibotCommand>{
             permission: 'commands.help.modules',
             dmableCommand: true,
          },
-         async execute(interaction: AuxdibotCommandInteraction<DMAuxdibotCommandData | GuildAuxdibotCommandData>) {
-            const embed = Embeds.INFO_EMBED.toJSON();
+         async execute(
+            auxdibot: Auxdibot,
+            interaction: AuxdibotCommandInteraction<DMAuxdibotCommandData | GuildAuxdibotCommandData>,
+         ) {
+            const embed = new EmbedBuilder().setColor(auxdibot.colors.info).toJSON();
             embed.title = '❔ Auxdibot Modules';
             const settings =
                'guildData' in interaction.data ? await interaction.data.guildData.fetchSettings() : undefined;
@@ -119,20 +127,24 @@ const helpCommand = <AuxdibotCommand>{
             permission: 'commands.help.module',
             dmableCommand: true,
          },
-         async execute(interaction: AuxdibotCommandInteraction<DMAuxdibotCommandData | GuildAuxdibotCommandData>) {
+         async execute(
+            auxdibot: Auxdibot,
+            interaction: AuxdibotCommandInteraction<DMAuxdibotCommandData | GuildAuxdibotCommandData>,
+         ) {
             if (!interaction.data) return;
-            const client: IAuxdibot = interaction.client;
             const settings =
                'guildData' in interaction.data ? await interaction.data.guildData.fetchSettings() : undefined;
             const key = interaction.options.getString('module', true);
             const module: AuxdibotFeatureModule | undefined = Modules[key];
-            let embed = Embeds.INFO_EMBED.toJSON();
+            let embed = new EmbedBuilder().setColor(auxdibot.colors.info).toJSON();
             if (!module) {
-               embed = Embeds.ERROR_EMBED.toJSON();
+               embed = auxdibot.embeds.error.toJSON();
                embed.description = 'This module does not exist! Do /help modules for a list of every Auxdibot module.';
                return await interaction.reply({ embeds: [embed] });
             }
-            const commands = client.commands ? client.commands.filter((i) => i.info.module.name == module.name) : [];
+            const commands = auxdibot.commands
+               ? auxdibot.commands.filter((i) => i.info.module.name == module.name)
+               : [];
             embed.title = `❔ ${module.name} ${
                settings && settings.disabled_modules.indexOf(key) != -1 ? '*(Disabled)*' : ''
             }`;
@@ -158,25 +170,24 @@ const helpCommand = <AuxdibotCommand>{
             permission: 'commands.help.command',
             dmableCommand: true,
          },
-         async execute(interaction: AuxdibotCommandInteraction<BaseAuxdibotCommandData>) {
-            const client: IAuxdibot = interaction.client;
+         async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<BaseAuxdibotCommandData>) {
             const command_name = interaction.options.getString('command_name', true),
                subcommand_name = interaction.options.getString('subcommand_name');
-            const command = client.commands.get(command_name);
+            const command = auxdibot.commands.get(command_name);
             const subcommand =
                subcommand_name && command && command.subcommands
                   ? command.subcommands.filter((subcommand) => subcommand.name == subcommand_name)[0]
                   : undefined;
             const info = subcommand ? subcommand.info : command ? command.info : undefined;
             if (!info) {
-               const errorEmbed = Embeds.ERROR_EMBED.toJSON();
+               const errorEmbed = auxdibot.embeds.error.toJSON();
                errorEmbed.description = "Couldn't find that command or subcommand!";
                return await interaction.reply({
                   embeds: [errorEmbed],
                });
             }
 
-            const helpCommandEmbed = Embeds.INFO_EMBED.toJSON();
+            const helpCommandEmbed = new EmbedBuilder().setColor(auxdibot.colors.info).toJSON();
             helpCommandEmbed.title = `❔ /${command.data.name} ${subcommand ? subcommand.name : ''}`;
             helpCommandEmbed.author = {
                name: `Category: ${info.module.name}`,
