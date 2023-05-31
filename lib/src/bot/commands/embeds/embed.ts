@@ -8,17 +8,17 @@ import {
    GuildMember,
    SlashCommandBuilder,
 } from 'discord.js';
-import AuxdibotCommand from '@util/types/templates/AuxdibotCommand';
-import Embeds from '@util/constants/Embeds';
+import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
+import Embeds from '@/config/embeds/Embeds';
 import dotenv from 'dotenv';
-import { toAPIEmbed } from '@util/types/EmbedParameters';
-import { getMessage } from '@util/functions/getMessage';
-import parsePlaceholders from '@util/functions/parsePlaceholder';
-import AuxdibotCommandInteraction from '@util/types/templates/AuxdibotCommandInteraction';
-import { GuildAuxdibotCommandData } from '@util/types/AuxdibotCommandData';
-import createEmbedParameters from '@util/functions/createEmbedParameters';
-import argumentsToEmbedParameters from '@util/functions/argumentsToEmbedParameters';
-import Modules from '@util/constants/Modules';
+import { toAPIEmbed } from '@/interfaces/embeds/EmbedParameters';
+import { getMessage } from '@/util/getMessage';
+import parsePlaceholders from '@/util/parsePlaceholder';
+import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
+import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
+import createEmbedParameters from '@/util/createEmbedParameters';
+import argumentsToEmbedParameters from '@/util/argumentsToEmbedParameters';
+import Modules from '@/config/Modules';
 
 dotenv.config();
 const embedCommand = <AuxdibotCommand>{

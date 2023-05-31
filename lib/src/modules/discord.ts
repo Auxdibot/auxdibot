@@ -3,11 +3,11 @@ import { ActivityType, Client, Collection, GatewayIntentBits, Partials, REST, Ro
 import fs from 'fs';
 import path from 'path';
 import dotenv from 'dotenv';
-import Server from '@models/server/Server';
-import { IAuxdibot } from '@util/types/templates/IAuxdibot';
-import { LogType } from '@util/types/enums/Log';
+import Server from '@/mongo/model/server/Server';
+import { IAuxdibot } from '@/interfaces/IAuxdibot';
+import { LogType } from '@/config/Log';
 
-// Configure .env
+// auxdibot/configure .env
 dotenv.config();
 export const TOKEN = process.env.DISCORD_BOT_TOKEN;
 export const CLIENT_ID = process.env.DISCORD_BOT_CLIENT_ID;

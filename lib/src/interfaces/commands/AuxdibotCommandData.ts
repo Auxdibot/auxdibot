@@ -1,4 +1,4 @@
-import { IServer, IServerMethods } from '@models/server/Server';
+import { IServer, IServerMethods } from '@/mongo/model/server/Server';
 import { Guild, GuildMember, User } from 'discord.js';
 import { HydratedDocument } from 'mongoose';
 

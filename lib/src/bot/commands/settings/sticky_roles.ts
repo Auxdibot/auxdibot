@@ -1,10 +1,10 @@
 import { SlashCommandBuilder, PermissionsBitField } from 'discord.js';
-import AuxdibotCommand from '@util/types/templates/AuxdibotCommand';
-import Embeds from '@util/constants/Embeds';
-import AuxdibotCommandInteraction from '@util/types/templates/AuxdibotCommandInteraction';
-import { GuildAuxdibotCommandData } from '@util/types/AuxdibotCommandData';
-import { LogType } from '@util/types/enums/Log';
-import Modules from '@util/constants/Modules';
+import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
+import Embeds from '@/config/embeds/Embeds';
+import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
+import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
+import { LogType } from '@/config/Log';
+import Modules from '@/config/Modules';
 
 const stickyRolesCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()

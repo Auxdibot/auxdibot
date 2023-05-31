@@ -1,7 +1,7 @@
 import { Role } from 'discord.js';
-import Server from '@models/server/Server';
-import { IPermissionOverride } from '@schemas/PermissionOverrideSchema';
-import { IServerData, IServerDataMethods } from '@models/server/ServerData';
+import Server from '@/mongo/model/server/Server';
+import { IPermissionOverride } from '@/mongo/schema/PermissionOverrideSchema';
+import { IServerData, IServerDataMethods } from '@/mongo/model/server/ServerData';
 import { HydratedDocument } from 'mongoose';
 
 module.exports = {

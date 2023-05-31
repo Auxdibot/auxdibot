@@ -1,10 +1,10 @@
-import AuxdibotButton from '@util/types/AuxdibotButton';
+import AuxdibotButton from '@/interfaces/buttons/AuxdibotButton';
 import { MessageComponentInteraction } from 'discord.js';
-import Embeds from '@util/constants/Embeds';
-import { toEmbedField } from '@schemas/PunishmentSchema';
-import Server from '@models/server/Server';
-import { LogType } from '@util/types/enums/Log';
-import Modules from '@util/constants/Modules';
+import Embeds from '@/config/embeds/Embeds';
+import { toEmbedField } from '@/mongo/schema/PunishmentSchema';
+import Server from '@/mongo/model/server/Server';
+import { LogType } from '@/config/Log';
+import Modules from '@/config/Modules';
 
 module.exports = <AuxdibotButton>{
    module: Modules['Moderation'],

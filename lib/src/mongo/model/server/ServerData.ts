@@ -1,16 +1,16 @@
-import LogSchema, { ILog } from '@schemas/LogSchema';
-import PunishmentSchema, { IPunishment } from '@schemas/PunishmentSchema';
-import PermissionOverrideSchema, { IPermissionOverride } from '@schemas/PermissionOverrideSchema';
-import ReactionRoleSchema, { IReactionRole } from '@schemas/ReactionRoleSchema';
+import LogSchema, { ILog } from '@/mongo/schema/LogSchema';
+import PunishmentSchema, { IPunishment } from '@/mongo/schema/PunishmentSchema';
+import PermissionOverrideSchema, { IPermissionOverride } from '@/mongo/schema/PermissionOverrideSchema';
+import ReactionRoleSchema, { IReactionRole } from '@/mongo/schema/ReactionRoleSchema';
 import mongoose from 'mongoose';
-import SuggestionSchema, { ISuggestion } from '@schemas/SuggestionSchema';
+import SuggestionSchema, { ISuggestion } from '@/mongo/schema/SuggestionSchema';
 import { APIEmbed, Guild, GuildBasedChannel } from 'discord.js';
-import { getMessage } from '@util/functions/getMessage';
-import parsePlaceholders from '@util/functions/parsePlaceholder';
-import { SuggestionsColors } from '@util/constants/Colors';
-import { testLimit } from '@util/functions/testLimit';
-import Limits from '@util/types/enums/Limits';
-import StarredMessageSchema, { IStarredMessage } from '@schemas/StarredMessageSchema';
+import { getMessage } from '@/util/getMessage';
+import parsePlaceholders from '@/util/parsePlaceholder';
+import { SuggestionsColors } from '@/config/embeds/Colors';
+import { testLimit } from '@/util/testLimit';
+import Limits from '@/config/database/Limits';
+import StarredMessageSchema, { IStarredMessage } from '@/mongo/schema/StarredMessageSchema';
 
 export interface IServerData {
    server_id: mongoose.ObjectId;

@@ -1,7 +1,7 @@
 import { APIEmbed, GuildMember, TextChannel } from 'discord.js';
-import Server from '@models/server/Server';
-import parsePlaceholders from '@util/functions/parsePlaceholder';
-import { LogType } from '@util/types/enums/Log';
+import Server from '@/mongo/model/server/Server';
+import parsePlaceholders from '@/util/parsePlaceholder';
+import { LogType } from '@/config/Log';
 
 module.exports = {
    name: 'guildMemberRemove',

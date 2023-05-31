@@ -1,10 +1,10 @@
 import { PermissionsBitField, SlashCommandBuilder } from 'discord.js';
-import AuxdibotCommand from '@util/types/templates/AuxdibotCommand';
-import AuxdibotCommandInteraction from '@util/types/templates/AuxdibotCommandInteraction';
-import { GuildAuxdibotCommandData } from '@util/types/AuxdibotCommandData';
-import Embeds from '@util/constants/Embeds';
-import { ILevelReward } from '@schemas/LevelRewardSchema';
-import Modules from '@util/constants/Modules';
+import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
+import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
+import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
+import Embeds from '@/config/embeds/Embeds';
+import { ILevelReward } from '@/mongo/schema/LevelRewardSchema';
+import Modules from '@/config/Modules';
 const levelCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
       .setName('levels')

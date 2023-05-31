@@ -1,7 +1,7 @@
 import { GuildMember, MessageComponentInteraction } from 'discord.js';
-import { IAuxdibot } from '@util/types/templates/IAuxdibot';
-import Embeds from '@util/constants/Embeds';
-import Server from '@models/server/Server';
+import { IAuxdibot } from '@/interfaces/IAuxdibot';
+import Embeds from '@/config/embeds/Embeds';
+import Server from '@/mongo/model/server/Server';
 
 module.exports = {
    name: 'interactionCreate',

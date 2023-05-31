@@ -6,7 +6,7 @@ import ServerMember, { IServerMember, IServerMemberMethods } from './ServerMembe
 import ServerSettings, { IServerSettings } from './ServerSettings';
 import ServerCounter, { IServerCounter, IServerCounterMethods } from './ServerCounter';
 import { ILog } from '../../schema/LogSchema';
-import Embeds from '@util/constants/Embeds';
+import Embeds from '@/config/embeds/Embeds';
 import {
    APIEmbed,
    Collection,
@@ -18,12 +18,12 @@ import {
    PermissionsBitField,
 } from 'discord.js';
 import { IPunishment, PunishmentNames, toEmbedField } from '../../schema/PunishmentSchema';
-import { LogNames } from '@util/types/enums/Log';
+import { LogNames } from '@/config/Log';
 import { ISuggestion } from '../../schema/SuggestionSchema';
-import { IReactionRole } from '@schemas/ReactionRoleSchema';
-import { IPermissionOverride } from '@schemas/PermissionOverrideSchema';
-import { ILevelReward } from '@schemas/LevelRewardSchema';
-import { ISuggestionReaction } from '@schemas/SuggestionReactionSchema';
+import { IReactionRole } from '@/mongo/schema/ReactionRoleSchema';
+import { IPermissionOverride } from '@/mongo/schema/PermissionOverrideSchema';
+import { ILevelReward } from '@/mongo/schema/LevelRewardSchema';
+import { ISuggestionReaction } from '@/mongo/schema/SuggestionReactionSchema';
 
 export interface IServer {
    _id: mongoose.ObjectId;

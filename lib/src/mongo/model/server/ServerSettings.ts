@@ -10,9 +10,9 @@ import {
    DEFAULT_STARBOARD_MESSAGE_EMBED,
    DEFAULT_SUGGESTION_EMBED,
    DEFAULT_SUGGESTION_UPDATE_EMBED,
-} from '@util/constants/DefaultEmbeds';
-import { testLimit } from '@util/functions/testLimit';
-import Limits from '@util/types/enums/Limits';
+} from '@/config/embeds/DefaultEmbeds';
+import { testLimit } from '@/util/testLimit';
+import Limits from '@/config/database/Limits';
 
 export interface IServerSettings {
    _id: mongoose.ObjectId;

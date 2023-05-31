@@ -1,11 +1,11 @@
 import { SlashCommandBuilder } from 'discord.js';
-import AuxdibotCommand from '@util/types/templates/AuxdibotCommand';
-import Embeds from '@util/constants/Embeds';
+import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
+import Embeds from '@/config/embeds/Embeds';
 import dotenv from 'dotenv';
-import AuxdibotCommandInteraction from '@util/types/templates/AuxdibotCommandInteraction';
-import { GuildAuxdibotCommandData } from '@util/types/AuxdibotCommandData';
-import calcXP from '@util/functions/calcXP';
-import Modules from '@util/constants/Modules';
+import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
+import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
+import calcXP from '@/util/calcXP';
+import Modules from '@/config/Modules';
 dotenv.config();
 const myLevelCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder().setName('mylevel').setDescription('View your level on this server.'),

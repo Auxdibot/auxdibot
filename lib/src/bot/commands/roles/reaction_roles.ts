@@ -1,17 +1,17 @@
 import { SlashCommandBuilder, APIEmbed, ChannelType, Role, GuildMember } from 'discord.js';
-import AuxdibotCommand from '@util/types/templates/AuxdibotCommand';
-import { IReaction } from '@schemas/ReactionRoleSchema';
-import Embeds from '@util/constants/Embeds';
-import { toAPIEmbed } from '@util/types/EmbedParameters';
-import parsePlaceholders from '@util/functions/parsePlaceholder';
-import { getMessage } from '@util/functions/getMessage';
-import AuxdibotCommandInteraction from '@util/types/templates/AuxdibotCommandInteraction';
-import { GuildAuxdibotCommandData } from '@util/types/AuxdibotCommandData';
-import { LogType } from '@util/types/enums/Log';
+import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
+import { IReaction } from '@/mongo/schema/ReactionRoleSchema';
+import Embeds from '@/config/embeds/Embeds';
+import { toAPIEmbed } from '@/interfaces/embeds/EmbedParameters';
+import parsePlaceholders from '@/util/parsePlaceholder';
+import { getMessage } from '@/util/getMessage';
+import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
+import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
+import { LogType } from '@/config/Log';
 import emojiRegex from 'emoji-regex';
-import createEmbedParameters from '@util/functions/createEmbedParameters';
-import argumentsToEmbedParameters from '@util/functions/argumentsToEmbedParameters';
-import Modules from '@util/constants/Modules';
+import createEmbedParameters from '@/util/createEmbedParameters';
+import argumentsToEmbedParameters from '@/util/argumentsToEmbedParameters';
+import Modules from '@/config/Modules';
 
 const reactionRolesCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()

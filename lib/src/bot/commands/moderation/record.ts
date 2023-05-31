@@ -1,9 +1,9 @@
 import { SlashCommandBuilder } from 'discord.js';
-import AuxdibotCommand from '@util/types/templates/AuxdibotCommand';
-import AuxdibotCommandInteraction from '@util/types/templates/AuxdibotCommandInteraction';
-import { GuildAuxdibotCommandData } from '@util/types/AuxdibotCommandData';
-import Embeds from '@util/constants/Embeds';
-import Modules from '@util/constants/Modules';
+import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
+import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
+import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
+import Embeds from '@/config/embeds/Embeds';
+import Modules from '@/config/Modules';
 
 const recordCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()

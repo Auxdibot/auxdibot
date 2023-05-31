@@ -1,16 +1,16 @@
 import { APIApplicationCommandOptionChoice, ActionRowBuilder, ButtonBuilder, SlashCommandBuilder } from 'discord.js';
-import AuxdibotCommand from '@util/types/templates/AuxdibotCommand';
-import Embeds from '@util/constants/Embeds';
-import { IAuxdibot } from '@util/types/templates/IAuxdibot';
+import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
+import Embeds from '@/config/embeds/Embeds';
+import { IAuxdibot } from '@/interfaces/IAuxdibot';
 import dotenv from 'dotenv';
-import AuxdibotCommandInteraction from '@util/types/templates/AuxdibotCommandInteraction';
+import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import {
    BaseAuxdibotCommandData,
    DMAuxdibotCommandData,
    GuildAuxdibotCommandData,
-} from '@util/types/AuxdibotCommandData';
-import Modules from '@util/constants/Modules';
-import AuxdibotFeatureModule from '@util/types/AuxdibotFeatureModule';
+} from '@/interfaces/commands/AuxdibotCommandData';
+import Modules from '@/config/Modules';
+import AuxdibotFeatureModule from '@/interfaces/commands/AuxdibotFeatureModule';
 dotenv.config();
 const PROMO_ROW = new ActionRowBuilder<ButtonBuilder>().addComponents(
    new ButtonBuilder()

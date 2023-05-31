@@ -1,8 +1,8 @@
-import AuxdibotButton from '@util/types/AuxdibotButton';
+import AuxdibotButton from '@/interfaces/buttons/AuxdibotButton';
 import { MessageComponentInteraction } from 'discord.js';
-import Server from '@models/server/Server';
-import Embeds from '@util/constants/Embeds';
-import Modules from '@util/constants/Modules';
+import Server from '@/mongo/model/server/Server';
+import Embeds from '@/config/embeds/Embeds';
+import Modules from '@/config/Modules';
 
 module.exports = <AuxdibotButton>{
    module: Modules['Moderation'],

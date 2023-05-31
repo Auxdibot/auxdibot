@@ -1,9 +1,9 @@
 import { Guild, GuildMember, Message, PartialMessage, PermissionsBitField } from 'discord.js';
-import Server from '@models/server/Server';
-import { PunishmentNames } from '@schemas/PunishmentSchema';
-import { LogNames, LogType } from '../types/enums/Log';
-import { ISuggestion } from '@schemas/SuggestionSchema';
-import { SuggestionStateName } from '../types/enums/SuggestionState';
+import Server from '@/mongo/model/server/Server';
+import { PunishmentNames } from '@/mongo/schema/PunishmentSchema';
+import { LogNames, LogType } from '@/config/Log';
+import { ISuggestion } from '@/mongo/schema/SuggestionSchema';
+import { SuggestionStateName } from '@/config/SuggestionState';
 
 // todo change to have message data for starboard
 export default async function parsePlaceholders(

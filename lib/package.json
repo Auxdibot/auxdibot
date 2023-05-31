@@ -1,5 +1,5 @@
 {
-  "name": "auxdibot-lib",
+  "name": "auxdibot",
   "version": "1.0.0",
   "description": "Express API and Discord.js backend for Auxdibot.",
   "main": "index.js",
@@ -54,8 +54,6 @@
     ]
   },
   "_moduleAliases": {
-    "@util": "dist/util",
-    "@schemas": "dist/mongo/schema",
-    "@models": "dist/mongo/model"
+    "@": "dist/"
   }
 }

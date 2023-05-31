@@ -1,4 +1,4 @@
-import AuxdibotFeatureModule from '@util/types/AuxdibotFeatureModule';
+import AuxdibotFeatureModule from '@/interfaces/commands/AuxdibotFeatureModule';
 
 const Modules = {
    Embeds: <AuxdibotFeatureModule>{

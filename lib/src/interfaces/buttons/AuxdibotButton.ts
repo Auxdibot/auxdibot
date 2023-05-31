@@ -1,5 +1,5 @@
 import { MessageComponentInteraction } from 'discord.js';
-import AuxdibotFeatureModule from './AuxdibotFeatureModule';
+import AuxdibotFeatureModule from '../commands/AuxdibotFeatureModule';
 
 export default interface AuxdibotButton {
    module: AuxdibotFeatureModule;

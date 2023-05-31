@@ -1,6 +1,6 @@
 import { Guild } from 'discord.js';
-import Server from '@models/server/Server';
-import { IAuxdibot } from '@util/types/templates/IAuxdibot';
+import Server from '@/mongo/model/server/Server';
+import { IAuxdibot } from '@/interfaces/IAuxdibot';
 
 module.exports = {
    name: 'guildDelete',

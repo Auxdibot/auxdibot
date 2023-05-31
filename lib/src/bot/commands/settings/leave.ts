@@ -1,13 +1,13 @@
 import { APIEmbed, SlashCommandBuilder } from 'discord.js';
-import AuxdibotCommand from '@util/types/templates/AuxdibotCommand';
-import Embeds from '@util/constants/Embeds';
-import parsePlaceholders from '@util/functions/parsePlaceholder';
-import { toAPIEmbed } from '@util/types/EmbedParameters';
-import AuxdibotCommandInteraction from '@util/types/templates/AuxdibotCommandInteraction';
-import { GuildAuxdibotCommandData } from '@util/types/AuxdibotCommandData';
-import createEmbedParameters from '@util/functions/createEmbedParameters';
-import argumentsToEmbedParameters from '@util/functions/argumentsToEmbedParameters';
-import Modules from '@util/constants/Modules';
+import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
+import Embeds from '@/config/embeds/Embeds';
+import parsePlaceholders from '@/util/parsePlaceholder';
+import { toAPIEmbed } from '@/interfaces/embeds/EmbedParameters';
+import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
+import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
+import createEmbedParameters from '@/util/createEmbedParameters';
+import argumentsToEmbedParameters from '@/util/argumentsToEmbedParameters';
+import Modules from '@/config/Modules';
 
 const leaveCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()

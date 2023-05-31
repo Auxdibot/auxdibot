@@ -2,7 +2,7 @@ import { IPunishment, PunishmentSchema } from './PunishmentSchema';
 import mongoose from 'mongoose';
 import PermissionOverrideSchema, { IPermissionOverride } from './PermissionOverrideSchema';
 import { ChangeSchema, IChange } from './ChangeSchema';
-import { LogType } from '@util/types/enums/Log';
+import { LogType } from '@/config/Log';
 
 export interface ILog {
    _id?: mongoose.ObjectId;

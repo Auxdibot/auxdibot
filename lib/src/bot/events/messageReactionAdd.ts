@@ -1,8 +1,8 @@
 import { APIEmbed, GuildMember, MessageReaction, User } from 'discord.js';
-import Server from '@models/server/Server';
-import { IReaction, IReactionRole } from '@schemas/ReactionRoleSchema';
-import Modules from '@util/constants/Modules';
-import parsePlaceholders from '@util/functions/parsePlaceholder';
+import Server from '@/mongo/model/server/Server';
+import { IReaction, IReactionRole } from '@/mongo/schema/ReactionRoleSchema';
+import Modules from '@/config/Modules';
+import parsePlaceholders from '@/util/parsePlaceholder';
 
 module.exports = {
    name: 'messageReactionAdd',

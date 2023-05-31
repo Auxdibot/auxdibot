@@ -1,7 +1,7 @@
 import { APIEmbed, Message } from 'discord.js';
-import Server from '@models/server/Server';
-import parsePlaceholders from '@util/functions/parsePlaceholder';
-import Modules from '@util/constants/Modules';
+import Server from '@/mongo/model/server/Server';
+import parsePlaceholders from '@/util/parsePlaceholder';
+import Modules from '@/config/Modules';
 
 module.exports = {
    name: 'messageCreate',

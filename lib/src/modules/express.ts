@@ -1,6 +1,6 @@
 import passport, { Strategy } from 'passport';
 import { Strategy as DiscordStrategy } from 'passport-discord';
-import User from '@models/User';
+import User from '@/mongo/model/User';
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';

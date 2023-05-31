@@ -1,6 +1,6 @@
 import { Message } from 'discord.js';
-import Server from '@models/server/Server';
-import { LogType } from '@util/types/enums/Log';
+import Server from '@/mongo/model/server/Server';
+import { LogType } from '@/config/Log';
 
 module.exports = {
    name: 'messageUpdate',

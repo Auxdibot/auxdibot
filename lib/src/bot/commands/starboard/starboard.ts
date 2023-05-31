@@ -1,10 +1,10 @@
 import { ChannelType, SlashCommandBuilder } from 'discord.js';
-import AuxdibotCommand from '@util/types/templates/AuxdibotCommand';
-import AuxdibotCommandInteraction from '@util/types/templates/AuxdibotCommandInteraction';
-import { GuildAuxdibotCommandData } from '@util/types/AuxdibotCommandData';
-import Modules from '@util/constants/Modules';
-import { LogType } from '@util/types/enums/Log';
-import Embeds from '@util/constants/Embeds';
+import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
+import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
+import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
+import Modules from '@/config/Modules';
+import { LogType } from '@/config/Log';
+import Embeds from '@/config/embeds/Embeds';
 import emojiRegex from 'emoji-regex';
 
 const starboardCommand = <AuxdibotCommand>{

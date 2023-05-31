@@ -1,7 +1,7 @@
 import { Message } from 'discord.js';
-import Server from '@models/server/Server';
-import { LogType } from '@util/types/enums/Log';
-import { IReactionRole } from '@schemas/ReactionRoleSchema';
+import Server from '@/mongo/model/server/Server';
+import { LogType } from '@/config/Log';
+import { IReactionRole } from '@/mongo/schema/ReactionRoleSchema';
 module.exports = {
    name: 'messageDelete',
    once: false,
