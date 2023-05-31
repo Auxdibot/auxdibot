@@ -1,4 +1,4 @@
-import { GuildMember } from 'discord.js';
+import { GuildMember, PartialGuildMember } from 'discord.js';
 import mongoose, { Schema } from 'mongoose';
 import calcXP from '@/util/calcXP';
 
@@ -15,7 +15,7 @@ export interface IServerMember {
    suggestions_banned: boolean;
 }
 export interface IServerMemberMethods {
-   leaveServer(member: GuildMember): Promise<boolean>;
+   leaveServer(member: GuildMember | PartialGuildMember): Promise<boolean>;
    joinServer(member: GuildMember): Promise<boolean>;
    takeXP(xp: number): number;
    addXP(xp: number): number;
@@ -32,7 +32,7 @@ export const ServerMemberSchema = new Schema<IServerMember, IServerMemberModel>(
    suggestions_banned: { type: Boolean, default: false },
 });
 
-ServerMemberSchema.method('leaveServer', async function (member: GuildMember) {
+ServerMemberSchema.method('leaveServer', async function (member: GuildMember | PartialGuildMember) {
    const server = await this.populate('server_id')
       .then((doc: any) => doc.server_id)
       .catch(() => undefined);

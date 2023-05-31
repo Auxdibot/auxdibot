@@ -7,6 +7,7 @@ import Server from '@/mongo/model/server/Server';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import { LogType } from '@/config/Log';
 import { AuxdibotIntents } from '@/config/AuxdibotIntents';
+import listenEvents from '@/bot/events/listenEvents';
 
 // auxdibot/configure .env
 dotenv.config();
@@ -163,20 +164,9 @@ export class AuxdibotClient {
             }
          }
       }
-
       /********************************************************************************/
-      // Declare events
-
-      const eventFiles = fs.readdirSync(path.join(__dirname, '../bot/events')).filter((file) => file.endsWith('.js'));
-
-      for (const file of eventFiles) {
-         const event = require(`../bot/events/${file}`);
-         if (event.once) {
-            auxdibot.once(event.name, (...args) => event.execute(...args, auxdibot));
-         } else {
-            auxdibot.on(event.name, async (...args) => await event.execute(...args, auxdibot));
-         }
-      }
+      // Listen for events & login to bot
+      listenEvents(auxdibot);
 
       auxdibot
          .login(TOKEN)

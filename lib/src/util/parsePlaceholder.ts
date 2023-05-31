@@ -1,4 +1,4 @@
-import { Guild, GuildMember, Message, PartialMessage, PermissionsBitField } from 'discord.js';
+import { Guild, GuildMember, Message, PartialGuildMember, PartialMessage, PermissionsBitField } from 'discord.js';
 import Server from '@/mongo/model/server/Server';
 import { PunishmentNames } from '@/mongo/schema/PunishmentSchema';
 import { LogNames, LogType } from '@/config/Log';
@@ -9,7 +9,7 @@ import { SuggestionStateName } from '@/config/SuggestionState';
 export default async function parsePlaceholders(
    msg: string,
    guild?: Guild,
-   guildMember?: GuildMember,
+   guildMember?: GuildMember | PartialGuildMember,
    suggestion?: ISuggestion,
    starred_message?: Message<boolean> | PartialMessage,
 ) {
