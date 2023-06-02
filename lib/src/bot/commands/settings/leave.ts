@@ -1,13 +1,13 @@
-import { EmbedBuilder, APIEmbed, SlashCommandBuilder } from 'discord.js';
+import { APIEmbed } from '@prisma/client';
+import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
-
 import parsePlaceholders from '@/util/parsePlaceholder';
 import { toAPIEmbed } from '@/interfaces/embeds/EmbedParameters';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import createEmbedParameters from '@/util/createEmbedParameters';
 import argumentsToEmbedParameters from '@/util/argumentsToEmbedParameters';
-import Modules from '@/config/Modules';
+import Modules from '@/constants/Modules';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 
 const leaveCommand = <AuxdibotCommand>{
@@ -49,15 +49,15 @@ const leaveCommand = <AuxdibotCommand>{
          },
          async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
-            const settings = await interaction.data.guildData.fetchSettings();
+            const server = interaction.data.guildData;
             const content = interaction.options.getString('content');
             const parameters = argumentsToEmbedParameters(interaction);
             try {
-               settings.leave_embed = toAPIEmbed(parameters);
-               if (content) {
-                  settings.leave_text = content;
-               }
-               await settings.save({ validateModifiedOnly: true });
+               const newEmbed = toAPIEmbed(parameters);
+               await auxdibot.database.servers.update({
+                  where: { serverID: server.serverID },
+                  data: { leave_embed: (<unknown>newEmbed) as APIEmbed, leave_text: content || server.leave_text },
+               });
                const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
                embed.title = 'Success!';
                embed.description = `Set the leave embed.`;
@@ -68,11 +68,12 @@ const leaveCommand = <AuxdibotCommand>{
                      embeds: [
                         JSON.parse(
                            await parsePlaceholders(
-                              JSON.stringify(settings.leave_embed),
+                              auxdibot,
+                              JSON.stringify(newEmbed),
                               interaction.data.guild,
                               interaction.data.member,
                            ),
-                        ) as APIEmbed,
+                        ),
                      ],
                   });
             } catch (x) {
@@ -96,27 +97,30 @@ const leaveCommand = <AuxdibotCommand>{
          async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
             const json = interaction.options.getString('json', true);
-            const settings = await interaction.data.guildData.fetchSettings();
+            const server = interaction.data.guildData;
             try {
                const jsonEmbed = JSON.parse(json) as APIEmbed;
                const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
-               settings.leave_embed = jsonEmbed;
-               await settings.save({ validateModifiedOnly: true });
+               await auxdibot.database.servers.update({
+                  where: { serverID: server.serverID },
+                  data: { leave_embed: jsonEmbed },
+               });
                embed.title = 'Success!';
                embed.description = `Set the leave embed.`;
                if (interaction.channel && interaction.channel.isTextBased())
                   await interaction.channel.send({
                      content: "Here's a preview of the new leave embed!",
-                     ...(Object.entries(settings.leave_embed || {}).length != 0
+                     ...(Object.entries(server.leave_embed || {}).length != 0
                         ? {
                              embeds: [
                                 JSON.parse(
                                    await parsePlaceholders(
-                                      JSON.stringify(settings.leave_embed),
+                                      auxdibot,
+                                      JSON.stringify(jsonEmbed),
                                       interaction.data.guild,
                                       interaction.data.member,
                                    ),
-                                ) as APIEmbed,
+                                ),
                              ],
                           }
                         : {}),
@@ -139,7 +143,7 @@ const leaveCommand = <AuxdibotCommand>{
          },
          async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
-            const settings = await interaction.data.guildData.fetchSettings();
+            const settings = interaction.data.guildData;
             try {
                return await interaction.reply({
                   content: `**EMBED PREVIEW**\r\n${settings.leave_text || ''}`,
@@ -148,11 +152,12 @@ const leaveCommand = <AuxdibotCommand>{
                           embeds: [
                              JSON.parse(
                                 await parsePlaceholders(
+                                   auxdibot,
                                    JSON.stringify(settings.leave_embed),
                                    interaction.data.guild,
                                    interaction.data.member,
                                 ),
-                             ) as APIEmbed,
+                             ),
                           ],
                        }
                      : {}),

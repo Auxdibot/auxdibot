@@ -2,9 +2,12 @@ import { EmbedBuilder, SlashCommandBuilder, PermissionsBitField } from 'discord.
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
-import { LogType } from '@/config/Log';
-import Modules from '@/config/Modules';
+import Modules from '@/constants/Modules';
 import { Auxdibot } from '@/interfaces/Auxdibot';
+import Limits from '@/constants/database/Limits';
+import { testLimit } from '@/util/testLimit';
+import handleLog from '@/util/handleLog';
+import { LogAction } from '@prisma/client';
 
 const stickyRolesCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -57,13 +60,13 @@ const stickyRolesCommand = <AuxdibotCommand>{
          async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data || !interaction.memberPermissions) return;
             const role = interaction.options.getRole('role', true);
-            const settings = await interaction.data.guildData.fetchSettings();
+            const server = interaction.data.guildData;
             if (role.id == interaction.data.guild.roles.everyone.id) {
                const errorEmbed = auxdibot.embeds.error.toJSON();
                errorEmbed.description = "This is the everyone role or the role doesn't exist!";
                return await interaction.reply({ embeds: [errorEmbed] });
             }
-            if (settings.sticky_roles.find((val: string) => role != null && val == role.id)) {
+            if (server.sticky_roles.find((val: string) => role != null && val == role.id)) {
                const errorEmbed = auxdibot.embeds.error.toJSON();
                errorEmbed.description = 'This role is already added!';
                return await interaction.reply({ embeds: [errorEmbed] });
@@ -90,19 +93,22 @@ const stickyRolesCommand = <AuxdibotCommand>{
                errorEmbed.description = "This role is higher than Auxdibot's highest role!";
                return await interaction.reply({ embeds: [errorEmbed] });
             }
-            const add_sticky_role = await interaction.data.guildData.addStickyRole(role.id);
-            if (typeof add_sticky_role == 'object' && 'error' in add_sticky_role) {
+            if (testLimit(server.sticky_roles, Limits.STICKY_ROLE_DEFAULT_LIMIT)) {
                const errorEmbed = auxdibot.embeds.error.toJSON();
-               errorEmbed.description = add_sticky_role.error;
+               errorEmbed.description = 'You have too many sticky roles! Remove some before adding more.';
                return await interaction.reply({ embeds: [errorEmbed] });
             }
+            await auxdibot.database.servers.update({
+               where: { serverID: server.serverID },
+               data: { sticky_roles: { push: role.id } },
+            });
             const successEmbed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             successEmbed.title = '📝 Added Sticky Role';
             successEmbed.description = `Added <@&${role.id}> to the sticky roles.`;
-            await interaction.data.guildData.log(interaction.data.guild, {
-               user_id: interaction.data.member.id,
+            await handleLog(auxdibot, interaction.data.guild, {
+               userID: interaction.data.member.id,
                description: `Added ${role.name} to sticky roles.`,
-               type: LogType.STICKY_ROLE_ADDED,
+               type: LogAction.STICKY_ROLE_ADDED,
                date_unix: Date.now(),
             });
             return await interaction.reply({ embeds: [successEmbed] });
@@ -121,7 +127,7 @@ const stickyRolesCommand = <AuxdibotCommand>{
             if (!interaction.data || !interaction.memberPermissions) return;
             const role = interaction.options.getRole('role'),
                index = interaction.options.getNumber('index');
-            const settings = await interaction.data.guildData.fetchSettings();
+            const server = interaction.data.guildData;
             if (!role && !index) {
                const errorEmbed = auxdibot.embeds.error.toJSON();
                errorEmbed.description = 'Please specify a role or index!';
@@ -130,9 +136,9 @@ const stickyRolesCommand = <AuxdibotCommand>{
 
             const stickyRoleID =
                role != null
-                  ? settings.sticky_roles.find((val: string) => role != null && val == role.id)
+                  ? server.sticky_roles.find((val: string) => role != null && val == role.id)
                   : index
-                  ? settings.sticky_roles[index - 1]
+                  ? server.sticky_roles[index - 1]
                   : undefined;
             if (!stickyRoleID) {
                const errorEmbed = auxdibot.embeds.error.toJSON();
@@ -161,15 +167,18 @@ const stickyRolesCommand = <AuxdibotCommand>{
                }
             }
 
-            settings.sticky_roles.splice(settings.sticky_roles.indexOf(stickyRoleID), 1);
-            await settings.save({ validateBeforeSave: false });
+            server.sticky_roles.splice(server.sticky_roles.indexOf(stickyRoleID), 1);
+            await auxdibot.database.servers.update({
+               where: { serverID: server.serverID },
+               data: { sticky_roles: server.sticky_roles },
+            });
             const successEmbed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             successEmbed.title = '📝 Removed Sticky Role';
             successEmbed.description = `Removed <@&${stickyRoleID}> from the sticky roles.`;
-            await interaction.data.guildData.log(interaction.data.guild, {
-               user_id: interaction.data.member.id,
+            await handleLog(auxdibot, interaction.data.guild, {
+               userID: interaction.data.member.id,
                description: `Removed (Role ID: ${stickyRoleID}) from the sticky roles.`,
-               type: LogType.STICKY_ROLE_REMOVED,
+               type: LogAction.STICKY_ROLE_REMOVED,
                date_unix: Date.now(),
             });
             return await interaction.reply({ embeds: [successEmbed] });
@@ -185,10 +194,10 @@ const stickyRolesCommand = <AuxdibotCommand>{
          },
          async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
-            const settings = await interaction.data.guildData.fetchSettings();
+            const server = interaction.data.guildData;
             const successEmbed = new EmbedBuilder().setColor(auxdibot.colors.info).toJSON();
             successEmbed.title = '📝 Sticky Roles';
-            successEmbed.description = settings.sticky_roles.reduce(
+            successEmbed.description = server.sticky_roles.reduce(
                (accumulator: string, value: string, index: number) => `${accumulator}\n**${index + 1})** <@&${value}>`,
                '',
             );

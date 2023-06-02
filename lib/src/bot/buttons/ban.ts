@@ -1,11 +1,14 @@
 import AuxdibotButton from '@/interfaces/buttons/AuxdibotButton';
 import { EmbedBuilder, GuildMember, MessageComponentInteraction } from 'discord.js';
 import canExecute from '@/util/canExecute';
-import { IPunishment } from '@/mongo/schema/PunishmentSchema';
-import Server from '@/mongo/model/server/Server';
-import { LogType } from '@/config/Log';
-import Modules from '@/config/Modules';
+import Modules from '@/constants/Modules';
 import { Auxdibot } from '@/interfaces/Auxdibot';
+import findOrCreateServer from '@/modules/server/findOrCreateServer';
+import { LogAction, Punishment, PunishmentType } from '@prisma/client';
+import incrementPunishmentsTotal from '@/modules/features/moderation/incrementPunishmentsTotal';
+import createPunishment from '@/modules/features/moderation/createPunishment';
+import handleLog from '@/util/handleLog';
+import { punishmentInfoField } from '@/modules/features/moderation/punishmentInfoField';
 
 module.exports = <AuxdibotButton>{
    module: Modules['Moderation'],
@@ -27,10 +30,8 @@ module.exports = <AuxdibotButton>{
          noPermissionEmbed.description = `This user has a higher role than you or owns this server!`;
          return await interaction.reply({ embeds: [noPermissionEmbed] });
       }
-      const server = await Server.findOrCreateServer(interaction.guild.id);
-      const data = await server.fetchData(),
-         counter = await server.fetchCounter();
-      if (data.getPunishment(user_id, 'ban')) {
+      const server = await findOrCreateServer(auxdibot, interaction.guild.id);
+      if (server.punishments.find((p) => p.userID == user_id && p.type == PunishmentType.BAN)) {
          const errorEmbed = auxdibot.embeds.error.toJSON();
          errorEmbed.description = 'This user is already banned!';
          return await interaction.reply({ embeds: [errorEmbed] });
@@ -42,31 +43,31 @@ module.exports = <AuxdibotButton>{
          })
          .then(async () => {
             if (!interaction.guild) return;
-            const banData = <IPunishment>{
-               type: 'ban',
+            const banData = <Punishment>{
+               type: PunishmentType.BAN,
                reason: 'No reason given.',
                date_unix: Date.now(),
                dmed: false,
                expired: false,
                expires_date_unix: undefined,
-               user_id: user_id,
-               moderator_id: interaction.user.id,
-               punishment_id: counter.incrementPunishmentID(),
+               userID: user_id,
+               moderatorID: interaction.user.id,
+               punishmentID: await incrementPunishmentsTotal(auxdibot, interaction.guild.id),
             };
-            server.punish(banData).then(async (embed) => {
-               if (!embed || !interaction.guild) return;
-               await server.log(
+            createPunishment(auxdibot, interaction.guild.id, banData, interaction).then(async () => {
+               await handleLog(
+                  auxdibot,
                   interaction.guild,
                   {
-                     user_id: user_id,
+                     userID: user_id,
                      description: 'A user was banned.',
                      date_unix: Date.now(),
-                     type: LogType.BAN,
-                     punishment: banData,
+                     type: LogAction.BAN,
                   },
+                  [punishmentInfoField(banData)],
                   true,
                );
-               return await interaction.reply({ embeds: [embed] });
+               return;
             });
          })
          .catch(async () => {

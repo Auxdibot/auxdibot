@@ -14,7 +14,7 @@ import {
    DMAuxdibotCommandData,
    GuildAuxdibotCommandData,
 } from '@/interfaces/commands/AuxdibotCommandData';
-import Modules from '@/config/Modules';
+import Modules from '@/constants/Modules';
 import AuxdibotFeatureModule from '@/interfaces/commands/AuxdibotFeatureModule';
 dotenv.config();
 const PROMO_ROW = new ActionRowBuilder<ButtonBuilder>().addComponents(
@@ -88,8 +88,7 @@ const helpCommand = <AuxdibotCommand>{
          ) {
             const embed = new EmbedBuilder().setColor(auxdibot.colors.info).toJSON();
             embed.title = '❔ Auxdibot Modules';
-            const settings =
-               'guildData' in interaction.data ? await interaction.data.guildData.fetchSettings() : undefined;
+            const settings = 'guildData' in interaction.data ? interaction.data.guildData : undefined;
             embed.description = Object.keys(Modules).reduce((acc, i) => {
                const module: AuxdibotFeatureModule | undefined = Modules[i];
                return (
@@ -132,8 +131,7 @@ const helpCommand = <AuxdibotCommand>{
             interaction: AuxdibotCommandInteraction<DMAuxdibotCommandData | GuildAuxdibotCommandData>,
          ) {
             if (!interaction.data) return;
-            const settings =
-               'guildData' in interaction.data ? await interaction.data.guildData.fetchSettings() : undefined;
+            const settings = 'guildData' in interaction.data ? interaction.data.guildData : undefined;
             const key = interaction.options.getString('module', true);
             const module: AuxdibotFeatureModule | undefined = Modules[key];
             let embed = new EmbedBuilder().setColor(auxdibot.colors.info).toJSON();

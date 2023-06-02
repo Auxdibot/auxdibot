@@ -2,12 +2,15 @@ import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import timestampToDuration from '@/util/timestampToDuration';
 import canExecute from '@/util/canExecute';
-import { IPunishment } from '@/mongo/schema/PunishmentSchema';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
-import { LogType } from '@/config/Log';
-import Modules from '@/config/Modules';
+import Modules from '@/constants/Modules';
 import { Auxdibot } from '@/interfaces/Auxdibot';
+import { LogAction, Punishment, PunishmentType } from '@prisma/client';
+import incrementPunishmentsTotal from '@/modules/features/moderation/incrementPunishmentsTotal';
+import createPunishment from '@/modules/features/moderation/createPunishment';
+import handleLog from '@/util/handleLog';
+import { punishmentInfoField } from '@/modules/features/moderation/punishmentInfoField';
 
 const banCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -39,8 +42,6 @@ const banCommand = <AuxdibotCommand>{
          reason = interaction.options.getString('reason') || 'No reason specified.',
          durationOption = interaction.options.getString('duration') || 'permanent',
          deleteMessageDays = interaction.options.getNumber('delete_message_days') || 0;
-      const data = await interaction.data.guildData.fetchData(),
-         counter = await interaction.data.guildData.fetchCounter();
       const member = interaction.data.guild.members.resolve(user.id);
       if (!member) {
          const errorEmbed = auxdibot.embeds.error.toJSON();
@@ -53,7 +54,7 @@ const banCommand = <AuxdibotCommand>{
          noPermissionEmbed.description = `This user has a higher role than you or owns this server!`;
          return await interaction.reply({ embeds: [noPermissionEmbed] });
       }
-      if (data.getPunishment(user.id, 'ban')) {
+      if (interaction.data.guildData.punishments.find((p) => p.userID == user.id && p.type == PunishmentType.BAN)) {
          const errorEmbed = auxdibot.embeds.error.toJSON();
          errorEmbed.description = 'This user is already banned!';
          return await interaction.reply({ embeds: [errorEmbed] });
@@ -74,31 +75,31 @@ const banCommand = <AuxdibotCommand>{
          })
          .then(async () => {
             if (!interaction.data) return;
-            const banData = <IPunishment>{
-               type: 'ban',
+            const banData = <Punishment>{
+               type: PunishmentType.BAN,
                reason,
                date_unix: Date.now(),
                dmed: false,
                expired: false,
                expires_date_unix: expires && typeof expires != 'string' ? expires : undefined,
-               user_id: user.id,
-               moderator_id: interaction.user.id,
-               punishment_id: counter.incrementPunishmentID(),
+               userID: user.id,
+               moderatorID: interaction.user.id,
+               punishmentID: await incrementPunishmentsTotal(auxdibot, interaction.data.guildData.serverID),
             };
-            interaction.data.guildData.punish(banData).then(async (embed) => {
-               if (!embed || !interaction.data) return;
-               await interaction.data.guildData.log(
+            createPunishment(auxdibot, interaction.data.guildData.serverID, banData).then(async () => {
+               await handleLog(
+                  auxdibot,
                   interaction.data.guild,
                   {
-                     user_id: interaction.user.id,
+                     userID: interaction.user.id,
                      description: 'A user was banned.',
                      date_unix: Date.now(),
-                     type: LogType.BAN,
-                     punishment: banData,
+                     type: LogAction.BAN,
                   },
+                  [punishmentInfoField(banData)],
                   true,
                );
-               return await interaction.reply({ embeds: [embed] });
+               return;
             });
          })
          .catch(async () => {

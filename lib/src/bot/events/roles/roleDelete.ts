@@ -1,17 +1,17 @@
 import { Role } from 'discord.js';
-import Server from '@/mongo/model/server/Server';
-import { IPermissionOverride } from '@/mongo/schema/PermissionOverrideSchema';
-import { IServerData, IServerDataMethods } from '@/mongo/model/server/ServerData';
-import { HydratedDocument } from 'mongoose';
+import { Auxdibot } from '@/interfaces/Auxdibot';
+import findOrCreateServer from '@/modules/server/findOrCreateServer';
 
-export default async function roleDelete(role: Role) {
-   const server = await Server.findOrCreateServer(role.guild.id);
-   const data: HydratedDocument<IServerData, IServerDataMethods> = await server.fetchData();
-   const permissionOverride = data.permission_overrides.find(
-      (override: IPermissionOverride) => override.role_id == role.id,
-   );
+export default async function roleDelete(auxdibot: Auxdibot, role: Role) {
+   const server = await findOrCreateServer(auxdibot, role.guild.id);
+   const permissionOverride = server.permission_overrides.find((override) => override.roleID == role.id);
    if (permissionOverride) {
-      data.permission_overrides.splice(data.permission_overrides.indexOf(permissionOverride));
-      await data.save({ validateModifiedOnly: true });
+      server.permission_overrides.splice(server.permission_overrides.indexOf(permissionOverride));
+      await auxdibot.database.servers
+         .update({
+            where: { serverID: role.guild.id },
+            data: { permission_overrides: server.permission_overrides },
+         })
+         .catch(() => undefined);
    }
 }

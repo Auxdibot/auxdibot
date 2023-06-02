@@ -2,10 +2,10 @@ import { EmbedBuilder, ChannelType, SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
-import { LogType } from '@/config/Log';
-import Modules from '@/config/Modules';
-import { ILevelReward } from '@/mongo/schema/LevelRewardSchema';
+import Modules from '@/constants/Modules';
 import { Auxdibot } from '@/interfaces/Auxdibot';
+import handleLog from '@/util/handleLog';
+import { LevelReward, LogAction } from '@prisma/client';
 
 const settingsCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -58,16 +58,15 @@ const settingsCommand = <AuxdibotCommand>{
          async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
             const server = interaction.data.guildData;
-            const settings = await server.fetchSettings();
             const embed = new EmbedBuilder().setColor(auxdibot.colors.info).toJSON();
             embed.title = '⚙️ Server Settings';
-            embed.description = `🗒️ Log Channel: ${settings.log_channel ? `<#${settings.log_channel}>` : '`None`'}
-            \r\n📩 Join/Leave Channel: ${settings.join_leave_channel ? `<#${settings.join_leave_channel}>` : '`None`'}
-            \r\n🎤 Mute Role: ${settings.mute_role ? `<@&${settings.mute_role}>` : '`None`'}`;
+            embed.description = `🗒️ Log Channel: ${server.log_channel ? `<#${server.log_channel}>` : '`None`'}
+            \r\n📩 Join/Leave Channel: ${server.join_leave_channel ? `<#${server.join_leave_channel}>` : '`None`'}
+            \r\n🎤 Mute Role: ${server.mute_role ? `<@&${server.mute_role}>` : '`None`'}`;
             embed.fields = [
                {
                   name: '👋 Join Roles',
-                  value: settings.join_roles.reduce(
+                  value: server.join_roles.reduce(
                      (accumulator: string, val: string, index: number) =>
                         `${accumulator}\r\n> **${index + 1})** <@&${val}>`,
                      '',
@@ -76,7 +75,7 @@ const settingsCommand = <AuxdibotCommand>{
                },
                {
                   name: '📝 Sticky Roles',
-                  value: settings.sticky_roles.reduce(
+                  value: server.sticky_roles.reduce(
                      (accumulator: string, val: string, index: number) =>
                         `${accumulator}\r\n> **${index + 1})** <@&${val}>`,
                      '',
@@ -86,21 +85,21 @@ const settingsCommand = <AuxdibotCommand>{
                {
                   name: '❓ Suggestions',
                   value: `> Channel: ${
-                     settings.suggestions_channel
-                        ? `<#${settings.suggestions_channel}>`
+                     server.suggestions_channel
+                        ? `<#${server.suggestions_channel}>`
                         : '`None (Suggestions are disabled.)`'
                   }
                     > Updates Channel: ${
-                       settings.suggestions_updates_channel ? `<#${settings.suggestions_updates_channel}>` : '`None`'
+                       server.suggestions_updates_channel ? `<#${server.suggestions_updates_channel}>` : '`None`'
                     }
-                    > Auto Delete: \`${settings.suggestions_auto_delete ? 'Delete.' : 'Do not Delete.'}\`
+                    > Auto Delete: \`${server.suggestions_auto_delete ? 'Delete.' : 'Do not Delete.'}\`
                     > Discussion Threads: \`${
-                       settings.suggestions_discussion_threads ? 'Create Thread.' : 'Do not create a Thread.'
+                       server.suggestions_discussion_threads ? 'Create Thread.' : 'Do not create a Thread.'
                     }\``,
                },
                {
                   name: '⛔ Disabled Features',
-                  value: settings.disabled_modules.reduce(
+                  value: server.disabled_modules.reduce(
                      (accumulator: string, val: string) => `${accumulator}\r\n> *${Modules[val]?.name || 'Unknown'}*`,
                      '',
                   ),
@@ -108,9 +107,9 @@ const settingsCommand = <AuxdibotCommand>{
                },
                {
                   name: '🏆 Level Reward Roles',
-                  value: settings.level_rewards.reduce(
-                     (accumulator: string, val: ILevelReward, index: number) =>
-                        `${accumulator}\r\n> **${index + 1})** <@&${val.role_id}> (\`Level ${val.level}\`)`,
+                  value: server.level_rewards.reduce(
+                     (accumulator: string, val: LevelReward, index: number) =>
+                        `${accumulator}\r\n> **${index + 1})** <@&${val.roleID}> (\`Level ${val.level}\`)`,
                      '',
                   ),
                   inline: true,
@@ -118,10 +117,10 @@ const settingsCommand = <AuxdibotCommand>{
                {
                   name: '⭐ Starboard',
                   value: `> Channel: ${
-                     settings.starboard_channel ? `<#${settings.starboard_channel}>` : '`None (Starboard is disabled.)`'
+                     server.starboard_channel ? `<#${server.starboard_channel}>` : '`None (Starboard is disabled.)`'
                   }
-                    > Reaction: ${settings.starboard_reaction || '`None (Starboard is disabled.)`'}
-                    > Reaction Count: \`${settings.starboard_reaction_count}\``,
+                    > Reaction: ${server.starboard_reaction || '`None (Starboard is disabled.)`'}
+                    > Reaction Count: \`${server.starboard_reaction_count}\``,
                },
             ];
             return await interaction.reply({
@@ -140,32 +139,42 @@ const settingsCommand = <AuxdibotCommand>{
          async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
             const channel = interaction.options.getChannel('channel', false, [ChannelType.GuildText]);
-            const settings = await interaction.data.guildData.fetchSettings();
+            const server = interaction.data.guildData;
             const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.title = '⚙️ Log Channel Change';
 
-            const formerChannel = interaction.data.guild.channels.resolve(settings.log_channel || '');
-            if (channel && channel.id == settings.log_channel) {
+            const formerChannel = interaction.data.guild.channels.resolve(server.log_channel || '');
+            if (channel && channel.id == server.log_channel) {
                embed.description = `Nothing changed. Log channel is the same as one specified in settings.`;
                return await interaction.reply({
                   embeds: [embed],
                });
             }
-            settings.log_channel = channel ? channel.id : undefined;
-            await settings.save({ validateModifiedOnly: true });
+            server.log_channel = channel ? channel.id : undefined;
+            await auxdibot.database.servers.update({
+               where: { serverID: server.serverID },
+               data: { log_channel: channel?.id || undefined },
+            });
             embed.description = `The log channel for this server has been changed.\r\n\r\nFormerly: ${
                formerChannel ? `<#${formerChannel.id}>` : 'None'
             }\r\n\r\nNow: ${channel || 'None (Disabled)'}`;
-            await interaction.data.guildData.log(interaction.data.guild, {
-               type: LogType.LOG_CHANNEL_CHANGED,
-               user_id: interaction.data.member.id,
-               date_unix: Date.now(),
-               description: 'The log channel for this server has been changed.',
-               channel: {
-                  former: formerChannel?.id,
-                  now: channel?.id,
+            await handleLog(
+               auxdibot,
+               interaction.data.guild,
+               {
+                  type: LogAction.LOG_CHANNEL_CHANGED,
+                  userID: interaction.data.member.id,
+                  date_unix: Date.now(),
+                  description: 'The log channel for this server has been changed.',
                },
-            });
+               [
+                  {
+                     name: 'Log Channel Change',
+                     value: `Formerly: ${formerChannel}\n\nNow: ${channel}`,
+                     inline: false,
+                  },
+               ],
+            );
             return await interaction.reply({
                embeds: [embed],
             });
@@ -182,31 +191,41 @@ const settingsCommand = <AuxdibotCommand>{
          async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
             const channel = interaction.options.getChannel('channel', false, [ChannelType.GuildText]);
-            const settings = await interaction.data.guildData.fetchSettings();
+            const server = interaction.data.guildData;
             const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.title = '⚙️ Join/Leave Channel Change';
-            const formerChannel = interaction.data.guild.channels.resolve(settings.join_leave_channel || '');
-            if (channel && channel.id == settings.join_leave_channel) {
+            const formerChannel = interaction.data.guild.channels.resolve(server.join_leave_channel || '');
+            if (channel && channel.id == server.join_leave_channel) {
                embed.description = `Nothing changed. Channel is the same as one specified in settings.`;
                return await interaction.reply({
                   embeds: [embed],
                });
             }
-            settings.join_leave_channel = channel ? channel.id : undefined;
-            await settings.save({ validateModifiedOnly: true });
+            server.join_leave_channel = channel ? channel.id : undefined;
+            await auxdibot.database.servers.update({
+               where: { serverID: server.serverID },
+               data: { join_leave_channel: channel?.id || undefined },
+            });
             embed.description = `The Join/Leave channel for this server has been changed.\r\n\r\nFormerly: ${
                formerChannel ? `<#${formerChannel.id}>` : 'None'
             }\r\n\r\nNow: ${channel || 'None (Disabled)'}`;
-            await interaction.data.guildData.log(interaction.data.guild, {
-               type: LogType.JOIN_LEAVE_CHANNEL_CHANGED,
-               user_id: interaction.data.member.id,
-               date_unix: Date.now(),
-               description: 'The join/leave channel for this server has been changed.',
-               channel: {
-                  former: formerChannel?.id,
-                  now: channel?.id,
+            await handleLog(
+               auxdibot,
+               interaction.data.guild,
+               {
+                  type: LogAction.JOIN_LEAVE_CHANNEL_CHANGED,
+                  userID: interaction.data.member.id,
+                  date_unix: Date.now(),
+                  description: 'The join/leave channel for this server has been changed.',
                },
-            });
+               [
+                  {
+                     name: 'Join/Leave Channel Change',
+                     value: `Formerly: ${formerChannel}\n\nNow: ${channel}`,
+                     inline: false,
+                  },
+               ],
+            );
             return await interaction.reply({
                embeds: [embed],
             });
@@ -223,7 +242,7 @@ const settingsCommand = <AuxdibotCommand>{
          async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
             const role = interaction.options.getRole('role', true);
-            const settings = await interaction.data.guildData.fetchSettings();
+            const server = interaction.data.guildData;
             if (
                interaction.data.member.id != interaction.data.guild.ownerId &&
                interaction.data.guild.roles.comparePositions(interaction.data.member.roles.highest, role.id) <= 0
@@ -245,13 +264,13 @@ const settingsCommand = <AuxdibotCommand>{
             }
             const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.title = '⚙️ Mute Role Change';
-            if (role.id == settings.mute_role) {
+            if (role.id == server.mute_role) {
                embed.description = `Nothing changed. Mute role is the same as one specified in settings.`;
                return await interaction.reply({
                   embeds: [embed],
                });
             }
-            const formerRole = interaction.data.guild.roles.cache.get(settings.mute_role || ''),
+            const formerRole = interaction.data.guild.roles.cache.get(server.mute_role || ''),
                guildRole = interaction.data.guild.roles.cache.get(role.id);
             if (guildRole) {
                await guildRole.setPermissions([], 'Clearing all permissions.').catch(() => undefined);
@@ -268,18 +287,25 @@ const settingsCommand = <AuxdibotCommand>{
                      });
                });
             }
-            await interaction.data.guildData.log(interaction.data.guild, {
-               type: LogType.MUTE_ROLE_CHANGED,
-               user_id: interaction.data.member.id,
-               date_unix: Date.now(),
-               description: 'The mute role for this server has been changed.',
-               mute_role: {
-                  former: formerRole ? formerRole.id : undefined,
-                  now: role.id,
+            await handleLog(
+               auxdibot,
+               interaction.data.guild,
+               {
+                  type: LogAction.MUTE_ROLE_CHANGED,
+                  userID: interaction.data.member.id,
+                  date_unix: Date.now(),
+                  description: `The mute role for this server has been changed to ${role.name}.`,
                },
-            });
-            settings.mute_role = role.id;
-            await settings.save({ validateModifiedOnly: true });
+               [
+                  {
+                     name: 'Mute Role Change',
+                     value: `Formerly: ${formerRole ? `<@&${formerRole.id}>` : undefined}\n\nNow: <@&${role.id}>`,
+                     inline: false,
+                  },
+               ],
+            );
+            server.mute_role = role.id;
+            await auxdibot.database.servers.update({ where: { serverID: server.serverID }, data: { mute_role: role.id } });
             embed.description = `The mute role for this server has been changed.\r\n\r\nFormerly: ${
                formerRole ? `<@&${formerRole.id}>` : 'None'
             }\r\n\r\nNow: <@&${role.id}>`;

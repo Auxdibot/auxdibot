@@ -4,26 +4,15 @@ import EmbedParameters from '@/interfaces/embeds/EmbedParameters';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 
 export default function argumentsToEmbedParameters(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
-   const color = interaction.options.getString('color') || null,
-      title = interaction.options.getString('title')?.replace(/\\n/g, '\n') || null,
-      title_url = interaction.options.getString('title_url') || null,
-      description = interaction.options.getString('description')?.replace(/\\n/g, '\n') || null,
-      author_text = interaction.options.getString('author_text')?.replace(/\\n/g, '\n') || null,
-      author_url = interaction.options.getString('author_url') || null,
-      author_icon = interaction.options.getString('author_icon_url') || null,
-      fields = interaction.options.getString('fields')?.replace(/\\n/g, '\n') || null,
-      footer_text = interaction.options.getString('footer_text')?.replace(/\\n/g, '\n') || null,
-      footer_icon = interaction.options.getString('footer_icon_url') || null,
-      image_url = interaction.options.getString('image_url') || null,
-      thumbnail_url = interaction.options.getString('thumbnail_url') || null;
+   const fields = interaction.options.getString('fields')?.replace(/\\n/g, '\n') || null;
    return <EmbedParameters>{
-      color,
-      title,
-      title_url,
-      description,
-      author_text,
-      author_url,
-      author_icon,
+      color: interaction.options.getString('color') || null,
+      title: interaction.options.getString('title')?.replace(/\\n/g, '\n') || null,
+      title_url: interaction.options.getString('title_url') || null,
+      description: interaction.options.getString('description')?.replace(/\\n/g, '\n') || null,
+      author_text: interaction.options.getString('author_text')?.replace(/\\n/g, '\n') || null,
+      author_url: interaction.options.getString('author_url') || null,
+      author_icon: interaction.options.getString('author_icon_url') || null,
       fields: fields
          ? fields.split('|s|').map(
               (field) =>
@@ -33,9 +22,9 @@ export default function argumentsToEmbedParameters(interaction: AuxdibotCommandI
                  },
            )
          : undefined,
-      footer_text,
-      footer_icon,
-      thumbnail_url,
-      image_url,
+      footer_text: interaction.options.getString('footer_text')?.replace(/\\n/g, '\n') || null,
+      footer_icon: interaction.options.getString('footer_icon_url') || null,
+      thumbnail_url: interaction.options.getString('thumbnail_url') || null,
+      image_url: interaction.options.getString('image_url') || null,
    };
 }

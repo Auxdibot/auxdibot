@@ -1,6 +1,5 @@
-import { IServer, IServerMethods } from '@/mongo/model/server/Server';
+import { servers } from '@prisma/client';
 import { Guild, GuildMember, User } from 'discord.js';
-import { HydratedDocument } from 'mongoose';
 
 export interface BaseAuxdibotCommandData {
    dmCommand?: boolean;
@@ -15,6 +14,6 @@ export interface GuildAuxdibotCommandData extends BaseAuxdibotCommandData {
    dmCommand?: false;
    date: Date;
    guild: Guild;
-   guildData: HydratedDocument<IServer, IServerMethods>;
+   guildData: servers;
    member: GuildMember;
 }

@@ -1,26 +1,28 @@
 import { Guild, GuildMember, Message, PartialGuildMember, PartialMessage, PermissionsBitField } from 'discord.js';
-import Server from '@/mongo/model/server/Server';
-import { PunishmentNames } from '@/mongo/schema/PunishmentSchema';
-import { LogNames, LogType } from '@/config/Log';
-import { ISuggestion } from '@/mongo/schema/SuggestionSchema';
-import { SuggestionStateName } from '@/config/SuggestionState';
+import { PunishmentNames } from '@/constants/PunishmentNames';
+import { LogNames } from '@/constants/Log';
+import { SuggestionStateName } from '@/constants/SuggestionState';
+import { Suggestion } from '@prisma/client';
+import findOrCreateServer from '@/modules/server/findOrCreateServer';
+import { Auxdibot } from '@/interfaces/Auxdibot';
 
-// todo change to have message data for starboard
 export default async function parsePlaceholders(
+   auxdibot: Auxdibot,
    msg: string,
    guild?: Guild,
    guildMember?: GuildMember | PartialGuildMember,
-   suggestion?: ISuggestion,
+   suggestion?: Suggestion,
    starred_message?: Message<boolean> | PartialMessage,
 ) {
-   const server = guild ? await Server.findOrCreateServer(guild.id) : undefined;
-   const data = server ? await server.fetchData() : undefined;
-   const settings = server ? await server.fetchSettings() : undefined;
+   const server = guild ? await findOrCreateServer(auxdibot, guild.id) : undefined;
    let member = guildMember;
-   if (suggestion?.creator_id && guild && guild.members.cache.get(suggestion.creator_id))
-      member = guild.members.cache.get(suggestion.creator_id);
-   const latest_punishment = data && member ? data.userRecord(member.user.id).reverse()[0] : undefined;
-   const memberData = member && server ? await server.findOrCreateMember(member.id) : undefined;
+   if (suggestion?.creatorID && guild && guild.members.cache.get(suggestion.creatorID))
+      member = guild.members.cache.get(suggestion.creatorID);
+   const latest_punishment =
+      server && member ? server.punishments.filter((p) => p.userID == member.user.id).reverse()[0] : undefined;
+   const memberData = member
+      ? await auxdibot.database.servermembers.findFirst({ where: { serverID: guild.id, userID: member.id } })
+      : undefined;
    if (starred_message) member = starred_message.member;
    const PLACEHOLDERS = {
       ...(guild
@@ -37,20 +39,20 @@ export default async function parsePlaceholders(
               server_created_date_iso: guild.createdAt.toISOString(),
            }
          : {}),
-      ...(data
+      ...(server
          ? {
-              ...(data.latest_log
+              ...(server.latest_log
                  ? {
-                      server_latest_log_name: LogNames[data.latest_log.type as LogType],
-                      server_latest_log_description: data.latest_log.description,
-                      server_latest_log_date: new Date(data.latest_log.date_unix).toDateString(),
-                      server_latest_log_date_formatted: `<t:${Math.round(data.latest_log.date_unix / 1000)}>`,
-                      server_latest_log_date_utc: new Date(data.latest_log.date_unix).toUTCString(),
-                      server_latest_log_date_iso: new Date(data.latest_log.date_unix).toISOString(),
+                      server_latest_log_name: LogNames[server.latest_log.type],
+                      server_latest_log_description: server.latest_log.description,
+                      server_latest_log_date: new Date(server.latest_log.date_unix).toDateString(),
+                      server_latest_log_date_formatted: `<t:${Math.round(server.latest_log.date_unix / 1000)}>`,
+                      server_latest_log_date_utc: new Date(server.latest_log.date_unix).toUTCString(),
+                      server_latest_log_date_iso: new Date(server.latest_log.date_unix).toISOString(),
                    }
                  : {}),
-              server_total_punishments: data.punishments.length,
-              server_total_permission_overrides: data.permission_overrides.length,
+              server_total_punishments: server.punishments.length,
+              server_total_permission_overrides: server.permission_overrides.length,
            }
          : undefined),
       ...(member
@@ -82,13 +84,13 @@ export default async function parsePlaceholders(
                       member_xp_till: memberData.xpTill.toLocaleString(),
                    }
                  : {}),
-              ...(data
+              ...(server
                  ? {
-                      member_total_punishments: data.userRecord(member.user.id).length,
+                      member_total_punishments: server.punishments.filter((p) => p.userID == member.user.id).length,
                       member_latest_punishment: latest_punishment
                          ? PunishmentNames[latest_punishment.type as 'warn' | 'kick' | 'mute' | 'ban'].name
                          : 'None',
-                      member_latest_punishment_id: latest_punishment ? latest_punishment.punishment_id : 'None',
+                      member_latest_punishment_id: latest_punishment ? latest_punishment.punishmentID : 'None',
                       member_latest_punishment_date: latest_punishment
                          ? new Date(latest_punishment.date_unix).toDateString()
                          : 'None',
@@ -107,10 +109,9 @@ export default async function parsePlaceholders(
          : {}),
       ...(suggestion
          ? {
-              suggestion_id: suggestion.suggestion_id,
+              suggestion_id: suggestion.suggestionID,
               suggestion_state: SuggestionStateName[suggestion.status],
-              suggestion_rating: suggestion.rating,
-              suggestion_handler_mention: suggestion.handler_id ? `<@${suggestion.handler_id}>` : 'None',
+              suggestion_handler_mention: suggestion.handlerID ? `<@${suggestion.handlerID}>` : 'None',
               suggestion_handled_reason: suggestion.handled_reason || 'No reason given.',
               suggestion_content: suggestion.content.replaceAll(/"/g, '\\"'),
               suggestion_date: new Date(suggestion.date_unix).toDateString(),
@@ -119,11 +120,11 @@ export default async function parsePlaceholders(
               suggestion_date_iso: new Date(suggestion.date_unix).toISOString(),
            }
          : undefined),
-      ...(starred_message && settings
+      ...(starred_message && server
          ? {
               starboard_message_id: starred_message.id,
               starboard_message_content: starred_message.content.replaceAll(/"/g, '\\"'),
-              starboard_message_stars: starred_message.reactions.cache.get(settings.starboard_reaction).count,
+              starboard_message_stars: starred_message.reactions.cache.get(server.starboard_reaction).count,
               starboard_message_date: new Date(starred_message.createdTimestamp).toDateString(),
               starboard_message_date_formatted: `<t:${Math.round(starred_message.createdTimestamp / 1000)}>`,
               starboard_message_date_utc: new Date(starred_message.createdTimestamp).toUTCString(),

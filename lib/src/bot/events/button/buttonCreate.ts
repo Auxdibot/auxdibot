@@ -1,21 +1,22 @@
 import { ButtonInteraction, EmbedBuilder, GuildMember } from 'discord.js';
 import { Auxdibot } from '@/interfaces/Auxdibot';
-import Server from '@/mongo/model/server/Server';
+import testPermission from '@/util/testPermission';
+import findOrCreateServer from '@/modules/server/findOrCreateServer';
 
-export default async function buttonCreate(interaction: ButtonInteraction) {
+export default async function buttonCreate(auxdibot: Auxdibot, interaction: ButtonInteraction) {
    if (!interaction.guild || !interaction.member) return;
-   const auxdibot = interaction.client as Auxdibot;
-   const server = await Server.findOrCreateServer(interaction.guild.id);
-   const settings = await server.fetchSettings();
+   const server = await findOrCreateServer(auxdibot, interaction.guild.id);
    if (auxdibot.buttons) {
       const button = auxdibot.buttons.get(interaction.customId.split('-')[0]);
       if (button) {
-         if (settings.disabled_modules.find((item) => item == button.module.name))
+         if (server.disabled_modules.find((item) => item == button.module.name))
             return await interaction.reply({ embeds: [auxdibot.embeds.disabled.toJSON()] });
 
          if (button.permission) {
             if (
-               !server.testPermission(
+               !testPermission(
+                  auxdibot,
+                  interaction.guild.id,
                   button.permission,
                   interaction.member as GuildMember,
                   button.allowedDefault || false,

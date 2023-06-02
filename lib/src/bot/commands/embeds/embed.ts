@@ -18,7 +18,7 @@ import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInt
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import createEmbedParameters from '@/util/createEmbedParameters';
 import argumentsToEmbedParameters from '@/util/argumentsToEmbedParameters';
-import Modules from '@/config/Modules';
+import Modules from '@/constants/Modules';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 
 dotenv.config();
@@ -127,6 +127,7 @@ const embedCommand = <AuxdibotCommand>{
                      toAPIEmbed(
                         JSON.parse(
                            await parsePlaceholders(
+                              auxdibot,
                               JSON.stringify(parameters),
                               interaction.data.guild,
                               interaction.data.member,
@@ -165,6 +166,7 @@ const embedCommand = <AuxdibotCommand>{
                   embeds: [
                      JSON.parse(
                         await parsePlaceholders(
+                           auxdibot,
                            json,
                            interaction.data.guild,
                            interaction.member as GuildMember | undefined,
@@ -214,14 +216,14 @@ const embedCommand = <AuxdibotCommand>{
             try {
                const embed = message.embeds[0].toJSON();
                embed.url = parameters.title_url;
-               embed.title = parameters.title ? await parsePlaceholders(parameters.title) : embed.title;
+               embed.title = parameters.title ? await parsePlaceholders(auxdibot, parameters.title) : embed.title;
                embed.color = parameters.color ? parseInt('0x' + parameters.color.replaceAll('#', ''), 16) : embed.color;
                embed.description = parameters.description
-                  ? await parsePlaceholders(parameters.description)
+                  ? await parsePlaceholders(auxdibot, parameters.description)
                   : embed.description;
                embed.author = parameters.author_text
                   ? <EmbedAuthorOptions>{
-                       name: await parsePlaceholders(parameters.author_text),
+                       name: await parsePlaceholders(auxdibot, parameters.author_text),
                        ...(parameters.author_url ? { url: parameters.author_url } : {}),
                        ...(parameters.author_icon ? { iconURL: parameters.author_icon } : {}),
                     }
@@ -229,15 +231,15 @@ const embedCommand = <AuxdibotCommand>{
                embed.fields = parameters.fields || embed.fields;
                embed.footer = parameters.footer_text
                   ? <EmbedFooterOptions>{
-                       text: await parsePlaceholders(parameters.footer_text),
+                       text: await parsePlaceholders(auxdibot, parameters.footer_text),
                        ...(parameters.footer_icon ? { iconURL: parameters.footer_icon } : {}),
                     }
                   : embed.footer;
                embed.image = parameters.image_url
-                  ? { url: await parsePlaceholders(parameters.image_url) }
+                  ? { url: await parsePlaceholders(auxdibot, parameters.image_url) }
                   : embed.image;
                embed.thumbnail = parameters.thumbnail_url
-                  ? { url: await parsePlaceholders(parameters.thumbnail_url) }
+                  ? { url: await parsePlaceholders(auxdibot, parameters.thumbnail_url) }
                   : embed.thumbnail;
 
                await message.edit({ ...(content ? { content } : {}), embeds: [embed] });
@@ -281,6 +283,7 @@ const embedCommand = <AuxdibotCommand>{
                   embeds: [
                      JSON.parse(
                         await parsePlaceholders(
+                           auxdibot,
                            json,
                            interaction.data.guild,
                            interaction.member as GuildMember | undefined,

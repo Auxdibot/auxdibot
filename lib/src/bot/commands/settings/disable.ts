@@ -3,7 +3,7 @@ import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import dotenv from 'dotenv';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
-import Modules from '@/config/Modules';
+import Modules from '@/constants/Modules';
 import AuxdibotFeatureModule from '@/interfaces/commands/AuxdibotFeatureModule';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 dotenv.config();
@@ -30,7 +30,7 @@ const placeholderCommand = <AuxdibotCommand>{
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;
-      const settings = await interaction.data.guildData.fetchSettings();
+      const server = interaction.data.guildData;
       const key = interaction.options.getString('module', true);
       const module: AuxdibotFeatureModule | undefined = Modules[key];
       let embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
@@ -44,13 +44,15 @@ const placeholderCommand = <AuxdibotCommand>{
          embed.description = 'This module cannot be disabled!';
          return await interaction.reply({ embeds: [embed] });
       }
-      if (settings.disabled_modules.find((item) => item == module.name)) {
+      if (server.disabled_modules.find((item) => item == module.name)) {
          embed = auxdibot.embeds.error.toJSON();
          embed.description = 'This module is already disabled!';
          return await interaction.reply({ embeds: [embed] });
       }
-      settings.disabled_modules.push(module.name);
-      await settings.save({ validateModifiedOnly: true });
+      await auxdibot.database.servers.update({
+         where: { serverID: server.serverID },
+         data: { disabled_modules: { push: module.name } },
+      });
       embed.title = 'Success!';
       embed.description = `Successfully disabled the ${module.name} module. Its functionality & commands will no longer work until re-enabled.`;
       return await interaction.reply({ embeds: [embed] });

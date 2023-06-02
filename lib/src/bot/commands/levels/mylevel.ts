@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import calcXP from '@/util/calcXP';
-import Modules from '@/config/Modules';
+import Modules from '@/constants/Modules';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 dotenv.config();
 const myLevelCommand = <AuxdibotCommand>{
@@ -21,10 +21,12 @@ const myLevelCommand = <AuxdibotCommand>{
       let embed = new EmbedBuilder().setColor(auxdibot.colors.levels).toJSON();
       embed.title = 'Your Level';
 
-      const data = await interaction.data.guildData.findOrCreateMember(interaction.data.member.id);
+      const data = await auxdibot.database.servermembers.findFirst({
+         where: { userID: interaction.data.member.id, serverID: interaction.data.guild.id },
+      });
       if (!data) {
          embed = auxdibot.embeds.error.toJSON();
-         embed.description = "Member data could not be found! (This is an issue on Auxdibot's end.)";
+         embed.description = 'Member data could not be found!';
          return await interaction.reply({ embeds: [embed] });
       }
       const levelXP = calcXP(data.level);

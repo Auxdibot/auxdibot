@@ -1,27 +1,36 @@
 import { APIEmbed, Message } from 'discord.js';
-import Server from '@/mongo/model/server/Server';
 import parsePlaceholders from '@/util/parsePlaceholder';
-import Modules from '@/config/Modules';
+import Modules from '@/constants/Modules';
+import findOrCreateServer from '@/modules/server/findOrCreateServer';
+import { Auxdibot } from '@/interfaces/Auxdibot';
+import awardXP from '@/modules/features/levels/awardXP';
+import { DEFAULT_LEVELUP_EMBED } from '@/constants/embeds/DefaultEmbeds';
 
-export default async function messageCreate(message: Message) {
+export default async function messageCreate(auxdibot: Auxdibot, message: Message) {
    if (message.author.bot || message.author.id == message.client.user.id) return;
    const sender = message.member;
    if (!sender || !message.guild) return;
-   const server = await Server.findOrCreateServer(message.guild.id);
-   const settings = await server.fetchSettings();
-   if (settings.message_xp <= 0) return;
-   const member = await server.findOrCreateMember(sender.id);
-   if (!member) return;
-   if (!settings.disabled_modules.find((item) => item == Modules['Levels'].name)) {
-      const level = member.level;
-      const newLevel = member.addXP(settings.message_xp);
-      await member.save({ validateModifiedOnly: true });
-      if (newLevel > level) {
+   const server = await findOrCreateServer(auxdibot, message.guild.id);
+   if (server.message_xp <= 0) return;
+   if (!server.disabled_modules.find((item) => item == Modules['Levels'].name)) {
+      const level = await auxdibot.database.servermembers
+         .findFirst({
+            where: { serverID: message.guild.id, userID: message.member.id },
+         })
+         .then((memberData) => memberData.level)
+         .catch(() => undefined);
+      const newLevel = await awardXP(auxdibot, message.guild.id, message.member.id, server.message_xp);
+      if (newLevel && level && newLevel > level) {
          try {
             if (!message.guild || !message.member) return;
             const embed = JSON.parse(
                (
-                  await parsePlaceholders(JSON.stringify(settings.levelup_embed), message.guild, message.member)
+                  await parsePlaceholders(
+                     auxdibot,
+                     JSON.stringify(DEFAULT_LEVELUP_EMBED),
+                     message.guild,
+                     message.member,
+                  )
                ).replaceAll(
                   '%levelup%',
                   ` \`Level ${level.toLocaleString()}\` -> \`Level ${newLevel.toLocaleString()}\` `,
@@ -31,9 +40,9 @@ export default async function messageCreate(message: Message) {
          } catch (x) {
             console.log(x);
          }
-         const reward = settings.level_rewards.find((reward) => reward.level == newLevel);
+         const reward = server.level_rewards.find((reward) => reward.level == newLevel);
          if (reward) {
-            const role = message.guild.roles.cache.get(reward.role_id);
+            const role = message.guild.roles.cache.get(reward.roleID);
             if (role) sender.roles.add(role);
          }
       }

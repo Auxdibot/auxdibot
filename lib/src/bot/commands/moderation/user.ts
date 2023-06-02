@@ -1,10 +1,11 @@
 import { EmbedBuilder, ActionRowBuilder, ButtonBuilder, SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
-import { PunishmentNames } from '@/mongo/schema/PunishmentSchema';
+import { PunishmentNames } from '@/constants/PunishmentNames';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
-import Modules from '@/config/Modules';
+import Modules from '@/constants/Modules';
 import { Auxdibot } from '@/interfaces/Auxdibot';
+import { PunishmentType } from '@prisma/client';
 
 const userCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -22,15 +23,15 @@ const userCommand = <AuxdibotCommand>{
       if (!interaction.data || !interaction.channel) return;
       const user = interaction.options.getUser('user') || interaction.user;
       const member = interaction.data.guild.members.resolve(user.id);
-      const data = await interaction.data.guildData.fetchData();
-      const record = data.userRecord(user.id),
-         banned = data.getPunishment(user.id, 'ban'),
-         muted = data.getPunishment(user.id, 'mute');
-      let overrides = data.getPermissionOverride(undefined, undefined, user.id);
+      const server = interaction.data.guildData;
+      const record = server.punishments.filter((p) => p.userID == user.id),
+         banned = server.punishments.find((p) => p.userID == user.id && p.type == PunishmentType.BAN),
+         muted = server.punishments.find((p) => p.userID == user.id && p.type == PunishmentType.MUTE);
+      let overrides = server.permission_overrides.filter((i) => i.roleID == user.id);
       const embed = new EmbedBuilder().setColor(auxdibot.colors.info).toJSON();
       if (member) {
          for (const role of member.roles.cache.values()) {
-            overrides = overrides.concat(data.getPermissionOverride(undefined, role.id));
+            overrides = overrides.concat(server.permission_overrides.filter((i) => i.roleID == role.id));
          }
       }
       embed.title = `🧍 ${user.tag}`;
@@ -60,7 +61,7 @@ const userCommand = <AuxdibotCommand>{
                   const type = PunishmentNames[punishment.type];
                   return (
                      str +
-                     `\n**${type.name}** - PID: ${punishment.punishment_id} - <t:${Math.round(
+                     `\n**${type.name}** - PID: ${punishment.punishmentID} - <t:${Math.round(
                         punishment.date_unix / 1000,
                      )}>`
                   );
@@ -73,10 +74,10 @@ const userCommand = <AuxdibotCommand>{
                   (accumulator, permissionOverride) =>
                      accumulator +
                      `\n${permissionOverride.allowed ? '✅' : '❎'} \`${permissionOverride.permission}\` - ${
-                        permissionOverride.role_id
-                           ? `<@&${permissionOverride.role_id}>`
-                           : permissionOverride.user_id
-                           ? `<@${permissionOverride.user_id}>`
+                        permissionOverride.roleID
+                           ? `<@&${permissionOverride.roleID}>`
+                           : permissionOverride.userID
+                           ? `<@${permissionOverride.userID}>`
                            : ''
                      }`,
                   '\u2800',

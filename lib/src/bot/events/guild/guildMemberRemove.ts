@@ -1,46 +1,52 @@
 import { APIEmbed, GuildMember, PartialGuildMember } from 'discord.js';
-import Server from '@/mongo/model/server/Server';
 import parsePlaceholders from '@/util/parsePlaceholder';
-import { LogType } from '@/config/Log';
+import findOrCreateServer from '@/modules/server/findOrCreateServer';
+import { Auxdibot } from '@/interfaces/Auxdibot';
+import memberLeave from '@/modules/members/memberLeave';
+import handleLog from '@/util/handleLog';
+import { LogAction } from '@prisma/client';
 
-export default async function guildMemberRemove(member: GuildMember | PartialGuildMember) {
+export default async function guildMemberRemove(auxdibot: Auxdibot, member: GuildMember | PartialGuildMember) {
    if (!member) return;
-   const server = await Server.findOrCreateServer(member.guild.id);
-   const settings = await server.fetchSettings();
-   if (settings.join_leave_channel) {
-      member.guild.channels.fetch(settings.join_leave_channel).then(async (channel) => {
+   const server = await findOrCreateServer(auxdibot, member.guild.id);
+   if (server.join_leave_channel) {
+      member.guild.channels.fetch(server.join_leave_channel).then(async (channel) => {
          if (channel && channel.isTextBased()) {
-            if (settings.leave_text || settings.leave_embed) {
-               await channel
+            if (server.leave_text || server.leave_embed) {
+               channel
                   .send({
-                     content: `${settings.leave_text || ''}`,
-                     ...(Object.entries(settings.leave_embed || {}).length != 0
+                     content: `${server.leave_text || ''}`,
+                     ...(Object.entries(server.leave_embed || {}).length != 0
                         ? {
                              embeds: [
                                 JSON.parse(
-                                   await parsePlaceholders(JSON.stringify(settings.leave_embed), member.guild, member),
+                                   await parsePlaceholders(
+                                      auxdibot,
+                                      JSON.stringify(server.leave_embed),
+                                      member.guild,
+                                      member,
+                                   ),
                                 ) as APIEmbed,
                              ],
                           }
                         : {}),
                   })
-                  .catch((x) => console.error(x));
+                  .catch(() => undefined);
             }
          }
       });
    }
-   const memberData = await server.findOrCreateMember(member.id);
-   if (memberData) {
-      await memberData.leaveServer(member);
-   }
-   await server.log(
+   memberLeave(auxdibot, member.guild.id, member);
+   await handleLog(
+      auxdibot,
       member.guild,
       {
-         user_id: member.id,
+         userID: member.id,
          description: `<@${member.id}> left the server! (Total Members: **${member.guild.memberCount}**)`,
-         type: LogType.MEMBER_LEAVE,
+         type: LogAction.MEMBER_LEAVE,
          date_unix: Date.now(),
       },
+      [],
       true,
    );
 }

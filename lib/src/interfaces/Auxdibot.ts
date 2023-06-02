@@ -1,9 +1,11 @@
 import { Client, ClientPresence, Collection, EmbedBuilder } from 'discord.js';
 import AuxdibotCommand from './commands/AuxdibotCommand';
 import AuxdibotButton from './buttons/AuxdibotButton';
+import { PrismaClient } from '@prisma/client';
 export interface Auxdibot extends Client {
-   commands?: Collection<string, AuxdibotCommand>;
-   buttons?: Collection<string, AuxdibotButton>;
+   commands: Collection<string, AuxdibotCommand>;
+   buttons: Collection<string, AuxdibotButton>;
+   database: PrismaClient;
    colors: {
       accept: number;
       denied: number;

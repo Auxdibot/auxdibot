@@ -1,11 +1,14 @@
 import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
-import { PunishmentNames, toEmbedField } from '@/mongo/schema/PunishmentSchema';
+import { PunishmentNames } from '@/constants/PunishmentNames';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
-import { LogType } from '@/config/Log';
-import Modules from '@/config/Modules';
+import Modules from '@/constants/Modules';
 import { Auxdibot } from '@/interfaces/Auxdibot';
+import { punishmentInfoField } from '@/modules/features/moderation/punishmentInfoField';
+import deletePunishment from '@/modules/features/moderation/deletePunishment';
+import handleLog from '@/util/handleLog';
+import { LogAction } from '@prisma/client';
 
 const punishmentCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -45,9 +48,9 @@ const punishmentCommand = <AuxdibotCommand>{
          },
          async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
-            const punishment_id = interaction.options.getNumber('punishment_id', true);
-            const data = await interaction.data.guildData.fetchData();
-            const punishment = data.punishments.filter((val) => val.punishment_id == punishment_id)[0];
+            const punishmentID = interaction.options.getNumber('punishment_id', true);
+            const server = interaction.data.guildData;
+            const punishment = server.punishments.filter((val) => val.punishmentID == punishmentID)[0];
             if (!punishment) {
                const errorEmbed = auxdibot.embeds.error.toJSON();
                errorEmbed.description = 'This punishment does not exist!';
@@ -55,9 +58,9 @@ const punishmentCommand = <AuxdibotCommand>{
             }
             const type = PunishmentNames[punishment.type].name;
             const embed = new EmbedBuilder().setColor(auxdibot.colors.info).toJSON();
-            embed.title = `${type} Information (PID: ${punishment.punishment_id})`;
-            embed.description = `This is the punishment information for <@${punishment.user_id}>`;
-            embed.fields = [toEmbedField(punishment)];
+            embed.title = `${type} Information (PID: ${punishment.punishmentID})`;
+            embed.description = `This is the punishment information for <@${punishment.userID}>`;
+            embed.fields = [punishmentInfoField(punishment)];
             return await interaction.reply({ embeds: [embed] });
          },
       },
@@ -72,27 +75,32 @@ const punishmentCommand = <AuxdibotCommand>{
          async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
             const punishment_id = interaction.options.getNumber('punishment_id', true);
-            const data = await interaction.data.guildData.fetchData();
-            const punishment = data.punishments.filter((val) => val.punishment_id == punishment_id)[0];
+            const server = interaction.data.guildData;
+            const punishment = server.punishments.filter((val) => val.punishmentID == punishment_id)[0];
             if (!punishment) {
                const errorEmbed = auxdibot.embeds.error.toJSON();
                errorEmbed.description = 'This punishment does not exist!';
                return await interaction.reply({ embeds: [errorEmbed] });
             }
+
+            deletePunishment(auxdibot, server.serverID, punishment_id);
+
             const type = PunishmentNames[punishment.type].name;
-            data.punishments.splice(data.punishments.indexOf(punishment), 1);
-            await data.save();
             const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
-            embed.title = `${type} deleted. (PID: ${punishment.punishment_id})`;
-            embed.description = `${interaction.user} deleted a punishment assigned to <@${punishment.user_id}>.`;
-            embed.fields = [toEmbedField(punishment)];
-            await interaction.data.guildData.log(interaction.data.guild, {
-               type: LogType.PUNISHMENT_DELETED,
-               punishment: punishment,
-               date_unix: Date.now(),
-               user_id: interaction.user.id,
-               description: `${interaction.user.tag} deleted a punishment. (PID: ${punishment.punishment_id})`,
-            });
+            embed.title = `${type} deleted. (PID: ${punishment.punishmentID})`;
+            embed.description = `${interaction.user} deleted a punishment assigned to <@${punishment.userID}>.`;
+            embed.fields = [punishmentInfoField(punishment)];
+            await handleLog(
+               auxdibot,
+               interaction.data.guild,
+               {
+                  type: LogAction.PUNISHMENT_DELETED,
+                  date_unix: Date.now(),
+                  userID: interaction.user.id,
+                  description: `${interaction.user.tag} deleted a punishment. (PID: ${punishment.punishmentID})`,
+               },
+               [punishmentInfoField(punishment)],
+            );
             await interaction.reply({ embeds: [embed] });
          },
       },
@@ -106,8 +114,8 @@ const punishmentCommand = <AuxdibotCommand>{
          },
          async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
-            const data = await interaction.data.guildData.fetchData();
-            const punishments = data.punishments.reverse().slice(0, 10);
+            const server = interaction.data.guildData;
+            const punishments = server.punishments.reverse().slice(0, 10);
             const embed = new EmbedBuilder().setColor(auxdibot.colors.default).toJSON();
             embed.title = '🔨 Latest Punishments';
             embed.fields = [
@@ -117,9 +125,9 @@ const punishmentCommand = <AuxdibotCommand>{
                      const type = PunishmentNames[punishment.type];
                      return (
                         str +
-                        `\n**${type.name}** - PID: ${punishment.punishment_id} - <t:${Math.round(
+                        `\n**${type.name}** - PID: ${punishment.punishmentID} - <t:${Math.round(
                            punishment.date_unix / 1000,
-                        )}> (<@${punishment.user_id}>)`
+                        )}> (<@${punishment.userID}>)`
                      );
                   }, '\u2800'),
                },

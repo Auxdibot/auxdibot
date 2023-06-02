@@ -1,11 +1,12 @@
 import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
-import { toEmbedField } from '@/mongo/schema/PunishmentSchema';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
-import { LogType } from '@/config/Log';
-import Modules from '@/config/Modules';
+import Modules from '@/constants/Modules';
 import { Auxdibot } from '@/interfaces/Auxdibot';
+import { LogAction, PunishmentType } from '@prisma/client';
+import { punishmentInfoField } from '@/modules/features/moderation/punishmentInfoField';
+import handleLog from '@/util/handleLog';
 
 const unbanCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -26,8 +27,8 @@ const unbanCommand = <AuxdibotCommand>{
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;
       const user = interaction.options.getUser('user', true);
-      const data = await interaction.data.guildData.fetchData();
-      const banned = data.getPunishment(user.id, 'ban');
+      const server = interaction.data.guildData;
+      const banned = server.punishments.find((p) => p.userID == user.id && p.type == PunishmentType.BAN);
       if (!banned) {
          const errorEmbed = auxdibot.embeds.error.toJSON();
          errorEmbed.description = "This user isn't banned!";
@@ -35,21 +36,24 @@ const unbanCommand = <AuxdibotCommand>{
       }
       interaction.data.guild.bans.remove(user.id).catch(() => undefined);
       banned.expired = true;
-      await data.save();
-
+      await auxdibot.database.servers.update({
+         where: { serverID: server.serverID },
+         data: { punishments: server.punishments },
+      });
       const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
       embed.title = `📥 Unbanned ${user.tag}`;
       embed.description = `User was unbanned.`;
-      embed.fields = [toEmbedField(banned)];
-      await interaction.data.guildData.log(
+      embed.fields = [punishmentInfoField(banned)];
+      await handleLog(
+         auxdibot,
          interaction.data.guild,
          {
-            user_id: interaction.user.id,
+            userID: interaction.user.id,
             description: 'A user was unbanned.',
             date_unix: Date.now(),
-            type: LogType.UNBAN,
-            punishment: banned,
+            type: LogAction.UNBAN,
          },
+         [punishmentInfoField(banned)],
          true,
       );
       await interaction.reply({ embeds: [embed] });

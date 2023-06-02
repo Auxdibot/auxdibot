@@ -1,11 +1,13 @@
 import AuxdibotButton from '@/interfaces/buttons/AuxdibotButton';
 import { EmbedBuilder, GuildMember, MessageComponentInteraction } from 'discord.js';
 import canExecute from '@/util/canExecute';
-import { IPunishment } from '@/mongo/schema/PunishmentSchema';
-import Server from '@/mongo/model/server/Server';
-import { LogType } from '@/config/Log';
-import Modules from '@/config/Modules';
+import Modules from '@/constants/Modules';
 import { Auxdibot } from '@/interfaces/Auxdibot';
+import incrementPunishmentsTotal from '@/modules/features/moderation/incrementPunishmentsTotal';
+import { LogAction, Punishment, PunishmentType } from '@prisma/client';
+import createPunishment from '@/modules/features/moderation/createPunishment';
+import handleLog from '@/util/handleLog';
+import { punishmentInfoField } from '@/modules/features/moderation/punishmentInfoField';
 
 module.exports = <AuxdibotButton>{
    module: Modules['Moderation'],
@@ -26,37 +28,34 @@ module.exports = <AuxdibotButton>{
          noPermissionEmbed.description = `This user has a higher role than you or owns this server!`;
          return await interaction.reply({ embeds: [noPermissionEmbed] });
       }
-      const server = await Server.findOrCreateServer(interaction.guild.id);
-      const counter = await server.fetchCounter();
       interaction.guild.members
          .kick(member.user, 'No reason given.')
          .then(async () => {
-            if (!interaction.guild) return;
-            const kickData = <IPunishment>{
-               type: 'kick',
+            const kickData = <Punishment>{
+               type: PunishmentType.KICK,
                reason: 'No reason given.',
                date_unix: Date.now(),
                dmed: false,
                expired: false,
                expires_date_unix: undefined,
-               user_id: user_id,
-               moderator_id: interaction.user.id,
-               punishment_id: counter.incrementPunishmentID(),
+               userID: user_id,
+               moderatorID: interaction.user.id,
+               punishmentID: await incrementPunishmentsTotal(auxdibot, interaction.guild.id),
             };
-            server.punish(kickData).then(async (embed) => {
-               if (!embed || !interaction.guild) return;
-               await server.log(
+            createPunishment(auxdibot, interaction.guild.id, kickData, interaction).then(async () => {
+               await handleLog(
+                  auxdibot,
                   interaction.guild,
                   {
-                     user_id: interaction.user.id,
+                     userID: interaction.user.id,
                      description: 'A user was kicked.',
                      date_unix: Date.now(),
-                     type: LogType.KICK,
-                     punishment: kickData,
+                     type: LogAction.KICK,
                   },
+                  [punishmentInfoField(kickData)],
                   true,
                );
-               return await interaction.reply({ embeds: [embed] });
+               return;
             });
          })
          .catch(async () => {

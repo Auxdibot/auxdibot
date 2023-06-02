@@ -1,11 +1,10 @@
 import { Guild } from 'discord.js';
-import Server from '@/mongo/model/server/Server';
 import { Auxdibot } from '@/interfaces/Auxdibot';
+import deleteServer from '@/modules/server/deleteServer';
 
-export default async function guildDelete(guild: Guild) {
+export default async function guildDelete(auxdibot: Auxdibot, guild: Guild) {
    if (!guild) return;
-   await Server.deleteByDiscordId(guild.id.toString());
-   const client = guild.client as Auxdibot;
-   if (client.updateDiscordStatus) await client.updateDiscordStatus();
+   if (auxdibot.updateDiscordStatus) await auxdibot.updateDiscordStatus();
+   deleteServer(auxdibot, guild.id);
    return;
 }

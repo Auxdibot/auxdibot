@@ -42,7 +42,7 @@ type APIEmbed {
   color       Int?
   title       String?
   description String?
-  type        String                @default("rich")
+  type        String?               @default("rich")
   url         String?
 }
 
@@ -67,7 +67,6 @@ enum LogAction {
   PUNISHMENT_EXPIRED
   PUNISHMENT_DELETED
   PERMISSION_CREATED
-  PERMISSION_DELETED
   MESSAGE_EDITED
   MESSAGE_DELETED
   JOIN_LEAVE_CHANNEL_CHANGED
@@ -102,7 +101,6 @@ type Punishment {
   userID            String
   moderatorID       String?
   punishmentID      Int
-  serverID          String
 }
 
 type PermissionOverride {
@@ -113,13 +111,8 @@ type PermissionOverride {
 }
 
 type LevelReward {
-  level   Int
-  role_id String
-}
-
-type SuggestionReaction {
-  emoji  String
-  rating Int
+  level  Int
+  roleID String
 }
 
 type Change {
@@ -139,15 +132,10 @@ type ReactionRole {
 }
 
 type Log {
-  type                LogAction
-  user_id             String
-  mute_role           Change?
-  channel             Change?
-  message_edit        Change?
-  punishment          Punishment?
-  permission_override PermissionOverride?
-  date_unix           Int                 @default(0)
-  description         String              @default("")
+  type        LogAction
+  userID      String
+  date_unix   Int       @default(0)
+  description String    @default("")
 }
 
 type StarredMessage {
@@ -164,32 +152,29 @@ enum SuggestionState {
 }
 
 type Suggestion {
-  serverID             String
   suggestionID         Int             @default(-1)
   messageID            String?
   channelID            String?
   creatorID            String          @default("")
   status               SuggestionState @default(WAITING)
   date_unix            Int             @default(0)
+  content              String          @default("")
   handlerID            String?
   handled_reason       String?
   discussion_thread_id String?
 }
 
 model servermembers {
-  id                     String  @id @default(auto()) @map("_id") @db.ObjectId
-  v                      Int?    @map("__v")
-  userID                 String
-  serverID               String
-  experience             Int?
-  level                  Int?
-  in_server              Boolean
-  sticky_roles           Json?
-  suggestions_banned     Boolean
-  total_starred_messages Int?
-  total_stars            Int?
-  xp                     Int?
-  xpTill                 Int?
+  id                 String   @id @default(auto()) @map("_id") @db.ObjectId
+  v                  Int?     @map("__v")
+  userID             String
+  serverID           String
+  level              Int?     @default(0)
+  in_server          Boolean  @default(true)
+  sticky_roles       String[] @default([])
+  suggestions_banned Boolean? @default(false)
+  xp                 Int?     @default(0)
+  xpTill             Int?     @default(0)
 
   @@unique([serverID, userID])
 }
@@ -212,7 +197,7 @@ model servers {
   sticky_roles                   String[]
   reaction_roles                 ReactionRole[]
   suggestions                    Suggestion[]
-  suggestions_reactions          SuggestionReaction[]
+  suggestions_reactions          String[]
   suggestions_channel            String?
   suggestions_updates_channel    String?
   suggestions_auto_delete        Boolean              @default(true)

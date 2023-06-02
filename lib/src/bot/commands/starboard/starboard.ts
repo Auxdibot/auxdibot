@@ -2,10 +2,11 @@ import { EmbedBuilder, ChannelType, SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
-import Modules from '@/config/Modules';
-import { LogType } from '@/config/Log';
+import Modules from '@/constants/Modules';
 import emojiRegex from 'emoji-regex';
 import { Auxdibot } from '@/interfaces/Auxdibot';
+import handleLog from '@/util/handleLog';
+import { LogAction } from '@prisma/client';
 
 const starboardCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -62,33 +63,42 @@ const starboardCommand = <AuxdibotCommand>{
          async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
             const channel = interaction.options.getChannel('channel', false, [ChannelType.GuildText]);
-            const settings = await interaction.data.guildData.fetchSettings();
+            const server = interaction.data.guildData;
             const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.title = '⚙️ Starboard Channel Changed';
 
-            const formerChannel = interaction.data.guild.channels.resolve(settings.starboard_channel || '');
-            if ((channel && channel.id == settings.starboard_channel) || (!channel && !settings.starboard_channel)) {
+            const formerChannel = interaction.data.guild.channels.resolve(server.starboard_channel || '');
+            if ((channel && channel.id == server.starboard_channel) || (!channel && !server.starboard_channel)) {
                embed.description = `Nothing changed. Starboard channel is the same as one specified in settings.`;
                return await interaction.reply({
                   embeds: [embed],
                });
             }
-            settings.starboard_channel = channel ? channel.id : undefined;
-            await settings.save();
+            await auxdibot.database.servers.update({
+               where: { serverID: server.serverID },
+               data: { starboard_channel: channel.id },
+            });
             embed.description = `The starboard channel for this server has been changed.\r\n\r\nFormerly: ${
                formerChannel ? `<#${formerChannel.id}>` : 'None'
             }\r\n\r\nNow: ${channel || 'None (Disabled)'}`;
 
-            await interaction.data.guildData.log(interaction.data.guild, {
-               type: LogType.STARBOARD_CHANNEL_CHANGED,
-               user_id: interaction.data.member.id,
-               date_unix: Date.now(),
-               description: 'The starboard channel for this server has been changed.',
-               channel: {
-                  former: formerChannel?.id,
-                  now: channel?.id,
+            await handleLog(
+               auxdibot,
+               interaction.data.guild,
+               {
+                  type: LogAction.STARBOARD_CHANNEL_CHANGED,
+                  userID: interaction.data.member.id,
+                  date_unix: Date.now(),
+                  description: `The starboard channel for this server has been changed.`,
                },
-            });
+               [
+                  {
+                     name: 'Starboard Channel Change',
+                     value: `Formerly: ${formerChannel}\n\nNow: ${channel}`,
+                     inline: false,
+                  },
+               ],
+            );
             return await interaction.reply({
                embeds: [embed],
             });
@@ -105,7 +115,6 @@ const starboardCommand = <AuxdibotCommand>{
          async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
             const server = interaction.data.guildData;
-            const settings = await server.fetchSettings();
             const reaction = interaction.options.getString('reaction', true);
             const regex = emojiRegex();
             const emojis = reaction.match(regex);
@@ -117,16 +126,18 @@ const starboardCommand = <AuxdibotCommand>{
                errorEmbed.description = "This isn't a valid reaction!";
                return await interaction.reply({ embeds: [errorEmbed] });
             }
-            if (settings.starboard_reaction == emoji) {
+            if (server.starboard_reaction == emoji) {
                const errorEmbed = auxdibot.embeds.error.toJSON();
                errorEmbed.description = 'The starboard reaction is the same as the one specified!';
                return await interaction.reply({ embeds: [errorEmbed] });
             }
-            settings.starboard_reaction = typeof emoji == 'string' ? emoji : emoji.toString();
-            await settings.save();
-            await interaction.data.guildData.log(interaction.data.guild, {
-               type: LogType.STARBOARD_REACTION_CHANGED,
-               user_id: interaction.data.member.id,
+            await auxdibot.database.servers.update({
+               where: { serverID: server.serverID },
+               data: { starboard_reaction: typeof emoji == 'string' ? emoji : emoji.toString() },
+            });
+            await handleLog(auxdibot, interaction.data.guild, {
+               type: LogAction.STARBOARD_REACTION_CHANGED,
+               userID: interaction.data.member.id,
                date_unix: Date.now(),
                description: `The starboard reaction for this server has been set to ${emoji}.`,
             });
@@ -146,23 +157,24 @@ const starboardCommand = <AuxdibotCommand>{
          async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
             const server = interaction.data.guildData;
-            const settings = await server.fetchSettings();
             const reaction_count = interaction.options.getNumber('reaction_count', true);
             if (reaction_count <= 0) {
                const errorEmbed = auxdibot.embeds.error.toJSON();
                errorEmbed.description = 'The reaction count cannot be less than or equal to zero!';
                return await interaction.reply({ embeds: [errorEmbed] });
             }
-            if (settings.starboard_reaction_count == reaction_count) {
+            if (server.starboard_reaction_count == reaction_count) {
                const errorEmbed = auxdibot.embeds.error.toJSON();
                errorEmbed.description = 'The starboard reaction count is the same as the one specified!';
                return await interaction.reply({ embeds: [errorEmbed] });
             }
-            settings.starboard_reaction_count = reaction_count;
-            await settings.save();
-            await interaction.data.guildData.log(interaction.data.guild, {
-               type: LogType.STARBOARD_REACTION_COUNT_CHANGED,
-               user_id: interaction.data.member.id,
+            await auxdibot.database.servers.update({
+               where: { serverID: server.serverID },
+               data: { starboard_reaction_count: reaction_count },
+            });
+            await handleLog(auxdibot, interaction.data.guild, {
+               type: LogAction.STARBOARD_REACTION_COUNT_CHANGED,
+               userID: interaction.data.member.id,
                date_unix: Date.now(),
                description: `The starboard reaction count for this server has been set to ${reaction_count}.`,
             });

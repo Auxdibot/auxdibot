@@ -1,19 +1,18 @@
 import { EmbedBuilder, GuildMember, ChatInputCommandInteraction } from 'discord.js';
 import { Auxdibot } from '@/interfaces/Auxdibot';
-import Server from '@/mongo/model/server/Server';
 import { DMAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
+import findOrCreateServer from '@/modules/server/findOrCreateServer';
+import testPermission from '@/util/testPermission';
 
-export default async function slashCreate(interaction: ChatInputCommandInteraction) {
-   const auxdibot = interaction.client as Auxdibot;
+export default async function slashCreate(auxdibot: Auxdibot, interaction: ChatInputCommandInteraction) {
    if (!auxdibot.commands) return;
    const command = auxdibot.commands.get(interaction.commandName);
    if (!command) return;
    if (interaction.guild && interaction.member) {
       const interactionData: AuxdibotCommandInteraction<GuildAuxdibotCommandData> = interaction;
-      const server = await Server.findOrCreateServer(interaction.guild.id);
-      const settings = await server.fetchSettings();
+      const server = await findOrCreateServer(auxdibot, interaction.guild.id);
       interactionData.data = <GuildAuxdibotCommandData>{
          dmCommand: false,
          date: new Date(),
@@ -25,11 +24,13 @@ export default async function slashCreate(interaction: ChatInputCommandInteracti
          const subcommand = command.subcommands.find(
             (subcommand) => subcommand.name == interaction.options.getSubcommand(),
          );
-         if (settings.disabled_modules.find((item) => item == subcommand.info.module.name))
+         if (server.disabled_modules.find((item) => item == subcommand.info.module.name))
             return await interaction.reply({ embeds: [auxdibot.embeds.disabled.toJSON()] });
          if (subcommand) {
             if (
-               !(await server.testPermission(
+               !(await testPermission(
+                  auxdibot,
+                  interaction.guild.id,
                   subcommand.info.permission,
                   interactionData.data.member,
                   subcommand.info.allowedDefault || false,
@@ -45,10 +46,12 @@ export default async function slashCreate(interaction: ChatInputCommandInteracti
             return await subcommand.execute(auxdibot, interactionData);
          }
       }
-      if (settings.disabled_modules.find((item) => item == command.info.module.name))
+      if (server.disabled_modules.find((item) => item == command.info.module.name))
          return await interaction.reply({ embeds: [auxdibot.embeds.disabled.toJSON()] });
       if (
-         !(await server.testPermission(
+         !(await testPermission(
+            auxdibot,
+            interaction.guild.id,
             command.info.permission,
             interactionData.data.member,
             command.info.allowedDefault || false,

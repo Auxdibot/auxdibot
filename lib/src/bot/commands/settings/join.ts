@@ -1,4 +1,4 @@
-import { EmbedBuilder, SlashCommandBuilder, APIEmbed } from 'discord.js';
+import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 
 import { toAPIEmbed } from '@/interfaces/embeds/EmbedParameters';
@@ -7,8 +7,9 @@ import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInt
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import createEmbedParameters from '@/util/createEmbedParameters';
 import argumentsToEmbedParameters from '@/util/argumentsToEmbedParameters';
-import Modules from '@/config/Modules';
+import Modules from '@/constants/Modules';
 import { Auxdibot } from '@/interfaces/Auxdibot';
+import { APIEmbed } from '@prisma/client';
 
 const joinCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -57,30 +58,31 @@ const joinCommand = <AuxdibotCommand>{
          },
          async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
-            const settings = await interaction.data.guildData.fetchSettings();
+            const server = interaction.data.guildData;
             const content = interaction.options.getString('content');
             const parameters = argumentsToEmbedParameters(interaction);
             try {
-               settings.join_embed = toAPIEmbed(parameters);
-               if (content) {
-                  settings.join_text = content;
-               }
-               await settings.save({ validateModifiedOnly: true });
+               const newEmbed = toAPIEmbed(parameters);
+               await auxdibot.database.servers.update({
+                  where: { serverID: server.serverID },
+                  data: { join_embed: (<unknown>newEmbed) as APIEmbed, join_text: content || server.join_text },
+               });
                const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
                embed.title = 'Success!';
                embed.description = `Set the join embed.`;
                await interaction.reply({ embeds: [embed] });
                if (interaction.channel && interaction.channel.isTextBased())
                   await interaction.channel.send({
-                     content: `Here's a preview of the new join embed!\n${settings.join_dm_text || ''}`,
+                     content: `Here's a preview of the new join embed!\n${server.join_dm_text || ''}`,
                      embeds: [
                         JSON.parse(
                            await parsePlaceholders(
-                              JSON.stringify(settings.join_embed),
+                              auxdibot,
+                              JSON.stringify(newEmbed),
                               interaction.data.guild,
                               interaction.data.member,
                            ),
-                        ) as APIEmbed,
+                        ),
                      ],
                   });
             } catch (x) {
@@ -105,27 +107,30 @@ const joinCommand = <AuxdibotCommand>{
          async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
             const json = interaction.options.getString('json', true);
-            const settings = await interaction.data.guildData.fetchSettings();
+            const server = interaction.data.guildData;
             try {
                const jsonEmbed = JSON.parse(json) as APIEmbed;
                const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
-               settings.join_embed = jsonEmbed;
-               await settings.save({ validateModifiedOnly: true });
+               await auxdibot.database.servers.update({
+                  where: { serverID: server.serverID },
+                  data: { join_embed: jsonEmbed },
+               });
                embed.title = 'Success!';
                embed.description = `Set the join embed.`;
                if (interaction.channel && interaction.channel.isTextBased())
                   await interaction.channel.send({
                      content: "Here's a preview of the new join embed!",
-                     ...(Object.entries(settings.join_embed || {}).length != 0
+                     ...(Object.entries(server.join_embed || {}).length != 0
                         ? {
                              embeds: [
                                 JSON.parse(
                                    await parsePlaceholders(
-                                      JSON.stringify(settings.join_embed),
+                                      auxdibot,
+                                      JSON.stringify(jsonEmbed),
                                       interaction.data.guild,
                                       interaction.data.member,
                                    ),
-                                ) as APIEmbed,
+                                ),
                              ],
                           }
                         : {}),
@@ -148,20 +153,21 @@ const joinCommand = <AuxdibotCommand>{
          },
          async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
-            const settings = await interaction.data.guildData.fetchSettings();
+            const server = interaction.data.guildData;
             try {
                return await interaction.reply({
-                  content: `**EMBED PREVIEW**\r\n${settings.join_text || ''}`,
-                  ...(Object.entries(settings.join_embed || {}).length != 0
+                  content: `**EMBED PREVIEW**\r\n${server.join_text || ''}`,
+                  ...(Object.entries(server.join_embed || {}).length != 0
                      ? {
                           embeds: [
                              JSON.parse(
                                 await parsePlaceholders(
-                                   JSON.stringify(settings.join_embed),
+                                   auxdibot,
+                                   JSON.stringify(server.join_embed),
                                    interaction.data.guild,
                                    interaction.data.member,
                                 ),
-                             ) as APIEmbed,
+                             ),
                           ],
                        }
                      : {}),

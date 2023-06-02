@@ -1,65 +1,82 @@
 import { Message, PartialMessage } from 'discord.js';
-import Server from '@/mongo/model/server/Server';
-import { LogType } from '@/config/Log';
-import { IReactionRole } from '@/mongo/schema/ReactionRoleSchema';
-export default async function messageDelete(message: Message<boolean> | PartialMessage) {
+import { Auxdibot } from '@/interfaces/Auxdibot';
+import findOrCreateServer from '@/modules/server/findOrCreateServer';
+import deleteSuggestion from '@/modules/features/suggestions/deleteSuggestion';
+import { Log, LogAction } from '@prisma/client';
+import handleLog from '@/util/handleLog';
+export default async function messageDelete(auxdibot: Auxdibot, message: Message<boolean> | PartialMessage) {
    const sender = message.member;
 
    if (!sender || !message.guild) return;
-   const server = await Server.findOrCreateServer(message.guild.id);
-   const data = await server.fetchData();
-   const settings = await server.fetchSettings();
-   const rr = data.reaction_roles.find((rr: IReactionRole) => rr.message_id == message.id);
-   const suggestion = data.suggestions.find((suggestion) => suggestion.message_id == message.id);
-   const starboard = data.starred_messages.find(
-      (starred_message) => starred_message.message_id == message.id || starred_message.starred_message_id == message.id,
+   const server = await findOrCreateServer(auxdibot, message.guild.id);
+   const rr = server.reaction_roles.find((rr) => rr.messageID == message.id);
+   const suggestion = server.suggestions.find((suggestion) => suggestion.messageID == message.id);
+   const starboard = server.starred_messages.find(
+      (starred_message) =>
+         starred_message.starboard_message_id == message.id || starred_message.starred_message_id == message.id,
    );
    if (suggestion) {
-      data.removeSuggestion(suggestion.suggestion_id);
-      await server.log(message.guild, {
-         user_id: sender.id,
-         description: `${sender.user.tag} deleted Suggestion #${suggestion.suggestion_id}`,
-         type: LogType.SUGGESTION_DELETED,
+      await deleteSuggestion(auxdibot, message.guild.id, suggestion.suggestionID);
+      await handleLog(auxdibot, message.guild, <Log>{
+         type: LogAction.SUGGESTION_DELETED,
          date_unix: Date.now(),
+         description: `${sender.user.tag} deleted Suggestion #${suggestion.suggestionID}`,
+         userID: sender.id,
       });
       return;
    }
    if (rr) {
-      data.reaction_roles.splice(data.reaction_roles.indexOf(rr), 1);
-      await data.save({ validateModifiedOnly: true });
-      await server.log(message.guild, {
-         user_id: sender.id,
-         description: `Deleted a reaction role${message ? ` in ${message.channel || 'a channel'}` : ''}.`,
-         type: LogType.REACTION_ROLE_REMOVED,
+      server.reaction_roles.splice(server.reaction_roles.indexOf(rr), 1);
+      await auxdibot.database.servers.update({
+         where: { serverID: message.guild.id },
+         data: { reaction_roles: server.reaction_roles },
+      });
+      await handleLog(auxdibot, message.guild, <Log>{
+         type: LogAction.REACTION_ROLE_REMOVED,
          date_unix: Date.now(),
+         description: `Deleted a reaction role${message ? ` in ${message.channel || 'a channel'}` : ''}.`,
+         userID: sender.id,
       });
       return;
    }
    if (starboard) {
-      data.starred_messages.splice(data.starred_messages.indexOf(starboard), 1);
-      const starboard_channel = message.guild.channels.cache.get(settings.starboard_channel);
+      server.starred_messages.splice(server.starred_messages.indexOf(starboard), 1);
+      const starboard_channel = message.guild.channels.cache.get(server.starboard_channel);
       const starboard_message =
          starboard_channel && starboard_channel.isTextBased()
-            ? starboard_channel.messages.cache.get(starboard.message_id)
+            ? starboard_channel.messages.cache.get(starboard.starboard_message_id)
             : undefined;
       if (starboard_message && starboard_message.deletable)
          await starboard_message.delete().catch((x) => console.log(x));
-      await data.save({ validateModifiedOnly: true });
-      await server.log(message.guild, {
-         user_id: sender.id,
-         description: `Deleted a starred message${message ? ` in ${message.channel || 'a channel'}` : ''}.`,
-         type: LogType.STARBOARD_MESSAGE_DELETED,
+      await auxdibot.database.servers.update({
+         where: { serverID: message.guild.id },
+         data: { starred_messages: server.starred_messages },
+      });
+      await handleLog(auxdibot, message.guild, <Log>{
+         type: LogAction.STARBOARD_MESSAGE_DELETED,
          date_unix: Date.now(),
+         description: `Deleted a starred message${message ? ` in ${message.channel || 'a channel'}` : ''}.`,
+         userID: sender.id,
       });
       return;
    }
    if (sender.id == message.client.user.id) return;
-   await server.log(message.guild, {
-      type: LogType.MESSAGE_DELETED,
-      date_unix: Date.now(),
-      description: `A message by ${sender.user.tag} was deleted.`,
-      message_edit: { former: message.cleanContent, now: '[deleted]' },
-      user_id: sender.id,
-   });
+   await handleLog(
+      auxdibot,
+      message.guild,
+      <Log>{
+         type: LogAction.MESSAGE_EDITED,
+         date_unix: Date.now(),
+         description: `A message by ${sender.user.tag} was deleted.`,
+         userID: sender.id,
+      },
+      [
+         {
+            name: 'Deleted Message',
+            value: `Deleted Content: \n\`\`\`${message.cleanContent}\`\`\``,
+            inline: false,
+         },
+      ],
+   );
    return;
 }

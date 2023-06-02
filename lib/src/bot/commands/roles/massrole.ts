@@ -2,9 +2,10 @@ import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
-import { LogType } from '@/config/Log';
-import Modules from '@/config/Modules';
+import Modules from '@/constants/Modules';
 import { Auxdibot } from '@/interfaces/Auxdibot';
+import handleLog from '@/util/handleLog';
+import { LogAction } from '@prisma/client';
 
 const massroleCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -65,10 +66,10 @@ const massroleCommand = <AuxdibotCommand>{
                   member.roles.add(role.id).catch(() => undefined);
                }
             });
-            await interaction.data.guildData.log(interaction.data.guild, {
-               user_id: interaction.data.member.id,
+            handleLog(auxdibot, interaction.data.guild, {
+               userID: interaction.data.member.id,
                description: `Massrole took ${role} from anyone who had it, with lower role hiearchy than Auxdibot.`,
-               type: LogType.MASSROLE_GIVEN,
+               type: LogAction.MASSROLE_GIVEN,
                date_unix: Date.now(),
             });
          },
@@ -105,10 +106,10 @@ const massroleCommand = <AuxdibotCommand>{
                   member.roles.remove(role.id).catch(() => undefined);
                }
             });
-            await interaction.data.guildData.log(interaction.data.guild, {
-               user_id: interaction.data.member.id,
+            handleLog(auxdibot, interaction.data.guild, {
+               userID: interaction.data.member.id,
                description: `Massrole took ${role} from anyone who had it, with lower role hiearchy than Auxdibot.`,
-               type: LogType.MASSROLE_TAKEN,
+               type: LogAction.MASSROLE_TAKEN,
                date_unix: Date.now(),
             });
          },
