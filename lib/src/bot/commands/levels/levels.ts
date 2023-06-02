@@ -247,7 +247,7 @@ const levelCommand = <AuxdibotCommand>{
                embed.description = "This person isn't on the server!";
                return await interaction.reply({ embeds: [embed] });
             }
-            awardXP(auxdibot, interaction.data.guildData.serverID, user.id, xp);
+            awardXP(auxdibot, interaction.data.guildData.serverID, user.id, Math.round(xp));
             embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.description = `Successfully gave ${member} ${xp.toLocaleString()} XP.`;
             embed.title = 'Success!';
@@ -276,7 +276,7 @@ const levelCommand = <AuxdibotCommand>{
                embed.description = "This person isn't on the server!";
                return await interaction.reply({ embeds: [embed] });
             }
-            takeXP(auxdibot, interaction.data.guildData.serverID, user.id, xp);
+            takeXP(auxdibot, interaction.data.guildData.serverID, user.id, Math.round(xp));
             embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.description = `Successfully took ${xp.toLocaleString()} XP from ${member}.`;
             embed.title = 'Success!';
@@ -296,7 +296,7 @@ const levelCommand = <AuxdibotCommand>{
             const xp = interaction.options.getNumber('xp', true);
             await auxdibot.database.servers.update({
                where: { serverID: interaction.data.guildData.serverID },
-               data: { message_xp: xp },
+               data: { message_xp: Math.round(xp) },
             });
             const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.description = `Members will now get ${xp.toLocaleString()} XP from chatting.`;

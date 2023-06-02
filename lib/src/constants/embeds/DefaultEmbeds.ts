@@ -35,7 +35,6 @@ export const DEFAULT_LEVELUP_EMBED = {
 export const DEFAULT_SUGGESTION_EMBED = {
    type: 'rich',
    title: 'Suggestion #%suggestion_id%',
-   footer: { text: '👍 Rating: %suggestion_rating%' },
    description: '🕰️ Date: %suggestion_date_formatted%\n%suggestion_state%',
    fields: [{ value: '%suggestion_content%', name: 'Suggestion', inline: false }],
    color: 6052956,
@@ -44,7 +43,6 @@ export const DEFAULT_SUGGESTION_EMBED = {
 export const DEFAULT_SUGGESTION_UPDATE_EMBED = {
    type: 'rich',
    title: '%suggestion_state% Suggestion #%suggestion_id%',
-   footer: { text: '👍 Rating: %suggestion_rating%' },
    fields: [{ value: '%suggestion_handled_reason%', name: 'Reason', inline: false }],
    description:
       '🕰️ Date: %suggestion_date_formatted%\n🧍 Handled by: %suggestion_handler_mention% \n\n%suggestion_content%',

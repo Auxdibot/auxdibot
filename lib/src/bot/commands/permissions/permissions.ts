@@ -68,20 +68,10 @@ const permissionsCommand = <AuxdibotCommand>{
             const permission = server.permission_overrides[override_id - 1];
             if (permission) {
                const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
-               embed.title = `✋ Permission Override (OID: ${override_id + 1})`;
-               embed.description = '';
-               embed.fields = [
-                  {
-                     name: 'Permission Override',
-                     value: `${permission.allowed ? '✅' : '❎'} \`${permission.permission}\` - ${
-                        permission.roleID
-                           ? `<@&${permission.roleID}>`
-                           : permission.userID
-                           ? `<@${permission.roleID}>`
-                           : ''
-                     }`,
-                  },
-               ];
+               embed.title = `✋ Permission Override (OID: ${override_id})`;
+               embed.description = `${permission.allowed ? '✅' : '❎'} \`${permission.permission}\` - ${
+                  permission.roleID ? `<@&${permission.roleID}>` : permission.userID ? `<@${permission.userID}>` : ''
+               }`;
                return await interaction.reply({ embeds: [embed] });
             }
          },
@@ -155,7 +145,7 @@ const permissionsCommand = <AuxdibotCommand>{
                },
                [
                   {
-                     name: `Permission Override (OID: ${interaction.data.guildData.permission_overrides.length + 1})`,
+                     name: `Permission Override (OID: ${interaction.data.guildData.permission_overrides.length})`,
                      value: `${allowed ? '✅' : '❎'} \`${permissionOverride.permission}\` - ${
                         permissionOverride.roleID
                            ? `<@&${permissionOverride.roleID}>`

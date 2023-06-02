@@ -67,8 +67,8 @@ const warnCommand = <AuxdibotCommand>{
             auxdibot,
             interaction.data.guild,
             {
-               userID: interaction.user.id,
-               description: 'A user was warned.',
+               userID: user.id,
+               description: `${user.tag} was warned.`,
                date_unix: Date.now(),
                type: LogAction.WARN,
             },

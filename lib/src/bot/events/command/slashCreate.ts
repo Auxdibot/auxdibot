@@ -24,9 +24,10 @@ export default async function slashCreate(auxdibot: Auxdibot, interaction: ChatI
          const subcommand = command.subcommands.find(
             (subcommand) => subcommand.name == interaction.options.getSubcommand(),
          );
-         if (server.disabled_modules.find((item) => item == subcommand.info.module.name))
-            return await interaction.reply({ embeds: [auxdibot.embeds.disabled.toJSON()] });
+
          if (subcommand) {
+            if (server.disabled_modules.find((item) => item == subcommand.info.module.name))
+               return await interaction.reply({ embeds: [auxdibot.embeds.disabled.toJSON()] });
             if (
                !(await testPermission(
                   auxdibot,

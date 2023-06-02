@@ -5,4 +5,6 @@ export const defaultServer = {
    join_dm_embed: DEFAULT_JOIN_DM_EMBED,
    join_embed: DEFAULT_JOIN_EMBED,
    leave_embed: DEFAULT_LEAVE_EMBED,
+   suggestions: [],
+   punishments: [],
 };

@@ -11,6 +11,7 @@ import findOrCreateServer from './modules/server/findOrCreateServer';
 import handleLog from './util/handleLog';
 import { LogAction, PunishmentType } from '@prisma/client';
 import { punishmentInfoField } from './modules/features/moderation/punishmentInfoField';
+import { AuxdibotPartials } from './constants/AuxdibotPartials';
 
 dotenv.config();
 export const TOKEN = process.env.DISCORD_BOT_TOKEN;
@@ -23,6 +24,7 @@ export const CLIENT_ID = process.env.DISCORD_BOT_CLIENT_ID;
 
    const auxdibot = new Client({
       intents: AuxdibotIntents,
+      partials: AuxdibotPartials,
       presence: {
          activities: [
             {
@@ -49,9 +51,9 @@ export const CLIENT_ID = process.env.DISCORD_BOT_CLIENT_ID;
       levels: 0xf1c71b,
       suggestions: {
          WAITING: 0x5c5c5c,
-         DENIED: 0x54cc31,
-         CONSIDERED: 0xcc3131,
-         APPROVED: 0xf2e876,
+         DENIED: 0xcc3131,
+         APPROVED: 0x54cc31,
+         CONSIDERED: 0xf2e876,
          ADDED: 0x31ccc4,
       },
    };

@@ -1,8 +1,8 @@
-import { EmbedBuilder, APIEmbed, ChannelType, GuildBasedChannel, SlashCommandBuilder } from 'discord.js';
+import { EmbedBuilder, ChannelType, GuildBasedChannel, SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
-import { SuggestionStateName } from '@/constants/SuggestionState';
+import { SuggestionStateName } from '@/constants/SuggestionStateName';
 import parsePlaceholders from '@/util/parsePlaceholder';
 import emojiRegex from 'emoji-regex';
 import { getMessage } from '@/util/getMessage';
@@ -38,12 +38,12 @@ async function stateCommand(
    suggestion.status = state;
    suggestion.handlerID = interaction.data.member.id;
    suggestion.handled_reason = reason || undefined;
-   const message_channel: GuildBasedChannel | undefined = suggestion.channelID
-      ? interaction.data.guild.channels.cache.get(suggestion.channelID)
+   const message_channel: GuildBasedChannel | undefined = server.suggestions_channel
+      ? interaction.data.guild.channels.cache.get(server.suggestions_channel)
       : undefined;
    const message = suggestion.messageID
       ? message_channel && message_channel.isTextBased()
-         ? message_channel.messages.cache.get(suggestion.messageID)
+         ? await message_channel.messages.fetch(suggestion.messageID)
          : await getMessage(interaction.data.guild, suggestion.messageID)
       : undefined;
    if (!message) {
@@ -80,7 +80,7 @@ async function stateCommand(
                interaction.data.member,
                suggestion,
             ),
-         ) as APIEmbed;
+         );
          embed.color = auxdibot.colors.suggestions[suggestion.status];
          await channel.send({ embeds: [embed] });
       }
@@ -290,14 +290,17 @@ const suggestionsCommand = <AuxdibotCommand>{
                errorEmbed.description = 'No suggestions reactions could be found!';
                return await interaction.reply({ embeds: [errorEmbed] });
             }
-            const suggestion = (<unknown>{
+            const suggestion = <Suggestion>{
                suggestionID: await incrementSuggestionsTotal(auxdibot, interaction.data.guild.id),
                creatorID: interaction.data.member.id,
                content,
                status: SuggestionState.WAITING,
-               rating: 0,
+               handlerID: null,
+               messageID: null,
+               discussion_thread_id: null,
+               handled_reason: null,
                date_unix: Date.now(),
-            }) as Suggestion;
+            };
             const embed = DEFAULT_SUGGESTION_EMBED;
             const successEmbed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             successEmbed.description = `Created a new suggestion (#${suggestion.suggestionID}).`;
@@ -314,14 +317,13 @@ const suggestionsCommand = <AuxdibotCommand>{
                            interaction.data.member,
                            suggestion,
                         ),
-                     ) as APIEmbed,
+                     ),
                   ],
                })
                .then(async (msg) => {
                   if (!interaction.data) return;
                   server.suggestions_reactions.forEach((reaction) => msg.react(reaction));
                   suggestion.messageID = msg.id;
-                  suggestion.channelID = msg.channel.id;
                   if (server.suggestions_discussion_threads) {
                      const thread = await msg
                         .startThread({
@@ -785,12 +787,12 @@ const suggestionsCommand = <AuxdibotCommand>{
                errorEmbed.description = "Couldn't find that suggestion!";
                return await interaction.reply({ embeds: [errorEmbed] });
             }
-            const message_channel: GuildBasedChannel | undefined = suggestion.channelID
-               ? interaction.data.guild.channels.cache.get(suggestion.channelID)
+            const message_channel: GuildBasedChannel | undefined = server.suggestions_channel
+               ? interaction.data.guild.channels.cache.get(server.suggestions_channel)
                : undefined;
             const message = suggestion.messageID
                ? message_channel && message_channel.isTextBased()
-                  ? message_channel.messages.cache.get(suggestion.messageID)
+                  ? await message_channel.messages.fetch(suggestion.messageID)
                   : await getMessage(interaction.data.guild, suggestion.messageID)
                : undefined;
             if (message) {

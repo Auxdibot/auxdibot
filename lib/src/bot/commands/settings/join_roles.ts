@@ -88,9 +88,9 @@ const joinRolesCommand = <AuxdibotCommand>{
                errorEmbed.description = "This role is higher than Auxdibot's highest role!";
                return await interaction.reply({ embeds: [errorEmbed] });
             }
-            if (testLimit(server.sticky_roles, Limits.JOIN_ROLE_DEFAULT_LIMIT)) {
+            if (!testLimit(server.sticky_roles, Limits.JOIN_ROLE_DEFAULT_LIMIT)) {
                const errorEmbed = auxdibot.embeds.error.toJSON();
-               errorEmbed.description = 'You have too many sticky roles! Remove some before adding more.';
+               errorEmbed.description = 'You have too many join roles! Remove some before adding more.';
                return await interaction.reply({ embeds: [errorEmbed] });
             }
             auxdibot.database.servers.update({

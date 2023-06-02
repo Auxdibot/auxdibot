@@ -47,8 +47,8 @@ module.exports = <AuxdibotButton>{
                   auxdibot,
                   interaction.guild,
                   {
-                     userID: interaction.user.id,
-                     description: 'A user was kicked.',
+                     userID: member.user.id,
+                     description: `${member.user.tag} was kicked.`,
                      date_unix: Date.now(),
                      type: LogAction.KICK,
                   },

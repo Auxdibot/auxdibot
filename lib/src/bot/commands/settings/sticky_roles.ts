@@ -93,7 +93,7 @@ const stickyRolesCommand = <AuxdibotCommand>{
                errorEmbed.description = "This role is higher than Auxdibot's highest role!";
                return await interaction.reply({ embeds: [errorEmbed] });
             }
-            if (testLimit(server.sticky_roles, Limits.STICKY_ROLE_DEFAULT_LIMIT)) {
+            if (!testLimit(server.sticky_roles, Limits.STICKY_ROLE_DEFAULT_LIMIT)) {
                const errorEmbed = auxdibot.embeds.error.toJSON();
                errorEmbed.description = 'You have too many sticky roles! Remove some before adding more.';
                return await interaction.reply({ embeds: [errorEmbed] });

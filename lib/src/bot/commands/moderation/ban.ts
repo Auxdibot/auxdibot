@@ -91,8 +91,8 @@ const banCommand = <AuxdibotCommand>{
                   auxdibot,
                   interaction.data.guild,
                   {
-                     userID: interaction.user.id,
-                     description: 'A user was banned.',
+                     userID: user.id,
+                     description: `${user.tag} was banned.`,
                      date_unix: Date.now(),
                      type: LogAction.BAN,
                   },

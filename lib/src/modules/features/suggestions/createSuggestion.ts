@@ -16,5 +16,5 @@ export default async function createSuggestion(auxdibot: Auxdibot, serverID: str
    return await auxdibot.database.servers
       .update({ where: { serverID }, data: { suggestions: { push: suggestion } } })
       .then(() => suggestion)
-      .catch(() => undefined);
+      .catch((x) => console.log(x));
 }

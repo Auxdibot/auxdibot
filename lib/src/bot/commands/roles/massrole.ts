@@ -56,12 +56,12 @@ const massroleCommand = <AuxdibotCommand>{
             await interaction.reply({ embeds: [embed] });
             const res = await interaction.data.guild.members.fetch();
             res.forEach((member) => {
-               if (!interaction.data) return;
                if (
-                  !member.roles.resolve(role.id) &&
-                  interaction.data.guild.members.me &&
-                  member.roles.highest.comparePositionTo(interaction.data.guild.members.me.roles.highest) < 0 &&
-                  member.roles.highest.comparePositionTo(interaction.data.member.roles.highest) < 0
+                  interaction.data.member.id != member.id &&
+                  (!member.roles.resolve(role.id) &&
+                     interaction.data.guild.members.me &&
+                     member.roles.highest.comparePositionTo(interaction.data.guild.members.me.roles.highest) <= 0 &&
+                     member.roles.highest.comparePositionTo(interaction.data.member.roles.highest)) <= 0
                ) {
                   member.roles.add(role.id).catch(() => undefined);
                }
@@ -98,10 +98,11 @@ const massroleCommand = <AuxdibotCommand>{
             res.forEach((member) => {
                if (!interaction.data) return;
                if (
-                  !member.roles.resolve(role.id) &&
-                  interaction.data.guild.members.me &&
-                  member.roles.highest.comparePositionTo(interaction.data.guild.members.me.roles.highest) < 0 &&
-                  member.roles.highest.comparePositionTo(interaction.data.member.roles.highest) < 0
+                  interaction.data.member.id != member.id &&
+                  (!member.roles.resolve(role.id) &&
+                     interaction.data.guild.members.me &&
+                     member.roles.highest.comparePositionTo(interaction.data.guild.members.me.roles.highest) <= 0 &&
+                     member.roles.highest.comparePositionTo(interaction.data.member.roles.highest)) <= 0
                ) {
                   member.roles.remove(role.id).catch(() => undefined);
                }

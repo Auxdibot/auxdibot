@@ -97,8 +97,8 @@ const muteCommand = <AuxdibotCommand>{
                   auxdibot,
                   interaction.data.guild,
                   {
-                     userID: interaction.user.id,
-                     description: 'A user was muted.',
+                     userID: user.id,
+                     description: `${user.tag} was muted.`,
                      date_unix: Date.now(),
                      type: LogAction.MUTE,
                   },

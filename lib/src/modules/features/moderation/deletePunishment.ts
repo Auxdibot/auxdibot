@@ -5,6 +5,7 @@ export default async function deletePunishment(auxdibot: Auxdibot, serverID: str
    const server = await findOrCreateServer(auxdibot, serverID);
    const punishment = server.punishments.splice(
       server.punishments.indexOf(server.punishments.find((sugg) => sugg.punishmentID == punishmentID)),
+      1,
    );
    if (!punishment) return undefined;
    return await auxdibot.database.servers

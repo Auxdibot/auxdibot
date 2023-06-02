@@ -62,7 +62,8 @@ const settingsCommand = <AuxdibotCommand>{
             embed.title = '⚙️ Server Settings';
             embed.description = `🗒️ Log Channel: ${server.log_channel ? `<#${server.log_channel}>` : '`None`'}
             \r\n📩 Join/Leave Channel: ${server.join_leave_channel ? `<#${server.join_leave_channel}>` : '`None`'}
-            \r\n🎤 Mute Role: ${server.mute_role ? `<@&${server.mute_role}>` : '`None`'}`;
+            \r\n🎤 Mute Role: ${server.mute_role ? `<@&${server.mute_role}>` : '`None`'}
+            \r\n💬 Message XP: \`${server.message_xp}\``;
             embed.fields = [
                {
                   name: '👋 Join Roles',
@@ -305,7 +306,10 @@ const settingsCommand = <AuxdibotCommand>{
                ],
             );
             server.mute_role = role.id;
-            await auxdibot.database.servers.update({ where: { serverID: server.serverID }, data: { mute_role: role.id } });
+            await auxdibot.database.servers.update({
+               where: { serverID: server.serverID },
+               data: { mute_role: role.id },
+            });
             embed.description = `The mute role for this server has been changed.\r\n\r\nFormerly: ${
                formerRole ? `<@&${formerRole.id}>` : 'None'
             }\r\n\r\nNow: <@&${role.id}>`;

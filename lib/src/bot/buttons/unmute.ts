@@ -59,8 +59,8 @@ module.exports = <AuxdibotButton>{
          auxdibot,
          interaction.guild,
          {
-            userID: interaction.user.id,
-            description: 'A user was unmuted.',
+            userID: user.id,
+            description: `${user.tag} was unmuted.`,
             date_unix: Date.now(),
             type: LogAction.UNMUTE,
          },

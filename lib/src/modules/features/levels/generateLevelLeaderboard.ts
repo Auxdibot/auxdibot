@@ -9,5 +9,5 @@ export default async function generateLevelLeaderboard(auxdibot: Auxdibot, serve
          return acc.set(member, member.xp);
       }, new Collection())
       .sort((a, b) => b - a);
-   return top ? new LimitedCollection({ maxSize: limit }, leaderboard) : leaderboard;
+   return limit ? new LimitedCollection({ maxSize: limit }, leaderboard) : leaderboard;
 }

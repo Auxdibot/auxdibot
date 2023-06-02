@@ -62,8 +62,8 @@ const kickCommand = <AuxdibotCommand>{
                   auxdibot,
                   interaction.data.guild,
                   {
-                     userID: interaction.user.id,
-                     description: 'A user was kicked.',
+                     userID: user.id,
+                     description: `${user.tag} was kicked.`,
                      date_unix: Date.now(),
                      type: LogAction.KICK,
                   },

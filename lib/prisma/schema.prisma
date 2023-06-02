@@ -67,6 +67,7 @@ enum LogAction {
   PUNISHMENT_EXPIRED
   PUNISHMENT_DELETED
   PERMISSION_CREATED
+  PERMISSION_DELETED
   MESSAGE_EDITED
   MESSAGE_DELETED
   JOIN_LEAVE_CHANNEL_CHANGED
@@ -154,7 +155,6 @@ enum SuggestionState {
 type Suggestion {
   suggestionID         Int             @default(-1)
   messageID            String?
-  channelID            String?
   creatorID            String          @default("")
   status               SuggestionState @default(WAITING)
   date_unix            Int             @default(0)
@@ -196,8 +196,7 @@ model servers {
   join_roles                     String[]
   sticky_roles                   String[]
   reaction_roles                 ReactionRole[]
-  suggestions                    Suggestion[]
-  suggestions_reactions          String[]
+  suggestions_reactions          String[]             @default([])
   suggestions_channel            String?
   suggestions_updates_channel    String?
   suggestions_auto_delete        Boolean              @default(true)
@@ -213,6 +212,7 @@ model servers {
   latest_log                     Log?
   permission_overrides           PermissionOverride[]
   punishments                    Punishment[]
+  suggestions                    Suggestion[]
 
   @@unique([serverID])
 }

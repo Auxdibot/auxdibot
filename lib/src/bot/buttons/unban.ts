@@ -37,8 +37,8 @@ module.exports = <AuxdibotButton>{
          auxdibot,
          interaction.guild,
          {
-            userID: interaction.user.id,
-            description: 'A user was unbanned.',
+            userID: user.id,
+            description: `${user.tag} was unbanned.`,
             date_unix: Date.now(),
             type: LogAction.UNBAN,
          },
