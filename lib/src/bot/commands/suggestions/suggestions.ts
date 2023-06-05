@@ -18,6 +18,7 @@ import createSuggestion from '@/modules/features/suggestions/createSuggestion';
 import handleLog from '@/util/handleLog';
 import { testLimit } from '@/util/testLimit';
 import Limits from '@/constants/database/Limits';
+import handleError from '@/util/handleError';
 
 async function stateCommand(
    auxdibot: Auxdibot,
@@ -30,9 +31,7 @@ async function stateCommand(
       reason = interaction.options.getString('reason');
    const suggestion = server.suggestions.find((sugg) => sugg.suggestionID == id);
    if (!suggestion) {
-      const errorEmbed = auxdibot.embeds.error.toJSON();
-      errorEmbed.description = "Couldn't find that suggestion!";
-      return await interaction.reply({ embeds: [errorEmbed] });
+      return await handleError(auxdibot, 'SUGGESTION_NOT_FOUND', "Couldn't find that suggestion!", interaction);
    }
 
    suggestion.status = state;
@@ -48,9 +47,12 @@ async function stateCommand(
       : undefined;
    if (!message) {
       deleteSuggestion(auxdibot, interaction.data.guild.id, suggestion.suggestionID);
-      const errorEmbed = auxdibot.embeds.error.toJSON();
-      errorEmbed.description = "Couldn't find the message for the suggestion!";
-      return await interaction.reply({ embeds: [errorEmbed] });
+      return await handleError(
+         auxdibot,
+         'SUGGESTION_MESSAGE_NOT_FOUND',
+         "Couldn't find the message for that suggestion!",
+         interaction,
+      );
    }
    if (server.suggestions_auto_delete) {
       deleteSuggestion(auxdibot, interaction.data.guild.id, suggestion.suggestionID);
@@ -64,9 +66,7 @@ async function stateCommand(
    } else {
       const update = await updateSuggestion(auxdibot, interaction.data.guild.id, suggestion);
       if (!update) {
-         const errorEmbed = auxdibot.embeds.error.toJSON();
-         errorEmbed.description = "Couldn't edit that suggestion!";
-         return await interaction.reply({ embeds: [errorEmbed] });
+         return await handleError(auxdibot, 'SUGGESTION_EDIT_FAILED', "Couldn't edit that suggestion!", interaction);
       }
    }
    if (server.suggestions_updates_channel) {
@@ -272,23 +272,23 @@ const suggestionsCommand = <AuxdibotCommand>{
                where: { userID: interaction.data.member.id, serverID: interaction.data.guild.id },
             });
             if (member && member.suggestions_banned) {
-               const errorEmbed = auxdibot.embeds.error.toJSON();
-               errorEmbed.description = 'You are banned from making suggestions!';
-               return await interaction.reply({ embeds: [errorEmbed] });
+               return await handleError(
+                  auxdibot,
+                  'SUGGESTIONS_BANNED',
+                  'You are banned from making suggestions on this server!',
+                  interaction,
+               );
             }
             const suggestions_channel = server.suggestions_channel
                ? await interaction.data.guild.channels.fetch(server.suggestions_channel)
                : undefined;
             if (!suggestions_channel || !suggestions_channel.isTextBased()) {
-               const errorEmbed = auxdibot.embeds.error.toJSON();
-               errorEmbed.description =
-                  'No working suggestions channel was found! Ask an admin to enable suggestions by setting a suggestions channel.';
-               return await interaction.reply({ embeds: [errorEmbed] });
-            }
-            if (server.suggestions_reactions.length < 1) {
-               const errorEmbed = auxdibot.embeds.error.toJSON();
-               errorEmbed.description = 'No suggestions reactions could be found!';
-               return await interaction.reply({ embeds: [errorEmbed] });
+               return await handleError(
+                  auxdibot,
+                  'SUGGESTIONS_CHANNEL_NOT_FOUND',
+                  'No working suggestions channel was found! Ask an admin to enable suggestions by setting a suggestions channel.',
+                  interaction,
+               );
             }
             const suggestion = <Suggestion>{
                suggestionID: await incrementSuggestionsTotal(auxdibot, interaction.data.guild.id),
@@ -351,13 +351,16 @@ const suggestionsCommand = <AuxdibotCommand>{
                   });
                })
                .catch(async () => {
-                  const errorEmbed = auxdibot.embeds.error.toJSON();
                   await auxdibot.database.totals.update({
                      where: { serverID: interaction.data.guild.id },
                      data: { suggestions: { decrement: 1 } },
                   });
-                  errorEmbed.description = 'An error occurred trying to add this!';
-                  return await interaction.reply({ embeds: [errorEmbed] });
+                  return await handleError(
+                     auxdibot,
+                     'SUGGESTIONS_CREATE_FAILED',
+                     'An error occurred trying to create that suggestion!',
+                     interaction,
+                  );
                });
          },
       },
@@ -474,12 +477,8 @@ const suggestionsCommand = <AuxdibotCommand>{
          },
          async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
-            const deleteBool = interaction.options.getBoolean('delete');
+            const deleteBool = interaction.options.getBoolean('delete', true);
             const server = interaction.data.guildData;
-            if (deleteBool == null)
-               return await interaction.reply({
-                  embeds: [auxdibot.embeds.error.toJSON()],
-               });
             const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.title = '⚙️ Suggestions Auto Delete Changed';
             const deleteSuggestions = server.suggestions_auto_delete;
@@ -519,12 +518,8 @@ const suggestionsCommand = <AuxdibotCommand>{
          },
          async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
-            const create_thread = interaction.options.getBoolean('create_thread');
+            const create_thread = interaction.options.getBoolean('create_thread', true);
             const server = interaction.data.guildData;
-            if (create_thread == null)
-               return await interaction.reply({
-                  embeds: [auxdibot.embeds.error.toJSON()],
-               });
             const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.title = '⚙️ Suggestions Discussion Threads Changed';
             const discussionThreads = server.suggestions_discussion_threads;
@@ -579,24 +574,29 @@ const suggestionsCommand = <AuxdibotCommand>{
          name: 'add_reaction',
          info: {
             module: Modules['Suggestions'],
-            description:
-               'Add a reaction to the reactions on suggestions, with a specified value for the rating given. Positive numbers are upvotes, negative numbers are downvotes.',
-            usageExample: '/suggestions add_reaction (reaction) (rating)',
+            description: 'Add a reaction to the reactions on suggestions.',
+            usageExample: '/suggestions add_reaction (reaction)',
             permission: 'suggestions.reactions.add',
          },
          async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
             const server = interaction.data.guildData;
-            const reaction = interaction.options.getString('reaction');
+            const reaction = interaction.options.getString('reaction', true);
             if (!reaction) {
-               const errorEmbed = auxdibot.embeds.error.toJSON();
-               errorEmbed.description = 'You need to specify a valid reaction!';
-               return await interaction.reply({ embeds: [errorEmbed] });
+               return await handleError(
+                  auxdibot,
+                  'NO_REACTION_SPECIFIED',
+                  'You need to specify a valid reaction!',
+                  interaction,
+               );
             }
             if (server.suggestions_reactions.find((suggestionReaction) => suggestionReaction == reaction)) {
-               const errorEmbed = auxdibot.embeds.error.toJSON();
-               errorEmbed.description = 'This suggestion reaction already exists!';
-               return await interaction.reply({ embeds: [errorEmbed] });
+               return await handleError(
+                  auxdibot,
+                  'SUGGESTION_REACTION_EXISTS',
+                  'This suggestions reaction already exists!',
+                  interaction,
+               );
             }
             const regex = emojiRegex();
             const emojis = reaction.match(regex);
@@ -604,9 +604,7 @@ const suggestionsCommand = <AuxdibotCommand>{
                interaction.client.emojis.cache.find((i) => i.toString() == reaction) ||
                (emojis != null ? emojis[0] : null);
             if (!emoji) {
-               const errorEmbed = auxdibot.embeds.error.toJSON();
-               errorEmbed.description = "This isn't a valid reaction!";
-               return await interaction.reply({ embeds: [errorEmbed] });
+               return await handleError(auxdibot, 'REACTION_INVALID', 'This is an invalid reaction!', interaction);
             }
             server.suggestions_reactions.push(reaction);
             await auxdibot.database.servers.update({
@@ -632,17 +630,23 @@ const suggestionsCommand = <AuxdibotCommand>{
             const reaction = interaction.options.getString('reaction'),
                index = interaction.options.getNumber('index');
             if (!index && !reaction) {
-               const errorEmbed = auxdibot.embeds.error.toJSON();
-               errorEmbed.description = 'You need to specify a valid reaction or index!';
-               return await interaction.reply({ embeds: [errorEmbed] });
+               return await handleError(
+                  auxdibot,
+                  'REACTION_REMOVE_NO_ARGUMENTS',
+                  'You need to specify a valid reaction or index!',
+                  interaction,
+               );
             }
             const suggestionReaction = server.suggestions_reactions.find(
                (i) => (index ? server.suggestions_reactions.indexOf(i) == index - 1 : false) || i == reaction,
             );
             if (!suggestionReaction) {
-               const errorEmbed = auxdibot.embeds.error.toJSON();
-               errorEmbed.description = "Couldn't find that suggestion reaction!";
-               return await interaction.reply({ embeds: [errorEmbed] });
+               return await handleError(
+                  auxdibot,
+                  'SUGGESTION_REACTION_NOT_FOUND',
+                  "Couldn't find that suggestion reaction!",
+                  interaction,
+               );
             }
             const suggestionsIndex = server.suggestions_reactions.indexOf(suggestionReaction);
             if (suggestionsIndex != -1) {
@@ -712,13 +716,15 @@ const suggestionsCommand = <AuxdibotCommand>{
          async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
             const user = interaction.options.getUser('user', true);
-            const executed = interaction.data.guild.members.cache.get(user.id);
-            if (!executed) {
-               const errorEmbed = auxdibot.embeds.error.toJSON();
-               errorEmbed.description = "Couldn't find that member on this server!";
-               return await interaction.reply({ embeds: [errorEmbed] });
-            }
-            if (!canExecute(interaction.data.guild, interaction.data.member, executed)) {
+            const member = interaction.data.guild.members.cache.get(user.id);
+            if (!member)
+               return await handleError(
+                  auxdibot,
+                  'MEMBER_NOT_IN_SERVER',
+                  'This user is not in the server!',
+                  interaction,
+               );
+            if (!canExecute(interaction.data.guild, interaction.data.member, member)) {
                const noPermissionEmbed = new EmbedBuilder().setColor(auxdibot.colors.denied).toJSON();
                noPermissionEmbed.title = '⛔ No Permission!';
                noPermissionEmbed.description = `This user has a higher role than you or owns this server!`;
@@ -746,13 +752,15 @@ const suggestionsCommand = <AuxdibotCommand>{
          async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
             const user = interaction.options.getUser('user', true);
-            const executed = interaction.data.guild.members.cache.get(user.id);
-            if (!executed) {
-               const errorEmbed = auxdibot.embeds.error.toJSON();
-               errorEmbed.description = "Couldn't find that member on this server!";
-               return await interaction.reply({ embeds: [errorEmbed] });
-            }
-            if (!canExecute(interaction.data.guild, interaction.data.member, executed)) {
+            const member = interaction.data.guild.members.cache.get(user.id);
+            if (!member)
+               return await handleError(
+                  auxdibot,
+                  'MEMBER_NOT_IN_SERVER',
+                  'This user is not in the server!',
+                  interaction,
+               );
+            if (!canExecute(interaction.data.guild, interaction.data.member, member)) {
                const noPermissionEmbed = new EmbedBuilder().setColor(auxdibot.colors.denied).toJSON();
                noPermissionEmbed.title = '⛔ No Permission!';
                noPermissionEmbed.description = `This user has a higher role than you or owns this server!`;
@@ -783,9 +791,12 @@ const suggestionsCommand = <AuxdibotCommand>{
             const id = interaction.options.getNumber('id', true);
             const suggestion = server.suggestions.find((sugg) => sugg.suggestionID == id);
             if (!suggestion) {
-               const errorEmbed = auxdibot.embeds.error.toJSON();
-               errorEmbed.description = "Couldn't find that suggestion!";
-               return await interaction.reply({ embeds: [errorEmbed] });
+               return await handleError(
+                  auxdibot,
+                  'SUGGESTION_NOT_FOUND',
+                  "Couldn't find that suggestion!",
+                  interaction,
+               );
             }
             const message_channel: GuildBasedChannel | undefined = server.suggestions_channel
                ? interaction.data.guild.channels.cache.get(server.suggestions_channel)

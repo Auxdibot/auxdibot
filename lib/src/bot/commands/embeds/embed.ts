@@ -20,6 +20,7 @@ import createEmbedParameters from '@/util/createEmbedParameters';
 import argumentsToEmbedParameters from '@/util/argumentsToEmbedParameters';
 import Modules from '@/constants/Modules';
 import { Auxdibot } from '@/interfaces/Auxdibot';
+import handleError from '@/util/handleError';
 
 dotenv.config();
 const embedCommand = <AuxdibotCommand>{
@@ -137,9 +138,12 @@ const embedCommand = <AuxdibotCommand>{
                   ],
                });
             } catch (x) {
-               const embed = auxdibot.embeds.error.toJSON();
-               embed.description = `There was an error sending that embed!`;
-               return await interaction.reply({ embeds: [embed] });
+               return await handleError(
+                  auxdibot,
+                  'EMBED_SEND_ERROR',
+                  'There was an error sending that embed!',
+                  interaction,
+               );
             }
 
             const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
@@ -159,8 +163,7 @@ const embedCommand = <AuxdibotCommand>{
          async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
             const channel = interaction.options.getChannel('channel', true, [ChannelType.GuildText]);
-            const json = interaction.options.getString('json');
-            if (!json) return await interaction.reply({ embeds: [auxdibot.embeds.error.toJSON()] });
+            const json = interaction.options.getString('json', true);
             try {
                await channel.send({
                   embeds: [
@@ -171,13 +174,16 @@ const embedCommand = <AuxdibotCommand>{
                            interaction.data.guild,
                            interaction.member as GuildMember | undefined,
                         ),
-                     ) as APIEmbed,
+                     ),
                   ],
                });
             } catch (x) {
-               const embed = auxdibot.embeds.error.toJSON();
-               embed.description = `There was an error sending that embed! (Most likely due to malformed JSON.)`;
-               return await interaction.reply({ embeds: [embed] });
+               return await handleError(
+                  auxdibot,
+                  'EMBED_SEND_ERROR_JSON',
+                  'There was an error sending that embed! (Most likely due to malformed JSON.)',
+                  interaction,
+               );
             }
 
             const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
@@ -202,16 +208,10 @@ const embedCommand = <AuxdibotCommand>{
             const message = await getMessage(guild, message_id);
             const content = interaction.options.getString('content')?.replace(/\\n/g, '\n') || '';
             const parameters = argumentsToEmbedParameters(interaction);
-            if (!message) {
-               const error = auxdibot.embeds.error.toJSON();
-               error.description = "Couldn't find that message!";
-               return await interaction.reply({ embeds: [error] });
-            }
-            if (message.embeds.length <= 0) {
-               const error = auxdibot.embeds.error.toJSON();
-               error.description = 'No embeds exist on this message!';
-               return await interaction.reply({ embeds: [error] });
-            }
+            if (!message)
+               return await handleError(auxdibot, 'MESSAGE_NOT_FOUND', "Couldn't find that message!", interaction);
+            if (message.embeds.length <= 0)
+               return await handleError(auxdibot, 'NO_EMBEDS_FOUND', 'No embeds exist on this message!', interaction);
 
             try {
                const embed = message.embeds[0].toJSON();
@@ -244,9 +244,12 @@ const embedCommand = <AuxdibotCommand>{
 
                await message.edit({ ...(content ? { content } : {}), embeds: [embed] });
             } catch (x) {
-               const embed = auxdibot.embeds.error.toJSON();
-               embed.description = `There was an error sending that embed! (Auxdibot cannot edit this!)`;
-               return await interaction.reply({ embeds: [embed] });
+               return await handleError(
+                  auxdibot,
+                  'FAILED_EMBED_EDIT',
+                  'There was an error editing that embed! (Auxdibot cannot edit that message, or the embed specified is invalid!)',
+                  interaction,
+               );
             }
             const success_embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             success_embed.title = 'Success!';
@@ -268,16 +271,10 @@ const embedCommand = <AuxdibotCommand>{
             const json = interaction.options.getString('json', true);
             const guild = interaction.data.guild;
             const message = await getMessage(guild, message_id);
-            if (!message) {
-               const error = auxdibot.embeds.error.toJSON();
-               error.description = "Couldn't find that message!";
-               return await interaction.reply({ embeds: [error] });
-            }
-            if (message.embeds.length <= 0) {
-               const error = auxdibot.embeds.error.toJSON();
-               error.description = 'No embeds exist on this message!';
-               return await interaction.reply({ embeds: [error] });
-            }
+            if (!message)
+               return await handleError(auxdibot, 'MESSAGE_NOT_FOUND', "Couldn't find that message!", interaction);
+            if (message.embeds.length <= 0)
+               return await handleError(auxdibot, 'NO_EMBEDS_FOUND', 'No embeds exist on this message!', interaction);
             try {
                await message.edit({
                   embeds: [
@@ -288,13 +285,16 @@ const embedCommand = <AuxdibotCommand>{
                            interaction.data.guild,
                            interaction.member as GuildMember | undefined,
                         ),
-                     ) as APIEmbed,
+                     ),
                   ],
                });
             } catch (x) {
-               const embed = auxdibot.embeds.error.toJSON();
-               embed.description = `There was an error sending that embed! (Most likely due to malformed JSON, or this message wasn't made by Auxdibot!)`;
-               return await interaction.reply({ embeds: [embed] });
+               return await handleError(
+                  auxdibot,
+                  'FAILED_EMBED_EDIT_JSON',
+                  'There was an error editing that embed! (Auxdibot cannot edit that message, or the JSON provided is malformed!)',
+                  interaction,
+               );
             }
             const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.title = 'Success!';
@@ -315,16 +315,11 @@ const embedCommand = <AuxdibotCommand>{
             const message_id = interaction.options.getString('message_id', true);
             const guild = interaction.data.guild;
             const message = await getMessage(guild, message_id);
-            if (!message) {
-               const error = auxdibot.embeds.error.toJSON();
-               error.description = "Couldn't find that message!";
-               return await interaction.reply({ embeds: [error] });
-            }
-            if (message.embeds.length <= 0) {
-               const error = auxdibot.embeds.error.toJSON();
-               error.description = 'No embeds exist on this message!';
-               return await interaction.reply({ embeds: [error] });
-            }
+            if (!message)
+               return await handleError(auxdibot, 'MESSAGE_NOT_FOUND', "Couldn't find that message!", interaction);
+            if (message.embeds.length <= 0)
+               return await handleError(auxdibot, 'NO_EMBEDS_FOUND', 'No embeds exist on this message!', interaction);
+
             const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             try {
                embed.fields = message.embeds.map(
@@ -337,9 +332,12 @@ const embedCommand = <AuxdibotCommand>{
                embed.title = 'Embed JSON Data';
                return await interaction.reply({ embeds: [embed] });
             } catch (x) {
-               const error = auxdibot.embeds.error.toJSON();
-               error.description = 'Embed is too big!';
-               return await interaction.reply({ embeds: [error] });
+               return await handleError(
+                  auxdibot,
+                  'EMBED_JSON_TOO_LARGE',
+                  "The embed given exceeds Auxdibot's embed message limit!",
+                  interaction,
+               );
             }
          },
       },

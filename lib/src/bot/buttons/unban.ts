@@ -6,6 +6,7 @@ import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import { LogAction, PunishmentType } from '@prisma/client';
 import { punishmentInfoField } from '@/modules/features/moderation/punishmentInfoField';
 import handleLog from '@/util/handleLog';
+import handleError from '@/util/handleError';
 
 module.exports = <AuxdibotButton>{
    module: Modules['Moderation'],
@@ -17,11 +18,8 @@ module.exports = <AuxdibotButton>{
       const server = await findOrCreateServer(auxdibot, interaction.guild.id);
       if (!server) return;
       const banned = server.punishments.find((p) => p.userID == user.id && p.type == PunishmentType.BAN);
-      if (!banned) {
-         const errorEmbed = auxdibot.embeds.error.toJSON();
-         errorEmbed.description = "This user isn't banned!";
-         return await interaction.reply({ embeds: [errorEmbed] });
-      }
+      if (!banned) return await handleError(auxdibot, 'USER_NOT_BANNED', "This user isn't banned!", interaction);
+
       const user = interaction.client.users.resolve(user_id);
       const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
 

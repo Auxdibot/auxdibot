@@ -6,6 +6,7 @@ import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandD
 import calcXP from '@/util/calcXP';
 import Modules from '@/constants/Modules';
 import { Auxdibot } from '@/interfaces/Auxdibot';
+import handleError from '@/util/handleError';
 dotenv.config();
 const myLevelCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder().setName('mylevel').setDescription('View your level on this server.'),
@@ -18,21 +19,20 @@ const myLevelCommand = <AuxdibotCommand>{
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;
-      let embed = new EmbedBuilder().setColor(auxdibot.colors.levels).toJSON();
-      embed.title = 'Your Level';
 
       const data = await auxdibot.database.servermembers.findFirst({
          where: { userID: interaction.data.member.id, serverID: interaction.data.guild.id },
       });
-      if (!data) {
-         embed = auxdibot.embeds.error.toJSON();
-         embed.description = 'Member data could not be found!';
-         return await interaction.reply({ embeds: [embed] });
-      }
+      if (!data)
+         return await handleError(auxdibot, 'MEMBER_DATA_NOT_FOUND', 'Member data could not be found!', interaction);
+
       const levelXP = calcXP(data.level);
       let percent = Math.round((data.xpTill / levelXP || 0) * 10);
       if (!isFinite(percent)) percent = 0;
       const avatar = interaction.user.avatarURL({ size: 128 });
+
+      const embed = new EmbedBuilder().setColor(auxdibot.colors.levels).toJSON();
+      embed.title = 'Your Level';
       if (avatar) embed.thumbnail = { url: avatar };
       embed.description = `🏅 Experience: \`${data.xp.toLocaleString()} XP\`\n🏆 Level: \`Level ${data.level.toLocaleString()}\``;
       embed.fields = [

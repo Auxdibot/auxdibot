@@ -16,6 +16,7 @@ import {
 } from '@/interfaces/commands/AuxdibotCommandData';
 import Modules from '@/constants/Modules';
 import AuxdibotFeatureModule from '@/interfaces/commands/AuxdibotFeatureModule';
+import handleError from '@/util/handleError';
 dotenv.config();
 const PROMO_ROW = new ActionRowBuilder<ButtonBuilder>().addComponents(
    new ButtonBuilder()
@@ -134,15 +135,18 @@ const helpCommand = <AuxdibotCommand>{
             const settings = 'guildData' in interaction.data ? interaction.data.guildData : undefined;
             const key = interaction.options.getString('module', true);
             const module: AuxdibotFeatureModule | undefined = Modules[key];
-            let embed = new EmbedBuilder().setColor(auxdibot.colors.info).toJSON();
             if (!module) {
-               embed = auxdibot.embeds.error.toJSON();
-               embed.description = 'This module does not exist! Do /help modules for a list of every Auxdibot module.';
-               return await interaction.reply({ embeds: [embed] });
+               return await handleError(
+                  auxdibot,
+                  'MODULE_NOT_FOUND',
+                  'This module does not exist! Do /help modules for a list of every Auxdibot module.',
+                  interaction,
+               );
             }
             const commands = auxdibot.commands
                ? auxdibot.commands.filter((i) => i.info.module.name == module.name)
                : [];
+            const embed = new EmbedBuilder().setColor(auxdibot.colors.info).toJSON();
             embed.title = `❔ ${module.name} ${
                settings && settings.disabled_modules.indexOf(key) != -1 ? '*(Disabled)*' : ''
             }`;
@@ -178,11 +182,12 @@ const helpCommand = <AuxdibotCommand>{
                   : undefined;
             const info = subcommand ? subcommand.info : command ? command.info : undefined;
             if (!info) {
-               const errorEmbed = auxdibot.embeds.error.toJSON();
-               errorEmbed.description = "Couldn't find that command or subcommand!";
-               return await interaction.reply({
-                  embeds: [errorEmbed],
-               });
+               return await handleError(
+                  auxdibot,
+                  'COMMAND_NOT_FOUND',
+                  "Couldn't find that command or subcommand!",
+                  interaction,
+               );
             }
 
             const helpCommandEmbed = new EmbedBuilder().setColor(auxdibot.colors.info).toJSON();

@@ -11,6 +11,7 @@ import incrementPunishmentsTotal from '@/modules/features/moderation/incrementPu
 import { punishmentInfoField } from '@/modules/features/moderation/punishmentInfoField';
 import createPunishment from '@/modules/features/moderation/createPunishment';
 import handleLog from '@/util/handleLog';
+import handleError from '@/util/handleError';
 
 const muteCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -37,22 +38,21 @@ const muteCommand = <AuxdibotCommand>{
          durationOption = interaction.options.getString('duration') || 'permanent';
       const server = interaction.data.guildData;
       if (!server.mute_role || !interaction.data.guild.roles.resolve(server.mute_role)) {
-         const errorEmbed = auxdibot.embeds.error.toJSON();
-         errorEmbed.description =
-            'There is no mute role assigned for the server! Do `/help muterole` to view the command to add a muterole.';
-         return await interaction.reply({ embeds: [errorEmbed] });
+         return await handleError(
+            auxdibot,
+            'NO_MUTE_ROLE',
+            'There is no mute role assigned for the server! Do `/help muterole` to view the command to add a muterole.',
+            interaction,
+         );
       }
-      if (server.punishments.find((p) => p.userID == user.id && p.type == PunishmentType.MUTE)) {
-         const errorEmbed = auxdibot.embeds.error.toJSON();
-         errorEmbed.description = 'This user is already muted!';
-         return await interaction.reply({ embeds: [errorEmbed] });
-      }
+      if (server.punishments.find((p) => p.userID == user.id && p.type == PunishmentType.BAN))
+         return await handleError(auxdibot, 'USER_ALREADY_MUTED', 'This user is already muted!', interaction);
+
       const member = interaction.data.guild.members.resolve(user.id);
-      if (!member) {
-         const errorEmbed = auxdibot.embeds.error.toJSON();
-         errorEmbed.description = 'This user is not on the server!';
-         return await interaction.reply({ embeds: [errorEmbed] });
-      }
+
+      if (!member)
+         return await handleError(auxdibot, 'MEMBER_NOT_IN_SERVER', 'This user is not in the server!', interaction);
+
       if (!canExecute(interaction.data.guild, interaction.data.member, member)) {
          const noPermissionEmbed = new EmbedBuilder().setColor(auxdibot.colors.denied).toJSON();
          noPermissionEmbed.title = '⛔ No Permission!';
@@ -62,9 +62,12 @@ const muteCommand = <AuxdibotCommand>{
       const duration = timestampToDuration(durationOption);
 
       if (!duration) {
-         const errorEmbed = auxdibot.embeds.error.toJSON();
-         errorEmbed.description = 'The timestamp provided is invalid! (ex. "1m" for 1 minute, "5d" for 5 days.)';
-         return await interaction.reply({ embeds: [errorEmbed] });
+         return await handleError(
+            auxdibot,
+            'INVALID_TIMESTAMP',
+            'The timestamp provided is invalid! (Examples of valid timestamps: "1m" for 1 minute, "5d" for 5 days.)',
+            interaction,
+         );
       }
       member.roles
          .add(interaction.data.guild.roles.resolve(server.mute_role) || '')
@@ -109,14 +112,12 @@ const muteCommand = <AuxdibotCommand>{
             });
          })
          .catch(async () => {
-            if (!interaction.data) return;
-            const errorEmbed = auxdibot.embeds.error.toJSON();
-            errorEmbed.description = `Could not mute this user! Check and see if Auxdibot has the Manage Roles permission${
-               server.mute_role
-                  ? `, or if the <@&${server.mute_role}> role is above Auxdibot in the role hierarchy`
-                  : ''
-            }.`;
-            return await interaction.reply({ embeds: [errorEmbed] });
+            return await handleError(
+               auxdibot,
+               'FAILED_MUTE_USER',
+               `Could not mute this user! Check and see if Auxdibot has the Manage Roles permission, or if the <@&${server.mute_role}> role is above Auxdibot in the role hierarchy.`,
+               interaction,
+            );
          });
    },
 };

@@ -8,6 +8,7 @@ import Limits from '@/constants/database/Limits';
 import { testLimit } from '@/util/testLimit';
 import handleLog from '@/util/handleLog';
 import { LogAction } from '@prisma/client';
+import handleError from '@/util/handleError';
 
 const stickyRolesCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -62,14 +63,20 @@ const stickyRolesCommand = <AuxdibotCommand>{
             const role = interaction.options.getRole('role', true);
             const server = interaction.data.guildData;
             if (role.id == interaction.data.guild.roles.everyone.id) {
-               const errorEmbed = auxdibot.embeds.error.toJSON();
-               errorEmbed.description = "This is the everyone role or the role doesn't exist!";
-               return await interaction.reply({ embeds: [errorEmbed] });
+               return await handleError(
+                  auxdibot,
+                  'STICKY_ROLE_EVERYONE',
+                  'This is the everyone role, silly!',
+                  interaction,
+               );
             }
             if (server.sticky_roles.find((val: string) => role != null && val == role.id)) {
-               const errorEmbed = auxdibot.embeds.error.toJSON();
-               errorEmbed.description = 'This role is already added!';
-               return await interaction.reply({ embeds: [errorEmbed] });
+               return await handleError(
+                  auxdibot,
+                  'STICKY_ROLE_EXISTS',
+                  'This role is already added as a sticky role!',
+                  interaction,
+               );
             }
             if (
                role &&
@@ -77,9 +84,12 @@ const stickyRolesCommand = <AuxdibotCommand>{
                !interaction.memberPermissions.has(PermissionsBitField.Flags.Administrator) &&
                interaction.data.guild.roles.comparePositions(role.id, interaction.data.member.roles.highest) <= 0
             ) {
-               const errorEmbed = auxdibot.embeds.error.toJSON();
-               errorEmbed.description = 'This role is higher than yours!';
-               return await interaction.reply({ embeds: [errorEmbed] });
+               return await handleError(
+                  auxdibot,
+                  'ROLE_POSITION_HIGHER',
+                  'This role has a higher or equal position than your highest role!',
+                  interaction,
+               );
             }
             if (
                role &&
@@ -89,14 +99,20 @@ const stickyRolesCommand = <AuxdibotCommand>{
                   interaction.data.guild.members.me.roles.highest,
                ) >= 0
             ) {
-               const errorEmbed = auxdibot.embeds.error.toJSON();
-               errorEmbed.description = "This role is higher than Auxdibot's highest role!";
-               return await interaction.reply({ embeds: [errorEmbed] });
+               return await handleError(
+                  auxdibot,
+                  'ROLE_POSITION_HIGHER_BOT',
+                  "This role has a higher position than Auxdibot's highest role!",
+                  interaction,
+               );
             }
             if (!testLimit(server.sticky_roles, Limits.STICKY_ROLE_DEFAULT_LIMIT)) {
-               const errorEmbed = auxdibot.embeds.error.toJSON();
-               errorEmbed.description = 'You have too many sticky roles! Remove some before adding more.';
-               return await interaction.reply({ embeds: [errorEmbed] });
+               return await handleError(
+                  auxdibot,
+                  'STICKY_ROLES_LIMIT_EXCEEDED',
+                  'You have too many sticky roles!',
+                  interaction,
+               );
             }
             await auxdibot.database.servers.update({
                where: { serverID: server.serverID },
@@ -128,12 +144,6 @@ const stickyRolesCommand = <AuxdibotCommand>{
             const role = interaction.options.getRole('role'),
                index = interaction.options.getNumber('index');
             const server = interaction.data.guildData;
-            if (!role && !index) {
-               const errorEmbed = auxdibot.embeds.error.toJSON();
-               errorEmbed.description = 'Please specify a role or index!';
-               return await interaction.reply({ embeds: [errorEmbed] });
-            }
-
             const stickyRoleID =
                role != null
                   ? server.sticky_roles.find((val: string) => role != null && val == role.id)
@@ -141,9 +151,12 @@ const stickyRolesCommand = <AuxdibotCommand>{
                   ? server.sticky_roles[index - 1]
                   : undefined;
             if (!stickyRoleID) {
-               const errorEmbed = auxdibot.embeds.error.toJSON();
-               errorEmbed.description = "This join role doesn't exist!";
-               return await interaction.reply({ embeds: [errorEmbed] });
+               return await handleError(
+                  auxdibot,
+                  'STICKY_ROLE_NOT_FOUND',
+                  "This role isn't added as a sticky role!",
+                  interaction,
+               );
             }
             const stickyRole = interaction.data.guild.roles.cache.get(stickyRoleID);
             if (stickyRole) {
@@ -152,18 +165,24 @@ const stickyRolesCommand = <AuxdibotCommand>{
                   !interaction.memberPermissions.has(PermissionsBitField.Flags.Administrator) &&
                   stickyRole.comparePositionTo(interaction.data.member.roles.highest) <= 0
                ) {
-                  const errorEmbed = auxdibot.embeds.error.toJSON();
-                  errorEmbed.description = 'This role is higher than yours!';
-                  return await interaction.reply({ embeds: [errorEmbed] });
+                  return await handleError(
+                     auxdibot,
+                     'ROLE_POSITION_HIGHER',
+                     'This role has a higher or equal position than your highest role!',
+                     interaction,
+                  );
                }
                if (
                   stickyRole &&
                   interaction.data.guild.members.me &&
                   stickyRole.comparePositionTo(interaction.data.guild.members.me.roles.highest) >= 0
                ) {
-                  const errorEmbed = auxdibot.embeds.error.toJSON();
-                  errorEmbed.description = "This role is higher than Auxdibot's highest role!";
-                  return await interaction.reply({ embeds: [errorEmbed] });
+                  return await handleError(
+                     auxdibot,
+                     'ROLE_POSITION_HIGHER_BOT',
+                     "This role has a higher position than Auxdibot's highest role!",
+                     interaction,
+                  );
                }
             }
 

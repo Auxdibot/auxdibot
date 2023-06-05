@@ -9,6 +9,7 @@ import awardXP from '@/modules/features/levels/awardXP';
 import resetXP from '@/modules/features/levels/resetXP';
 import { LevelReward } from '@prisma/client';
 import generateLevelLeaderboard from '@/modules/features/levels/generateLevelLeaderboard';
+import handleError from '@/util/handleError';
 const levelCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
       .setName('levels')
@@ -118,10 +119,13 @@ const levelCommand = <AuxdibotCommand>{
                level = interaction.options.getNumber('level', true);
             const server = interaction.data.guildData;
             const reward = server.level_rewards.find((reward) => reward.roleID == role.id || reward.level == level);
-            let embed = auxdibot.embeds.error.toJSON();
             if (role.id == interaction.data.guild.roles.everyone.id) {
-               embed.description = 'This is the everyone role, silly!';
-               return await interaction.reply({ embeds: [embed] });
+               return await handleError(
+                  auxdibot,
+                  'LEVEL_REWARD_EVERYONE',
+                  'This is the everyone role, silly!',
+                  interaction,
+               );
             }
             if (
                role &&
@@ -130,28 +134,40 @@ const levelCommand = <AuxdibotCommand>{
                !interaction.memberPermissions.has(PermissionsBitField.Flags.Administrator) &&
                role.position >= interaction.data.member.roles.highest.position
             ) {
-               const errorEmbed = auxdibot.embeds.error.toJSON();
-               errorEmbed.description = 'This role is higher than yours!';
-               return await interaction.reply({ embeds: [errorEmbed] });
+               return await handleError(
+                  auxdibot,
+                  'ROLE_POSITION_HIGHER',
+                  'This role has a higher position than your highest role!',
+                  interaction,
+               );
             }
             if (
                role &&
                interaction.data.guild.members.me &&
                role.position >= interaction.data.guild.members.me.roles.highest.position
             ) {
-               const errorEmbed = auxdibot.embeds.error.toJSON();
-               errorEmbed.description = "This role is higher than Auxdibot's highest role!";
-               return await interaction.reply({ embeds: [errorEmbed] });
+               return await handleError(
+                  auxdibot,
+                  'ROLE_POSITION_HIGHER_BOT',
+                  "This role has a higher position than Auxdibot's highest role!",
+                  interaction,
+               );
             }
             if (reward) {
-               embed.description = 'This reward role already exists, or there is already a reward for that level!';
-               return await interaction.reply({ embeds: [embed] });
+               return await handleError(
+                  auxdibot,
+                  'LEVEL_REWARD_EXISTS',
+                  'This reward role already exists, or there is already a reward for that level!',
+                  interaction,
+               );
             }
+
             await auxdibot.database.servers.update({
                where: { serverID: server.serverID },
                data: { level_rewards: { push: { level, roleID: role.id } } },
             });
-            embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
+
+            const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.description = `Successfully added <@&${role.id}> as a role reward!`;
             return await interaction.reply({ embeds: [embed] });
          },
@@ -169,17 +185,20 @@ const levelCommand = <AuxdibotCommand>{
             const level = interaction.options.getNumber('level', true);
             const server = interaction.data.guildData;
             const reward = server.level_rewards.find((reward) => reward.level == level);
-            let embed = auxdibot.embeds.error.toJSON();
             if (!reward) {
-               embed.description = "This reward role doesn't exist!";
-               return await interaction.reply({ embeds: [embed] });
+               return await handleError(
+                  auxdibot,
+                  'REWARD_ROLE_NOT_FOUND',
+                  "This reward role doesn't exist!",
+                  interaction,
+               );
             }
             server.level_rewards.splice(server.level_rewards.indexOf(reward), 1);
             await auxdibot.database.servers.update({
                where: { serverID: server.serverID },
                data: { level_rewards: server.level_rewards },
             });
-            embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
+            const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.description = `Successfully removed <@&${reward.roleID}> from the role rewards!`;
             return await interaction.reply({ embeds: [embed] });
          },
@@ -217,13 +236,15 @@ const levelCommand = <AuxdibotCommand>{
             if (!interaction.data) return;
             const user = interaction.options.getUser('user', true);
             const member = interaction.data.guild.members.cache.get(user.id);
-            let embed = auxdibot.embeds.error.toJSON();
-            if (!member) {
-               embed.description = "This person isn't on the server!";
-               return await interaction.reply({ embeds: [embed] });
-            }
+            if (!member)
+               return await handleError(
+                  auxdibot,
+                  'MEMBER_NOT_IN_SERVER',
+                  'This user is not in the server!',
+                  interaction,
+               );
             resetXP(auxdibot, interaction.data.guildData.serverID, user.id);
-            embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
+            const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.description = `Successfully reset ${member}'s Level and XP.`;
             embed.title = 'Success!';
             return await interaction.reply({ embeds: [embed] });
@@ -242,13 +263,15 @@ const levelCommand = <AuxdibotCommand>{
             const xp = interaction.options.getNumber('xp', true),
                user = interaction.options.getUser('user', true);
             const member = interaction.data.guild.members.cache.get(user.id);
-            let embed = auxdibot.embeds.error.toJSON();
-            if (!member) {
-               embed.description = "This person isn't on the server!";
-               return await interaction.reply({ embeds: [embed] });
-            }
+            if (!member)
+               return await handleError(
+                  auxdibot,
+                  'MEMBER_NOT_IN_SERVER',
+                  'This user is not in the server!',
+                  interaction,
+               );
             awardXP(auxdibot, interaction.data.guildData.serverID, user.id, Math.round(xp));
-            embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
+            const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.description = `Successfully gave ${member} ${xp.toLocaleString()} XP.`;
             embed.title = 'Success!';
             return await interaction.reply({ embeds: [embed] });
@@ -271,13 +294,15 @@ const levelCommand = <AuxdibotCommand>{
             const xp = interaction.options.getNumber('xp', true),
                user = interaction.options.getUser('user', true);
             const member = interaction.data.guild.members.cache.get(user.id);
-            let embed = auxdibot.embeds.error.toJSON();
-            if (!member) {
-               embed.description = "This person isn't on the server!";
-               return await interaction.reply({ embeds: [embed] });
-            }
+            if (!member)
+               return await handleError(
+                  auxdibot,
+                  'MEMBER_NOT_IN_SERVER',
+                  'This user is not in the server!',
+                  interaction,
+               );
             takeXP(auxdibot, interaction.data.guildData.serverID, user.id, Math.round(xp));
-            embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
+            const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.description = `Successfully took ${xp.toLocaleString()} XP from ${member}.`;
             embed.title = 'Success!';
             return await interaction.reply({ embeds: [embed] });

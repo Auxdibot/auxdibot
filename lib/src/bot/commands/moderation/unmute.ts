@@ -8,6 +8,7 @@ import { Auxdibot } from '@/interfaces/Auxdibot';
 import { LogAction, PunishmentType } from '@prisma/client';
 import { punishmentInfoField } from '@/modules/features/moderation/punishmentInfoField';
 import handleLog from '@/util/handleLog';
+import handleError from '@/util/handleError';
 
 const unmuteCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -25,19 +26,18 @@ const unmuteCommand = <AuxdibotCommand>{
       const user = interaction.options.getUser('user', true);
       const server = interaction.data.guildData;
       if (!server.mute_role || !interaction.data.guild.roles.resolve(server.mute_role)) {
-         const errorEmbed = auxdibot.embeds.error.toJSON();
-         errorEmbed.description =
-            'There is no mute role assigned for the server! Do `/help muterole` to view the command to add a muterole.';
-         return await interaction.reply({ embeds: [errorEmbed] });
+         return await handleError(
+            auxdibot,
+            'NO_MUTE_ROLE',
+            'There is no mute role assigned for the server! Do `/help muterole` to view the command to add a muterole.',
+            interaction,
+         );
       }
       const muted = server.punishments.find((p) => p.userID == user.id && p.type == PunishmentType.MUTE);
-      if (!muted) {
-         const errorEmbed = auxdibot.embeds.error.toJSON();
-         errorEmbed.description = "This user isn't muted!";
-         return await interaction.reply({ embeds: [errorEmbed] });
-      }
-      const member = interaction.data.guild.members.resolve(user.id);
 
+      if (!muted) return await handleError(auxdibot, 'USER_NOT_MUTED', "This user isn't muted!", interaction);
+
+      const member = interaction.data.guild.members.resolve(user.id);
       if (member) {
          if (!canExecute(interaction.data.guild, interaction.data.member, member)) {
             const noPermissionEmbed = new EmbedBuilder().setColor(auxdibot.colors.denied).toJSON();

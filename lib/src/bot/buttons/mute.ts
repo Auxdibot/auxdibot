@@ -9,6 +9,7 @@ import incrementPunishmentsTotal from '@/modules/features/moderation/incrementPu
 import { punishmentInfoField } from '@/modules/features/moderation/punishmentInfoField';
 import createPunishment from '@/modules/features/moderation/createPunishment';
 import handleLog from '@/util/handleLog';
+import handleError from '@/util/handleError';
 
 module.exports = <AuxdibotButton>{
    module: Modules['Moderation'],
@@ -18,11 +19,8 @@ module.exports = <AuxdibotButton>{
       if (!interaction.guild || !interaction.user || !interaction.channel) return;
       const [, user_id] = interaction.customId.split('-');
       const member = interaction.guild.members.resolve(user_id);
-      if (!member) {
-         const embed = auxdibot.embeds.error.toJSON();
-         embed.description = 'This user is not in the server!';
-         return await interaction.reply({ embeds: [embed] });
-      }
+      if (!member)
+         return await handleError(auxdibot, 'MEMBER_NOT_IN_SERVER', 'This user is not in the server!', interaction);
 
       if (!(await canExecute(interaction.guild, interaction.member as GuildMember, member))) {
          const noPermissionEmbed = new EmbedBuilder().setColor(auxdibot.colors.denied).toJSON();
@@ -31,13 +29,18 @@ module.exports = <AuxdibotButton>{
          return await interaction.reply({ embeds: [noPermissionEmbed] });
       }
       const server = await findOrCreateServer(auxdibot, interaction.guild.id);
-      if (server.punishments.find((p) => p.userID == user_id && p.type == PunishmentType.MUTE)) {
-         const errorEmbed = auxdibot.embeds.error.toJSON();
-         errorEmbed.description = 'This user is already muted!';
-         return await interaction.reply({ embeds: [errorEmbed] });
+      if (!server.mute_role || !interaction.guild.roles.resolve(server.mute_role)) {
+         return await handleError(
+            auxdibot,
+            'NO_MUTE_ROLE',
+            'There is no mute role assigned for the server! Do `/help muterole` to view the command to add a muterole.',
+            interaction,
+         );
       }
+      if (server.punishments.find((p) => p.userID == user_id && p.type == PunishmentType.BAN))
+         return await handleError(auxdibot, 'USER_ALREADY_MUTED', 'This user is already muted!', interaction);
       member.roles
-         .add(interaction.guild.roles.resolve(server.mute_role || '') || '')
+         .add(interaction.guild.roles.resolve(server.mute_role))
          .then(async () => {
             if (!interaction.guild || !member) return;
             const muteData = <Punishment>{
@@ -76,9 +79,12 @@ module.exports = <AuxdibotButton>{
             });
          })
          .catch(async () => {
-            const errorEmbed = auxdibot.embeds.error.toJSON();
-            errorEmbed.description = `Could not mute this user! Check and see if Auxdibot has the Manage Roles permission, or if the <@&${server.mute_role}> role is above Auxdibot in the role hierarchy.`;
-            return await interaction.reply({ embeds: [errorEmbed] });
+            return await handleError(
+               auxdibot,
+               'FAILED_MUTE_USER',
+               `Could not mute this user! Check and see if Auxdibot has the Manage Roles permission, or if the <@&${server.mute_role}> role is above Auxdibot in the role hierarchy.`,
+               interaction,
+            );
          });
       return;
    },

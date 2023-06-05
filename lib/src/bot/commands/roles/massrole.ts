@@ -6,6 +6,7 @@ import Modules from '@/constants/Modules';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import handleLog from '@/util/handleLog';
 import { LogAction } from '@prisma/client';
+import handleError from '@/util/handleError';
 
 const massroleCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -45,12 +46,16 @@ const massroleCommand = <AuxdibotCommand>{
          async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
             const role = interaction.options.getRole('role', true);
-            let embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
+
             if (role.position >= interaction.data.member.roles.highest.position) {
-               embed = auxdibot.embeds.error.toJSON();
-               embed.description = 'This role is higher than your current highest role!';
-               return await interaction.reply({ embeds: [embed] });
+               return await handleError(
+                  auxdibot,
+                  'ROLE_POSITION_HIGHER',
+                  'This role has a higher or equal position than your highest role!',
+                  interaction,
+               );
             }
+            const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.title = 'Success!';
             embed.description = `Currently giving the role...`;
             await interaction.reply({ embeds: [embed] });
@@ -85,12 +90,15 @@ const massroleCommand = <AuxdibotCommand>{
          async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
             if (!interaction.data) return;
             const role = interaction.options.getRole('role', true);
-            let embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             if (role.position >= interaction.data.member.roles.highest.position) {
-               embed = auxdibot.embeds.error.toJSON();
-               embed.description = 'This role is higher than your current highest role!';
-               return await interaction.reply({ embeds: [embed] });
+               return await handleError(
+                  auxdibot,
+                  'ROLE_POSITION_HIGHER',
+                  'This role has a higher or equal position than your highest role!',
+                  interaction,
+               );
             }
+            const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.title = 'Success!';
             embed.description = `Currently removing the role...`;
             await interaction.reply({ embeds: [embed] });

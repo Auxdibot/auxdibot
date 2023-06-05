@@ -11,6 +11,7 @@ import incrementPunishmentsTotal from '@/modules/features/moderation/incrementPu
 import createPunishment from '@/modules/features/moderation/createPunishment';
 import handleLog from '@/util/handleLog';
 import { punishmentInfoField } from '@/modules/features/moderation/punishmentInfoField';
+import handleError from '@/util/handleError';
 
 const banCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -43,29 +44,27 @@ const banCommand = <AuxdibotCommand>{
          durationOption = interaction.options.getString('duration') || 'permanent',
          deleteMessageDays = interaction.options.getNumber('delete_message_days') || 0;
       const member = interaction.data.guild.members.resolve(user.id);
-      if (!member) {
-         const errorEmbed = auxdibot.embeds.error.toJSON();
-         errorEmbed.description = 'This user is not on the server!';
-         return await interaction.reply({ embeds: [errorEmbed] });
-      }
+      if (!member)
+         return await handleError(auxdibot, 'MEMBER_NOT_IN_SERVER', 'This user is not in the server!', interaction);
+
       if (!canExecute(interaction.data.guild, interaction.data.member, member)) {
          const noPermissionEmbed = new EmbedBuilder().setColor(auxdibot.colors.denied).toJSON();
          noPermissionEmbed.title = '⛔ No Permission!';
          noPermissionEmbed.description = `This user has a higher role than you or owns this server!`;
          return await interaction.reply({ embeds: [noPermissionEmbed] });
       }
-      if (interaction.data.guildData.punishments.find((p) => p.userID == user.id && p.type == PunishmentType.BAN)) {
-         const errorEmbed = auxdibot.embeds.error.toJSON();
-         errorEmbed.description = 'This user is already banned!';
-         return await interaction.reply({ embeds: [errorEmbed] });
-      }
+      if (interaction.data.guildData.punishments.find((p) => p.userID == user.id && p.type == PunishmentType.BAN))
+         return await handleError(auxdibot, 'USER_ALREADY_BANNED', 'This user is already banned!', interaction);
 
       const duration = timestampToDuration(durationOption);
 
       if (!duration) {
-         const errorEmbed = auxdibot.embeds.error.toJSON();
-         errorEmbed.description = 'The timestamp provided is invalid! (ex. "1m" for 1 minute, "5d" for 5 days.)';
-         return await interaction.reply({ embeds: [errorEmbed] });
+         return await handleError(
+            auxdibot,
+            'INVALID_TIMESTAMP',
+            'The timestamp provided is invalid! (Examples of valid timestamps: "1m" for 1 minute, "5d" for 5 days.)',
+            interaction,
+         );
       }
       const expires = duration == 'permanent' ? 'permanent' : duration + Date.now();
       interaction.data.guild.members
@@ -103,9 +102,12 @@ const banCommand = <AuxdibotCommand>{
             });
          })
          .catch(async () => {
-            const errorEmbed = auxdibot.embeds.error.toJSON();
-            errorEmbed.description = "Couldn't ban that user. Check and see if they have a higher role than Auxdibot.";
-            return await interaction.reply({ embeds: [errorEmbed] });
+            return await handleError(
+               auxdibot,
+               'FAILED_BAN_USER',
+               "Couldn't ban that user. Check if they have a higher role than Auxdibot.",
+               interaction,
+            );
          });
    },
 };

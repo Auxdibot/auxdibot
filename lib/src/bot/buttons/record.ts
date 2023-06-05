@@ -3,6 +3,7 @@ import { MessageComponentInteraction } from 'discord.js';
 import Modules from '@/constants/Modules';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import userRecordAsEmbed from '@/modules/features/moderation/userRecordAsEmbed';
+import handleError from '@/util/handleError';
 
 module.exports = <AuxdibotButton>{
    module: Modules['Moderation'],
@@ -12,7 +13,13 @@ module.exports = <AuxdibotButton>{
       if (!interaction.guild || !interaction.user || !interaction.channel) return;
       const [, user_id] = interaction.customId.split('-');
       const embed = await userRecordAsEmbed(auxdibot, interaction.guild.id, user_id);
-      if (!embed) return await interaction.reply({ embeds: [auxdibot.embeds.error.toJSON()] });
+      if (!embed)
+         return await handleError(
+            auxdibot,
+            'FAILED_RECORD_EMBED',
+            "Couldn't generate the record embed for that user!",
+            interaction,
+         );
       return await interaction.reply({ embeds: [embed] });
    },
 };

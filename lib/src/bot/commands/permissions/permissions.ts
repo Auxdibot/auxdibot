@@ -8,6 +8,7 @@ import { testLimit } from '@/util/testLimit';
 import Limits from '@/constants/database/Limits';
 import handleLog from '@/util/handleLog';
 import { LogAction, PermissionOverride } from '@prisma/client';
+import handleError from '@/util/handleError';
 
 const permissionsCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -91,9 +92,12 @@ const permissionsCommand = <AuxdibotCommand>{
                role = interaction.options.getRole('role'),
                allowed = interaction.options.getBoolean('allowed', true);
             if (!role && !user) {
-               const errorEmbed = auxdibot.embeds.error.toJSON();
-               errorEmbed.description = 'No arguments provided for the role or user!';
-               return await interaction.reply({ embeds: [errorEmbed] });
+               return await handleError(
+                  auxdibot,
+                  'NO_PERMISSION_ARGUMENTS',
+                  'No arguments provided for the role or user!',
+                  interaction,
+               );
             }
 
             const permissionOverride = <PermissionOverride>{
@@ -102,13 +106,14 @@ const permissionsCommand = <AuxdibotCommand>{
                permission: permission,
                allowed,
             };
-            if (
-               !testLimit(interaction.data.guildData.permission_overrides, Limits.PERMISSION_OVERRIDES_DEFAULT_LIMIT)
-            ) {
-               const errorEmbed = auxdibot.embeds.error.toJSON();
-               errorEmbed.description = 'You have too many permission overrides!';
-               return await interaction.reply({ embeds: [errorEmbed] });
-            }
+            if (!testLimit(interaction.data.guildData.permission_overrides, Limits.PERMISSION_OVERRIDES_DEFAULT_LIMIT))
+               return await handleError(
+                  auxdibot,
+                  'PERMISSION_OVERRIDES_LIMIT_EXCEEDED',
+                  'You have too many permission overrides!',
+                  interaction,
+               );
+
             await auxdibot.database.servers.update({
                where: { serverID: interaction.data.guildData.serverID },
                data: { permission_overrides: { push: permissionOverride } },
@@ -175,9 +180,12 @@ const permissionsCommand = <AuxdibotCommand>{
             const server = interaction.data.guildData;
             const permission = server.permission_overrides[override_id - 1];
             if (!permission) {
-               const embed = auxdibot.embeds.error.toJSON();
-               embed.description = "This permission override doesn't exist!";
-               return await interaction.reply({ embeds: [embed] });
+               return await handleError(
+                  auxdibot,
+                  'PERMISSION_OVERRIDE_NOT_FOUND',
+                  "This permission override doesn't exist!",
+                  interaction,
+               );
             }
             server.permission_overrides.splice(override_id - 1, 1);
             await auxdibot.database.servers.update({

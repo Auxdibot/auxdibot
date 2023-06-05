@@ -10,6 +10,7 @@ import argumentsToEmbedParameters from '@/util/argumentsToEmbedParameters';
 import Modules from '@/constants/Modules';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import { APIEmbed } from '@prisma/client';
+import handleError from '@/util/handleError';
 
 const joinCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -55,14 +56,6 @@ const joinCommand = <AuxdibotCommand>{
             const parameters = argumentsToEmbedParameters(interaction);
             try {
                const newEmbed = toAPIEmbed(parameters);
-               await auxdibot.database.servers.update({
-                  where: { serverID: server.serverID },
-                  data: { join_embed: (<unknown>newEmbed) as APIEmbed, join_text: content || server.join_text },
-               });
-               const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
-               embed.title = 'Success!';
-               embed.description = `Set the join embed.`;
-               await interaction.reply({ embeds: [embed] });
                if (interaction.channel && interaction.channel.isTextBased())
                   await interaction.channel.send({
                      content: `Here's a preview of the new join embed!\n${server.join_dm_text || ''}`,
@@ -77,12 +70,21 @@ const joinCommand = <AuxdibotCommand>{
                         ),
                      ],
                   });
+               await auxdibot.database.servers.update({
+                  where: { serverID: server.serverID },
+                  data: { join_embed: (<unknown>newEmbed) as APIEmbed, join_text: content || server.join_text },
+               });
+               const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
+               embed.title = 'Success!';
+               embed.description = `Set the join embed.`;
+               await interaction.reply({ embeds: [embed] });
             } catch (x) {
-               const embed = auxdibot.embeds.error.toJSON();
-               embed.description = "Couldn't make that embed!";
-               return interaction.channel && interaction.channel.isTextBased()
-                  ? await interaction.channel.send({ embeds: [embed] })
-                  : undefined;
+               return await handleError(
+                  auxdibot,
+                  'EMBED_SEND_ERROR',
+                  'There was an error sending that embed!',
+                  interaction,
+               );
             }
             return;
          },
@@ -102,23 +104,16 @@ const joinCommand = <AuxdibotCommand>{
             const server = interaction.data.guildData;
             try {
                const jsonEmbed = JSON.parse(json) as APIEmbed;
-               const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
-               await auxdibot.database.servers.update({
-                  where: { serverID: server.serverID },
-                  data: { join_embed: jsonEmbed },
-               });
-               embed.title = 'Success!';
-               embed.description = `Set the join embed.`;
                if (interaction.channel && interaction.channel.isTextBased())
                   await interaction.channel.send({
                      content: "Here's a preview of the new join embed!",
-                     ...(Object.entries(server.join_embed || {}).length != 0
+                     ...(Object.entries(json || {}).length != 0
                         ? {
                              embeds: [
                                 JSON.parse(
                                    await parsePlaceholders(
                                       auxdibot,
-                                      JSON.stringify(jsonEmbed),
+                                      json,
                                       interaction.data.guild,
                                       interaction.data.member,
                                    ),
@@ -127,11 +122,21 @@ const joinCommand = <AuxdibotCommand>{
                           }
                         : {}),
                   });
+               const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
+               await auxdibot.database.servers.update({
+                  where: { serverID: server.serverID },
+                  data: { join_embed: jsonEmbed },
+               });
+               embed.title = 'Success!';
+               embed.description = `Set the join embed.`;
                return await interaction.reply({ embeds: [embed] });
             } catch (x) {
-               const embed = auxdibot.embeds.error.toJSON();
-               embed.description = "This isn't valid Embed JSON!";
-               return await interaction.reply({ embeds: [embed] });
+               return await handleError(
+                  auxdibot,
+                  'EMBED_SEND_ERROR_JSON',
+                  'There was an error sending that embed! (Most likely due to malformed JSON.)',
+                  interaction,
+               );
             }
          },
       },
@@ -165,12 +170,12 @@ const joinCommand = <AuxdibotCommand>{
                      : {}),
                });
             } catch (x) {
-               console.log(x);
-               const error = auxdibot.embeds.error.toJSON();
-               error.description = "This isn't valid! Try changing the Join Embed or Join Text.";
-               return interaction.channel && interaction.channel.isTextBased()
-                  ? await interaction.channel.send({ embeds: [error] })
-                  : undefined;
+               return await handleError(
+                  auxdibot,
+                  'INVALID_JOIN_EMBED',
+                  'This is an invalid embed! This will not be able to send when a user joins the server. Change either the Embed or Text to fix this error.',
+                  interaction,
+               );
             }
          },
       },

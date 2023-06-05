@@ -14,13 +14,18 @@ import { punishmentInfoField } from './modules/features/moderation/punishmentInf
 import { AuxdibotPartials } from './constants/AuxdibotPartials';
 
 dotenv.config();
-export const TOKEN = process.env.DISCORD_BOT_TOKEN;
-export const CLIENT_ID = process.env.DISCORD_BOT_CLIENT_ID;
+const TOKEN = process.env.DISCORD_BOT_TOKEN;
+const CLIENT_ID = process.env.DISCORD_BOT_CLIENT_ID;
 (async () => {
+   /********************************************************************************/
+   // Enviornment variables checks.
    if (!TOKEN) throw new Error('You need to include a discord token in .env!');
    if (!CLIENT_ID) throw new Error('You need to include a client id in .env!');
+
    /********************************************************************************/
    // Create Client
+
+   console.log(`-> Creating a new client...`);
 
    const auxdibot = new Client({
       intents: AuxdibotIntents,
@@ -29,7 +34,7 @@ export const CLIENT_ID = process.env.DISCORD_BOT_CLIENT_ID;
          activities: [
             {
                type: ActivityType.Listening,
-               name: '[[loading ASMR intensifies]]',
+               name: 'loading...',
             },
          ],
       },
@@ -38,6 +43,7 @@ export const CLIENT_ID = process.env.DISCORD_BOT_CLIENT_ID;
    /********************************************************************************/
    // Declare client variables
    connectPrisma(auxdibot);
+   console.log('-> Declaring client variables...');
    auxdibot.commands = new Collection();
    auxdibot.buttons = new Collection();
    auxdibot.colors = {
@@ -97,7 +103,7 @@ export const CLIENT_ID = process.env.DISCORD_BOT_CLIENT_ID;
    };
    /********************************************************************************/
    // Declare commands
-
+   console.log('-> Declaring commands...');
    const rest = new REST({
       version: '10',
    }).setToken(TOKEN);
@@ -146,16 +152,16 @@ export const CLIENT_ID = process.env.DISCORD_BOT_CLIENT_ID;
          body: commands,
       })
       .then(() => {
-         console.log(`Refreshed ${commands.length} slash commands.`);
+         console.log(`-> Refreshed ${commands.length} slash commands.`);
       })
       .catch((x) => {
-         console.error('Failed to load commands!');
+         console.error('! -> Failed to load commands!');
          console.error(x);
       });
 
    /********************************************************************************/
    // Declare buttons
-
+   console.log('-> Declaring button interactions...');
    const buttons = [];
    const buttonFiles = fs.readdirSync(path.join(__dirname, '/bot/buttons')).filter((file) => file.endsWith('.js'));
    for (const file of buttonFiles) {
@@ -169,12 +175,14 @@ export const CLIENT_ID = process.env.DISCORD_BOT_CLIENT_ID;
    }
    /********************************************************************************/
    // Listen for events & login to bot
+   console.log('-> Listening for events...');
+
    listenEvents(auxdibot);
 
+   console.log('-> Logging into client...');
    auxdibot
       .login(TOKEN)
       .then(() => {
-         console.log('Auxdibot is loaded!');
          if (auxdibot.updateDiscordStatus) auxdibot.updateDiscordStatus();
          setInterval(async () => {
             for (const guild of auxdibot.guilds.cache.values()) {
@@ -223,7 +231,7 @@ export const CLIENT_ID = process.env.DISCORD_BOT_CLIENT_ID;
          }, 60000);
       })
       .catch((reason) => {
-         console.log('Error signing into into Auxdibot!');
+         console.error('! -> Error signing into into Auxdibot!');
          console.error(reason);
       });
 })();

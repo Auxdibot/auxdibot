@@ -8,6 +8,7 @@ import { LogAction, Punishment, PunishmentType } from '@prisma/client';
 import createPunishment from '@/modules/features/moderation/createPunishment';
 import handleLog from '@/util/handleLog';
 import { punishmentInfoField } from '@/modules/features/moderation/punishmentInfoField';
+import handleError from '@/util/handleError';
 
 module.exports = <AuxdibotButton>{
    module: Modules['Moderation'],
@@ -17,11 +18,9 @@ module.exports = <AuxdibotButton>{
       if (!interaction.guild || !interaction.user || !interaction.channel) return;
       const [, user_id] = interaction.customId.split('-');
       const member = interaction.guild.members.resolve(user_id);
-      if (!member) {
-         const embed = auxdibot.embeds.error.toJSON();
-         embed.description = 'This user is not in the server!';
-         return await interaction.reply({ embeds: [embed] });
-      }
+      if (!member)
+         return await handleError(auxdibot, 'MEMBER_NOT_IN_SERVER', 'This user is not in the server!', interaction);
+
       if (!(await canExecute(interaction.guild, interaction.member as GuildMember, member))) {
          const noPermissionEmbed = new EmbedBuilder().setColor(auxdibot.colors.denied).toJSON();
          noPermissionEmbed.title = '⛔ No Permission!';
@@ -59,9 +58,7 @@ module.exports = <AuxdibotButton>{
             });
          })
          .catch(async () => {
-            const errorEmbed = auxdibot.embeds.error.toJSON();
-            errorEmbed.description = "Couldn't kick that user.";
-            return await interaction.reply({ embeds: [errorEmbed] });
+            return await handleError(auxdibot, 'FAILED_KICK_USER', "Couldn't kick that user.", interaction);
          });
       return;
    },

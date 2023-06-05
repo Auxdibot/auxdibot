@@ -6,6 +6,7 @@ import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandD
 import Modules from '@/constants/Modules';
 import AuxdibotFeatureModule from '@/interfaces/commands/AuxdibotFeatureModule';
 import { Auxdibot } from '@/interfaces/Auxdibot';
+import handleError from '@/util/handleError';
 dotenv.config();
 const placeholderCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -32,23 +33,17 @@ const placeholderCommand = <AuxdibotCommand>{
       if (!interaction.data) return;
       const server = interaction.data.guildData;
       const key = interaction.options.getString('module', true);
-      const module: AuxdibotFeatureModule | undefined = Modules[key];
-      let embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
-      if (!module) {
-         embed = auxdibot.embeds.error.toJSON();
-         embed.description = 'This module does not exist! Do /help modules for a list of every Auxdibot module.';
-         return await interaction.reply({ embeds: [embed] });
-      }
-      if (!server.disabled_modules.find((item) => item == module.name)) {
-         embed = auxdibot.embeds.error.toJSON();
-         embed.description = 'This module is already enabled!';
-         return await interaction.reply({ embeds: [embed] });
-      }
+      const module: AuxdibotFeatureModule = Modules[key];
+
+      if (!server.disabled_modules.find((item) => item == module.name))
+         return await handleError(auxdibot, 'MODULE_ALREADY_ENABLED', 'This module is already enabled!', interaction);
+
       server.disabled_modules.splice(server.disabled_modules.indexOf(module.name), 1);
       await auxdibot.database.servers.update({
          where: { serverID: server.serverID },
          data: { disabled_modules: server.disabled_modules },
       });
+      const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
       embed.title = 'Success!';
       embed.description = `Successfully enabled the ${module.name} module. Its functionality & commands will now work on this server.`;
       return await interaction.reply({ embeds: [embed] });

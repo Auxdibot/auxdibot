@@ -11,6 +11,7 @@ import incrementPunishmentsTotal from '@/modules/features/moderation/incrementPu
 import createPunishment from '@/modules/features/moderation/createPunishment';
 import handleLog from '@/util/handleLog';
 import { punishmentInfoField } from '@/modules/features/moderation/punishmentInfoField';
+import handleError from '@/util/handleError';
 
 const kickCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -31,17 +32,16 @@ const kickCommand = <AuxdibotCommand>{
       const user = interaction.options.getUser('user', true),
          reason = interaction.options.getString('reason') || 'No reason specified.';
       const member = interaction.data.guild.members.resolve(user.id);
-      if (!member) {
-         const errorEmbed = auxdibot.embeds.error.toJSON();
-         errorEmbed.description = 'This user is not on the server!';
-         return await interaction.reply({ embeds: [errorEmbed] });
-      }
+      if (!member)
+         return await handleError(auxdibot, 'MEMBER_NOT_IN_SERVER', 'This user is not in the server!', interaction);
+
       if (!canExecute(interaction.data.guild, interaction.data.member, member)) {
          const noPermissionEmbed = new EmbedBuilder().setColor(auxdibot.colors.denied).toJSON();
          noPermissionEmbed.title = '⛔ No Permission!';
          noPermissionEmbed.description = `This user has a higher role than you or owns this server!`;
          return await interaction.reply({ embeds: [noPermissionEmbed] });
       }
+
       interaction.data.guild.members
          .kick(user, reason)
          .then(async () => {
@@ -74,9 +74,7 @@ const kickCommand = <AuxdibotCommand>{
             });
          })
          .catch(async () => {
-            const errorEmbed = auxdibot.embeds.error.toJSON();
-            errorEmbed.description = "Couldn't kick that user.";
-            return await interaction.reply({ embeds: [errorEmbed] });
+            return await handleError(auxdibot, 'FAILED_KICK_USER', "Couldn't kick that user.", interaction);
          });
    },
 };

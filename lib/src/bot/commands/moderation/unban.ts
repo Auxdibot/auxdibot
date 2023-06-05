@@ -7,6 +7,7 @@ import { Auxdibot } from '@/interfaces/Auxdibot';
 import { LogAction, PunishmentType } from '@prisma/client';
 import { punishmentInfoField } from '@/modules/features/moderation/punishmentInfoField';
 import handleLog from '@/util/handleLog';
+import handleError from '@/util/handleError';
 
 const unbanCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -29,11 +30,9 @@ const unbanCommand = <AuxdibotCommand>{
       const user = interaction.options.getUser('user', true);
       const server = interaction.data.guildData;
       const banned = server.punishments.find((p) => p.userID == user.id && p.type == PunishmentType.BAN);
-      if (!banned) {
-         const errorEmbed = auxdibot.embeds.error.toJSON();
-         errorEmbed.description = "This user isn't banned!";
-         return await interaction.reply({ embeds: [errorEmbed] });
-      }
+
+      if (!banned) return await handleError(auxdibot, 'USER_NOT_BANNED', "This user isn't banned!", interaction);
+
       interaction.data.guild.bans.remove(user.id).catch(() => undefined);
       banned.expired = true;
       await auxdibot.database.servers.update({

@@ -9,6 +9,7 @@ import { punishmentInfoField } from '@/modules/features/moderation/punishmentInf
 import deletePunishment from '@/modules/features/moderation/deletePunishment';
 import handleLog from '@/util/handleLog';
 import { LogAction } from '@prisma/client';
+import handleError from '@/util/handleError';
 
 const punishmentCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -52,9 +53,12 @@ const punishmentCommand = <AuxdibotCommand>{
             const server = interaction.data.guildData;
             const punishment = server.punishments.filter((val) => val.punishmentID == punishmentID)[0];
             if (!punishment) {
-               const errorEmbed = auxdibot.embeds.error.toJSON();
-               errorEmbed.description = 'This punishment does not exist!';
-               return await interaction.reply({ embeds: [errorEmbed] });
+               return await handleError(
+                  auxdibot,
+                  'PUNISHMENT_NOT_FOUND',
+                  'This punishment does not exist!',
+                  interaction,
+               );
             }
             const type = PunishmentNames[punishment.type].name;
             const embed = new EmbedBuilder().setColor(auxdibot.colors.info).toJSON();
@@ -78,9 +82,12 @@ const punishmentCommand = <AuxdibotCommand>{
             const server = interaction.data.guildData;
             const punishment = server.punishments.filter((val) => val.punishmentID == punishment_id)[0];
             if (!punishment) {
-               const errorEmbed = auxdibot.embeds.error.toJSON();
-               errorEmbed.description = 'This punishment does not exist!';
-               return await interaction.reply({ embeds: [errorEmbed] });
+               return await handleError(
+                  auxdibot,
+                  'PUNISHMENT_NOT_FOUND',
+                  'This punishment does not exist!',
+                  interaction,
+               );
             }
 
             deletePunishment(auxdibot, server.serverID, punishment_id);

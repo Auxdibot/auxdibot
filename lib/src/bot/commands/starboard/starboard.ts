@@ -7,6 +7,7 @@ import emojiRegex from 'emoji-regex';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import handleLog from '@/util/handleLog';
 import { LogAction } from '@prisma/client';
+import handleError from '@/util/handleError';
 
 const starboardCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -122,14 +123,15 @@ const starboardCommand = <AuxdibotCommand>{
                interaction.client.emojis.cache.find((i) => i.toString() == reaction) ||
                (emojis != null ? emojis[0] : null);
             if (!emoji) {
-               const errorEmbed = auxdibot.embeds.error.toJSON();
-               errorEmbed.description = "This isn't a valid reaction!";
-               return await interaction.reply({ embeds: [errorEmbed] });
+               return await handleError(auxdibot, 'INVALID_REACTION', "This isn't a valid reaction!", interaction);
             }
             if (server.starboard_reaction == emoji) {
-               const errorEmbed = auxdibot.embeds.error.toJSON();
-               errorEmbed.description = 'The starboard reaction is the same as the one specified!';
-               return await interaction.reply({ embeds: [errorEmbed] });
+               return await handleError(
+                  auxdibot,
+                  'STARBOARD_REACTION_IDENTICAL',
+                  'The reaction specified is the same as the current starboard reaction!',
+                  interaction,
+               );
             }
             await auxdibot.database.servers.update({
                where: { serverID: server.serverID },
@@ -159,14 +161,20 @@ const starboardCommand = <AuxdibotCommand>{
             const server = interaction.data.guildData;
             const reaction_count = interaction.options.getNumber('reaction_count', true);
             if (reaction_count <= 0) {
-               const errorEmbed = auxdibot.embeds.error.toJSON();
-               errorEmbed.description = 'The reaction count cannot be less than or equal to zero!';
-               return await interaction.reply({ embeds: [errorEmbed] });
+               return await handleError(
+                  auxdibot,
+                  'REACTION_COUNT_INVALID',
+                  'The reaction count cannot be negative or zero!',
+                  interaction,
+               );
             }
             if (server.starboard_reaction_count == reaction_count) {
-               const errorEmbed = auxdibot.embeds.error.toJSON();
-               errorEmbed.description = 'The starboard reaction count is the same as the one specified!';
-               return await interaction.reply({ embeds: [errorEmbed] });
+               return await handleError(
+                  auxdibot,
+                  'REACTION_COUNT_INDENTICAL',
+                  'The reaction count specified is the same as the current starboard reaction count!',
+                  interaction,
+               );
             }
             await auxdibot.database.servers.update({
                where: { serverID: server.serverID },

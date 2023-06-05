@@ -5,6 +5,7 @@ import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandD
 import Modules from '@/constants/Modules';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import userRecordAsEmbed from '@/modules/features/moderation/userRecordAsEmbed';
+import handleError from '@/util/handleError';
 
 const recordCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -24,7 +25,14 @@ const recordCommand = <AuxdibotCommand>{
       if (!interaction.data) return;
       const user = interaction.options.getUser('user') || interaction.user;
       const embed = await userRecordAsEmbed(auxdibot, interaction.data.guild.id, user.id);
-      if (!embed) return await interaction.reply({ embeds: [auxdibot.embeds.error.toJSON()] });
+      if (!embed)
+         return await handleError(
+            auxdibot,
+            'FAILED_RECORD_EMBED',
+            "Couldn't generate the record embed for that user!",
+            interaction,
+         );
+
       await interaction.reply({ embeds: [embed] });
    },
 };

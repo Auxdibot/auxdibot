@@ -9,6 +9,7 @@ import incrementPunishmentsTotal from '@/modules/features/moderation/incrementPu
 import createPunishment from '@/modules/features/moderation/createPunishment';
 import handleLog from '@/util/handleLog';
 import { punishmentInfoField } from '@/modules/features/moderation/punishmentInfoField';
+import handleError from '@/util/handleError';
 
 module.exports = <AuxdibotButton>{
    module: Modules['Moderation'],
@@ -18,11 +19,8 @@ module.exports = <AuxdibotButton>{
       if (!interaction.guild || !interaction.user || !interaction.channel) return;
       const [, user_id] = interaction.customId.split('-');
       const member = interaction.guild.members.resolve(user_id);
-      if (!member) {
-         const embed = auxdibot.embeds.error.toJSON();
-         embed.description = 'This user is not in the server!';
-         return await interaction.reply({ embeds: [embed] });
-      }
+      if (!member)
+         return await handleError(auxdibot, 'MEMBER_NOT_IN_SERVER', 'This user is not in the server!', interaction);
 
       if (!(await canExecute(interaction.guild, interaction.member as GuildMember, member))) {
          const noPermissionEmbed = new EmbedBuilder().setColor(auxdibot.colors.denied).toJSON();
@@ -31,18 +29,14 @@ module.exports = <AuxdibotButton>{
          return await interaction.reply({ embeds: [noPermissionEmbed] });
       }
       const server = await findOrCreateServer(auxdibot, interaction.guild.id);
-      if (server.punishments.find((p) => p.userID == user_id && p.type == PunishmentType.BAN)) {
-         const errorEmbed = auxdibot.embeds.error.toJSON();
-         errorEmbed.description = 'This user is already banned!';
-         return await interaction.reply({ embeds: [errorEmbed] });
-      }
+      if (server.punishments.find((p) => p.userID == user_id && p.type == PunishmentType.BAN))
+         return await handleError(auxdibot, 'USER_ALREADY_BANNED', 'This user is already banned!', interaction);
 
       interaction.guild.members
          .ban(member, {
             reason: 'No reason given.',
          })
          .then(async () => {
-            if (!interaction.guild) return;
             const banData = <Punishment>{
                type: PunishmentType.BAN,
                reason: 'No reason given.',
@@ -71,9 +65,12 @@ module.exports = <AuxdibotButton>{
             });
          })
          .catch(async () => {
-            const errorEmbed = auxdibot.embeds.error.toJSON();
-            errorEmbed.description = "Couldn't ban that user. Check and see if they have a higher role than Auxdibot.";
-            return await interaction.reply({ embeds: [errorEmbed] });
+            return await handleError(
+               auxdibot,
+               'FAILED_BAN_USER',
+               "Couldn't ban that user. Check if they have a higher role than Auxdibot.",
+               interaction,
+            );
          });
       return;
    },

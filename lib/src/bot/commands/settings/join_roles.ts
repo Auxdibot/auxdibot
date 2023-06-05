@@ -8,6 +8,7 @@ import { testLimit } from '@/util/testLimit';
 import Limits from '@/constants/database/Limits';
 import handleLog from '@/util/handleLog';
 import { LogAction } from '@prisma/client';
+import handleError from '@/util/handleError';
 
 const joinRolesCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -62,36 +63,51 @@ const joinRolesCommand = <AuxdibotCommand>{
             const server = interaction.data.guildData;
             const role = interaction.options.getRole('role', true);
             if (role.id == interaction.data.guild.roles.everyone.id) {
-               const errorEmbed = auxdibot.embeds.error.toJSON();
-               errorEmbed.description = 'This is the everyone role!';
-               return await interaction.reply({ embeds: [errorEmbed] });
+               return await handleError(
+                  auxdibot,
+                  'JOIN_ROLE_EVERYONE',
+                  'This is the everyone role, silly!',
+                  interaction,
+               );
             }
             if (server.join_roles.find((val: string) => role != null && val == role.id)) {
-               const errorEmbed = auxdibot.embeds.error.toJSON();
-               errorEmbed.description = 'This role is already added!';
-               return await interaction.reply({ embeds: [errorEmbed] });
+               return await handleError(
+                  auxdibot,
+                  'JOIN_ROLE_EXISTS',
+                  'This role is already added as a join role!',
+                  interaction,
+               );
             }
             if (
                interaction.data.member.id != interaction.data.guild.ownerId &&
                !interaction.memberPermissions.has(PermissionsBitField.Flags.Administrator) &&
                role.position >= interaction.data.member.roles.highest.position
             ) {
-               const errorEmbed = auxdibot.embeds.error.toJSON();
-               errorEmbed.description = 'This role is higher than yours!';
-               return await interaction.reply({ embeds: [errorEmbed] });
+               return await handleError(
+                  auxdibot,
+                  'ROLE_POSITION_HIGHER',
+                  'This role has a higher or equal position than your highest role!',
+                  interaction,
+               );
             }
             if (
                interaction.data.guild.members.me &&
                role.position >= interaction.data.guild.members.me.roles.highest.position
             ) {
-               const errorEmbed = auxdibot.embeds.error.toJSON();
-               errorEmbed.description = "This role is higher than Auxdibot's highest role!";
-               return await interaction.reply({ embeds: [errorEmbed] });
+               return await handleError(
+                  auxdibot,
+                  'ROLE_POSITION_HIGHER_BOT',
+                  "This role has a higher position than Auxdibot's highest role!",
+                  interaction,
+               );
             }
             if (!testLimit(server.sticky_roles, Limits.JOIN_ROLE_DEFAULT_LIMIT)) {
-               const errorEmbed = auxdibot.embeds.error.toJSON();
-               errorEmbed.description = 'You have too many join roles! Remove some before adding more.';
-               return await interaction.reply({ embeds: [errorEmbed] });
+               return await handleError(
+                  auxdibot,
+                  'JOIN_ROLES_LIMIT_EXCEEDED',
+                  'You have too many join roles!',
+                  interaction,
+               );
             }
             auxdibot.database.servers.update({
                where: { serverID: server.serverID },
@@ -131,9 +147,12 @@ const joinRolesCommand = <AuxdibotCommand>{
                   : undefined;
 
             if (!joinRoleID) {
-               const errorEmbed = auxdibot.embeds.error.toJSON();
-               errorEmbed.description = "This join role doesn't exist!";
-               return await interaction.reply({ embeds: [errorEmbed] });
+               return await handleError(
+                  auxdibot,
+                  'JOIN_ROLE_NOT_FOUND',
+                  "This role isn't added as a join role!",
+                  interaction,
+               );
             }
             const joinRole = interaction.data.guild.roles.cache.get(joinRoleID);
             if (
@@ -142,18 +161,24 @@ const joinRolesCommand = <AuxdibotCommand>{
                !interaction.memberPermissions.has(PermissionsBitField.Flags.Administrator) &&
                joinRole.comparePositionTo(interaction.data.member.roles.highest) <= 0
             ) {
-               const errorEmbed = auxdibot.embeds.error.toJSON();
-               errorEmbed.description = 'This role is higher than yours!';
-               return await interaction.reply({ embeds: [errorEmbed] });
+               return await handleError(
+                  auxdibot,
+                  'ROLE_POSITION_HIGHER',
+                  'This role has a higher or equal position than your highest role!',
+                  interaction,
+               );
             }
             if (
                joinRole &&
                interaction.data.guild.members.me &&
                joinRole.comparePositionTo(interaction.data.guild.members.me.roles.highest) >= 0
             ) {
-               const errorEmbed = auxdibot.embeds.error.toJSON();
-               errorEmbed.description = "This role is higher than Auxdibot's highest role!";
-               return await interaction.reply({ embeds: [errorEmbed] });
+               return await handleError(
+                  auxdibot,
+                  'ROLE_POSITION_HIGHER_BOT',
+                  "This role has a higher position than Auxdibot's highest role!",
+                  interaction,
+               );
             }
             server.join_roles.splice(server.sticky_roles.indexOf(joinRoleID), 1);
             auxdibot.database.servers.update({
