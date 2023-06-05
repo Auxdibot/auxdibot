@@ -4,10 +4,11 @@
   "description": "Express API and Discord.js backend for Auxdibot.",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon ./dist/index.js",
+    "start": "node ./dist/index.js",
     "dev": "nodemon ./dist/index.js",
     "build": "tsc",
-    "lint": "eslint --ignore-path .eslintignore --ext .js,.ts . --quiet --fix"
+    "lint": "eslint --ignore-path .eslintignore --ext .js,.ts . --quiet --fix",
+    "prepare": "cd .. && husky install client/.husky"
   },
   "author": "Auxdible",
   "license": "ISC",
@@ -43,11 +44,6 @@
     "prisma": "^4.14.1",
     "typescript": "^5.0.2"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
   "lint-staged": {
     "*.{js,ts,tsx}": [
       "eslint --fix"
@@ -55,5 +51,9 @@
   },
   "_moduleAliases": {
     "@": "dist/"
+  },
+  "devDependencies": {
+    "husky": "^8.0.0",
+    "lint-staged": "^13.2.2"
   }
 }
