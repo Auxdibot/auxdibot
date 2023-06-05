@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import calcXP from '@/util/calcXP';
-import Modules from '@/constants/Modules';
+import Modules from '@/constants/bot/commands/Modules';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import handleError from '@/util/handleError';
 dotenv.config();

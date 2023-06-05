@@ -4,14 +4,14 @@ import fs from 'fs';
 import path from 'path';
 import dotenv from 'dotenv';
 import { Auxdibot } from '@/interfaces/Auxdibot';
-import { AuxdibotIntents } from '@/constants/AuxdibotIntents';
+import { AuxdibotIntents } from '@/constants/bot/AuxdibotIntents';
 import listenEvents from '@/bot/events/listenEvents';
 import connectPrisma from './util/connectPrisma';
 import findOrCreateServer from './modules/server/findOrCreateServer';
 import handleLog from './util/handleLog';
 import { LogAction, PunishmentType } from '@prisma/client';
 import { punishmentInfoField } from './modules/features/moderation/punishmentInfoField';
-import { AuxdibotPartials } from './constants/AuxdibotPartials';
+import { AuxdibotPartials } from './constants/bot/AuxdibotPartials';
 
 dotenv.config();
 const TOKEN = process.env.DISCORD_BOT_TOKEN;
@@ -34,7 +34,7 @@ const CLIENT_ID = process.env.DISCORD_BOT_CLIENT_ID;
          activities: [
             {
                type: ActivityType.Listening,
-               name: 'loading...',
+               name: '/help modules | loading...',
             },
          ],
       },
@@ -95,7 +95,7 @@ const CLIENT_ID = process.env.DISCORD_BOT_CLIENT_ID;
             activities: [
                {
                   type: ActivityType.Watching,
-                  name: `${this.guilds.cache.size.toLocaleString()} servers`,
+                  name: `/help modules | ${this.guilds.cache.size.toLocaleString()} servers`,
                },
             ],
          });

@@ -4,7 +4,7 @@ import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import { testLimit } from '@/util/testLimit';
 import Limits from '@/constants/database/Limits';
 import { BaseInteraction, EmbedBuilder } from 'discord.js';
-import { PunishmentNames } from '@/constants/PunishmentNames';
+import { PunishmentNames } from '@/constants/bot/punishments/PunishmentNames';
 import { punishmentInfoField } from './punishmentInfoField';
 
 export default async function createPunishment(

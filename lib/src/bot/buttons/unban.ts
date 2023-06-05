@@ -1,6 +1,6 @@
 import AuxdibotButton from '@/interfaces/buttons/AuxdibotButton';
 import { EmbedBuilder, MessageComponentInteraction } from 'discord.js';
-import Modules from '@/constants/Modules';
+import Modules from '@/constants/bot/commands/Modules';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import { LogAction, PunishmentType } from '@prisma/client';

@@ -2,7 +2,7 @@ import { EmbedBuilder, PermissionsBitField, SlashCommandBuilder } from 'discord.
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
-import Modules from '@/constants/Modules';
+import Modules from '@/constants/bot/commands/Modules';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import takeXP from '@/modules/features/levels/takeXP';
 import awardXP from '@/modules/features/levels/awardXP';

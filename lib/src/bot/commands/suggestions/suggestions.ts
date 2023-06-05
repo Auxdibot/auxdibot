@@ -2,12 +2,12 @@ import { EmbedBuilder, ChannelType, GuildBasedChannel, SlashCommandBuilder } fro
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
-import { SuggestionStateName } from '@/constants/SuggestionStateName';
+import { SuggestionStateName } from '@/constants/bot/suggestions/SuggestionStateName';
 import parsePlaceholders from '@/util/parsePlaceholder';
 import emojiRegex from 'emoji-regex';
 import { getMessage } from '@/util/getMessage';
 import canExecute from '@/util/canExecute';
-import Modules from '@/constants/Modules';
+import Modules from '@/constants/bot/commands/Modules';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import { LogAction, Suggestion, SuggestionState } from '@prisma/client';
 import deleteSuggestion from '@/modules/features/suggestions/deleteSuggestion';

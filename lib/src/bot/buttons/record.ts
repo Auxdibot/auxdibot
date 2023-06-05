@@ -1,6 +1,6 @@
 import AuxdibotButton from '@/interfaces/buttons/AuxdibotButton';
 import { MessageComponentInteraction } from 'discord.js';
-import Modules from '@/constants/Modules';
+import Modules from '@/constants/bot/commands/Modules';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import userRecordAsEmbed from '@/modules/features/moderation/userRecordAsEmbed';
 import handleError from '@/util/handleError';

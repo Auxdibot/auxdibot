@@ -7,7 +7,7 @@ import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInt
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import createEmbedParameters from '@/util/createEmbedParameters';
 import argumentsToEmbedParameters from '@/util/argumentsToEmbedParameters';
-import Modules from '@/constants/Modules';
+import Modules from '@/constants/bot/commands/Modules';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import { APIEmbed } from '@prisma/client';
 import handleError from '@/util/handleError';

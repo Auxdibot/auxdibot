@@ -1,9 +1,9 @@
 import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
-import { PunishmentNames } from '@/constants/PunishmentNames';
+import { PunishmentNames } from '@/constants/bot/punishments/PunishmentNames';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
-import Modules from '@/constants/Modules';
+import Modules from '@/constants/bot/commands/Modules';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import { punishmentInfoField } from '@/modules/features/moderation/punishmentInfoField';
 import deletePunishment from '@/modules/features/moderation/deletePunishment';

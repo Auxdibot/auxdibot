@@ -14,7 +14,7 @@ import {
    DMAuxdibotCommandData,
    GuildAuxdibotCommandData,
 } from '@/interfaces/commands/AuxdibotCommandData';
-import Modules from '@/constants/Modules';
+import Modules from '@/constants/bot/commands/Modules';
 import AuxdibotFeatureModule from '@/interfaces/commands/AuxdibotFeatureModule';
 import handleError from '@/util/handleError';
 dotenv.config();

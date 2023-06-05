@@ -4,7 +4,7 @@ import timestampToDuration from '@/util/timestampToDuration';
 import canExecute from '@/util/canExecute';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
-import Modules from '@/constants/Modules';
+import Modules from '@/constants/bot/commands/Modules';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import { LogAction, Punishment, PunishmentType } from '@prisma/client';
 import incrementPunishmentsTotal from '@/modules/features/moderation/incrementPunishmentsTotal';

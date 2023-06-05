@@ -1,6 +1,6 @@
 import { APIEmbed, Message } from 'discord.js';
 import parsePlaceholders from '@/util/parsePlaceholder';
-import Modules from '@/constants/Modules';
+import Modules from '@/constants/bot/commands/Modules';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import awardXP from '@/modules/features/levels/awardXP';

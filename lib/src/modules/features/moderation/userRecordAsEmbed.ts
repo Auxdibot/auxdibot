@@ -1,6 +1,6 @@
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
-import { PunishmentNames } from '@/constants/PunishmentNames';
+import { PunishmentNames } from '@/constants/bot/punishments/PunishmentNames';
 import { Punishment } from '@prisma/client';
 import { EmbedBuilder } from 'discord.js';
 

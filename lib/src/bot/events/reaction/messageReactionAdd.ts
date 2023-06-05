@@ -1,5 +1,5 @@
 import { APIEmbed, GuildMember, MessageReaction, PartialMessageReaction, PartialUser, User } from 'discord.js';
-import Modules from '@/constants/Modules';
+import Modules from '@/constants/bot/commands/Modules';
 import parsePlaceholders from '@/util/parsePlaceholder';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';

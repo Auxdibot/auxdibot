@@ -1,7 +1,7 @@
 import { Guild, GuildMember, Message, PartialGuildMember, PartialMessage, PermissionsBitField } from 'discord.js';
-import { PunishmentNames } from '@/constants/PunishmentNames';
-import { LogNames } from '@/constants/Log';
-import { SuggestionStateName } from '@/constants/SuggestionStateName';
+import { PunishmentNames } from '@/constants/bot/punishments/PunishmentNames';
+import { LogNames } from '@/constants/bot/log/LogNames';
+import { SuggestionStateName } from '@/constants/bot/suggestions/SuggestionStateName';
 import { Suggestion } from '@prisma/client';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import { Auxdibot } from '@/interfaces/Auxdibot';
