@@ -17,9 +17,7 @@ const warnCommand = <AuxdibotCommand>{
       .setName('warn')
       .setDescription('Warn a user using Auxdibot.')
       .addUserOption((builder) => builder.setName('user').setDescription('User that will be warned.').setRequired(true))
-      .addStringOption((builder) =>
-         builder.setName('reason').setDescription('Reason for warn (Optional)').setRequired(false),
-      ),
+      .addStringOption((builder) => builder.setName('reason').setDescription('Reason for warn').setRequired(false)),
    info: {
       module: Modules['Moderation'],
       description:

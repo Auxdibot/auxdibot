@@ -18,9 +18,7 @@ const kickCommand = <AuxdibotCommand>{
       .setName('kick')
       .setDescription('Kick a user using Auxdibot.')
       .addUserOption((builder) => builder.setName('user').setDescription('User that will be kicked.').setRequired(true))
-      .addStringOption((builder) =>
-         builder.setName('reason').setDescription('Reason for kick (Optional)').setRequired(false),
-      ),
+      .addStringOption((builder) => builder.setName('reason').setDescription('Reason for kick').setRequired(false)),
    info: {
       module: Modules['Moderation'],
       description: 'Kicks a user, removing them from the server and adding a kick to their record on the server.',

@@ -18,11 +18,9 @@ const muteCommand = <AuxdibotCommand>{
       .setName('mute')
       .setDescription('Mute a user using Auxdibot.')
       .addUserOption((builder) => builder.setName('user').setDescription('User that will be muted.').setRequired(true))
+      .addStringOption((builder) => builder.setName('reason').setDescription('Reason for muted').setRequired(false))
       .addStringOption((builder) =>
-         builder.setName('reason').setDescription('Reason for muted (Optional)').setRequired(false),
-      )
-      .addStringOption((builder) =>
-         builder.setName('duration').setDescription('Duration as a timestamp (Optional)').setRequired(false),
+         builder.setName('duration').setDescription('Duration as a timestamp').setRequired(false),
       ),
    info: {
       module: Modules['Moderation'],

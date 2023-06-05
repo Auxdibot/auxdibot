@@ -48,7 +48,7 @@ const helpCommand = <AuxdibotCommand>{
             .addStringOption((argBuilder) =>
                argBuilder
                   .setName('subcommand_name')
-                  .setDescription('The subcommand you want to learn more about. (Optional)')
+                  .setDescription('The subcommand you want to learn more about.')
                   .setRequired(false),
             ),
       ),

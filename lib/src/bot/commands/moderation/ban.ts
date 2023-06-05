@@ -18,16 +18,14 @@ const banCommand = <AuxdibotCommand>{
       .setName('ban')
       .setDescription('Ban a user using Auxdibot.')
       .addUserOption((builder) => builder.setName('user').setDescription('User that will be banned.').setRequired(true))
+      .addStringOption((builder) => builder.setName('reason').setDescription('Reason for ban').setRequired(false))
       .addStringOption((builder) =>
-         builder.setName('reason').setDescription('Reason for ban (Optional)').setRequired(false),
-      )
-      .addStringOption((builder) =>
-         builder.setName('duration').setDescription('Duration as a timestamp (Optional)').setRequired(false),
+         builder.setName('duration').setDescription('Duration as a timestamp').setRequired(false),
       )
       .addNumberOption((builder) =>
          builder
             .setName('delete_message_days')
-            .setDescription("How many days back the user's messages should be deleted. (Optional)")
+            .setDescription("How many days back the user's messages should be deleted.")
             .setRequired(false),
       ),
    info: {
