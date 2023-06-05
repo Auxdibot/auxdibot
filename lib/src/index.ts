@@ -68,7 +68,7 @@ const CLIENT_ID = process.env.DISCORD_BOT_CLIENT_ID;
          .setColor(auxdibot.colors.default)
          .setTitle('👋 Hello!')
          .setDescription(
-            `I'm Auxdibot! I'm a multipurpose Discord bot being developed by Auxdible. You can do \`/help modules\` at any time to view all of my modules, and \`/help command\` to view information about a specific command. Visit my home site & dashboard [here](${process.env.BOT_HOMEPAGE})!`,
+            `I'm Auxdibot! I'm a multipurpose Discord bot, developed by Auxdible. You can do \`/help modules\` at any time to view all of my modules, and \`/help command\` to view information about a specific command. Visit my home site & dashboard [here](${process.env.BOT_HOMEPAGE})!`,
          ),
       disabled: new EmbedBuilder()
          .setColor(auxdibot.colors.denied)

@@ -7,4 +7,5 @@ export const promoRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
       .setEmoji('📩')
       .setURL(process.env.DISCORD_INVITE_LINK || 'https://bot.auxdible.me'),
    new ButtonBuilder().setStyle(5).setLabel('Website').setEmoji('🖥️').setURL('https://bot.auxdible.me'),
+   new ButtonBuilder().setStyle(5).setLabel('Support Server').setEmoji('💖').setURL('https://discord.gg/tnsFW9CQEn'),
 );

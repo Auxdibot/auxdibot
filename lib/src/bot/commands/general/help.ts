@@ -11,7 +11,7 @@ import {
 import Modules from '@/constants/bot/commands/Modules';
 import AuxdibotFeatureModule from '@/interfaces/commands/AuxdibotFeatureModule';
 import handleError from '@/util/handleError';
-import { promoRow } from '@/constants/bot/PromoRow';
+import { promoRow } from '@/constants/bot/promoRow';
 dotenv.config();
 
 const helpCommand = <AuxdibotCommand>{
