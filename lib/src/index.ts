@@ -68,10 +68,7 @@ const CLIENT_ID = process.env.DISCORD_BOT_CLIENT_ID;
          .setColor(auxdibot.colors.default)
          .setTitle('👋 Hello!')
          .setDescription(
-            'I am Auxdibot. Thank you for inviting me to your server. I am currently still in development and many of my features are incomplete.' +
-               '\n\n• I am a **slash command only** bot! Type `/`, then click on the icon for Auxdibot to see all my available commands!' +
-               '\n• Do `/help` to see a list of all of my commands!' +
-               '\n• Or do `/help [command_name]` to view information about a specific command!',
+            `I'm Auxdibot! I'm a multipurpose Discord bot being developed by Auxdible. You can do \`/help modules\` at any time to view all of my modules, and \`/help command\` to view information about a specific command. Visit my home site & dashboard [here](${process.env.BOT_HOMEPAGE})!`,
          ),
       disabled: new EmbedBuilder()
          .setColor(auxdibot.colors.denied)

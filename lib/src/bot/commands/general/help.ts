@@ -1,10 +1,4 @@
-import {
-   EmbedBuilder,
-   APIApplicationCommandOptionChoice,
-   ActionRowBuilder,
-   ButtonBuilder,
-   SlashCommandBuilder,
-} from 'discord.js';
+import { EmbedBuilder, APIApplicationCommandOptionChoice, SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import dotenv from 'dotenv';
@@ -17,15 +11,9 @@ import {
 import Modules from '@/constants/bot/commands/Modules';
 import AuxdibotFeatureModule from '@/interfaces/commands/AuxdibotFeatureModule';
 import handleError from '@/util/handleError';
+import { promoRow } from '@/constants/bot/PromoRow';
 dotenv.config();
-const PROMO_ROW = new ActionRowBuilder<ButtonBuilder>().addComponents(
-   new ButtonBuilder()
-      .setStyle(5)
-      .setLabel('Invite')
-      .setEmoji('📩')
-      .setURL(process.env.DISCORD_INVITE_LINK || 'https://bot.auxdible.me'),
-   new ButtonBuilder().setStyle(5).setLabel('Website').setEmoji('🖥️').setURL('https://bot.auxdible.me'),
-);
+
 const helpCommand = <AuxdibotCommand>{
    data: new SlashCommandBuilder()
       .setName('help')
@@ -113,7 +101,7 @@ const helpCommand = <AuxdibotCommand>{
             ];
             return await interaction.reply({
                embeds: [embed],
-               components: [PROMO_ROW.toJSON()],
+               components: [promoRow.toJSON()],
             });
          },
       },
@@ -159,7 +147,7 @@ const helpCommand = <AuxdibotCommand>{
                   value: commands.reduce((acc, i) => acc + ` **/${i.data.name}**\n> ${i.info.description}\n\n`, ''),
                },
             ];
-            return await interaction.reply({ embeds: [embed], components: [PROMO_ROW.toJSON()] });
+            return await interaction.reply({ embeds: [embed], components: [promoRow.toJSON()] });
          },
       },
       {
@@ -210,7 +198,7 @@ const helpCommand = <AuxdibotCommand>{
             };
             return await interaction.reply({
                embeds: [helpCommandEmbed],
-               components: [PROMO_ROW.toJSON()],
+               components: [promoRow.toJSON()],
             });
          },
       },
