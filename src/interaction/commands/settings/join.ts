@@ -34,7 +34,7 @@ const joinCommand = <AuxdibotCommand>{
    info: {
       module: Modules['Settings'],
       description:
-         'Change settings for join messages on the server. (Placeholders are supported. Do /placeholders for a list of placeholders.)',
+         'Change settings for join messages on the server. (Placeholders are supported. Do /help placeholders for a list of placeholders.)',
       usageExample: '/join (message|embed_json|preview)',
       permission: 'settings.join',
    },
@@ -44,7 +44,7 @@ const joinCommand = <AuxdibotCommand>{
          info: {
             module: Modules['Settings'],
             description:
-               'Set the join message. (Placeholders are supported. Do /placeholders for a list of placeholders.)',
+               'Set the join message. (Placeholders are supported. Do /help placeholders for a list of placeholders.)',
             usageExample:
                '/join message [content] [color] [title] [title url] [author] [author icon url] [author url] [description] [fields (split title and description with "|d|", and seperate fields with "|s|")] [footer] [footer icon url] [image url] [thumbnail url]',
             permission: 'settings.join.message',
@@ -94,7 +94,7 @@ const joinCommand = <AuxdibotCommand>{
          info: {
             module: Modules['Settings'],
             description:
-               'Add an embed to the join message using custom JSON. (Placeholders are supported. Do /placeholders for a list of placeholders.)',
+               'Add an embed to the join message using custom JSON. (Placeholders are supported. Do /help placeholders for a list of placeholders.)',
             usageExample: '/join embed_json (json)',
             permission: 'settings.join.embed_json',
          },

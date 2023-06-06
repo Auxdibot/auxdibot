@@ -33,7 +33,7 @@ const leaveCommand = <AuxdibotCommand>{
    info: {
       module: Modules['Settings'],
       description:
-         'Change settings for leave messages on the server. (Placeholders are supported. Do /placeholders for a list of placeholders.)',
+         'Change settings for leave messages on the server. (Placeholders are supported. Do /help placeholders for a list of placeholders.)',
       usageExample: '/leave (message|embed_json|preview)',
       permission: 'settings.leave',
    },
@@ -43,7 +43,7 @@ const leaveCommand = <AuxdibotCommand>{
          info: {
             module: Modules['Settings'],
             description:
-               'Set the leave message. (Placeholders are supported. Do /placeholders for a list of placeholders.)',
+               'Set the leave message. (Placeholders are supported. Do /help placeholders for a list of placeholders.)',
             usageExample:
                '/leave message [content] [color] [title] [title url] [author] [author icon url] [author url] [description] [fields (split title and description with "|d|", and seperate fields with "|s|")] [footer] [footer icon url] [image url] [thumbnail url]',
             permission: 'settings.leave.message',
@@ -94,7 +94,7 @@ const leaveCommand = <AuxdibotCommand>{
          info: {
             module: Modules['Settings'],
             description:
-               'Add an embed to the join message using custom JSON. (Placeholders are supported. Do /placeholders for a list of placeholders.)',
+               'Add an embed to the join message using custom JSON. (Placeholders are supported. Do /help placeholders for a list of placeholders.)',
             usageExample: '/leave embed_json (json)',
             permission: 'settings.leave.embed_json',
          },

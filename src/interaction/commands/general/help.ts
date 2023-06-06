@@ -12,6 +12,7 @@ import Modules from '@/constants/bot/commands/Modules';
 import AuxdibotFeatureModule from '@/interfaces/commands/AuxdibotFeatureModule';
 import handleError from '@/util/handleError';
 import { promoRow } from '@/constants/bot/promoRow';
+import Placeholders from '@/constants/bot/placeholders/Placeholders';
 dotenv.config();
 
 const helpCommand = <AuxdibotCommand>{
@@ -19,6 +20,7 @@ const helpCommand = <AuxdibotCommand>{
       .setName('help')
       .setDescription('View the help for Auxdibot.')
       .addSubcommand((builder) => builder.setName('modules').setDescription("View Auxdibot's modules."))
+      .addSubcommand((builder) => builder.setName('placeholders').setDescription("View Auxdibot's placeholders."))
       .addSubcommand((builder) =>
          builder
             .setName('module')
@@ -55,7 +57,7 @@ const helpCommand = <AuxdibotCommand>{
    info: {
       module: Modules['General'],
       description: "View Auxdibot's modules, view information about a module or view information about a command.",
-      usageExample: '/help (modules|module|command)',
+      usageExample: '/help (placeholders|modules|module|command)',
       allowedDefault: true,
       permission: 'commands.help',
       dmableCommand: true,
@@ -102,6 +104,49 @@ const helpCommand = <AuxdibotCommand>{
             return await interaction.reply({
                embeds: [embed],
                components: [promoRow.toJSON()],
+            });
+         },
+      },
+      {
+         name: 'placeholders',
+         info: {
+            module: Modules['General'],
+            description: "View Auxdibot's placeholders.",
+            usageExample: '/help placeholders',
+            allowedDefault: true,
+            permission: 'commands.help.placeholders',
+            dmableCommand: true,
+         },
+         async execute(
+            auxdibot: Auxdibot,
+            interaction: AuxdibotCommandInteraction<DMAuxdibotCommandData | GuildAuxdibotCommandData>,
+         ) {
+            const placeholdersEmbed = new EmbedBuilder().setColor(auxdibot.colors.default).toJSON();
+            placeholdersEmbed.title = '🔁 Placeholders';
+            placeholdersEmbed.description =
+               'Placeholders can be used in **ANY** Auxdibot command that sends a message! Try out /embed /join or /leave!';
+            placeholdersEmbed.fields = [
+               {
+                  name: 'Server',
+                  value: Object.keys(Placeholders)
+                     .filter((key) => /^server_/.test(key))
+                     .reduce((accumulator, key) => `${accumulator}\r\n\`%${key}%\``, ''),
+               },
+               {
+                  name: 'Member',
+                  value: Object.keys(Placeholders)
+                     .filter((key) => /^member_/.test(key))
+                     .reduce((accumulator, key) => `${accumulator}\r\n\`%${key}%\``, ''),
+               },
+               {
+                  name: 'Message',
+                  value: Object.keys(Placeholders)
+                     .filter((key) => /^message_/.test(key))
+                     .reduce((accumulator, key) => `${accumulator}\r\n\`%${key}%\``, ''),
+               },
+            ];
+            return await interaction.reply({
+               embeds: [placeholdersEmbed],
             });
          },
       },

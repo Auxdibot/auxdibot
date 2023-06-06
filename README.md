@@ -54,7 +54,7 @@ Auxdibot uses Discord's slash command system. If you want to run any command you
 
 * `/help command (command) [subcommand]` - *View the usage and description of any Auxdibot command.*
   
-* `/placeholders` - *View every placeholder.*
+* `/help placeholders` - *View every placeholder.*
 
 * `/user (user)` - *View information about a user and enforce punishments with an easy-to-use button row.*
 
