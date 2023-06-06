@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node ./dist/index.js",
     "dev": "nodemon ./dist/index.js",
-    "build": "tsc",
+    "build": "rm -rf ./dist && tsc",
     "lint": "eslint --ignore-path .eslintignore --ext .js,.ts . --quiet --fix",
     "prepare": "cd .. && husky install client/.husky"
   },
@@ -14,8 +14,6 @@
   "license": "ISC",
   "dependencies": {
     "@prisma/client": "^4.15.0",
-    "@types/cookie-parser": "^1.4.3",
-    "@types/cors": "^2.8.13",
     "@types/emoji-regex": "^9.2.0",
     "@typescript-eslint/eslint-plugin": "^5.59.6",
     "@typescript-eslint/parser": "^5.59.6",
