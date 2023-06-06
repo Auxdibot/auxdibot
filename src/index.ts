@@ -1,17 +1,17 @@
 import 'module-alias/register';
-import { ActivityType, Client, Collection, EmbedBuilder, REST, Routes } from 'discord.js';
-import fs from 'fs';
-import path from 'path';
+import { ActivityType, Client, Collection, EmbedBuilder, REST } from 'discord.js';
+
 import dotenv from 'dotenv';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import { AuxdibotIntents } from '@/constants/bot/AuxdibotIntents';
-import listenEvents from '@/bot/events/listenEvents';
+import listenEvents from '@/interaction/events/listenEvents';
 import connectPrisma from './util/connectPrisma';
 import findOrCreateServer from './modules/server/findOrCreateServer';
 import handleLog from './util/handleLog';
 import { LogAction, PunishmentType } from '@prisma/client';
 import { punishmentInfoField } from './modules/features/moderation/punishmentInfoField';
 import { AuxdibotPartials } from './constants/bot/AuxdibotPartials';
+import refreshInteractions from './interaction/registerInteractions';
 
 dotenv.config();
 const TOKEN = process.env.DISCORD_BOT_TOKEN;
@@ -98,78 +98,11 @@ const CLIENT_ID = process.env.DISCORD_BOT_CLIENT_ID;
          });
       return undefined;
    };
-   /********************************************************************************/
-   // Declare commands
-   console.log('-> Declaring commands...');
+
    const rest = new REST({
       version: '10',
    }).setToken(TOKEN);
-
-   const commands = [];
-   const PACKAGES = [
-      'general',
-      'moderation',
-      'settings',
-      'permissions',
-      'embeds',
-      'roles',
-      'suggestions',
-      'levels',
-      'starboard',
-   ];
-   const commandFiles = [
-      {
-         dir: '',
-         files: fs.readdirSync(path.join(__dirname, '/bot/commands')).filter((file) => file.endsWith('.js')),
-      },
-   ];
-
-   for (const packageString of PACKAGES) {
-      const packageFile = path.join(__dirname, '/bot/commands', packageString);
-      if (fs.existsSync(packageFile)) {
-         commandFiles.push({
-            dir: packageString,
-            files: fs.readdirSync(packageFile).filter((file) => file.endsWith('.js')),
-         });
-      }
-   }
-   for (const packageFile of commandFiles) {
-      for (const file of packageFile.files) {
-         const fileRequire = await import(`./bot/commands/${packageFile.dir}/${file}`);
-         if (fileRequire.data) {
-            commands.push(fileRequire.data);
-            if (auxdibot.commands) {
-               auxdibot.commands.set(fileRequire.data.name, fileRequire);
-            }
-         }
-      }
-   }
-   rest
-      .put(Routes.applicationCommands(CLIENT_ID), {
-         body: commands,
-      })
-      .then(() => {
-         console.log(`-> Refreshed ${commands.length} slash commands.`);
-      })
-      .catch((x) => {
-         console.error('! -> Failed to load commands!');
-         console.error(x);
-      });
-
-   /********************************************************************************/
-   // Declare buttons
-   console.log('-> Declaring button interactions...');
-   const buttons = [];
-   const buttonFiles = fs.readdirSync(path.join(__dirname, '/bot/buttons')).filter((file) => file.endsWith('.js'));
-   for (const file of buttonFiles) {
-      const fileRequire = await import(`./bot/buttons/${file}`);
-      if (fileRequire) {
-         buttons.push(fileRequire);
-         if (auxdibot.buttons) {
-            auxdibot.buttons.set(fileRequire.name, fileRequire);
-         }
-      }
-   }
+   refreshInteractions(auxdibot, rest, CLIENT_ID);
    /********************************************************************************/
    // Listen for events & login to bot
    console.log('-> Listening for events...');
