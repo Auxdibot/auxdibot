@@ -11,7 +11,7 @@ interface AuxdibotCommand {
       | SlashCommandBuilder
       | SlashCommandSubcommandsOnlyBuilder
       | Omit<SlashCommandBuilder, 'addSubcommandGroup' | 'addSubcommand'>;
-   execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<BaseAuxdibotCommandData>): any;
+   execute?(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<BaseAuxdibotCommandData>): unknown;
    info: CommandInfo;
    subcommands?: AuxdibotSubcommand[];
 }

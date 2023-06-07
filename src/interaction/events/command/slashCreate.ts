@@ -5,6 +5,7 @@ import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInt
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import testPermission from '@/util/testPermission';
+import handleError from '@/util/handleError';
 
 export default async function slashCreate(auxdibot: Auxdibot, interaction: ChatInputCommandInteraction) {
    if (!auxdibot.commands) return;
@@ -57,5 +58,12 @@ export default async function slashCreate(auxdibot: Auxdibot, interaction: ChatI
          embeds: [noPermissionEmbed],
       });
    }
+   if (!commandData || !commandData.execute)
+      return handleError(
+         auxdibot,
+         'INVALID_COMMAND_OR_SUBCOMMAND',
+         'This command is invalid or incomplete! Please report this to our support server.',
+         interaction,
+      );
    return await commandData.execute(auxdibot, interactionData);
 }

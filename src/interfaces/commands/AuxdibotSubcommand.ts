@@ -6,5 +6,5 @@ import { Auxdibot } from '../Auxdibot';
 export interface AuxdibotSubcommand {
    name: string;
    info: CommandInfo;
-   execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<BaseAuxdibotCommandData>): any;
+   execute?(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<BaseAuxdibotCommandData>): unknown;
 }
