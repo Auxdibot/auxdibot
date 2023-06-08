@@ -81,6 +81,7 @@ If you would like to run Auxdibot on your own machine:
 * Go to the file where you would like the `auxdibot` file to be stored.
 * Install Git and run `git clone https://github.com/Auxdible/auxdibot.git`
 * Run `npm i --save` in the root `auxdibot` file
+* Run `npx prisma generate` in the root `auxdibot` file
 * Run `npm run build` in the root `auxdibot` file
 * The build will be located at `/dist`
 * Create a `.env` file in the root `auxdibot` file (or use ecosystem.config.js if you are using `pm2`)
