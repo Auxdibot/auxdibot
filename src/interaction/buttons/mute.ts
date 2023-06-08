@@ -33,7 +33,7 @@ module.exports = <AuxdibotButton>{
          return await handleError(
             auxdibot,
             'NO_MUTE_ROLE',
-            'There is no mute role assigned for the server! Do `/help muterole` to view the command to add a muterole.',
+            'There is no mute role assigned for the server! Do `/settings mute_role` to view the command to add a muterole.',
             interaction,
          );
       }

@@ -1,3 +1,4 @@
+import { ToadScheduler } from 'toad-scheduler';
 import 'module-alias/register';
 import { ActivityType, Client, Collection, EmbedBuilder, REST } from 'discord.js';
 
@@ -6,12 +7,9 @@ import { Auxdibot } from '@/interfaces/Auxdibot';
 import { AuxdibotIntents } from '@/constants/bot/AuxdibotIntents';
 import listenEvents from '@/interaction/events/listenEvents';
 import connectPrisma from './util/connectPrisma';
-import findOrCreateServer from './modules/server/findOrCreateServer';
-import handleLog from './util/handleLog';
-import { LogAction, PunishmentType } from '@prisma/client';
-import { punishmentInfoField } from './modules/features/moderation/punishmentInfoField';
 import { AuxdibotPartials } from './constants/bot/AuxdibotPartials';
 import refreshInteractions from './interaction/registerInteractions';
+import scheduleExpirationChecks from './modules/features/moderation/scheduleExpirationChecks';
 
 dotenv.config();
 const TOKEN = process.env.DISCORD_BOT_TOKEN;
@@ -46,6 +44,7 @@ const CLIENT_ID = process.env.DISCORD_BOT_CLIENT_ID;
    console.log('-> Declaring client variables...');
    auxdibot.commands = new Collection();
    auxdibot.buttons = new Collection();
+   auxdibot.scheduler = new ToadScheduler();
    auxdibot.colors = {
       accept: 0x8bc34a,
       denied: 0xf44336,
@@ -104,64 +103,18 @@ const CLIENT_ID = process.env.DISCORD_BOT_CLIENT_ID;
    }).setToken(TOKEN);
    refreshInteractions(auxdibot, rest, CLIENT_ID);
    /********************************************************************************/
-   // Listen for events & login to bot
+   // Listen for events
    console.log('-> Listening for events...');
 
    listenEvents(auxdibot);
 
+   /********************************************************************************/
+   // Schedule tasks
+   console.log('-> Scheduling tasks...');
+   scheduleExpirationChecks(auxdibot);
    console.log('-> Logging into client...');
-   auxdibot
-      .login(TOKEN)
-      .then(() => {
-         if (auxdibot.updateDiscordStatus) auxdibot.updateDiscordStatus();
-         setInterval(async () => {
-            for (const guild of auxdibot.guilds.cache.values()) {
-               const server = await findOrCreateServer(auxdibot, guild.id);
-               if (!server) return;
-               const expired = server.punishments.filter((punishment) => {
-                  if (
-                     !punishment.expired &&
-                     punishment.expires_date_unix &&
-                     punishment.expires_date_unix * 1000 > Date.now()
-                  ) {
-                     punishment.expired = true;
-                     return punishment;
-                  }
-               });
-               if (expired) {
-                  for (const expiredPunishment of expired) {
-                     await handleLog(
-                        auxdibot,
-                        guild,
-                        {
-                           type: LogAction.PUNISHMENT_EXPIRED,
-                           description: `Punishment ID ${expiredPunishment.punishmentID} has expired.`,
-                           date_unix: Date.now(),
-                           userID: auxdibot.user.id,
-                        },
-                        [punishmentInfoField(expiredPunishment)],
-                     );
-                     switch (expiredPunishment.type) {
-                        case PunishmentType.BAN:
-                           await guild.bans.remove(expiredPunishment.userID, 'Punishment expired.');
-                           break;
-                        case PunishmentType.MUTE:
-                           const member = guild.members.resolve(expiredPunishment.userID);
-                           if (!member || !server.mute_role) break;
-                           member.roles.remove(server.mute_role);
-                           break;
-                     }
-                  }
-                  await auxdibot.database.servers.update({
-                     where: { serverID: server.serverID },
-                     data: { punishments: server.punishments },
-                  });
-               }
-            }
-         }, 60000);
-      })
-      .catch((reason) => {
-         console.error('! -> Error signing into into Auxdibot!');
-         console.error(reason);
-      });
+   auxdibot.login(TOKEN).catch((reason) => {
+      console.error('! -> Error signing into into Auxdibot!');
+      console.error(reason);
+   });
 })();
