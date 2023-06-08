@@ -82,8 +82,8 @@ If you would like to run Auxdibot on your own machine:
 * Install Git and run `git clone https://github.com/Auxdible/auxdibot.git`
 * Run `npm i --save` in the root `auxdibot` file
 * Run `npm run build` in the root `auxdibot` file
-* The build will be located at `/lib/dist`
-* Create a `.env` file in `/lib` (or use ecosystem.config.js if you are using `pm2`)
+* The build will be located at `/dist`
+* Create a `.env` file in the root `auxdibot` file (or use ecosystem.config.js if you are using `pm2`)
 * Configure the `.env` file with all the parameters specified in `sample.env`
     * This step **WILL** require a MongoDB URI, Discord Bot Token, and Discord Bot Client ID.
 * Run `npm start` to start Auxdibot!
