@@ -1,10 +1,9 @@
-import { APIEmbed, GuildMember, MessageReaction, PartialMessageReaction, PartialUser, User } from 'discord.js';
+import { GuildMember, MessageReaction, PartialMessageReaction, PartialUser, User } from 'discord.js';
 import Modules from '@/constants/bot/commands/Modules';
-import parsePlaceholders from '@/util/parsePlaceholder';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
-import { DEFAULT_STARBOARD_MESSAGE_EMBED } from '@/constants/embeds/DefaultEmbeds';
-import Limits from '@/constants/database/Limits';
+import createStarredMessage from '@/modules/features/starboard/createStarredMessage';
+import updateStarredMessage from '@/modules/features/starboard/updateStarredMessage';
 
 export default async function messageReactionAdd(
    auxdibot: Auxdibot,
@@ -46,61 +45,9 @@ export default async function messageReactionAdd(
                .catch(() => undefined);
          }
          if (!starred && starCount >= server.starboard_reaction_count) {
-            try {
-               const embed = JSON.parse(
-                  await parsePlaceholders(
-                     auxdibot,
-                     JSON.stringify(DEFAULT_STARBOARD_MESSAGE_EMBED),
-                     messageReaction.message.guild,
-                     undefined,
-                     undefined,
-                     messageReaction.message,
-                  ),
-               ) as APIEmbed;
-
-               if (server.starred_messages.length < Limits.ACTIVE_STARRED_MESSAGES_DEFAULT_LIMIT) {
-                  const message = await starboard_channel.send({
-                     content: `**${starCount} ${server.starboard_reaction || 'No Emoji'}** | ${
-                        messageReaction.message.channel
-                     }`,
-                     embeds: [embed],
-                  });
-                  server.starred_messages.push({
-                     starboard_message_id: message.id,
-                     starred_message_id: messageReaction.message.id,
-                  });
-                  await auxdibot.database.servers
-                     .update({
-                        where: { serverID: messageReaction.message.guild.id },
-                        data: { starred_messages: server.starred_messages },
-                     })
-                     .catch(() => message.delete());
-               }
-            } catch (x) {
-               console.log(x);
-            }
+            await createStarredMessage(auxdibot, messageReaction);
          } else if (starred) {
-            const message = starboard_channel.messages.cache.get(starred.starboard_message_id);
-            if (message) {
-               try {
-                  const embed = JSON.parse(
-                     await parsePlaceholders(
-                        auxdibot,
-                        JSON.stringify(DEFAULT_STARBOARD_MESSAGE_EMBED),
-                        messageReaction.message.guild,
-                        undefined,
-                        undefined,
-                        messageReaction.message,
-                     ),
-                  ) as APIEmbed;
-                  await message.edit({
-                     content: `**${starCount} ${server.starboard_reaction || 'No Emoji'}** | ${
-                        messageReaction.message.channel
-                     }`,
-                     embeds: [embed],
-                  });
-               } catch (x) {}
-            }
+            await updateStarredMessage(auxdibot, messageReaction);
          }
       }
    }

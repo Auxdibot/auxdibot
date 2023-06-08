@@ -24,5 +24,5 @@ export default function scheduleAnalyticsSend(auxdibot: Auxdibot) {
          console.log(err);
       },
    );
-   auxdibot.scheduler.addIntervalJob(new SimpleIntervalJob({ minutes: 1 }, task));
+   auxdibot.scheduler.addIntervalJob(new SimpleIntervalJob({ minutes: 15 }, task));
 }

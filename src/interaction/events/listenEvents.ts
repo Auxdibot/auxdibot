@@ -28,6 +28,6 @@ export default function listenEvents(auxdibot: Auxdibot) {
    auxdibot.on('messageUpdate', (oldMessage, newMessage) => messageUpdate(auxdibot, oldMessage, newMessage));
    auxdibot.on('messageDelete', (message) => messageDelete(auxdibot, message));
    auxdibot.on('messageReactionAdd', (reaction, user) => messageReactionAdd(auxdibot, reaction, user));
-   auxdibot.on('messageReactionRemove', (reaction, user) => messageReactionRemove(auxdibot, reaction, user));
+   auxdibot.on('messageReactionRemove', (reaction) => messageReactionRemove(auxdibot, reaction));
    auxdibot.on('roleDelete', (role) => roleDelete(auxdibot, role));
 }
