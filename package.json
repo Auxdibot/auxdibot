@@ -2,7 +2,7 @@
   "name": "auxdibot",
   "version": "1.0.0",
   "description": "A multipurpose Discord bot, created by Auxdible!",
-  "main": "index.js",
+  "main": "./dist/index.js",
   "scripts": {
     "start": "node ./dist/index.js",
     "dev": "nodemon ./dist/index.js",
@@ -55,5 +55,4 @@
   "_moduleAliases": {
     "@": "dist/"
   }
-  
 }

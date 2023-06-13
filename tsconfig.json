@@ -24,4 +24,5 @@
       { "transform": "typescript-transform-paths", "afterDeclarations": true }
     ]
   },
+  "exclude": ["test"]
 }

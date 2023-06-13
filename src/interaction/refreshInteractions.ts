@@ -36,10 +36,10 @@ export default async function refreshInteractions(auxdibot: Auxdibot, rest: REST
    for (const packageFile of commandFiles) {
       for (const file of packageFile.files) {
          const fileRequire = await import(`./commands/${packageFile.dir}/${file}`);
-         if (fileRequire.data) {
-            commands.push(fileRequire.data);
+         if (fileRequire.default.data) {
+            commands.push(fileRequire.default.data);
             if (auxdibot.commands) {
-               auxdibot.commands.set(fileRequire.data.name, fileRequire);
+               auxdibot.commands.set(fileRequire.default.data.name, fileRequire.default);
             }
          }
       }
@@ -63,10 +63,10 @@ export default async function refreshInteractions(auxdibot: Auxdibot, rest: REST
    const buttonFiles = fs.readdirSync(path.join(__dirname, '/buttons')).filter((file) => file.endsWith('.js'));
    for (const file of buttonFiles) {
       const fileRequire = await import(`./buttons/${file}`);
-      if (fileRequire) {
-         buttons.push(fileRequire);
+      if (fileRequire.default) {
+         buttons.push(fileRequire.default);
          if (auxdibot.buttons) {
-            auxdibot.buttons.set(fileRequire.name, fileRequire);
+            auxdibot.buttons.set(fileRequire.default.name, fileRequire.default);
          }
       }
    }
