@@ -10,7 +10,7 @@ import { punishmentInfoField } from '@/modules/features/moderation/punishmentInf
 import handleLog from '@/util/handleLog';
 import handleError from '@/util/handleError';
 
-const unmuteCommand = <AuxdibotCommand>{
+export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
       .setName('unmute')
       .setDescription('Unmute a user.')
@@ -76,4 +76,3 @@ const unmuteCommand = <AuxdibotCommand>{
       await interaction.reply({ embeds: [embed] });
    },
 };
-module.exports = unmuteCommand;

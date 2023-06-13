@@ -11,7 +11,7 @@ import createPunishment from '@/modules/features/moderation/createPunishment';
 import handleLog from '@/util/handleLog';
 import handleError from '@/util/handleError';
 
-module.exports = <AuxdibotButton>{
+export default <AuxdibotButton>{
    module: Modules['Moderation'],
    name: 'mute',
    permission: 'moderation.mute',

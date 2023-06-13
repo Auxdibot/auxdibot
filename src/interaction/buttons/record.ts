@@ -5,7 +5,7 @@ import { Auxdibot } from '@/interfaces/Auxdibot';
 import userRecordAsEmbed from '@/modules/features/moderation/userRecordAsEmbed';
 import handleError from '@/util/handleError';
 
-module.exports = <AuxdibotButton>{
+export default <AuxdibotButton>{
    module: Modules['Moderation'],
    name: 'record',
    permission: 'moderation.record',

@@ -2,10 +2,10 @@ import { APIApplicationCommandOptionChoice, SlashCommandBuilder } from 'discord.
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import dotenv from 'dotenv';
 import Modules from '@/constants/bot/commands/Modules';
-import { moduleDisable } from '../subcommands/settings/modules/modulesDisable';
-import { moduleEnable } from '../subcommands/settings/modules/modulesEnable';
+import { moduleDisable } from '../../subcommands/settings/modules/modulesDisable';
+import { moduleEnable } from '../../subcommands/settings/modules/modulesEnable';
 dotenv.config();
-const placeholderCommand = <AuxdibotCommand>{
+export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
       .setName('modules')
       .setDescription("Manage Auxdibot's modules. (/help modules)")
@@ -52,4 +52,3 @@ const placeholderCommand = <AuxdibotCommand>{
       return;
    },
 };
-module.exports = placeholderCommand;

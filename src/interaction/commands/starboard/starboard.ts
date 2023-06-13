@@ -1,11 +1,11 @@
 import { ChannelType, SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import Modules from '@/constants/bot/commands/Modules';
-import { starboardChannel } from '../subcommands/starboard/starboardChannel';
-import { starboardReaction } from '../subcommands/starboard/starboardReaction';
-import { starboardReactionCount } from '../subcommands/starboard/starboardReactionCount';
+import { starboardChannel } from '../../subcommands/starboard/starboardChannel';
+import { starboardReaction } from '../../subcommands/starboard/starboardReaction';
+import { starboardReactionCount } from '../../subcommands/starboard/starboardReactionCount';
 
-const starboardCommand = <AuxdibotCommand>{
+export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
       .setName('starboard')
       .setDescription('Change the starboard settings for this server.')
@@ -53,4 +53,3 @@ const starboardCommand = <AuxdibotCommand>{
       return;
    },
 };
-module.exports = starboardCommand;

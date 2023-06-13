@@ -13,7 +13,7 @@ import createPunishment from '@/modules/features/moderation/createPunishment';
 import handleLog from '@/util/handleLog';
 import handleError from '@/util/handleError';
 
-const muteCommand = <AuxdibotCommand>{
+export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
       .setName('mute')
       .setDescription('Mute a user using Auxdibot.')
@@ -119,4 +119,3 @@ const muteCommand = <AuxdibotCommand>{
          });
    },
 };
-module.exports = muteCommand;

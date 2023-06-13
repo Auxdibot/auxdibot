@@ -1,10 +1,10 @@
 import { SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import Modules from '@/constants/bot/commands/Modules';
-import { massroleGive } from '../subcommands/massrole/massroleGive';
-import { massroleTake } from '../subcommands/massrole/massroleTake';
+import { massroleGive } from '../../subcommands/massrole/massroleGive';
+import { massroleTake } from '../../subcommands/massrole/massroleTake';
 
-const massroleCommand = <AuxdibotCommand>{
+export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
       .setName('massrole')
       .setDescription('Give everybody a role, or take a role away from anyone that has it.')
@@ -35,4 +35,3 @@ const massroleCommand = <AuxdibotCommand>{
       return;
    },
 };
-module.exports = massroleCommand;

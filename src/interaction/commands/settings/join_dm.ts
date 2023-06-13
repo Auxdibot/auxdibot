@@ -2,11 +2,11 @@ import { SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import createEmbedParameters from '@/util/createEmbedParameters';
 import Modules from '@/constants/bot/commands/Modules';
-import { joinMessage } from '../subcommands/settings/join/joinMessage';
-import { joinDMEmbedJSON } from '../subcommands/settings/join_dm/joinDMEmbedJSON';
-import { joinDMPreview } from '../subcommands/settings/join_dm/joinDMPreview';
+import { joinMessage } from '../../subcommands/settings/join/joinMessage';
+import { joinDMEmbedJSON } from '../../subcommands/settings/join_dm/joinDMEmbedJSON';
+import { joinDMPreview } from '../../subcommands/settings/join_dm/joinDMPreview';
 
-const joinDMCommand = <AuxdibotCommand>{
+export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
       .setName('join_dm')
       .setDescription('Change settings for join DM messages on the server.')
@@ -37,4 +37,3 @@ const joinDMCommand = <AuxdibotCommand>{
       return;
    },
 };
-module.exports = joinDMCommand;

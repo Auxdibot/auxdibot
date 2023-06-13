@@ -11,7 +11,7 @@ import handleLog from '@/util/handleLog';
 import { punishmentInfoField } from '@/modules/features/moderation/punishmentInfoField';
 import handleError from '@/util/handleError';
 
-module.exports = <AuxdibotButton>{
+export default <AuxdibotButton>{
    module: Modules['Moderation'],
    name: 'ban',
    permission: 'moderation.ban',

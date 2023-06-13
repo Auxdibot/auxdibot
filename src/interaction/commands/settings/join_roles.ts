@@ -1,11 +1,11 @@
 import { SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import Modules from '@/constants/bot/commands/Modules';
-import { joinRoleAdd } from '../subcommands/settings/join_roles/joinRoleAdd';
-import { joinRoleRemove } from '../subcommands/settings/join_roles/joinRoleRemove';
-import { joinRoleList } from '../subcommands/settings/join_roles/joinRoleList';
+import { joinRoleAdd } from '../../subcommands/settings/join_roles/joinRoleAdd';
+import { joinRoleRemove } from '../../subcommands/settings/join_roles/joinRoleRemove';
+import { joinRoleList } from '../../subcommands/settings/join_roles/joinRoleList';
 
-const joinRolesCommand = <AuxdibotCommand>{
+export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
       .setName('join_roles')
       .setDescription('Change the roles given when a member joins the server.')
@@ -49,4 +49,3 @@ const joinRolesCommand = <AuxdibotCommand>{
       return;
    },
 };
-module.exports = joinRolesCommand;

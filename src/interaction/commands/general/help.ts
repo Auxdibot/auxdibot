@@ -1,12 +1,12 @@
 import { APIApplicationCommandOptionChoice, SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import Modules from '@/constants/bot/commands/Modules';
-import { placeholdersList } from '../subcommands/help/placeholdersList';
-import { modulesList } from '../subcommands/help/modulesList';
-import { moduleInfo } from '../subcommands/help/moduleInfo';
-import { commandInfo } from '../subcommands/help/commandInfo';
+import { placeholdersList } from '../../subcommands/help/placeholdersList';
+import { modulesList } from '../../subcommands/help/modulesList';
+import { moduleInfo } from '../../subcommands/help/moduleInfo';
+import { commandInfo } from '../../subcommands/help/commandInfo';
 
-const helpCommand = <AuxdibotCommand>{
+export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
       .setName('help')
       .setDescription('View the help for Auxdibot.')
@@ -58,4 +58,3 @@ const helpCommand = <AuxdibotCommand>{
       return;
    },
 };
-module.exports = helpCommand;

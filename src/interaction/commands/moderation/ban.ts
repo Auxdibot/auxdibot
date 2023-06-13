@@ -13,7 +13,7 @@ import handleLog from '@/util/handleLog';
 import { punishmentInfoField } from '@/modules/features/moderation/punishmentInfoField';
 import handleError from '@/util/handleError';
 
-const banCommand = <AuxdibotCommand>{
+export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
       .setName('ban')
       .setDescription('Ban a user using Auxdibot.')
@@ -109,4 +109,3 @@ const banCommand = <AuxdibotCommand>{
          });
    },
 };
-module.exports = banCommand;

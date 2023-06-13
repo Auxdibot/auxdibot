@@ -2,14 +2,14 @@ import { SlashCommandBuilder, ChannelType } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import createEmbedParameters from '@/util/createEmbedParameters';
 import Modules from '@/constants/bot/commands/Modules';
-import { reactionRolesAdd } from '../subcommands/reactionRoles/reactionRolesAdd';
-import { reactionRolesAddCustom } from '../subcommands/reactionRoles/reactionRolesAddCustom';
-import { reactionRolesAddJSON } from '../subcommands/reactionRoles/reactionRolesAddJSON';
-import { reactionRolesEdit } from '../subcommands/reactionRoles/reactionRolesEdit';
-import { reactionRolesList } from '../subcommands/reactionRoles/reactionRolesList';
-import { reactionRolesRemove } from '../subcommands/reactionRoles/reactionRolesRemove';
+import { reactionRolesAdd } from '../../subcommands/reactionRoles/reactionRolesAdd';
+import { reactionRolesAddCustom } from '../../subcommands/reactionRoles/reactionRolesAddCustom';
+import { reactionRolesAddJSON } from '../../subcommands/reactionRoles/reactionRolesAddJSON';
+import { reactionRolesEdit } from '../../subcommands/reactionRoles/reactionRolesEdit';
+import { reactionRolesList } from '../../subcommands/reactionRoles/reactionRolesList';
+import { reactionRolesRemove } from '../../subcommands/reactionRoles/reactionRolesRemove';
 
-const reactionRolesCommand = <AuxdibotCommand>{
+export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
       .setName('reaction_roles')
       .setDescription('Create, edit, remove, or list the currently active reaction roles.')
@@ -136,4 +136,3 @@ const reactionRolesCommand = <AuxdibotCommand>{
       return;
    },
 };
-module.exports = reactionRolesCommand;

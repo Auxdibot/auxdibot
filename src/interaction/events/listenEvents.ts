@@ -1,8 +1,8 @@
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import onReady from './client/onReady';
 import { BaseInteraction } from 'discord.js';
-import buttonCreate from './button/buttonCreate';
-import slashCreate from './command/slashCreate';
+import buttonCreate from './interaction/buttonCreate';
+import slashCreate from './interaction/slashCreate';
 import messageCreate from './message/messageCreate';
 import messageUpdate from './message/messageUpdate';
 import messageDelete from './message/messageDelete';

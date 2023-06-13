@@ -1,11 +1,11 @@
 import { SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import Modules from '@/constants/bot/commands/Modules';
-import { stickyRoleAdd } from '../subcommands/settings/sticky_roles/stickyRoleAdd';
-import { stickyRoleRemove } from '../subcommands/settings/sticky_roles/stickyRoleRemove';
-import { stickyRoleList } from '../subcommands/settings/sticky_roles/stickyRoleList';
+import { stickyRoleAdd } from '../../subcommands/settings/sticky_roles/stickyRoleAdd';
+import { stickyRoleRemove } from '../../subcommands/settings/sticky_roles/stickyRoleRemove';
+import { stickyRoleList } from '../../subcommands/settings/sticky_roles/stickyRoleList';
 
-const stickyRolesCommand = <AuxdibotCommand>{
+export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
       .setName('sticky_roles')
       .setDescription('Change the roles that are kept when a member rejoins the server.')
@@ -49,4 +49,3 @@ const stickyRolesCommand = <AuxdibotCommand>{
       return;
    },
 };
-module.exports = stickyRolesCommand;

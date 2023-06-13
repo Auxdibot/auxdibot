@@ -12,7 +12,7 @@ import { punishmentInfoField } from '@/modules/features/moderation/punishmentInf
 import handleLog from '@/util/handleLog';
 import handleError from '@/util/handleError';
 
-const warnCommand = <AuxdibotCommand>{
+export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
       .setName('warn')
       .setDescription('Warn a user using Auxdibot.')
@@ -77,4 +77,3 @@ const warnCommand = <AuxdibotCommand>{
       });
    },
 };
-module.exports = warnCommand;

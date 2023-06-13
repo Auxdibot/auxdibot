@@ -9,7 +9,7 @@ import { punishmentInfoField } from '@/modules/features/moderation/punishmentInf
 import handleLog from '@/util/handleLog';
 import handleError from '@/util/handleError';
 
-const unbanCommand = <AuxdibotCommand>{
+export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
       .setName('unban')
       .setDescription('Unban a user.')
@@ -58,4 +58,3 @@ const unbanCommand = <AuxdibotCommand>{
       await interaction.reply({ embeds: [embed] });
    },
 };
-module.exports = unbanCommand;

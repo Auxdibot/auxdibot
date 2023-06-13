@@ -9,7 +9,7 @@ import { punishmentInfoField } from '@/modules/features/moderation/punishmentInf
 import handleLog from '@/util/handleLog';
 import handleError from '@/util/handleError';
 
-module.exports = <AuxdibotButton>{
+export default <AuxdibotButton>{
    module: Modules['Moderation'],
    name: 'unmute',
    permission: 'moderation.mute.remove',

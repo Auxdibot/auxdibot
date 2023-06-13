@@ -1,12 +1,12 @@
 import { ChannelType, SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import Modules from '@/constants/bot/commands/Modules';
-import { settingsView } from '../subcommands/settings/settings/settingsView';
-import { settingsLogChannel } from '../subcommands/settings/settings/settingsLogChannel';
-import { settingsJoinLeaveChannel } from '../subcommands/settings/settings/settingsJoinLeaveChannel';
-import { settingsMuteRole } from '../subcommands/settings/settings/settingsMuteRole';
+import { settingsView } from '../../subcommands/settings/settings/settingsView';
+import { settingsLogChannel } from '../../subcommands/settings/settings/settingsLogChannel';
+import { settingsJoinLeaveChannel } from '../../subcommands/settings/settings/settingsJoinLeaveChannel';
+import { settingsMuteRole } from '../../subcommands/settings/settings/settingsMuteRole';
 
-const settingsCommand = <AuxdibotCommand>{
+export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
       .setName('settings')
       .setDescription('Change settings for the server.')
@@ -50,4 +50,3 @@ const settingsCommand = <AuxdibotCommand>{
       return;
    },
 };
-module.exports = settingsCommand;

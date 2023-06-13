@@ -2,11 +2,11 @@ import { SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import createEmbedParameters from '@/util/createEmbedParameters';
 import Modules from '@/constants/bot/commands/Modules';
-import { leaveMessage } from '../subcommands/settings/leave/leaveMessage';
-import { leaveEmbedJSON } from '../subcommands/settings/leave/leaveEmbedJSON';
-import { leavePreview } from '../subcommands/settings/leave/leavePreview';
+import { leaveMessage } from '../../subcommands/settings/leave/leaveMessage';
+import { leaveEmbedJSON } from '../../subcommands/settings/leave/leaveEmbedJSON';
+import { leavePreview } from '../../subcommands/settings/leave/leavePreview';
 
-const leaveCommand = <AuxdibotCommand>{
+export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
       .setName('leave')
       .setDescription('Change settings for leave messages on the server.')
@@ -37,4 +37,3 @@ const leaveCommand = <AuxdibotCommand>{
       return;
    },
 };
-module.exports = leaveCommand;

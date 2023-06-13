@@ -7,7 +7,7 @@ import { Auxdibot } from '@/interfaces/Auxdibot';
 import userRecordAsEmbed from '@/modules/features/moderation/userRecordAsEmbed';
 import handleError from '@/util/handleError';
 
-const recordCommand = <AuxdibotCommand>{
+export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
       .setName('record')
       .setDescription('View a users punishment record.')
@@ -36,4 +36,3 @@ const recordCommand = <AuxdibotCommand>{
       await interaction.reply({ embeds: [embed] });
    },
 };
-module.exports = recordCommand;

@@ -1,25 +1,25 @@
 import { ChannelType, SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import Modules from '@/constants/bot/commands/Modules';
-import { suggestionsCreate } from '../subcommands/suggestions/suggestionsCreate';
-import { suggestionsChannel } from '../subcommands/suggestions/suggestionsChannel';
-import { suggestionsUpdateChannel } from '../subcommands/suggestions/suggestionsUpdateChannel';
-import { suggestionsReactions } from '../subcommands/suggestions/suggestionsReactions';
-import { suggestionsAddReactions } from '../subcommands/suggestions/suggestionsAddReactions';
-import { suggestionsRemoveReactions } from '../subcommands/suggestions/suggestionsRemoveReactions';
-import { suggestionsAutoDelete } from '../subcommands/suggestions/suggestionsAutoDelete';
-import { suggestionsDiscussionThreads } from '../subcommands/suggestions/suggestionsDiscussionThreads';
-import { suggestionsBan } from '../subcommands/suggestions/suggestionsBan';
-import { suggestionsUnban } from '../subcommands/suggestions/suggestionsUnban';
-import { suggestionsDelete } from '../subcommands/suggestions/suggestionsDelete';
+import { suggestionsCreate } from '../../subcommands/suggestions/suggestionsCreate';
+import { suggestionsChannel } from '../../subcommands/suggestions/suggestionsChannel';
+import { suggestionsUpdateChannel } from '../../subcommands/suggestions/suggestionsUpdateChannel';
+import { suggestionsReactions } from '../../subcommands/suggestions/suggestionsReactions';
+import { suggestionsAddReactions } from '../../subcommands/suggestions/suggestionsAddReactions';
+import { suggestionsRemoveReactions } from '../../subcommands/suggestions/suggestionsRemoveReactions';
+import { suggestionsAutoDelete } from '../../subcommands/suggestions/suggestionsAutoDelete';
+import { suggestionsDiscussionThreads } from '../../subcommands/suggestions/suggestionsDiscussionThreads';
+import { suggestionsBan } from '../../subcommands/suggestions/suggestionsBan';
+import { suggestionsUnban } from '../../subcommands/suggestions/suggestionsUnban';
+import { suggestionsDelete } from '../../subcommands/suggestions/suggestionsDelete';
 import {
    addSuggestion,
    approveSuggestion,
    considerSuggestion,
    denySuggestion,
-} from '../subcommands/suggestions/suggestionsStateSubcommands';
+} from '../../subcommands/suggestions/suggestionsStateSubcommands';
 
-const suggestionsCommand = <AuxdibotCommand>{
+export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
       .setName('suggestions')
       .setDescription('The main command for handling suggestions.')
@@ -202,4 +202,3 @@ const suggestionsCommand = <AuxdibotCommand>{
       return;
    },
 };
-module.exports = suggestionsCommand;

@@ -1,12 +1,12 @@
 import { SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import Modules from '@/constants/bot/commands/Modules';
-import { permissionsView } from '../subcommands/permissions/permissionsView';
-import { permissionsCreate } from '../subcommands/permissions/permissionsCreate';
-import { permissionsDelete } from '../subcommands/permissions/permissionsDelete';
-import { permissionsList } from '../subcommands/permissions/permissionsList';
+import { permissionsView } from '../../subcommands/permissions/permissionsView';
+import { permissionsCreate } from '../../subcommands/permissions/permissionsCreate';
+import { permissionsDelete } from '../../subcommands/permissions/permissionsDelete';
+import { permissionsList } from '../../subcommands/permissions/permissionsList';
 
-const permissionsCommand = <AuxdibotCommand>{
+export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
       .setName('permissions')
       .setDescription('Edit, view, or delete permissions and permission overrides.')
@@ -54,4 +54,3 @@ const permissionsCommand = <AuxdibotCommand>{
       return;
    },
 };
-module.exports = permissionsCommand;

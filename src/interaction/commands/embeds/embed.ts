@@ -3,14 +3,14 @@ import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import dotenv from 'dotenv';
 import createEmbedParameters from '@/util/createEmbedParameters';
 import Modules from '@/constants/bot/commands/Modules';
-import { createEmbed } from '../subcommands/embeds/createEmbed';
-import { createEmbedJSON } from '../subcommands/embeds/createEmbedJSON';
-import { editEmbed } from '../subcommands/embeds/editEmbed';
-import { editEmbedJSON } from '../subcommands/embeds/editEmbedJSON';
-import { getEmbedJSON } from '../subcommands/embeds/getEmbedJSON';
+import { createEmbed } from '../../subcommands/embeds/createEmbed';
+import { createEmbedJSON } from '../../subcommands/embeds/createEmbedJSON';
+import { editEmbed } from '../../subcommands/embeds/editEmbed';
+import { editEmbedJSON } from '../../subcommands/embeds/editEmbedJSON';
+import { getEmbedJSON } from '../../subcommands/embeds/getEmbedJSON';
 
 dotenv.config();
-const embedCommand = <AuxdibotCommand>{
+export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
       .setName('embed')
       .setDescription('Create or edit a Discord Embed with Auxdibot, as well as obtain the JSON data of any Embed.')
@@ -98,4 +98,3 @@ const embedCommand = <AuxdibotCommand>{
       return;
    },
 };
-module.exports = embedCommand;

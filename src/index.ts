@@ -6,9 +6,9 @@ import dotenv from 'dotenv';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import { AuxdibotIntents } from '@/constants/bot/AuxdibotIntents';
 import listenEvents from '@/interaction/events/listenEvents';
-import connectPrisma from './util/connectPrisma';
+import connectPrisma from './modules/database/connectPrisma';
 import { AuxdibotPartials } from './constants/bot/AuxdibotPartials';
-import refreshInteractions from './interaction/registerInteractions';
+import refreshInteractions from './interaction/refreshInteractions';
 import scheduleExpirationChecks from './modules/features/moderation/scheduleExpirationChecks';
 import scheduleAnalyticsSend from './modules/scheduleAnalyticsSend';
 
@@ -117,8 +117,11 @@ const CLIENT_ID = process.env.DISCORD_BOT_CLIENT_ID;
    scheduleAnalyticsSend(auxdibot);
 
    console.log('-> Logging into client...');
-   auxdibot.login(TOKEN).catch((reason) => {
-      console.error('! -> Error signing into into Auxdibot!');
-      console.error(reason);
-   });
+   auxdibot
+      .login(TOKEN)
+      .then(async () => await auxdibot.updateDiscordStatus())
+      .catch((reason) => {
+         console.error('! -> Error signing into into Auxdibot!');
+         console.error(reason);
+      });
 })();

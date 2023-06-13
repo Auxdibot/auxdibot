@@ -13,7 +13,7 @@ import handleLog from '@/util/handleLog';
 import { punishmentInfoField } from '@/modules/features/moderation/punishmentInfoField';
 import handleError from '@/util/handleError';
 
-const kickCommand = <AuxdibotCommand>{
+export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
       .setName('kick')
       .setDescription('Kick a user using Auxdibot.')
@@ -76,4 +76,3 @@ const kickCommand = <AuxdibotCommand>{
          });
    },
 };
-module.exports = kickCommand;

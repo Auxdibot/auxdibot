@@ -7,7 +7,7 @@ import Modules from '@/constants/bot/commands/Modules';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import { PunishmentType } from '@prisma/client';
 
-const userCommand = <AuxdibotCommand>{
+export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
       .setName('user')
       .setDescription("View and edit a user's data.")
@@ -127,4 +127,3 @@ const userCommand = <AuxdibotCommand>{
       return await interaction.reply({ embeds: [embed], components: [row_info, row_punishments] });
    },
 };
-module.exports = userCommand;

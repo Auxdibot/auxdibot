@@ -1,16 +1,16 @@
 import { SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import Modules from '@/constants/bot/commands/Modules';
-import { addLevelReward } from '../subcommands/levels/addLevelReward';
-import { removeLevelReward } from '../subcommands/levels/removeLevelReward';
-import { levelRewards } from '../subcommands/levels/levelRewards';
-import { levelsAwardXP } from '../subcommands/levels/levelsAwardXP';
-import { levelsRemoveXP } from '../subcommands/levels/levelsRemoveXP';
-import { resetLevels } from '../subcommands/levels/resetLevels';
-import { levelsStats } from '../subcommands/levels/levelsStats';
-import { levelsLeaderboard } from '../subcommands/levels/levelsLeaderboard';
-import { setMessageXP } from '../subcommands/levels/setMessageXP';
-const levelCommand = <AuxdibotCommand>{
+import { addLevelReward } from '../../subcommands/levels/addLevelReward';
+import { removeLevelReward } from '../../subcommands/levels/removeLevelReward';
+import { levelRewards } from '../../subcommands/levels/levelRewards';
+import { levelsAwardXP } from '../../subcommands/levels/levelsAwardXP';
+import { levelsRemoveXP } from '../../subcommands/levels/levelsRemoveXP';
+import { resetLevels } from '../../subcommands/levels/resetLevels';
+import { levelsStats } from '../../subcommands/levels/levelsStats';
+import { levelsLeaderboard } from '../../subcommands/levels/levelsLeaderboard';
+import { setMessageXP } from '../../subcommands/levels/setMessageXP';
+export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
       .setName('levels')
       .setDescription('Change settings for leveling on this server.')
@@ -102,4 +102,3 @@ const levelCommand = <AuxdibotCommand>{
       return;
    },
 };
-module.exports = levelCommand;
