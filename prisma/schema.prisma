@@ -1,0 +1,246 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("MONGO_URI")
+}
+
+type APIEmbedAuthor {
+  proxy_icon_url String?
+  icon_url       String?
+  name           String
+  url            String?
+}
+
+type APIEmbedFooter {
+  proxy_icon_url String?
+  icon_url       String?
+  text           String
+}
+
+type APIEmbedField {
+  name   String
+  value  String
+  inline Boolean?
+}
+
+type APIEmbedImgThumbnail {
+  height    Int?
+  proxy_url String?
+  url       String
+  width     Int?
+}
+
+type APIEmbed {
+  author      APIEmbedAuthor?
+  fields      APIEmbedField?
+  footer      APIEmbedFooter?
+  thumbnail   APIEmbedImgThumbnail?
+  image       APIEmbedImgThumbnail?
+  color       Int?
+  title       String?
+  description String?
+  type        String?               @default("rich")
+  url         String?
+}
+
+enum PunishmentType {
+  WARN
+  KICK
+  MUTE
+  BAN
+}
+
+enum LogAction {
+  LOG_CHANNEL_CHANGED
+  MUTE_ROLE_CHANGED
+  WARN
+  KICK
+  MUTE
+  BAN
+  UNMUTE
+  UNBAN
+  MEMBER_JOIN
+  MEMBER_LEAVE
+  PUNISHMENT_EXPIRED
+  PUNISHMENT_DELETED
+  PERMISSION_CREATED
+  PERMISSION_DELETED
+  MESSAGE_EDITED
+  MESSAGE_DELETED
+  JOIN_LEAVE_CHANNEL_CHANGED
+  JOIN_ROLE_ADDED
+  JOIN_ROLE_REMOVED
+  STICKY_ROLE_ADDED
+  STICKY_ROLE_REMOVED
+  REACTION_ROLE_ADDED
+  REACTION_ROLE_REMOVED
+  REACTION_ROLE_EDITED
+  MASSROLE_GIVEN
+  MASSROLE_TAKEN
+  SUGGESTION_CREATED
+  SUGGESTIONS_CHANNEL_CHANGED
+  SUGGESTIONS_UPDATES_CHANNEL_CHANGED
+  SUGGESTIONS_AUTO_DELETE_CHANGED
+  SUGGESTIONS_THREAD_CREATION_CHANGED
+  SUGGESTION_DELETED
+  STARBOARD_CHANNEL_CHANGED
+  STARBOARD_REACTION_CHANGED
+  STARBOARD_REACTION_COUNT_CHANGED
+  STARBOARD_MESSAGE_DELETED
+}
+
+type Punishment {
+  type              PunishmentType
+  expired           Boolean        @default(false)
+  date_unix         Int            @default(0)
+  expires_date_unix Int?
+  reason            String         @default("")
+  dmed              Boolean        @default(false)
+  userID            String
+  moderatorID       String?
+  punishmentID      Int
+}
+
+type PermissionOverride {
+  roleID     String?
+  userID     String?
+  permission String
+  allowed    Boolean @default(true)
+}
+
+type LevelReward {
+  level  Int
+  roleID String
+}
+
+type Change {
+  former String?
+  now    String?
+}
+
+type Reaction {
+  emoji String
+  role  String
+}
+
+type ReactionRole {
+  messageID String
+  channelID String
+  reactions Reaction[]
+}
+
+type Log {
+  type        LogAction
+  userID      String
+  date_unix   Int       @default(0)
+  description String    @default("")
+}
+
+type StarredMessage {
+  starboard_message_id String
+  starred_message_id   String
+}
+
+enum SuggestionState {
+  WAITING
+  DENIED
+  CONSIDERED
+  APPROVED
+  ADDED
+}
+
+type Suggestion {
+  suggestionID         Int             @default(-1)
+  messageID            String?
+  creatorID            String          @default("")
+  status               SuggestionState @default(WAITING)
+  date_unix            Int             @default(0)
+  content              String          @default("")
+  handlerID            String?
+  handled_reason       String?
+  discussion_thread_id String?
+}
+
+model servermembers {
+  id                 String   @id @default(auto()) @map("_id") @db.ObjectId
+  v                  Int?     @map("__v")
+  userID             String
+  serverID           String
+  level              Int?     @default(0)
+  in_server          Boolean  @default(true)
+  sticky_roles       String[] @default([])
+  suggestions_banned Boolean? @default(false)
+  xp                 Int?     @default(0)
+  xpTill             Int?     @default(0)
+
+  @@unique([serverID, userID])
+}
+
+model servers {
+  id                             String               @id @default(auto()) @map("_id") @db.ObjectId
+  v                              Int?                 @map("__v")
+  serverID                       String
+  disabled_modules               String[]
+  join_dm_embed                  APIEmbed?
+  join_embed                     APIEmbed?
+  leave_embed                    APIEmbed?
+  join_dm_text                   String?
+  join_text                      String?
+  leave_text                     String?
+  join_leave_channel             String?
+  log_channel                    String?
+  mute_role                      String?
+  join_roles                     String[]
+  sticky_roles                   String[]
+  reaction_roles                 ReactionRole[]
+  suggestions_reactions          String[]             @default([])
+  suggestions_channel            String?
+  suggestions_updates_channel    String?
+  suggestions_auto_delete        Boolean              @default(true)
+  suggestions_discussion_threads Boolean              @default(true)
+  message_xp                     Int                  @default(20)
+  level_rewards                  LevelReward[]
+  starred_messages               StarredMessage[]
+  starboard_channel              String?
+  starboard_reaction             String?              @default("⭐")
+  starboard_reaction_count       Int?                 @default(5)
+  total_starred_messages         Int                  @default(0)
+  total_stars                    Int                  @default(0)
+  latest_log                     Log?
+  permission_overrides           PermissionOverride[]
+  punishments                    Punishment[]
+  suggestions                    Suggestion[]
+
+  @@unique([serverID])
+}
+
+model totals {
+  id          String @id @default(auto()) @map("_id") @db.ObjectId
+  v           Int?   @map("__v")
+  serverID    String
+  punishments Int    @default(0)
+  suggestions Int    @default(0)
+
+  @@unique([serverID])
+}
+
+model users {
+  id     String @id @default(auto()) @map("_id") @db.ObjectId
+  v      Int    @map("__v")
+  userID String
+
+  @@unique([userID])
+}
+
+model analytics {
+  id       String @id @default(auto()) @map("_id") @db.ObjectId
+  clientID String
+  servers  Int
+  members  Int
+  commands Int
+
+  @@unique([clientID])
+}

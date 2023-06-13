@@ -33,11 +33,14 @@
 
 Auxdibot is a multipurpose WIP Discord utility bot, created by Auxdible with the MERN tech stack using TypeScript.
 
-### Table of Contents
+### Important Files
 
-`/lib` - **discord.js & express.js backend, using passport with passport-discord with Discord OAuth2 for authentication with the mongoose ODM for MongoDB.**
+`/prisma` - **Contains the schema prisma file for the Prisma ORM.**
 
-`/app` - **React with react-router and Bootstrap frontend using axios for api requests.**
+`/src` - **Contains the source code for Auxdibot including bot interactions, types, and util functions.**
+
+`sample.env` - **Sample .env file, containing all .env parameters that need to be specified for Auxdibot to function properly**
+
 
 ## How to Use
 
@@ -45,25 +48,31 @@ Auxdibot uses Discord's slash command system. If you want to run any command you
 
 ### Basic Commands
 
-* `/help [command] [subcommand]` - View a list of every command or information about a specific command.
+* `/help modules` - *View every module Auxdibot has, each containing various commands.*
 
-* `/placeholders` - View every placeholder.
+* `/help module (module)` - *View all the commands for a specific module on Auxdibot.*
 
-* `/user (user)` - View information about a user and enforce punishments with an easy-to-use embed.
+* `/help command (command) [subcommand]` - *View the usage and description of any Auxdibot command.*
+  
+* `/help placeholders` - *View every placeholder.*
 
-* `/record (user)` - View a user's previous punishments.
+* `/user (user)` - *View information about a user and enforce punishments with an easy-to-use button row.*
 
-* `/settings` - View the settings or change settings with the various slash commands on this command.
+* `/record (user)` - *View a user's previous punishments.*
 
-* `/permissions` - View, delete or create permission overrides for certain permissions on Auxdibot.
+* `/settings` - *View the settings for your server, or change certain settings for your server.*
 
-* `/embed` - Create or edit Discord Embeds with **ZERO** coding knowledge! Custom JSON is also supported.
+* `/permissions` - *View, delete or create permission overrides for certain permissions on Auxdibot.*
 
-* `/punishment` - View a punishment, list the latest server punishments or delete a punishment off of someone's record.
+* `/embed` - *Create or edit Discord Embeds with **ZERO** coding knowledge! Custom JSON is also supported.*
 
-* `/suggestions` - Change the settings for suggestions, or create a suggestion with `/suggestions create`
+* `/punishment` - *View a punishment, list the latest server punishments or delete a punishment off of someone's record.*
 
-* `/levels` - Manage levels on your server, or check the leaderboard!
+* `/suggestions` - *Change the settings for suggestions, or create a suggestion with `/suggestions create`*
+
+* `/levels` - *Manage levels on your server, or check the leaderboard! You can view another member or your own level stats with `/levels stats`!*
+
+* `/starboard` - *Change the settings for the starboard on your own server.*
 
 ## How to Run
 
@@ -72,16 +81,13 @@ If you would like to run Auxdibot on your own machine:
 * Go to the file where you would like the `auxdibot` file to be stored.
 * Install Git and run `git clone https://github.com/Auxdible/auxdibot.git`
 * Run `npm i --save` in the root `auxdibot` file
-* Run `npm i --save` in the `/lib` file
-* Run `npm i --save` in the `/app` file
+* Run `npx prisma generate` in the root `auxdibot` file
 * Run `npm run build` in the root `auxdibot` file
-* The frontend build will be located at `/app/dist`
-* The backend build will be located at `/lib/dist`
-* Create a `.env` file in `/lib`
+* The build will be located at `/dist`
+* Create a `.env` file in the root `auxdibot` file (or use ecosystem.config.js if you are using `pm2`)
 * Configure the `.env` file with all the parameters specified in `sample.env`
-    * This step **WILL** require a MongoDB URI, Discord Bot Token, OAuth2 Client ID, and an OAuth2 Client Secret. Come up with an original or random assortment of characters for `EXPRESS_SESSION_SECRET`.
-* For development, cd to the root `auxdibot` and run `npm run dev`
-* For production, move the frontend build to a web server (ex. NGINX or Apache). Run the `/lib/dist/index.js` file to start the bot & express server.
+    * This step **WILL** require a MongoDB URI, Discord Bot Token, and Discord Bot Client ID.
+* Run `npm start` to start Auxdibot!
 
 
 ## Features
