@@ -31,7 +31,7 @@
 
 ## About Project
 
-Auxdibot is a multipurpose WIP Discord utility bot, created by Auxdible with the MERN tech stack using TypeScript.
+Auxdibot is a multipurpose Discord utility bot, utilizing the Prisma ORM and discord.js with TypeScript.
 
 ### Important Files
 
@@ -86,7 +86,7 @@ If you would like to run Auxdibot on your own machine:
 * The build will be located at `/dist`
 * Create a `.env` file in the root `auxdibot` file (or use ecosystem.config.js if you are using `pm2`)
 * Configure the `.env` file with all the parameters specified in `sample.env`
-    * This step **WILL** require a MongoDB URI, Discord Bot Token, and Discord Bot Client ID.
+    * This step **WILL** require a MongoDB URI, Discord Bot Token, and Discord Bot Client ID. Status is optional, default "undefined"
 * Run `npm start` to start Auxdibot!
 
 
@@ -100,7 +100,7 @@ If you would like to run Auxdibot on your own machine:
 
 `💻` *Embed Creator*
 
-`👋` *Welcome & Leave Messages*
+`👋` *Join, Join DM & Leave Messages*
 
 `👈` *Role Management (Join Roles, Sticky Roles, Massrole, Reaction Roles)*
 
