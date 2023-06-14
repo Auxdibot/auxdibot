@@ -31,5 +31,5 @@ export interface Auxdibot extends Client {
       error: EmbedBuilder;
    };
    getMembers?(): Promise<number>;
-   updateDiscordStatus?(): Promise<ClientPresence | undefined>;
+   updateDiscordStatus?(guilds: number, message: string): Promise<ClientPresence | undefined>;
 }

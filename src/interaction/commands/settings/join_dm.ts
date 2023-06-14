@@ -2,9 +2,9 @@ import { SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import createEmbedParameters from '@/util/createEmbedParameters';
 import Modules from '@/constants/bot/commands/Modules';
-import { joinMessage } from '../../subcommands/settings/join/joinMessage';
 import { joinDMEmbedJSON } from '../../subcommands/settings/join_dm/joinDMEmbedJSON';
 import { joinDMPreview } from '../../subcommands/settings/join_dm/joinDMPreview';
+import { joinDMMessage } from '@/interaction/subcommands/settings/join_dm/joinDMMessage';
 
 export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -32,7 +32,7 @@ export default <AuxdibotCommand>{
       usageExample: '/join_dm (message|embed_json|preview)',
       permission: 'settings.joindm',
    },
-   subcommands: [joinMessage, joinDMEmbedJSON, joinDMPreview],
+   subcommands: [joinDMMessage, joinDMEmbedJSON, joinDMPreview],
    async execute() {
       return;
    },
