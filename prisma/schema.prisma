@@ -35,7 +35,7 @@ type APIEmbedImgThumbnail {
 
 type APIEmbed {
   author      APIEmbedAuthor?
-  fields      APIEmbedField?
+  fields      APIEmbedField[]
   footer      APIEmbedFooter?
   thumbnail   APIEmbedImgThumbnail?
   image       APIEmbedImgThumbnail?

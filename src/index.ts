@@ -10,7 +10,8 @@ import connectPrisma from './modules/database/connectPrisma';
 import { AuxdibotPartials } from './constants/bot/AuxdibotPartials';
 import refreshInteractions from './interaction/refreshInteractions';
 import scheduleExpirationChecks from './modules/features/moderation/scheduleExpirationChecks';
-import scheduleAnalyticsSend from './modules/scheduleAnalyticsSend';
+import scheduleAnalyticsSend from './modules/analytics/scheduleAnalyticsSend';
+import sendAnalytics from './modules/analytics/sendAnalytics';
 
 dotenv.config();
 const TOKEN = process.env.DISCORD_BOT_TOKEN;
@@ -86,13 +87,13 @@ const CLIENT_ID = process.env.DISCORD_BOT_CLIENT_ID;
          0,
       );
    };
-   auxdibot.updateDiscordStatus = async function () {
+   auxdibot.updateDiscordStatus = async function (guilds: number, message: string) {
       if (this.user)
          return this.user.setPresence({
             activities: [
                {
                   type: ActivityType.Watching,
-                  name: `/help modules | ${this.guilds.cache.size.toLocaleString()} servers`,
+                  name: `${message} | ${guilds} servers`,
                },
             ],
          });
@@ -119,7 +120,7 @@ const CLIENT_ID = process.env.DISCORD_BOT_CLIENT_ID;
    console.log('-> Logging into client...');
    auxdibot
       .login(TOKEN)
-      .then(async () => await auxdibot.updateDiscordStatus())
+      .then(async () => await sendAnalytics(auxdibot))
       .catch((reason) => {
          console.error('! -> Error signing into into Auxdibot!');
          console.error(reason);
