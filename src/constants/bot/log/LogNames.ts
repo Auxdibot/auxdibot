@@ -35,4 +35,6 @@ export const LogNames = {
    STARBOARD_REACTION_CHANGED: '⭐ Starboard Reaction Changed',
    STARBOARD_REACTION_COUNT_CHANGED: '⭐ Starboard Reaction Count Changed',
    STARBOARD_MESSAGE_DELETED: '⭐ Starboard Message Deleted',
+   SCHEDULED_MESSAGE_CREATED: '⏲️ Scheduled Message Created',
+   SCHEDULED_MESSAGE_REMOVED: '⏲️ Scheduled Message Deleted',
 };

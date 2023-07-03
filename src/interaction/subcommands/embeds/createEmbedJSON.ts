@@ -11,7 +11,7 @@ import { ChannelType } from 'discord.js';
 export const createEmbedJSON = <AuxdibotSubcommand>{
    name: 'create_json',
    info: {
-      module: Modules['Embeds'],
+      module: Modules['Messages'],
       usageExample: '/embed create_json (channel) (json)',
       description: 'Create an embed with Auxdibot using valid Discord Embed JSON data.',
       permission: 'embed.create.json',

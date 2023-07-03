@@ -11,7 +11,7 @@ export default async function refreshInteractions(auxdibot: Auxdibot, rest: REST
       'moderation',
       'settings',
       'permissions',
-      'embeds',
+      'messages',
       'roles',
       'suggestions',
       'levels',

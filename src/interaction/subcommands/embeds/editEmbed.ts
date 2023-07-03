@@ -12,7 +12,7 @@ import { EmbedBuilder } from '@discordjs/builders';
 export const editEmbed = <AuxdibotSubcommand>{
    name: 'edit',
    info: {
-      module: Modules['Embeds'],
+      module: Modules['Messages'],
       usageExample:
          '/embed edit (message_id) [content] [color] [title] [title url] [author] [author icon url] [author url] [description] [fields (split title and description with `"|d|"``, and seperate fields with `"|s|"`)] [footer] [footer icon url] [image url] [thumbnail url]',
       description: 'Edit an existing Embed by Auxdibot.',

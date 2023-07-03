@@ -1,19 +1,19 @@
 import AuxdibotFeatureModule from '@/interfaces/commands/AuxdibotFeatureModule';
 
 const Modules = {
-   Embeds: <AuxdibotFeatureModule>{
-      name: 'Embeds',
-      description: 'Used for building Embeds, editing Embed content, and getting information about Discord Embeds.',
-      disableable: true,
-   },
    General: <AuxdibotFeatureModule>{
       name: 'General',
       description: 'General purpose module, containing essential information about Auxdibot.',
    },
-   Levels: <AuxdibotFeatureModule>{
-      name: 'Levels',
+   Settings: <AuxdibotFeatureModule>{
+      name: 'Settings',
       description:
-         'Module for levels on this server, including giving experience for sending messages, and the levels leaderboard.',
+         'Module for changing and viewing server settings, as well as disabling or enabling specific features.',
+   },
+   Messages: <AuxdibotFeatureModule>{
+      name: 'Messages',
+      description:
+         'Used for sending messages, scheduling messages, building Embeds, editing Embed content, and getting information about Discord Embeds.',
       disableable: true,
    },
    Moderation: <AuxdibotFeatureModule>{
@@ -31,10 +31,11 @@ const Modules = {
       description: 'Module for handling role-related features, including massroles, and reaction roles.',
       disableable: true,
    },
-   Settings: <AuxdibotFeatureModule>{
-      name: 'Settings',
+   Levels: <AuxdibotFeatureModule>{
+      name: 'Levels',
       description:
-         'Module for changing and viewing server settings, as well as disabling or enabling specific features.',
+         'Module for levels on this server, including giving experience for sending messages, and the levels leaderboard.',
+      disableable: true,
    },
    Suggestions: <AuxdibotFeatureModule>{
       name: 'Suggestions',
