@@ -62,7 +62,7 @@ export const joinRoleAdd = <AuxdibotSubcommand>{
       }
       auxdibot.database.servers.update({
          where: { serverID: server.serverID },
-         data: { sticky_roles: { push: role.id } },
+         data: { join_roles: { push: role.id } },
       });
       const successEmbed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
       successEmbed.title = '👋 Added Join Role';
