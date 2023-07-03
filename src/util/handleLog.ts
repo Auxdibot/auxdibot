@@ -18,13 +18,15 @@ export default async function handleLog(
          const logEmbed = new EmbedBuilder()
             .setColor(auxdibot.colors.log)
             .setAuthor({ name: 'Server Log' })
-            .setTitle(LogNames[log.type])
+            .setTitle(LogNames[log.type] || null)
             .setDescription(
                `${log.description}\n\n🕰️ Date: <t:${Math.round(log.date_unix / 1000)}>${
                   log.userID ? `\n🧍 User: <@${log.userID}>` : ''
                }`,
-            )
-            .setFields(fields);
+            );
+         if (fields) {
+            logEmbed.setFields(...fields);
+         }
          if (use_user_avatar && log.userID) {
             const user = guild.client.users.cache.get(log.userID);
             if (user) {
@@ -39,5 +41,5 @@ export default async function handleLog(
          await logChannel.send({ embeds: [logEmbed] });
          return log;
       })
-      .catch(() => undefined);
+      .catch((x) => console.log(x));
 }

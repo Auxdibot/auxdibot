@@ -90,6 +90,8 @@ enum LogAction {
   STARBOARD_REACTION_CHANGED
   STARBOARD_REACTION_COUNT_CHANGED
   STARBOARD_MESSAGE_DELETED
+  SCHEDULED_MESSAGE_CREATED
+  SCHEDULED_MESSAGE_REMOVED
 }
 
 type Punishment {
@@ -164,6 +166,16 @@ type Suggestion {
   discussion_thread_id String?
 }
 
+type ScheduledMessage {
+  channelID     String
+  last_run_unix Int?
+  times_run     Int?
+  interval_unix Int
+  embed         APIEmbed?
+  message       String?
+  times_to_run  Int?
+}
+
 model servermembers {
   id                 String   @id @default(auto()) @map("_id") @db.ObjectId
   v                  Int?     @map("__v")
@@ -213,6 +225,7 @@ model servers {
   permission_overrides           PermissionOverride[]
   punishments                    Punishment[]
   suggestions                    Suggestion[]
+  scheduled_messages             ScheduledMessage[]
 
   @@unique([serverID])
 }

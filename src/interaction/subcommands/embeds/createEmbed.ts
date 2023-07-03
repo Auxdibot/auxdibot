@@ -13,7 +13,7 @@ import { ChannelType } from 'discord.js';
 export const createEmbed = <AuxdibotSubcommand>{
    name: 'create',
    info: {
-      module: Modules['Embeds'],
+      module: Modules['Messages'],
       usageExample:
          '/embed create (channel) [content] [color] [title] [title url] [author] [author icon url] [author url] [description] [fields (split title and description with `"|d|"``, and seperate fields with `"|s|"`)] [footer] [footer icon url] [image url] [thumbnail url]',
       description: 'Create an embed with Auxdibot.',

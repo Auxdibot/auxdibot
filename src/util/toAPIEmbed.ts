@@ -1,7 +1,14 @@
 import EmbedParameters from '@/interfaces/embeds/EmbedParameters';
 import { APIEmbed, EmbedBuilder } from 'discord.js';
 
-export function toAPIEmbed(parameters: EmbedParameters): APIEmbed {
+export function toAPIEmbed(parameters: EmbedParameters): APIEmbed | undefined {
+   if (
+      parameters.title == null &&
+      parameters.description == null &&
+      parameters.author_text == null &&
+      parameters.footer_text == null
+   )
+      return undefined;
    const embed = new EmbedBuilder()
       .setColor(
          parameters.color && /(#|)[0-9a-fA-F]{6}/.test(parameters.color)

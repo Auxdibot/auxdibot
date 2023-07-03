@@ -8,5 +8,6 @@ enum Limits {
    JOIN_ROLE_DEFAULT_LIMIT = 10,
    STICKY_ROLE_DEFAULT_LIMIT = 10,
    REACTION_ROLE_DEFAULT_LIMIT = 20,
+   SCHEDULE_LIMIT = 10,
 }
 export default Limits;

@@ -10,7 +10,7 @@ import { EmbedBuilder } from '@discordjs/builders';
 export const getEmbedJSON = <AuxdibotSubcommand>{
    name: 'json',
    info: {
-      module: Modules['Embeds'],
+      module: Modules['Messages'],
       usageExample: '/embed json (message_id)',
       description: 'Get the Discord Embed JSON data of any Embed on your server.',
       permission: 'embed.json',
