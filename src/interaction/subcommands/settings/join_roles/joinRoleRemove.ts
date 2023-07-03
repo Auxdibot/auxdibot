@@ -74,7 +74,7 @@ export const joinRoleRemove = <AuxdibotSubcommand>{
       successEmbed.description = `Removed <@&${joinRoleID}> from the join roles.`;
       await handleLog(auxdibot, interaction.data.guild, {
          userID: interaction.data.member.id,
-         description: `Removed (Role ID: ${joinRoleID}) from the sticky roles.`,
+         description: `Removed (Role ID: ${joinRoleID}) from the join roles.`,
          type: LogAction.JOIN_ROLE_REMOVED,
          date_unix: Date.now(),
       });
