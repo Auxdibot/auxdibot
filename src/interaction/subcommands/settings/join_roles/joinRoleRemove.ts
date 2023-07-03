@@ -64,7 +64,7 @@ export const joinRoleRemove = <AuxdibotSubcommand>{
             interaction,
          );
       }
-      server.join_roles.splice(server.sticky_roles.indexOf(joinRoleID), 1);
+      server.join_roles.splice(server.join_roles.indexOf(joinRoleID), 1);
       auxdibot.database.servers.update({
          where: { serverID: server.serverID },
          data: { join_roles: server.join_roles },
@@ -74,7 +74,7 @@ export const joinRoleRemove = <AuxdibotSubcommand>{
       successEmbed.description = `Removed <@&${joinRoleID}> from the join roles.`;
       await handleLog(auxdibot, interaction.data.guild, {
          userID: interaction.data.member.id,
-         description: `Removed (Role ID: ${joinRoleID}) from the sticky roles.`,
+         description: `Removed (Role ID: ${joinRoleID}) from the join roles.`,
          type: LogAction.JOIN_ROLE_REMOVED,
          date_unix: Date.now(),
       });
