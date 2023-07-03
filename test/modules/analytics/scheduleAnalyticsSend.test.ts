@@ -1,4 +1,4 @@
-import scheduleAnalyticsSend from '@/modules/scheduleAnalyticsSend';
+import scheduleAnalyticsSend from '@/modules/analytics/scheduleAnalyticsSend';
 import { assert } from 'chai';
 
 suite('scheduleAnalyticsSend', () => {
