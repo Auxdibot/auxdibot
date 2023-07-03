@@ -57,7 +57,7 @@ export const joinRoleAdd = <AuxdibotSubcommand>{
             interaction,
          );
       }
-      if (!testLimit(server.sticky_roles, Limits.JOIN_ROLE_DEFAULT_LIMIT)) {
+      if (!testLimit(server.join_roles, Limits.JOIN_ROLE_DEFAULT_LIMIT)) {
          return await handleError(auxdibot, 'JOIN_ROLES_LIMIT_EXCEEDED', 'You have too many join roles!', interaction);
       }
       auxdibot.database.servers.update({
