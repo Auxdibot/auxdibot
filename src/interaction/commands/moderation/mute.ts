@@ -99,7 +99,7 @@ export default <AuxdibotCommand>{
                   interaction.data.guild,
                   {
                      userID: user.id,
-                     description: `${user.tag} was muted.`,
+                     description: `${user.username} was muted.`,
                      date_unix: Date.now(),
                      type: LogAction.MUTE,
                   },

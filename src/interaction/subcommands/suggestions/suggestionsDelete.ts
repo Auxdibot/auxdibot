@@ -44,7 +44,7 @@ export const suggestionsDelete = <AuxdibotSubcommand>{
          await message.delete().catch(() => undefined);
          await handleLog(auxdibot, interaction.data.guild, {
             userID: interaction.data.member.id,
-            description: `${interaction.data.member.user.tag} deleted Suggestion #${suggestion.suggestionID}`,
+            description: `${interaction.data.member.user.username} deleted Suggestion #${suggestion.suggestionID}`,
             type: LogAction.SUGGESTION_DELETED,
             date_unix: Date.now(),
          });

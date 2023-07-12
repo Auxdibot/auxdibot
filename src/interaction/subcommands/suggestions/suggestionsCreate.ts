@@ -104,7 +104,7 @@ export const suggestionsCreate = <AuxdibotSubcommand>{
             createSuggestion(auxdibot, interaction.data.guild.id, suggestion);
             await handleLog(auxdibot, interaction.data.guild, {
                userID: interaction.data.member.id,
-               description: `${interaction.data.member.user.tag} created Suggestion #${suggestion.suggestionID}`,
+               description: `${interaction.data.member.user.username} created Suggestion #${suggestion.suggestionID}`,
                type: LogAction.SUGGESTION_CREATED,
                date_unix: Date.now(),
             });

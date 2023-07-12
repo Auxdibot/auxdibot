@@ -52,7 +52,7 @@ export const permissionsDelete = <AuxdibotSubcommand>{
             type: LogAction.PERMISSION_DELETED,
             date_unix: Date.now(),
             userID: interaction.user.id,
-            description: `${interaction.user.tag} deleted a permission override. (OID: ${override_id})`,
+            description: `${interaction.user.username} deleted a permission override. (OID: ${override_id})`,
          },
          [
             {

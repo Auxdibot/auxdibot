@@ -31,7 +31,7 @@ export const levelsStats = <AuxdibotSubcommand>{
       const avatar = user?.avatarURL({ size: 128 }) || interaction.user.avatarURL({ size: 128 });
 
       const embed = new EmbedBuilder().setColor(auxdibot.colors.levels).toJSON();
-      embed.title = `${user ? user.tag + "'s" : 'Your'} Level`;
+      embed.title = `${user ? user.username + "'s" : 'Your'} Level`;
       if (avatar) embed.thumbnail = { url: avatar };
       embed.description = `🏅 Experience: \`${data.xp.toLocaleString()} XP\`\n🏆 Level: \`Level ${data.level.toLocaleString()}\``;
       embed.fields = [

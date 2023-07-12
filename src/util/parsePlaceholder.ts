@@ -58,7 +58,7 @@ export default async function parsePlaceholders(
       ...(member
          ? {
               member_id: member.id,
-              member_tag: member.user.tag,
+              member_tag: member.user.username,
               member_mention: member.user,
               member_created_date: member.user.createdAt.toDateString(),
               member_created_date_formatted: `<t:${Math.round(member.user.createdAt.valueOf() / 1000)}>`,

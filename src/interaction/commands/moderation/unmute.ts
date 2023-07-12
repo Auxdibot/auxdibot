@@ -58,7 +58,7 @@ export default <AuxdibotCommand>{
       dmEmbed.fields = [punishmentInfoField(muted)];
       await user.send({ embeds: [dmEmbed] });
       const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
-      embed.title = `🔊 Unmuted ${user.tag}`;
+      embed.title = `🔊 Unmuted ${user.username}`;
       embed.description = `User was unmuted.`;
       embed.fields = [punishmentInfoField(muted)];
       await handleLog(
@@ -66,7 +66,7 @@ export default <AuxdibotCommand>{
          interaction.data.guild,
          {
             userID: user.id,
-            description: `${user.tag} was unmuted.`,
+            description: `${user.username} was unmuted.`,
             date_unix: Date.now(),
             type: LogAction.UNMUTE,
          },

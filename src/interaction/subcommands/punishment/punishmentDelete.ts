@@ -42,7 +42,7 @@ export const punishmentDelete = <AuxdibotSubcommand>{
             type: LogAction.PUNISHMENT_DELETED,
             date_unix: Date.now(),
             userID: interaction.user.id,
-            description: `${interaction.user.tag} deleted a punishment. (PID: ${punishment.punishmentID})`,
+            description: `${interaction.user.username} deleted a punishment. (PID: ${punishment.punishmentID})`,
          },
          [punishmentInfoField(punishment)],
       );

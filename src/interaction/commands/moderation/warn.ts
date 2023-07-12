@@ -66,7 +66,7 @@ export default <AuxdibotCommand>{
             interaction.data.guild,
             {
                userID: user.id,
-               description: `${user.tag} was warned.`,
+               description: `${user.username} was warned.`,
                date_unix: Date.now(),
                type: LogAction.WARN,
             },

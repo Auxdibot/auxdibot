@@ -79,7 +79,7 @@ export const permissionsCreate = <AuxdibotSubcommand>{
             type: LogAction.PERMISSION_CREATED,
             date_unix: Date.now(),
             userID: interaction.user.id,
-            description: `${interaction.user.tag} created a permission override. (OID: ${interaction.data.guildData.permission_overrides.length})`,
+            description: `${interaction.user.username} created a permission override. (OID: ${interaction.data.guildData.permission_overrides.length})`,
          },
          [
             {

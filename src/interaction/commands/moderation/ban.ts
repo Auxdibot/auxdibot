@@ -89,7 +89,7 @@ export default <AuxdibotCommand>{
                   interaction.data.guild,
                   {
                      userID: user.id,
-                     description: `${user.tag} was banned.`,
+                     description: `${user.username} was banned.`,
                      date_unix: Date.now(),
                      type: LogAction.BAN,
                   },
