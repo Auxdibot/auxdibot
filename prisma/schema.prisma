@@ -176,6 +176,19 @@ type ScheduledMessage {
   times_to_run  Int?
 }
 
+type AutomodSettings {
+  banned_phrases             String[]
+  banned_phrases_punishment  PunishmentType
+  punish_threshold_warns     Int
+  moderate_attachments       Boolean
+  moderate_attachments_count Int
+  moderate_invites           Boolean
+  moderate_invite_count      Int
+  moderate_spam              Boolean
+  moderate_spam_seconds      Int
+  role_exceptions            String[]
+}
+
 model servermembers {
   id                 String   @id @default(auto()) @map("_id") @db.ObjectId
   v                  Int?     @map("__v")
@@ -226,6 +239,7 @@ model servers {
   punishments                    Punishment[]
   suggestions                    Suggestion[]
   scheduled_messages             ScheduledMessage[]
+  automod                        AutomodSettings
 
   @@unique([serverID])
 }
