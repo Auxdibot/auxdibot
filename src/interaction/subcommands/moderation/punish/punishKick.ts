@@ -1,29 +1,24 @@
-import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
-import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
-
-import canExecute from '@/util/canExecute';
-import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
-import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import Modules from '@/constants/bot/commands/Modules';
 import { Auxdibot } from '@/interfaces/Auxdibot';
-import { LogAction, Punishment, PunishmentType } from '@prisma/client';
-import incrementPunishmentsTotal from '@/modules/features/moderation/incrementPunishmentsTotal';
+import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
+import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
+import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 import createPunishment from '@/modules/features/moderation/createPunishment';
-import handleLog from '@/util/handleLog';
+import incrementPunishmentsTotal from '@/modules/features/moderation/incrementPunishmentsTotal';
 import { punishmentInfoField } from '@/modules/features/moderation/punishmentInfoField';
+import canExecute from '@/util/canExecute';
 import handleError from '@/util/handleError';
+import handleLog from '@/util/handleLog';
+import { EmbedBuilder } from '@discordjs/builders';
+import { LogAction, Punishment, PunishmentType } from '@prisma/client';
 
-export default <AuxdibotCommand>{
-   data: new SlashCommandBuilder()
-      .setName('kick')
-      .setDescription('Kick a user using Auxdibot.')
-      .addUserOption((builder) => builder.setName('user').setDescription('User that will be kicked.').setRequired(true))
-      .addStringOption((builder) => builder.setName('reason').setDescription('Reason for kick').setRequired(false)),
+export const punishKick = <AuxdibotSubcommand>{
+   name: 'kick',
    info: {
       module: Modules['Moderation'],
       description: 'Kicks a user, removing them from the server and adding a kick to their record on the server.',
-      usageExample: '/kick (user) [reason]',
-      permission: 'moderation.kick',
+      usageExample: '/punish kick (user) [reason]',
+      permission: 'moderation.punish.kick',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

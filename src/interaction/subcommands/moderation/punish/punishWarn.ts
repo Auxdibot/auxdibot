@@ -1,29 +1,25 @@
-import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
-import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
-import canExecute from '@/util/canExecute';
-import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
-import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import Modules from '@/constants/bot/commands/Modules';
 import { Auxdibot } from '@/interfaces/Auxdibot';
-import incrementPunishmentsTotal from '@/modules/features/moderation/incrementPunishmentsTotal';
+import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
+import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
+import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 import createPunishment from '@/modules/features/moderation/createPunishment';
-import { LogAction, Punishment, PunishmentType } from '@prisma/client';
+import incrementPunishmentsTotal from '@/modules/features/moderation/incrementPunishmentsTotal';
 import { punishmentInfoField } from '@/modules/features/moderation/punishmentInfoField';
-import handleLog from '@/util/handleLog';
+import canExecute from '@/util/canExecute';
 import handleError from '@/util/handleError';
+import handleLog from '@/util/handleLog';
+import { EmbedBuilder } from '@discordjs/builders';
+import { LogAction, Punishment, PunishmentType } from '@prisma/client';
 
-export default <AuxdibotCommand>{
-   data: new SlashCommandBuilder()
-      .setName('warn')
-      .setDescription('Warn a user using Auxdibot.')
-      .addUserOption((builder) => builder.setName('user').setDescription('User that will be warned.').setRequired(true))
-      .addStringOption((builder) => builder.setName('reason').setDescription('Reason for warn').setRequired(false)),
+export const punishWarn = <AuxdibotSubcommand>{
+   name: 'warn',
    info: {
       module: Modules['Moderation'],
       description:
          'Warns a user, giving them a DM warning (if they have DMs enabled) and adding a warn to their record on the server.',
-      usageExample: '/warn (user) [reason]',
-      permission: 'moderation.warn',
+      usageExample: '/punish warn (user) [reason]',
+      permission: 'moderation.punish.warn',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

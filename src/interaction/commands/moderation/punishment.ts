@@ -1,9 +1,9 @@
-import { punishmentView } from './../../subcommands/punishment/punishmentView';
+import { punishmentView } from '../../subcommands/moderation/punishment/punishmentView';
 import { SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import Modules from '@/constants/bot/commands/Modules';
-import { punishmentDelete } from '../../subcommands/punishment/punishmentDelete';
-import { punishmentLatest } from '../../subcommands/punishment/punishmentLatest';
+import { punishmentDelete } from '../../subcommands/moderation/punishment/punishmentDelete';
+import { punishmentLatest } from '../../subcommands/moderation/punishment/punishmentLatest';
 
 export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()

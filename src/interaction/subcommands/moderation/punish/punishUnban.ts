@@ -1,29 +1,21 @@
-import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
-import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
-import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
-import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import Modules from '@/constants/bot/commands/Modules';
 import { Auxdibot } from '@/interfaces/Auxdibot';
-import { LogAction, PunishmentType } from '@prisma/client';
+import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
+import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
+import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 import { punishmentInfoField } from '@/modules/features/moderation/punishmentInfoField';
-import handleLog from '@/util/handleLog';
 import handleError from '@/util/handleError';
+import handleLog from '@/util/handleLog';
+import { EmbedBuilder } from '@discordjs/builders';
+import { LogAction, PunishmentType } from '@prisma/client';
 
-export default <AuxdibotCommand>{
-   data: new SlashCommandBuilder()
-      .setName('unban')
-      .setDescription('Unban a user.')
-      .addUserOption((builder) =>
-         builder
-            .setName('user')
-            .setDescription('The user to be unbanned. Use their Discord user ID.')
-            .setRequired(true),
-      ),
+export const punishUnban = <AuxdibotSubcommand>{
+   name: 'unban',
    info: {
       module: Modules['Moderation'],
       description: 'Unbans a user if they are currently banned. For banned members, use their user ID.',
-      usageExample: '/unban (user)',
-      permission: 'moderation.ban.remove',
+      usageExample: '/punish unban (user)',
+      permission: 'moderation.punish.ban.remove',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;
