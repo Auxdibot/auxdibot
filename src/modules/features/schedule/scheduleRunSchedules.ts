@@ -12,7 +12,7 @@ export default function scheduleRunSchedules(auxdibot: Auxdibot) {
             const server = await findOrCreateServer(auxdibot, guild.id);
             if (server) {
                for (const schedule of server.scheduled_messages) {
-                  if ((schedule.last_run_unix || Date.now()) + schedule.interval_unix >= Date.now()) {
+                  if ((schedule.last_run_unix || Date.now()) + schedule.interval_unix <= Date.now()) {
                      const channel = schedule.channelID ? guild.channels.cache.get(schedule.channelID) : undefined;
                      if (channel.isTextBased()) {
                         await channel
