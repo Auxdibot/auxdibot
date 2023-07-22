@@ -64,17 +64,15 @@ export const scheduleMessage = <AuxdibotSubcommand>{
          });
          await handleLog(auxdibot, interaction.data.guild, {
             userID: interaction.data.member.id,
-            description: `Scheduled a message for ${channel}, which will run ${new Date(
-               Math.round((Date.now() + duration) / 1000),
-            ).toISOString()}`,
+            description: `Scheduled a message for ${channel}, 
+            which will run ${new Date(Date.now() + duration).toISOString()}`,
             type: LogAction.SCHEDULED_MESSAGE_CREATED,
             date_unix: Date.now(),
          });
          const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
          embed.title = 'Success!';
-         embed.description = `Scheduled a message for ${channel}, which will run <t:${Math.round(
-            (Date.now() + duration) / 1000,
-         )}:R>`;
+         embed.description = `Scheduled a message for ${channel}, 
+         which will run <t:${Math.round((Date.now() + duration) / 1000)}:R>`;
          return await interaction.reply({ embeds: [embed] });
       } catch (x) {
          console.log(x);
