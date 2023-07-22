@@ -65,5 +65,15 @@ export default async function slashCreate(auxdibot: Auxdibot, interaction: ChatI
          'This command is invalid or incomplete! Please report this to our support server.',
          interaction,
       );
-   return await commandData.execute(auxdibot, interactionData);
+   try {
+      await commandData.execute(auxdibot, interactionData);
+   } catch (x) {
+      console.log(x);
+      return handleError(
+         auxdibot,
+         'COMMAND_ERROR',
+         'This command has produced an uncaught error! Please report this to our support server.',
+         interaction,
+      );
+   }
 }
