@@ -65,7 +65,7 @@ export const joinRoleRemove = <AuxdibotSubcommand>{
          );
       }
       server.join_roles.splice(server.join_roles.indexOf(joinRoleID), 1);
-      auxdibot.database.servers.update({
+      await auxdibot.database.servers.update({
          where: { serverID: server.serverID },
          data: { join_roles: server.join_roles },
       });
