@@ -54,7 +54,7 @@ export default <AuxdibotButton>{
                   interaction.guild,
                   {
                      userID: member.user.id,
-                     description: `${member.user.tag} was banned.`,
+                     description: `${member.user.username} was banned.`,
                      date_unix: Date.now(),
                      type: LogAction.BAN,
                   },

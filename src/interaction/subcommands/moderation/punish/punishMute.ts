@@ -1,33 +1,26 @@
-import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
-import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
-import timestampToDuration from '@/util/timestampToDuration';
-import canExecute from '@/util/canExecute';
-import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
-import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import Modules from '@/constants/bot/commands/Modules';
 import { Auxdibot } from '@/interfaces/Auxdibot';
-import { LogAction, Punishment, PunishmentType } from '@prisma/client';
+import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
+import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
+import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
+import createPunishment from '@/modules/features/moderation/createPunishment';
 import incrementPunishmentsTotal from '@/modules/features/moderation/incrementPunishmentsTotal';
 import { punishmentInfoField } from '@/modules/features/moderation/punishmentInfoField';
-import createPunishment from '@/modules/features/moderation/createPunishment';
-import handleLog from '@/util/handleLog';
+import canExecute from '@/util/canExecute';
 import handleError from '@/util/handleError';
+import handleLog from '@/util/handleLog';
+import timestampToDuration from '@/util/timestampToDuration';
+import { EmbedBuilder } from '@discordjs/builders';
+import { LogAction, Punishment, PunishmentType } from '@prisma/client';
 
-export default <AuxdibotCommand>{
-   data: new SlashCommandBuilder()
-      .setName('mute')
-      .setDescription('Mute a user using Auxdibot.')
-      .addUserOption((builder) => builder.setName('user').setDescription('User that will be muted.').setRequired(true))
-      .addStringOption((builder) => builder.setName('reason').setDescription('Reason for muted').setRequired(false))
-      .addStringOption((builder) =>
-         builder.setName('duration').setDescription('Duration as a timestamp').setRequired(false),
-      ),
+export const punishMute = <AuxdibotSubcommand>{
+   name: 'mute',
    info: {
       module: Modules['Moderation'],
       description:
          'Mutes a user, making them unable to talk in the server and adding a mute to their record on the server. Default duration is permanent.',
-      usageExample: '/mute (user) [reason] [duration]',
-      permission: 'moderation.mute',
+      usageExample: '/punish mute (user) [reason] [duration]',
+      permission: 'moderation.punish.mute',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;
@@ -99,7 +92,7 @@ export default <AuxdibotCommand>{
                   interaction.data.guild,
                   {
                      userID: user.id,
-                     description: `${user.tag} was muted.`,
+                     description: `${user.username} was muted.`,
                      date_unix: Date.now(),
                      type: LogAction.MUTE,
                   },

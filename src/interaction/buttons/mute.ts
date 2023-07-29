@@ -68,7 +68,7 @@ export default <AuxdibotButton>{
                   interaction.guild,
                   {
                      userID: member.user.id,
-                     description: `${member.user.tag} was muted.`,
+                     description: `${member.user.username} was muted.`,
                      date_unix: Date.now(),
                      type: LogAction.MUTE,
                   },

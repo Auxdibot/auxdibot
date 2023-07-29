@@ -51,7 +51,7 @@ export default <AuxdibotButton>{
          where: { serverID: server.serverID },
          data: { punishments: server.punishments },
       });
-      embed.title = `🔊 Unmuted ${user ? user.tag : `<@${user_id}>`}`;
+      embed.title = `🔊 Unmuted ${user ? user.username : `<@${user_id}>`}`;
       embed.description = `User was unmuted.`;
       embed.fields = [punishmentInfoField(muted)];
       await handleLog(
@@ -59,7 +59,7 @@ export default <AuxdibotButton>{
          interaction.guild,
          {
             userID: user.id,
-            description: `${user.tag} was unmuted.`,
+            description: `${user.username} was unmuted.`,
             date_unix: Date.now(),
             type: LogAction.UNMUTE,
          },

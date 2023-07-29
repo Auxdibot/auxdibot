@@ -34,7 +34,7 @@ export default <AuxdibotCommand>{
             overrides = overrides.concat(server.permission_overrides.filter((i) => i.roleID == role.id));
          }
       }
-      embed.title = `🧍 ${user.tag}`;
+      embed.title = `🧍 ${user.username}`;
       embed.thumbnail = {
          url: user.avatarURL({ size: 128 }) || '',
          width: 128,

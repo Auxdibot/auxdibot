@@ -19,7 +19,7 @@ export default async function messageUpdate(
          <Log>{
             type: LogAction.MESSAGE_EDITED,
             date_unix: Date.now(),
-            description: `A message by ${sender.user.tag} was edited.`,
+            description: `A message by ${sender.user.username} was edited.`,
             userID: sender.id,
          },
          [

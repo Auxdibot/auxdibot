@@ -1,39 +1,26 @@
-import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
-import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
-import timestampToDuration from '@/util/timestampToDuration';
-import canExecute from '@/util/canExecute';
-import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
-import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import Modules from '@/constants/bot/commands/Modules';
 import { Auxdibot } from '@/interfaces/Auxdibot';
-import { LogAction, Punishment, PunishmentType } from '@prisma/client';
-import incrementPunishmentsTotal from '@/modules/features/moderation/incrementPunishmentsTotal';
+import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
+import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
+import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 import createPunishment from '@/modules/features/moderation/createPunishment';
-import handleLog from '@/util/handleLog';
+import incrementPunishmentsTotal from '@/modules/features/moderation/incrementPunishmentsTotal';
 import { punishmentInfoField } from '@/modules/features/moderation/punishmentInfoField';
+import canExecute from '@/util/canExecute';
 import handleError from '@/util/handleError';
+import handleLog from '@/util/handleLog';
+import timestampToDuration from '@/util/timestampToDuration';
+import { EmbedBuilder } from '@discordjs/builders';
+import { LogAction, Punishment, PunishmentType } from '@prisma/client';
 
-export default <AuxdibotCommand>{
-   data: new SlashCommandBuilder()
-      .setName('ban')
-      .setDescription('Ban a user using Auxdibot.')
-      .addUserOption((builder) => builder.setName('user').setDescription('User that will be banned.').setRequired(true))
-      .addStringOption((builder) => builder.setName('reason').setDescription('Reason for ban').setRequired(false))
-      .addStringOption((builder) =>
-         builder.setName('duration').setDescription('Duration as a timestamp').setRequired(false),
-      )
-      .addNumberOption((builder) =>
-         builder
-            .setName('delete_message_days')
-            .setDescription("How many days back the user's messages should be deleted.")
-            .setRequired(false),
-      ),
+export const punishBan = <AuxdibotSubcommand>{
+   name: 'ban',
    info: {
       module: Modules['Moderation'],
       description:
          'Bans a user, removing them from the server and adding a ban to their record on the server. Default duration is permanent.',
-      usageExample: '/ban (user) [reason] [duration]',
-      permission: 'moderation.ban',
+      usageExample: '/punish ban (user) [reason] [duration]',
+      permission: 'moderation.punish.ban',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;
@@ -89,7 +76,7 @@ export default <AuxdibotCommand>{
                   interaction.data.guild,
                   {
                      userID: user.id,
-                     description: `${user.tag} was banned.`,
+                     description: `${user.username} was banned.`,
                      date_unix: Date.now(),
                      type: LogAction.BAN,
                   },

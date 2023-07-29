@@ -47,7 +47,7 @@ export default <AuxdibotButton>{
                   interaction.guild,
                   {
                      userID: member.user.id,
-                     description: `${member.user.tag} was kicked.`,
+                     description: `${member.user.username} was kicked.`,
                      date_unix: Date.now(),
                      type: LogAction.KICK,
                   },

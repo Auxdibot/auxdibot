@@ -12,7 +12,7 @@ export default async function userRecordAsEmbed(auxdibot: Auxdibot, serverID: st
    embed.fields = [
       {
          name: `Punishments`,
-         value: record.reduce((str: string, punishment: Punishment) => {
+         value: record.reverse().reduce((str: string, punishment: Punishment) => {
             const type = PunishmentNames[punishment.type];
             return (
                str +

@@ -1,20 +1,17 @@
-import { EmbedBuilder, SlashCommandBuilder } from 'discord.js';
-import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
-import canExecute from '@/util/canExecute';
-import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
-import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import Modules from '@/constants/bot/commands/Modules';
 import { Auxdibot } from '@/interfaces/Auxdibot';
-import { LogAction, PunishmentType } from '@prisma/client';
+import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
+import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
+import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 import { punishmentInfoField } from '@/modules/features/moderation/punishmentInfoField';
-import handleLog from '@/util/handleLog';
+import canExecute from '@/util/canExecute';
 import handleError from '@/util/handleError';
+import handleLog from '@/util/handleLog';
+import { EmbedBuilder } from '@discordjs/builders';
+import { LogAction, PunishmentType } from '@prisma/client';
 
-export default <AuxdibotCommand>{
-   data: new SlashCommandBuilder()
-      .setName('unmute')
-      .setDescription('Unmute a user.')
-      .addUserOption((builder) => builder.setName('user').setDescription('The user to be unmuted.').setRequired(true)),
+export const punishUnmute = <AuxdibotSubcommand>{
+   name: 'unban',
    info: {
       module: Modules['Moderation'],
       description: 'Unmutes a user if they are currently muted.',
@@ -58,7 +55,7 @@ export default <AuxdibotCommand>{
       dmEmbed.fields = [punishmentInfoField(muted)];
       await user.send({ embeds: [dmEmbed] });
       const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
-      embed.title = `🔊 Unmuted ${user.tag}`;
+      embed.title = `🔊 Unmuted ${user.username}`;
       embed.description = `User was unmuted.`;
       embed.fields = [punishmentInfoField(muted)];
       await handleLog(
@@ -66,7 +63,7 @@ export default <AuxdibotCommand>{
          interaction.data.guild,
          {
             userID: user.id,
-            description: `${user.tag} was unmuted.`,
+            description: `${user.username} was unmuted.`,
             date_unix: Date.now(),
             type: LogAction.UNMUTE,
          },

@@ -28,7 +28,7 @@ export default <AuxdibotButton>{
          where: { serverID: server.serverID },
          data: { punishments: server.punishments },
       });
-      embed.title = `📥 Unbanned ${user ? user.tag : `<@${user_id}>`}`;
+      embed.title = `📥 Unbanned ${user ? user.username : `<@${user_id}>`}`;
       embed.description = `User was unbanned.`;
       embed.fields = [punishmentInfoField(banned)];
       await handleLog(
@@ -36,7 +36,7 @@ export default <AuxdibotButton>{
          interaction.guild,
          {
             userID: user.id,
-            description: `${user.tag} was unbanned.`,
+            description: `${user.username} was unbanned.`,
             date_unix: Date.now(),
             type: LogAction.UNBAN,
          },
