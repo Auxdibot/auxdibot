@@ -58,15 +58,13 @@ Auxdibot uses Discord's slash command system. If you want to run any command you
 
 * `/user (user)` - *View information about a user and enforce punishments with an easy-to-use button row.*
 
-* `/record (user)` - *View a user's previous punishments.*
+* `/punishment` - *View a punishment, list the latest server punishments, and view/edit a user's punishment record.*
 
 * `/settings` - *View the settings for your server, or change certain settings for your server.*
 
 * `/permissions` - *View, delete or create permission overrides for certain permissions on Auxdibot.*
 
 * `/embed` - *Create or edit Discord Embeds with **ZERO** coding knowledge! Custom JSON is also supported.*
-
-* `/punishment` - *View a punishment, list the latest server punishments or delete a punishment off of someone's record.*
 
 * `/suggestions` - *Change the settings for suggestions, or create a suggestion with `/suggestions create`*
 
@@ -110,7 +108,9 @@ If you would like to run Auxdibot on your own machine:
 
 `⭐` *Starboard*
 
+`⏲️` *Schedules*
+
 ## Credits
 
-This project is developed solely by [Auxdible](https://github.com/Auxdible) on GitHub. Contact me on Discord using Auxdible#3003 or by my email.
+This project is developed solely by [Auxdible](https://github.com/Auxdible) on GitHub. Contact me on Discord using Auxdible#3003 or by my email. Contributions accepted.
 
