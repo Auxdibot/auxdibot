@@ -11,12 +11,12 @@ import { EmbedBuilder } from '@discordjs/builders';
 import { LogAction, PunishmentType } from '@prisma/client';
 
 export const punishUnmute = <AuxdibotSubcommand>{
-   name: 'unban',
+   name: 'unmute',
    info: {
       module: Modules['Moderation'],
       description: 'Unmutes a user if they are currently muted.',
       usageExample: '/unmute (user)',
-      permission: 'moderation.mute.remove',
+      permission: 'moderation.punish.mute.remove',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;
@@ -30,7 +30,7 @@ export const punishUnmute = <AuxdibotSubcommand>{
             interaction,
          );
       }
-      const muted = server.punishments.find((p) => p.userID == user.id && p.type == PunishmentType.MUTE);
+      const muted = server.punishments.find((p) => p.userID == user.id && p.type == PunishmentType.MUTE && !p.expired);
 
       if (!muted) return await handleError(auxdibot, 'USER_NOT_MUTED', "This user isn't muted!", interaction);
 

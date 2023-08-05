@@ -36,7 +36,7 @@ export const punishMute = <AuxdibotSubcommand>{
             interaction,
          );
       }
-      if (server.punishments.find((p) => p.userID == user.id && p.type == PunishmentType.BAN))
+      if (server.punishments.find((p) => p.userID == user.id && p.type == PunishmentType.MUTE && !p.expired))
          return await handleError(auxdibot, 'USER_ALREADY_MUTED', 'This user is already muted!', interaction);
 
       const member = interaction.data.guild.members.resolve(user.id);
