@@ -38,7 +38,11 @@ export const punishBan = <AuxdibotSubcommand>{
          noPermissionEmbed.description = `This user has a higher role than you or owns this server!`;
          return await interaction.reply({ embeds: [noPermissionEmbed] });
       }
-      if (interaction.data.guildData.punishments.find((p) => p.userID == user.id && p.type == PunishmentType.BAN))
+      if (
+         interaction.data.guildData.punishments.find(
+            (p) => p.userID == user.id && p.type == PunishmentType.BAN && !p.expired,
+         )
+      )
          return await handleError(auxdibot, 'USER_ALREADY_BANNED', 'This user is already banned!', interaction);
 
       const duration = timestampToDuration(durationOption);

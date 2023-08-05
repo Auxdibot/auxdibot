@@ -15,7 +15,7 @@ export default function scheduleExpirationChecks(auxdibot: Auxdibot) {
                   if (
                      !punishment.expired &&
                      punishment.expires_date_unix &&
-                     punishment.expires_date_unix * 1000 > Date.now()
+                     punishment.expires_date_unix <= Date.now()
                   ) {
                      punishment.expired = true;
                      return punishment;

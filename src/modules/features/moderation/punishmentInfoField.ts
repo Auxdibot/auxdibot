@@ -4,7 +4,9 @@ import { EmbedField } from 'discord.js';
 export function punishmentInfoField(punishment: Punishment): EmbedField {
    return <EmbedField>{
       name: 'Punishment Info',
-      value: `🕰️ Date: <t:${Math.round(punishment.date_unix / 1000)}>\n${
+      value: `🪪 Punishment ID: \`${punishment.punishmentID}\`\n🕰️ Date: <t:${Math.round(
+         punishment.date_unix / 1000,
+      )}>\n${
          punishment.expired
             ? '📅 Expired'
             : `📅 Expires: ${

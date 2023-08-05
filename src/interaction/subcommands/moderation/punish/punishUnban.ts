@@ -21,7 +21,7 @@ export const punishUnban = <AuxdibotSubcommand>{
       if (!interaction.data) return;
       const user = interaction.options.getUser('user', true);
       const server = interaction.data.guildData;
-      const banned = server.punishments.find((p) => p.userID == user.id && p.type == PunishmentType.BAN);
+      const banned = server.punishments.find((p) => p.userID == user.id && p.type == PunishmentType.BAN && !p.expired);
 
       if (!banned) return await handleError(auxdibot, 'USER_NOT_BANNED', "This user isn't banned!", interaction);
 
