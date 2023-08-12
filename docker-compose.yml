@@ -1,0 +1,9 @@
+version: '3.8'
+
+services:
+   auxdibot:
+      image: auxdibot:latest
+      container_name: auxdibot
+      env_file:
+        - .env
+      
