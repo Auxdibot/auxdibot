@@ -40,8 +40,12 @@ export default function scheduleExpirationChecks(auxdibot: Auxdibot) {
                            break;
                         case PunishmentType.MUTE:
                            const member = guild.members.resolve(expiredPunishment.userID);
-                           if (!member || !server.mute_role) break;
-                           member.roles.remove(server.mute_role);
+                           if (!member) break;
+                           if (server.mute_role) {
+                              member.roles.remove(server.mute_role);
+                           } else {
+                              member.timeout(null, 'Unmuted');
+                           }
                            break;
                      }
                   }

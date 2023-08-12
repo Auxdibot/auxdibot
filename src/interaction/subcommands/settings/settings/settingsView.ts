@@ -20,7 +20,7 @@ export const settingsView = <AuxdibotSubcommand>{
       embed.title = '⚙️ Server Settings';
       embed.description = `🗒️ Log Channel: ${server.log_channel ? `<#${server.log_channel}>` : '`None`'}
       \r\n📩 Join/Leave Channel: ${server.join_leave_channel ? `<#${server.join_leave_channel}>` : '`None`'}
-      \r\n🎤 Mute Role: ${server.mute_role ? `<@&${server.mute_role}>` : '`None`'}
+      \r\n🎤 Mute Role: ${server.mute_role ? `<@&${server.mute_role}>` : '`None (Timeout)`'}
       \r\n💬 Message XP: \`${server.message_xp}\``;
       embed.fields = [
          {
