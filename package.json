@@ -1,6 +1,6 @@
 {
   "name": "auxdibot",
-  "version": "1.1.4",
+  "version": "1.2.0",
   "description": "A multipurpose Discord bot, created by Auxdible!",
   "main": "./dist/index.js",
   "scripts": {

@@ -112,5 +112,5 @@ If you would like to run Auxdibot on your own machine:
 
 ## Credits
 
-This project is developed solely by [Auxdible](https://github.com/Auxdible) on GitHub. Contact me on Discord using Auxdible#3003 or by my email. Contributions accepted.
+This project is developed solely by [Auxdible](https://github.com/Auxdible) on GitHub. Contact me on through my Discord, `auxdible`, or by my email. Contributions accepted.
 
