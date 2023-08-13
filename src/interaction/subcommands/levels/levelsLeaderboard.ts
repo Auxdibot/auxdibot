@@ -10,7 +10,7 @@ export const levelsLeaderboard = <AuxdibotSubcommand>{
    name: 'leaderboard',
    info: {
       module: Modules['Levels'],
-      description: 'View the top levelled members on this server.',
+      description: 'View the top leveled members on this server.',
       usageExample: '/levels leaderboard',
       allowedDefault: true,
       permission: 'levels.leaderboard',
