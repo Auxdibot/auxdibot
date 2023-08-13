@@ -1,4 +1,4 @@
-import { SlashCommandBuilder } from 'discord.js';
+import { ChannelType, SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import Modules from '@/constants/bot/commands/Modules';
 import { addLevelReward } from '../../subcommands/levels/addLevelReward';
@@ -10,6 +10,8 @@ import { resetLevels } from '../../subcommands/levels/resetLevels';
 import { levelsStats } from '../../subcommands/levels/levelsStats';
 import { levelsLeaderboard } from '../../subcommands/levels/levelsLeaderboard';
 import { setMessageXP } from '../../subcommands/levels/setMessageXP';
+import { levelsToggleEmbed } from '@/interaction/subcommands/levels/levelsToggleEmbed';
+import { levelsChannel } from '@/interaction/subcommands/levels/levelsChannel';
 export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
       .setName('levels')
@@ -80,11 +82,30 @@ export default <AuxdibotCommand>{
             .addNumberOption((argBuilder) =>
                argBuilder.setName('xp').setDescription('The amount of XP to give.').setRequired(true),
             ),
+      )
+      .addSubcommand((builder) =>
+         builder
+            .setName('toggle_embed')
+            .setDescription('Toggle whether the Level embed is sent upon a user leveling up.'),
+      )
+      .addSubcommand((builder) =>
+         builder
+            .setName('channel')
+            .setDescription('The channel to post level messages in.')
+            .addChannelOption((argBuilder) =>
+               argBuilder
+                  .setName('channel')
+                  .setDescription(
+                     'Levelup messages channel, or leave empty for Auxdibot to reply to the current message.',
+                  )
+                  .addChannelTypes(ChannelType.GuildText),
+            ),
       ),
    info: {
       module: Modules['Levels'],
       description: 'Change settings for leveling on this server.',
-      usageExample: '/levels (leaderboard|add_reward|rewards|remove_reward|award_xp|reset|remove_xp|message_xp)',
+      usageExample:
+         '/levels (leaderboard|add_reward|rewards|remove_reward|award_xp|reset|remove_xp|message_xp|toggle_embed|channel)',
       permission: 'levels',
    },
    subcommands: [
@@ -97,6 +118,8 @@ export default <AuxdibotCommand>{
       levelsStats,
       levelsLeaderboard,
       setMessageXP,
+      levelsToggleEmbed,
+      levelsChannel,
    ],
    async execute() {
       return;

@@ -24,6 +24,9 @@ export default <AuxdibotCommand>{
       const user = interaction.options.getUser('user') || interaction.user;
       const member = interaction.data.guild.members.resolve(user.id);
       const server = interaction.data.guildData;
+      const data = await auxdibot.database.servermembers.findFirst({
+         where: { userID: user?.id || interaction.data.member.id, serverID: interaction.data.guild.id },
+      });
       const record = server.punishments.filter((p) => p.userID == user.id),
          banned = server.punishments.find((p) => p.userID == user.id && p.type == PunishmentType.BAN),
          muted = server.punishments.find((p) => p.userID == user.id && p.type == PunishmentType.MUTE);
@@ -49,6 +52,14 @@ export default <AuxdibotCommand>{
                     (member.joinedTimestamp || Date.now()) / 1000,
                  )}>\n📗 Highest Role: <@&${member.roles.highest.id}>\n${
                     member.id == interaction.data.guild.ownerId ? '👑 Owner' : ''
+                 }${
+                    data
+                       ? `🏆 Level: **${
+                            data.level
+                         }** \`${data.xp.toLocaleString()}/${data.xpTill.toLocaleString()} XP\`${
+                            data.suggestions_banned ? '\n🚫 Suggestions Banned' : ''
+                         }`
+                       : ''
                  }`,
               }
             : { name: 'Member Data Not Found', value: 'User is not in this server!' },

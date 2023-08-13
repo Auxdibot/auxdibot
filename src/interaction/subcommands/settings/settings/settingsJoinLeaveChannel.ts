@@ -29,12 +29,12 @@ export const settingsJoinLeaveChannel = <AuxdibotSubcommand>{
             embeds: [embed],
          });
       }
-      server.join_leave_channel = channel ? channel.id : undefined;
+      server.join_leave_channel = channel?.id;
       await auxdibot.database.servers.update({
          where: { serverID: server.serverID },
-         data: { join_leave_channel: channel?.id || undefined },
+         data: { join_leave_channel: channel?.id || null },
       });
-      embed.description = `The Join/Leave channel for this server has been changed.\r\n\r\nFormerly: ${
+      embed.description = `The Join/Leave Channel for this server has been changed.\r\n\r\nFormerly: ${
          formerChannel ? `<#${formerChannel.id}>` : 'None'
       }\r\n\r\nNow: ${channel || 'None (Disabled)'}`;
       await handleLog(
@@ -44,12 +44,12 @@ export const settingsJoinLeaveChannel = <AuxdibotSubcommand>{
             type: LogAction.JOIN_LEAVE_CHANNEL_CHANGED,
             userID: interaction.data.member.id,
             date_unix: Date.now(),
-            description: 'The join/leave channel for this server has been changed.',
+            description: 'The Join/Leave Channel for this server has been changed.',
          },
          [
             {
                name: 'Join/Leave Channel Change',
-               value: `Formerly: ${formerChannel}\n\nNow: ${channel}`,
+               value: `Formerly: ${formerChannel || 'None'}\n\nNow: ${channel || 'None (Disabled)'}`,
                inline: false,
             },
          ],

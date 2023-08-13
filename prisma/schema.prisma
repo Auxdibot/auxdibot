@@ -92,6 +92,7 @@ enum LogAction {
   STARBOARD_MESSAGE_DELETED
   SCHEDULED_MESSAGE_CREATED
   SCHEDULED_MESSAGE_REMOVED
+  LEVEL_CHANNEL_CHANGED
 }
 
 type Punishment {
@@ -215,6 +216,8 @@ model servers {
   suggestions_discussion_threads     Boolean              @default(true)
   message_xp                         Int                  @default(20)
   level_rewards                      LevelReward[]
+  level_channel                      String?
+  level_embed                        Boolean              @default(true)
   starred_messages                   StarredMessage[]
   starboard_channel                  String?
   starboard_reaction                 String?              @default("⭐")

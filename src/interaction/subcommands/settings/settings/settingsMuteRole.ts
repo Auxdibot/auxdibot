@@ -17,7 +17,7 @@ export const settingsMuteRole = <AuxdibotSubcommand>{
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;
-      const role = interaction.options.getRole('role', true);
+      const role = interaction.options.getRole('role');
       const server = interaction.data.guildData;
       if (
          interaction.data.member.id != interaction.data.guild.ownerId &&
@@ -30,7 +30,7 @@ export const settingsMuteRole = <AuxdibotSubcommand>{
             embeds: [noPermissionEmbed],
          });
       }
-      if (interaction.data.guild.roles.comparePositions(interaction.data.member.roles.highest, role.id) <= 0) {
+      if (role && interaction.data.guild.roles.comparePositions(interaction.data.member.roles.highest, role.id) <= 0) {
          const noPermissionEmbed = new EmbedBuilder().setColor(auxdibot.colors.denied).toJSON();
          noPermissionEmbed.title = '⛔ No Permission!';
          noPermissionEmbed.description = `This role is higher up on the role hierarchy than Auxdibot's roles!`;
@@ -40,14 +40,14 @@ export const settingsMuteRole = <AuxdibotSubcommand>{
       }
       const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
       embed.title = '⚙️ Mute Role Change';
-      if (role.id == server.mute_role) {
+      if (role && role.id == server.mute_role) {
          embed.description = `Nothing changed. Mute role is the same as one specified in settings.`;
          return await interaction.reply({
             embeds: [embed],
          });
       }
       const formerRole = interaction.data.guild.roles.cache.get(server.mute_role || ''),
-         guildRole = interaction.data.guild.roles.cache.get(role.id);
+         guildRole = role ? interaction.data.guild.roles.cache.get(role.id) : null;
       if (guildRole) {
          await guildRole.setPermissions([], 'Clearing all permissions.').catch(() => undefined);
          interaction.data.guild.channels.cache.forEach((r) => {
@@ -70,24 +70,27 @@ export const settingsMuteRole = <AuxdibotSubcommand>{
             type: LogAction.MUTE_ROLE_CHANGED,
             userID: interaction.data.member.id,
             date_unix: Date.now(),
-            description: `The mute role for this server has been changed to ${role.name}.`,
+            description: `The mute role for this server has been changed to ${
+               role ? role.name : "None. This server will now use Discord's timeout system for mutes."
+            }.`,
          },
          [
             {
                name: 'Mute Role Change',
-               value: `Formerly: ${formerRole ? `<@&${formerRole.id}>` : undefined}\n\nNow: <@&${role.id}>`,
+               value: `Formerly: ${formerRole ? `<@&${formerRole.id}>` : 'None (Timeout)'}\n\nNow: ${
+                  role ? `<@&${role.id}>` : 'None (Timeout)'
+               }`,
                inline: false,
             },
          ],
       );
-      server.mute_role = role.id;
       await auxdibot.database.servers.update({
          where: { serverID: server.serverID },
-         data: { mute_role: role.id },
+         data: { mute_role: role?.id || null },
       });
       embed.description = `The mute role for this server has been changed.\r\n\r\nFormerly: ${
-         formerRole ? `<@&${formerRole.id}>` : 'None'
-      }\r\n\r\nNow: <@&${role.id}>`;
+         formerRole ? `<@&${formerRole.id}>` : 'None (Timeout)'
+      }\r\n\r\nNow: ${role ? `<@&${role.id}>` : 'None (Timeout)'}`;
       return await interaction.reply({
          embeds: [embed],
       });

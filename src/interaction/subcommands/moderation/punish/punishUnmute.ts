@@ -22,14 +22,6 @@ export const punishUnmute = <AuxdibotSubcommand>{
       if (!interaction.data) return;
       const user = interaction.options.getUser('user', true);
       const server = interaction.data.guildData;
-      if (!server.mute_role || !interaction.data.guild.roles.resolve(server.mute_role)) {
-         return await handleError(
-            auxdibot,
-            'NO_MUTE_ROLE',
-            'There is no mute role assigned for the server! Do `/settings mute_role` to view the command to add a muterole.',
-            interaction,
-         );
-      }
       const muted = server.punishments.find((p) => p.userID == user.id && p.type == PunishmentType.MUTE && !p.expired);
 
       if (!muted) return await handleError(auxdibot, 'USER_NOT_MUTED', "This user isn't muted!", interaction);
@@ -42,7 +34,11 @@ export const punishUnmute = <AuxdibotSubcommand>{
             noPermissionEmbed.description = `This user has a higher role than you or owns this server!`;
             return await interaction.reply({ embeds: [noPermissionEmbed] });
          }
-         member.roles.remove(interaction.data.guild.roles.resolve(server.mute_role) || '').catch(() => undefined);
+         if (server.mute_role) {
+            member.roles.remove(interaction.data.guild.roles.resolve(server.mute_role) || '').catch(() => undefined);
+         } else {
+            member.timeout(null, 'Unmuted').catch(() => undefined);
+         }
       }
       muted.expired = true;
       await auxdibot.database.servers.update({

@@ -8,49 +8,48 @@ import { EmbedBuilder } from '@discordjs/builders';
 import { LogAction } from '@prisma/client';
 import { ChannelType } from 'discord.js';
 
-export const starboardChannel = <AuxdibotSubcommand>{
+export const levelsChannel = <AuxdibotSubcommand>{
    name: 'channel',
    info: {
-      module: Modules['Starboard'],
-      description: 'Set the channel where starred messages are sent.',
-      usageExample: '/starboard channel (channel)',
-      permission: 'starboard.settings.channel',
+      module: Modules['Levels'],
+      description: 'Levelup messages channel, or leave empty for Auxdibot to reply to the current message.',
+      usageExample: '/levels channel',
+      permission: 'levels.channel',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
-      if (!interaction.data) return;
       const channel = interaction.options.getChannel('channel', false, [ChannelType.GuildText]);
       const server = interaction.data.guildData;
       const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
-      embed.title = '⚙️ Starboard Channel Changed';
+      embed.title = '⚙️ Level Channel Changed';
 
-      const formerChannel = interaction.data.guild.channels.resolve(server.starboard_channel || '');
-      if ((channel && channel.id == server.starboard_channel) || (!channel && !server.starboard_channel)) {
-         embed.description = `Nothing changed. Starboard channel is the same as one specified in settings.`;
+      const formerChannel = interaction.data.guild.channels.resolve(server.level_channel || '');
+      if ((channel && channel.id == server.level_channel) || (!channel && !server.level_channel)) {
+         embed.description = `Nothing changed. Level channel is the same as one specified in settings.`;
          return await interaction.reply({
             embeds: [embed],
          });
       }
       await auxdibot.database.servers.update({
          where: { serverID: server.serverID },
-         data: { starboard_channel: channel?.id || null },
+         data: { level_channel: channel?.id || null },
       });
-      embed.description = `The starboard channel for this server has been changed.\r\n\r\nFormerly: ${
+      embed.description = `The level channel for this server has been changed.\r\n\r\nFormerly: ${
          formerChannel ? `<#${formerChannel.id}>` : 'None'
-      }\r\n\r\nNow: ${channel || 'None (Disabled)'}`;
+      }\r\n\r\nNow: ${channel || 'None (Reply)'}`;
 
       await handleLog(
          auxdibot,
          interaction.data.guild,
          {
-            type: LogAction.STARBOARD_CHANNEL_CHANGED,
+            type: LogAction.LEVEL_CHANNEL_CHANGED,
             userID: interaction.data.member.id,
             date_unix: Date.now(),
-            description: `The starboard channel for this server has been changed.`,
+            description: 'The level channel for this server has been changed.',
          },
          [
             {
-               name: 'Starboard Channel Change',
-               value: `Formerly: ${formerChannel || 'None'}\n\nNow: ${channel || 'None (Disabled)'}`,
+               name: 'Level Channel Change',
+               value: `Formerly: ${formerChannel || 'None'}\n\nNow: ${channel || 'None (Reply)'}`,
                inline: false,
             },
          ],

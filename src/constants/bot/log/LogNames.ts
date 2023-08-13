@@ -37,4 +37,5 @@ export const LogNames = {
    STARBOARD_MESSAGE_DELETED: '⭐ Starboard Message Deleted',
    SCHEDULED_MESSAGE_CREATED: '⏲️ Scheduled Message Created',
    SCHEDULED_MESSAGE_REMOVED: '⏲️ Scheduled Message Deleted',
+   LEVEL_CHANNEL_CHANGED: '🏆 Level Channel Changed',
 };

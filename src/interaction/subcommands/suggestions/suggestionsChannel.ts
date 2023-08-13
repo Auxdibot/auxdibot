@@ -32,7 +32,7 @@ export const suggestionsChannel = <AuxdibotSubcommand>{
       }
       await auxdibot.database.servers.update({
          where: { serverID: server.serverID },
-         data: { suggestions_channel: channel.id },
+         data: { suggestions_channel: channel?.id || null },
       });
       embed.description = `The suggestions channel for this server has been changed.\r\n\r\nFormerly: ${
          formerChannel ? `<#${formerChannel.id}>` : 'None'
@@ -50,7 +50,7 @@ export const suggestionsChannel = <AuxdibotSubcommand>{
          [
             {
                name: 'Suggestions Channel Change',
-               value: `Formerly: ${formerChannel}\n\nNow: ${channel}`,
+               value: `Formerly: ${formerChannel || 'None'}\n\nNow: ${channel || 'None (Disabled)'}`,
                inline: false,
             },
          ],

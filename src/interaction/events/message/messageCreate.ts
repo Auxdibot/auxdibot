@@ -23,20 +23,28 @@ export default async function messageCreate(auxdibot: Auxdibot, message: Message
       if (newLevel && level && newLevel > level) {
          try {
             if (!message.guild || !message.member) return;
-            const embed = JSON.parse(
-               (
-                  await parsePlaceholders(
-                     auxdibot,
-                     JSON.stringify(DEFAULT_LEVELUP_EMBED),
-                     message.guild,
-                     message.member,
-                  )
-               ).replaceAll(
-                  '%levelup%',
-                  ` \`Level ${level.toLocaleString()}\` -> \`Level ${newLevel.toLocaleString()}\` `,
-               ),
-            );
-            await message.reply({ embeds: [embed as APIEmbed] });
+            if (server.level_embed) {
+               const embed = JSON.parse(
+                  (
+                     await parsePlaceholders(
+                        auxdibot,
+                        JSON.stringify(DEFAULT_LEVELUP_EMBED),
+                        message.guild,
+                        message.member,
+                     )
+                  ).replaceAll(
+                     '%levelup%',
+                     ` \`Level ${level.toLocaleString()}\` -> \`Level ${newLevel.toLocaleString()}\` `,
+                  ),
+               );
+               if (server.level_channel) {
+                  const channel = message.guild.channels.cache.get(server.level_channel);
+                  if (channel && channel.isTextBased())
+                     await channel.send({ content: `${message.author}`, embeds: [embed as APIEmbed] });
+               } else {
+                  await message.reply({ embeds: [embed as APIEmbed] });
+               }
+            }
          } catch (x) {
             console.log(x);
          }
