@@ -23,7 +23,9 @@ export const settingsView = <AuxdibotSubcommand>{
       }
       \r\n📩 **Join/Leave Channel**: ${server.join_leave_channel ? `<#${server.join_leave_channel}>` : '`None`'}
       \r\n🎤 **Mute Role**: ${server.mute_role ? `<@&${server.mute_role}>` : '`None (Timeout)`'}
-      \r\n💬 **Message XP**: \`${server.message_xp}\``;
+      \r\n💬 **Message XP**: \`${server.message_xp}\`
+      \r\n🎖️ **Level Channel**: ${server.level_channel ? `<#${server.level_channel}>` : '`None (Reply)`'}
+      \r\n🏆 **Levelup Embed**: ${server.level_embed ? '`Send embed.`' : '`Do not send embed.`'}`;
       embed.fields = [
          {
             name: '👋 Join Roles',
