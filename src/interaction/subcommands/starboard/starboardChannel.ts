@@ -32,7 +32,7 @@ export const starboardChannel = <AuxdibotSubcommand>{
       }
       await auxdibot.database.servers.update({
          where: { serverID: server.serverID },
-         data: { starboard_channel: channel.id },
+         data: { starboard_channel: channel?.id || null },
       });
       embed.description = `The starboard channel for this server has been changed.\r\n\r\nFormerly: ${
          formerChannel ? `<#${formerChannel.id}>` : 'None'
@@ -50,7 +50,7 @@ export const starboardChannel = <AuxdibotSubcommand>{
          [
             {
                name: 'Starboard Channel Change',
-               value: `Formerly: ${formerChannel}\n\nNow: ${channel}`,
+               value: `Formerly: ${formerChannel || 'None'}\n\nNow: ${channel || 'None (Disabled)'}`,
                inline: false,
             },
          ],
