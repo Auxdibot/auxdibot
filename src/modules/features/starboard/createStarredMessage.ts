@@ -48,23 +48,24 @@ export default async function createStarredMessage(
             : undefined,
       );
       if (server.starred_messages.length < Limits.ACTIVE_STARRED_MESSAGES_DEFAULT_LIMIT) {
+         const components = [
+            new ActionRowBuilder<ButtonBuilder>()
+               .addComponents(
+                  new ButtonBuilder()
+                     .setStyle(ButtonStyle.Link)
+                     .setLabel('Original Message')
+                     .setEmoji('💬')
+                     .setURL(
+                        `https://discord.com/channels/${messageReaction.message.guildId}/${messageReaction.message.channelId}/${messageReaction.message.id}`,
+                     ),
+               )
+               .toJSON(),
+         ];
+         if (attachmentsComponent.components.length > 0) components.push(attachmentsComponent.toJSON());
          const message = await starboard_channel.send({
             content: `**${starCount} ${server.starboard_reaction || 'No Emoji'}** | ${messageReaction.message.channel}`,
             embeds: [quoteEmbed, embed].filter((i) => i),
-            components: [
-               new ActionRowBuilder<ButtonBuilder>()
-                  .addComponents(
-                     new ButtonBuilder()
-                        .setStyle(ButtonStyle.Link)
-                        .setLabel('Original Message')
-                        .setEmoji('💬')
-                        .setURL(
-                           `https://discord.com/channels/${messageReaction.message.guildId}/${messageReaction.message.channelId}/${messageReaction.message.id}`,
-                        ),
-                  )
-                  .toJSON(),
-               attachmentsComponent.components.length > 0 ? attachmentsComponent : null,
-            ],
+            ...(components?.length > 0 ? { components } : {}),
             files: Array.from(messageReaction.message.attachments.values()),
          });
          server.starred_messages.push({
