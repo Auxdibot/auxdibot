@@ -13,7 +13,7 @@ export default async function slashCreate(auxdibot: Auxdibot, interaction: ChatI
    if (!command) return;
 
    const interactionData: AuxdibotCommandInteraction<GuildAuxdibotCommandData | DMAuxdibotCommandData> = interaction;
-   const server = await findOrCreateServer(auxdibot, interaction.guild.id);
+   const server = interaction.guild ? await findOrCreateServer(auxdibot, interaction.guild.id) : undefined;
    if (interaction.guild) {
       interactionData.data = <GuildAuxdibotCommandData>{
          dmCommand: false,
@@ -40,9 +40,10 @@ export default async function slashCreate(auxdibot: Auxdibot, interaction: ChatI
 
    const commandData =
       command.subcommands?.find((subcommand) => subcommand.name == interaction.options.getSubcommand()) || command;
-   if (server.disabled_modules.find((item) => item == commandData.info.module.name))
+   if (server && server.disabled_modules.find((item) => item == commandData.info.module.name))
       return await interaction.reply({ embeds: [auxdibot.embeds.disabled.toJSON()] });
    if (
+      interaction.guild &&
       !(await testPermission(
          auxdibot,
          interaction.guild.id,
