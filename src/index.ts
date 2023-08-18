@@ -93,8 +93,10 @@ const CLIENT_ID = process.env.DISCORD_BOT_CLIENT_ID;
          return this.user.setPresence({
             activities: [
                {
-                  type: ActivityType.Watching,
-                  name: `${message} | ${guilds} servers`,
+                  type: ActivityType.Custom,
+                  name: 'Auxdibot',
+                  url: 'https://bot.auxdible.me',
+                  state: `${message} | ${guilds} servers`,
                },
             ],
          });
