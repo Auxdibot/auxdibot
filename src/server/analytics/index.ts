@@ -5,7 +5,7 @@ import express from 'express';
 const router = express.Router();
 
 export const analytics = (auxdibot: Auxdibot) => {
-   router.get('/', async (req, res, next) => {
+   router.get('/', async (req, res) => {
       return res.json(await fetchAnalytics(auxdibot)).status(200);
    });
    return router;

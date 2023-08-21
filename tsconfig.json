@@ -1,5 +1,4 @@
 {
-  
   "compilerOptions": {
     "target": "ES2022",
     "module": "commonjs",
@@ -23,5 +22,6 @@
       { "transform": "typescript-transform-paths", "afterDeclarations": true }
     ]
   },
+  "include": ["src", "global.d.ts"],
   "exclude": ["test"]
 }
