@@ -4,20 +4,21 @@ import http from 'http';
 import https from 'https';
 import { readFile } from 'fs/promises';
 import cors from 'cors';
-import { analytics } from './analytics';
+import { analyticsRoute } from './analytics';
 import session from 'express-session';
-import { auth } from './auth';
+import { authRoute } from './auth';
 import initDiscord from './auth/initDiscord';
 import passport from 'passport';
-import { servers } from './servers';
+import { serversRoute } from './servers';
 import Strategy from 'passport-discord';
-
+import bodyParser from 'body-parser';
 export default async function server(auxdibot: Auxdibot) {
    const app = express();
 
    const corsOrigins = ['https://bot.auxdible.me', 'http://localhost:3000', 'http://192.168.1.154:3000'];
 
    app.use(cors({ origins: corsOrigins }));
+   app.use(bodyParser.urlencoded({ extended: true }));
    app.use(
       session({
          secret: process.env.AUTH_SECRET,
@@ -41,9 +42,9 @@ export default async function server(auxdibot: Auxdibot) {
       return cb(null, user);
    });
 
-   app.use('/analytics', analytics(auxdibot));
-   app.use('/auth', auth());
-   app.use('/servers', servers(auxdibot));
+   app.use('/analytics', analyticsRoute(auxdibot));
+   app.use('/auth', authRoute());
+   app.use('/servers', serversRoute(auxdibot));
 
    const port = process.env.EXPRESS_PORT || 1080;
 

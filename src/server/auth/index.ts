@@ -3,7 +3,7 @@ import passport from 'passport';
 
 const router = express.Router();
 
-export const auth = () => {
+export const authRoute = () => {
    router.get('/', passport.session(), (req, res) =>
       res.json({ user: req.user, status: req.user ? 'authenticated' : 'unauthenticated' }).status(200),
    );
