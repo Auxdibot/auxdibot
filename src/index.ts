@@ -10,9 +10,8 @@ import connectPrisma from './modules/database/connectPrisma';
 import { AuxdibotPartials } from './constants/bot/AuxdibotPartials';
 import refreshInteractions from './interaction/refreshInteractions';
 import scheduleExpirationChecks from './modules/features/moderation/scheduleExpirationChecks';
-import scheduleAnalyticsSend from './modules/analytics/scheduleAnalyticsSend';
-import sendAnalytics from './modules/analytics/sendAnalytics';
 import scheduleRunSchedules from './modules/features/schedule/scheduleRunSchedules';
+import server from './server/server';
 
 dotenv.config();
 const TOKEN = process.env.DISCORD_BOT_TOKEN;
@@ -118,13 +117,14 @@ const CLIENT_ID = process.env.DISCORD_BOT_CLIENT_ID;
    console.log('-> Scheduling tasks...');
 
    scheduleExpirationChecks(auxdibot);
-   scheduleAnalyticsSend(auxdibot);
    scheduleRunSchedules(auxdibot);
 
    console.log('-> Logging into client...');
    auxdibot
       .login(TOKEN)
-      .then(async () => await sendAnalytics(auxdibot))
+      .then(async () => {
+         server(auxdibot);
+      })
       .catch((reason) => {
          console.error('! -> Error signing into into Auxdibot!');
          console.error(reason);

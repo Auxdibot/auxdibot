@@ -1,6 +1,6 @@
 import { Auxdibot } from '@/interfaces/Auxdibot';
 
-export default async function sendAnalytics(auxdibot: Auxdibot) {
+export default async function fetchAnalytics(auxdibot: Auxdibot) {
    await auxdibot.guilds.fetch();
    const analytics = {
       servers: auxdibot.guilds.cache.size,
@@ -9,12 +9,5 @@ export default async function sendAnalytics(auxdibot: Auxdibot) {
    };
    if (auxdibot.updateDiscordStatus)
       await auxdibot.updateDiscordStatus(analytics.servers, process.env.BOT_STATUS_MESSAGE);
-   return auxdibot.database.analytics
-      .upsert({
-         where: { clientID: auxdibot.user.id },
-         update: analytics,
-         create: { clientID: auxdibot.user.id, ...analytics },
-      })
-      .then(() => true)
-      .catch(() => false);
+   return analytics;
 }

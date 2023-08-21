@@ -260,13 +260,3 @@ model users {
 
   @@unique([userID])
 }
-
-model analytics {
-  id       String @id @default(auto()) @map("_id") @db.ObjectId
-  clientID String
-  servers  Int
-  members  Int
-  commands Int
-
-  @@unique([clientID])
-}
