@@ -12,6 +12,7 @@ import passport from 'passport';
 import { serversRoute } from './servers';
 import Strategy from 'passport-discord';
 import bodyParser from 'body-parser';
+import checkAuthenticated from './checkAuthenticated';
 export default async function server(auxdibot: Auxdibot) {
    const app = express();
 
@@ -45,7 +46,17 @@ export default async function server(auxdibot: Auxdibot) {
    app.use('/analytics', analyticsRoute(auxdibot));
    app.use('/auth', authRoute());
    app.use('/servers', serversRoute(auxdibot));
-
+   app.get(
+      '/user',
+      (req, res, next) => checkAuthenticated(req, res, next),
+      (req, res) => {
+         const id = req.query['id'];
+         return auxdibot.users
+            .fetch(id.toString())
+            .then((user) => res.json(user))
+            .catch(() => res.status(404).json(undefined));
+      },
+   );
    const port = process.env.EXPRESS_PORT || 1080;
 
    const server = http.createServer(app);

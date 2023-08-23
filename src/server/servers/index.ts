@@ -8,6 +8,8 @@ import logChannel from './routes/logChannel';
 import nick from './routes/nick';
 import modules from './routes/modules';
 import punishments from './routes/punishments';
+import roles from './routes/roles';
+import muteRole from './routes/muteRole';
 
 const router = express.Router();
 
@@ -57,5 +59,7 @@ export const serversRoute = (auxdibot: Auxdibot) => {
    logChannel(auxdibot, router);
    nick(auxdibot, router);
    punishments(auxdibot, router);
+   roles(auxdibot, router);
+   muteRole(auxdibot, router);
    return router;
 };

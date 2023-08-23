@@ -35,7 +35,7 @@ const logChannel = (auxdibot: Auxdibot, router: Router) => {
                   type: LogAction.LOG_CHANNEL_CHANGED,
                   userID: req.user.id,
                   date_unix: Date.now(),
-                  description: `The Log Channel for this server has been changed to ${channel.name}`,
+                  description: `The Log Channel for this server has been changed to #${channel.name}`,
                });
                return i ? res.json({ data: i }) : res.status(500).json({ error: "couldn't update that server" });
             })
