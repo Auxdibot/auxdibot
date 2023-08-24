@@ -37,7 +37,7 @@ export const scheduleRemove = <AuxdibotSubcommand>{
       successEmbed.description = `Deleted a scheduled message ${channel ? `in ${channel}` : ''}.`;
       await handleLog(auxdibot, interaction.data.guild, {
          userID: interaction.data.member.id,
-         description: `Deleted a scheduled message ${channel ? `in ${channel}` : ''}.`,
+         description: `Deleted scheduled message #${index}.`,
          type: LogAction.SCHEDULED_MESSAGE_REMOVED,
          date_unix: Date.now(),
       });
