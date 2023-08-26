@@ -42,12 +42,7 @@ const schedules = (auxdibot: Auxdibot, router: Router) => {
                                    arr.push({
                                       ...i,
                                       embed: i.embed
-                                         ? {
-                                              ...JSON.parse(
-                                                 await parsePlaceholders(auxdibot, JSON.stringify(i.embed), guild),
-                                              ),
-                                              color: '#' + i.embed.color?.toString(16),
-                                           }
+                                         ? JSON.parse(await parsePlaceholders(auxdibot, JSON.stringify(i.embed), guild))
                                          : undefined,
                                       index,
                                    });
@@ -86,9 +81,7 @@ const schedules = (auxdibot: Auxdibot, router: Router) => {
                const scheduledMessage = {
                   interval_unix: duration,
                   message: req.body['message'],
-                  embed: embed
-                     ? { ...embed, color: embed.color ? parseInt(embed.color.replace('#', ''), 16) : null }
-                     : undefined,
+                  embed: embed,
                   last_run_unix: Date.now() - duration,
                   times_to_run: req.body['times_to_run'] ? Number(req.body['times_to_run']) : undefined,
                   times_run: 0,

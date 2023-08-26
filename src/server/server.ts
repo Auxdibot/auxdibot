@@ -57,7 +57,7 @@ export default async function server(auxdibot: Auxdibot) {
             .catch(() => res.status(404).json(undefined));
       },
    );
-   const port = process.env.EXPRESS_PORT || 1080;
+   const port = 1080;
 
    const server = http.createServer(app);
 
