@@ -1,3 +1,4 @@
+import Limits from '@/constants/database/Limits';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import checkAuthenticated from '@/server/checkAuthenticated';
 import handleLog from '@/util/handleLog';
@@ -72,32 +73,40 @@ const schedules = (auxdibot: Auxdibot, router: Router) => {
             if (!guildData || !guild) return res.status(404).json({ error: "couldn't find that server" });
             if (!guildData.owner && !(guildData.permissions & 0x8))
                return res.status(403).json({ error: 'you are not authorized to edit that server' });
+
             try {
                const duration = timestampToDuration(req.body['duration']);
                const channel = guild.channels.cache.get(req.body['channel']);
                const embed = req.body['embed'] ? (JSON.parse(req.body['embed']) satisfies APIEmbed) : undefined;
                if (!duration || duration == 'permanent') return res.status(400).json({ error: 'invalid duration' });
                if (!channel) return res.status(400).json({ error: 'invalid channel' });
-               const scheduledMessage = {
-                  interval_unix: duration,
-                  message: req.body['message'],
-                  embed: embed,
-                  last_run_unix: Date.now() - duration,
-                  times_to_run: req.body['times_to_run'] ? Number(req.body['times_to_run']) : undefined,
-                  times_run: 0,
-                  channelID: req.body['channel'],
-               } satisfies ScheduledMessage;
-               await auxdibot.database.servers.update({
-                  where: { serverID: guildData.id },
-                  data: { scheduled_messages: { push: scheduledMessage } },
-               });
-               await handleLog(auxdibot, guild, {
-                  userID: req.user.id,
-                  description: `Scheduled a message for ${channel.name}.`,
-                  type: LogAction.SCHEDULED_MESSAGE_CREATED,
-                  date_unix: Date.now(),
-               });
-               return res.json(scheduledMessage);
+               return auxdibot.database.servers
+                  .findFirst({ where: { serverID: serverID }, select: { serverID: true, scheduled_messages: true } })
+                  .then(async (data) => {
+                     if (data.scheduled_messages.length >= Limits.SCHEDULE_LIMIT) {
+                        return res.status(400).json({ error: 'schedules limit exceeded, remove some first' });
+                     }
+                     const scheduledMessage = {
+                        interval_unix: duration,
+                        message: req.body['message'],
+                        embed: embed,
+                        last_run_unix: Date.now() - duration,
+                        times_to_run: req.body['times_to_run'] ? Number(req.body['times_to_run']) : undefined,
+                        times_run: 0,
+                        channelID: req.body['channel'],
+                     } satisfies ScheduledMessage;
+                     await auxdibot.database.servers.update({
+                        where: { serverID: guildData.id },
+                        data: { scheduled_messages: { push: scheduledMessage } },
+                     });
+                     await handleLog(auxdibot, guild, {
+                        userID: req.user.id,
+                        description: `Scheduled a message for ${channel.name}.`,
+                        type: LogAction.SCHEDULED_MESSAGE_CREATED,
+                        date_unix: Date.now(),
+                     });
+                     return res.json(scheduledMessage);
+                  });
             } catch (x) {
                console.log(x);
                return res.status(500).json({ error: 'an error occurred' });
