@@ -16,7 +16,7 @@ import checkAuthenticated from './checkAuthenticated';
 export default async function server(auxdibot: Auxdibot) {
    const app = express();
 
-   const corsOrigins = ['https://bot.auxdible.me', 'http://localhost:3000', 'http://192.168.1.154:3000'];
+   const corsOrigins = ['https://bot.auxdible.me', 'http://localhost:3000', process.env.SITE_URL];
 
    app.use(cors({ origins: corsOrigins }));
    app.use(bodyParser.urlencoded({ extended: true }));

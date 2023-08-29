@@ -12,6 +12,7 @@ import roles from './routes/roles';
 import muteRole from './routes/muteRole';
 import schedules from './routes/schedules';
 import permissions from './routes/permissions';
+import embeds from './routes/embeds';
 
 const router = express.Router();
 
@@ -65,5 +66,7 @@ export const serversRoute = (auxdibot: Auxdibot) => {
    muteRole(auxdibot, router);
    schedules(auxdibot, router);
    permissions(auxdibot, router);
+   embeds(auxdibot, router);
+
    return router;
 };
