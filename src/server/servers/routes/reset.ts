@@ -1,3 +1,4 @@
+import { defaultServer } from '@/constants/database/defaultServer';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import checkAuthenticated from '@/server/checkAuthenticated';
 import { Router } from 'express';
@@ -21,7 +22,7 @@ const reset = (auxdibot: Auxdibot, router: Router) => {
             .then((i) =>
                i
                   ? auxdibot.database.servers
-                       .create({ data: { serverID: i.serverID } })
+                       .create({ data: { serverID: i.serverID, ...defaultServer } })
                        .then((i) =>
                           i ? res.json({ data: i }) : res.status(500).json({ error: 'error creating server data' }),
                        )
