@@ -1,3 +1,4 @@
+import { testLimit } from './../../../util/testLimit';
 import Limits from '@/constants/database/Limits';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import checkAuthenticated from '@/server/checkAuthenticated';
@@ -93,7 +94,7 @@ const permissions = (auxdibot: Auxdibot, router: Router) => {
                return auxdibot.database.servers
                   .findFirst({ where: { serverID: serverID }, select: { serverID: true, permission_overrides: true } })
                   .then(async (data) => {
-                     if (data.permission_overrides.length >= Limits.PERMISSION_OVERRIDES_DEFAULT_LIMIT) {
+                     if (!testLimit(data.permission_overrides, Limits.PERMISSION_OVERRIDES_DEFAULT_LIMIT)) {
                         return res.status(400).json({ error: 'permissions limit exceeded, remove some first' });
                      }
                      const permissionOverride = {

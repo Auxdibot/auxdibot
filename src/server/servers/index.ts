@@ -15,6 +15,7 @@ import permissions from './routes/permissions';
 import embeds from './routes/embeds';
 import starboard from './routes/starboard';
 import suggestions from './routes/suggestions';
+import levels from './routes/levels';
 
 const router = express.Router();
 
@@ -71,5 +72,7 @@ export const serversRoute = (auxdibot: Auxdibot) => {
    embeds(auxdibot, router);
    starboard(auxdibot, router);
    suggestions(auxdibot, router);
+   levels(auxdibot, router);
+
    return router;
 };

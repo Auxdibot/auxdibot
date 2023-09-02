@@ -3,6 +3,7 @@ import { Auxdibot } from '@/interfaces/Auxdibot';
 import checkAuthenticated from '@/server/checkAuthenticated';
 import handleLog from '@/util/handleLog';
 import parsePlaceholders from '@/util/parsePlaceholder';
+import { testLimit } from '@/util/testLimit';
 import timestampToDuration from '@/util/timestampToDuration';
 import { APIEmbed, LogAction, ScheduledMessage } from '@prisma/client';
 import { Router } from 'express';
@@ -83,7 +84,7 @@ const schedules = (auxdibot: Auxdibot, router: Router) => {
                return auxdibot.database.servers
                   .findFirst({ where: { serverID: serverID }, select: { serverID: true, scheduled_messages: true } })
                   .then(async (data) => {
-                     if (data.scheduled_messages.length >= Limits.SCHEDULE_LIMIT) {
+                     if (!testLimit(data.scheduled_messages, Limits.SCHEDULE_LIMIT)) {
                         return res.status(400).json({ error: 'schedules limit exceeded, remove some first' });
                      }
                      const scheduledMessage = {

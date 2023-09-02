@@ -4,15 +4,14 @@ import checkAuthenticated from '@/server/checkAuthenticated';
 import handleLog from '@/util/handleLog';
 import { testLimit } from '@/util/testLimit';
 import { LogAction } from '@prisma/client';
-import emojiRegex from 'emoji-regex';
 import { Router } from 'express';
 /*
-   Suggestions
-   Suggestions endpoints for Auxdibot
+   Levels
+   Levels endpoints for Auxdibot
 */
-const suggestions = (auxdibot: Auxdibot, router: Router) => {
+const levels = (auxdibot: Auxdibot, router: Router) => {
    router.get(
-      '/:serverID/suggestions',
+      '/:serverID/levels',
       (req, res, next) => checkAuthenticated(req, res, next),
       (req, res) => {
          if (!req.user?.guilds) return res.status(400).json({ error: 'no servers' });
@@ -27,12 +26,10 @@ const suggestions = (auxdibot: Auxdibot, router: Router) => {
                where: { serverID: serverID },
                select: {
                   serverID: true,
-                  suggestions_channel: true,
-                  suggestions_discussion_threads: true,
-                  suggestions_auto_delete: true,
-                  suggestions_reactions: true,
-                  suggestions_updates_channel: true,
-                  suggestions: true,
+                  level_channel: true,
+                  level_rewards: true,
+                  message_xp: true,
+                  level_embed: true,
                },
             })
             .then(async (data) =>
@@ -50,34 +47,36 @@ const suggestions = (auxdibot: Auxdibot, router: Router) => {
       },
    );
    router.post(
-      '/:serverID/suggestions/channel',
+      '/:serverID/levels/channel',
       (req, res, next) => checkAuthenticated(req, res, next),
       (req, res) => {
          if (!req.user?.guilds) return res.status(400).json({ error: 'no servers' });
          const serverID = req.params.serverID,
-            suggestions_channel = req.body['suggestions_channel'];
-         if (typeof suggestions_channel != 'string' && typeof suggestions_channel != 'undefined')
-            return res.status(400).json({ error: 'This is not a valid suggestions channel!' });
+            level_channel = req.body['level_channel'];
+         if (typeof level_channel != 'string' && typeof level_channel != 'undefined')
+            return res.status(400).json({ error: 'this is not a valid level channel!' });
          const guildData = req.user.guilds.find((i) => i.id == serverID);
          const guild = auxdibot.guilds.cache.get(serverID);
          if (!guildData || !guild) return res.status(404).json({ error: "couldn't find that server" });
          if (!guildData.owner && !(guildData.permissions & 0x8))
             return res.status(403).json({ error: 'you are not authorized to edit that server' });
-         const channel = guild.channels.cache.get(suggestions_channel);
-         if (!channel && suggestions_channel) return res.status(404).json({ error: 'invalid channel' });
+         const channel = guild.channels.cache.get(level_channel);
+         if (!channel && level_channel) return res.status(404).json({ error: 'invalid channel' });
          return auxdibot.database.servers
             .update({
                where: { serverID },
-               select: { suggestions_channel: true, serverID: true },
-               data: { suggestions_channel: suggestions_channel },
+               select: { level_channel: true, serverID: true },
+               data: { level_channel: level_channel },
             })
             .then(async (i) => {
                await handleLog(auxdibot, guild, {
-                  type: LogAction.SUGGESTIONS_CHANNEL_CHANGED,
+                  type: LogAction.LEVEL_CHANNEL_CHANGED,
                   userID: req.user.id,
                   date_unix: Date.now(),
-                  description: `The Suggestions Channel for this server has been changed to ${
-                     channel ? `#${channel.name}` : 'none. Suggestions are now disabled for this server.'
+                  description: `The Level Channel for this server has been changed to ${
+                     channel
+                        ? `#${channel.name}`
+                        : 'none. Auxdibot will reply to messages that cause a user to level up.'
                   }`,
                });
                return i ? res.json({ data: i }) : res.status(500).json({ error: "couldn't update that server" });
@@ -89,36 +88,26 @@ const suggestions = (auxdibot: Auxdibot, router: Router) => {
       },
    );
    router.post(
-      '/:serverID/suggestions/updates_channel',
+      '/:serverID/levels/message_xp',
       (req, res, next) => checkAuthenticated(req, res, next),
       (req, res) => {
          if (!req.user?.guilds) return res.status(400).json({ error: 'no servers' });
          const serverID = req.params.serverID,
-            suggestions_update_channel = req.body['suggestions_update_channel'];
-         if (typeof suggestions_update_channel != 'string' && typeof suggestions_update_channel != 'undefined')
-            return res.status(400).json({ error: 'This is not a valid suggestions update channel!' });
+            messageXP = req.body['message_xp'];
+         if ((typeof messageXP != 'string' && typeof messageXP != 'number') || !Number(messageXP))
+            return res.status(400).json({ error: 'this is not a valid message XP count!' });
          const guildData = req.user.guilds.find((i) => i.id == serverID);
          const guild = auxdibot.guilds.cache.get(serverID);
          if (!guildData || !guild) return res.status(404).json({ error: "couldn't find that server" });
          if (!guildData.owner && !(guildData.permissions & 0x8))
             return res.status(403).json({ error: 'you are not authorized to edit that server' });
-         const channel = guild.channels.cache.get(suggestions_update_channel);
-         if (!channel && suggestions_update_channel) return res.status(404).json({ error: 'invalid channel' });
          return auxdibot.database.servers
             .update({
                where: { serverID },
-               select: { suggestions_updates_channel: true, serverID: true },
-               data: { suggestions_updates_channel: suggestions_update_channel },
+               select: { message_xp: true, serverID: true },
+               data: { message_xp: Number(messageXP) },
             })
             .then(async (i) => {
-               await handleLog(auxdibot, guild, {
-                  type: LogAction.SUGGESTIONS_UPDATES_CHANNEL_CHANGED,
-                  userID: req.user.id,
-                  date_unix: Date.now(),
-                  description: `The Suggestions Update Channel for this server has been changed to ${
-                     channel ? `#${channel.name}` : 'none. Updates will not be broadcast on this server.'
-                  }`,
-               });
                return i ? res.json({ data: i }) : res.status(500).json({ error: "couldn't update that server" });
             })
             .catch((x) => {
@@ -128,7 +117,7 @@ const suggestions = (auxdibot: Auxdibot, router: Router) => {
       },
    );
    router.post(
-      '/:serverID/suggestions/auto_delete',
+      '/:serverID/levels/embed',
       (req, res, next) => checkAuthenticated(req, res, next),
       (req, res) => {
          if (!req.user?.guilds) return res.status(400).json({ error: 'no servers' });
@@ -140,62 +129,15 @@ const suggestions = (auxdibot: Auxdibot, router: Router) => {
             return res.status(403).json({ error: 'you are not authorized to edit that server' });
 
          return auxdibot.database.servers
-            .findFirst({ where: { serverID: serverID }, select: { suggestions_auto_delete: true } })
+            .findFirst({ where: { serverID: serverID }, select: { level_embed: true } })
             .then(async (data) => {
                return auxdibot.database.servers
                   .update({
                      where: { serverID },
-                     select: { serverID: true, suggestions_auto_delete: true },
-                     data: { suggestions_auto_delete: !data.suggestions_auto_delete },
+                     select: { serverID: true, level_embed: true },
+                     data: { level_embed: !data.level_embed },
                   })
                   .then(async (i) => {
-                     await handleLog(auxdibot, guild, {
-                        type: LogAction.SUGGESTIONS_AUTO_DELETE_CHANGED,
-                        userID: req.user.id,
-                        date_unix: Date.now(),
-                        description: `The suggestions auto deletion for this server has been changed. (Now: ${
-                           i.suggestions_auto_delete ? 'Delete' : 'Do not Delete'
-                        })`,
-                     });
-                     return res.json(i);
-                  });
-            })
-            .catch((x) => {
-               console.error(x);
-               return res.status(500).json({ error: 'an error occurred' });
-            });
-      },
-   );
-   router.post(
-      '/:serverID/suggestions/discussion_threads',
-      (req, res, next) => checkAuthenticated(req, res, next),
-      (req, res) => {
-         if (!req.user?.guilds) return res.status(400).json({ error: 'no servers' });
-         const serverID = req.params.serverID;
-         const guildData = req.user.guilds.find((i) => i.id == serverID);
-         const guild = auxdibot.guilds.cache.get(guildData.id);
-         if (!guildData || !guild) return res.status(404).json({ error: "couldn't find that server" });
-         if (!guildData.owner && !(guildData.permissions & 0x8))
-            return res.status(403).json({ error: 'you are not authorized to edit that server' });
-
-         return auxdibot.database.servers
-            .findFirst({ where: { serverID: serverID }, select: { suggestions_discussion_threads: true } })
-            .then(async (data) => {
-               return auxdibot.database.servers
-                  .update({
-                     where: { serverID },
-                     select: { serverID: true, suggestions_discussion_threads: true },
-                     data: { suggestions_discussion_threads: !data.suggestions_discussion_threads },
-                  })
-                  .then(async (i) => {
-                     await handleLog(auxdibot, guild, {
-                        type: LogAction.SUGGESTIONS_THREAD_CREATION_CHANGED,
-                        userID: req.user.id,
-                        date_unix: Date.now(),
-                        description: `The suggestions auto deletion for this server has been changed. (Now: ${
-                           i.suggestions_discussion_threads ? 'Create Thread.' : 'Do not create a Thread.'
-                        })`,
-                     });
                      return res.json(i);
                   });
             })
@@ -206,7 +148,7 @@ const suggestions = (auxdibot: Auxdibot, router: Router) => {
       },
    );
    router
-      .route('/:serverID/suggestions/reactions')
+      .route('/:serverID/levels/rewards')
       .get(
          (req, res, next) => checkAuthenticated(req, res, next),
          (req, res) => {
@@ -219,7 +161,7 @@ const suggestions = (auxdibot: Auxdibot, router: Router) => {
                return res.status(403).json({ error: 'you are not authorized to edit that server' });
 
             return auxdibot.database.servers
-               .findFirst({ where: { serverID: serverID }, select: { serverID: true, suggestions_reactions: true } })
+               .findFirst({ where: { serverID: serverID }, select: { serverID: true, level_rewards: true } })
                .then(async (data) =>
                   data
                      ? res.json({
@@ -239,28 +181,28 @@ const suggestions = (auxdibot: Auxdibot, router: Router) => {
          (req, res) => {
             if (!req.user?.guilds) return res.status(400).json({ error: 'no servers' });
             const serverID = req.params.serverID,
-               reaction = req.body['suggestion_reaction'];
-            if (typeof reaction != 'string')
-               return res.status(400).json({ error: 'this is not a valid suggestion reaction!' });
-            const guildData = req.user.guilds.find((i) => i.id == serverID);
-            if (!guildData) return res.status(404).json({ error: "couldn't find that server" });
+               roleID = req.body['role'],
+               level = req.body['level'];
+            if (typeof roleID != 'string' || (typeof level != 'string' && typeof level != 'number'))
+               return res.status(400).json({ error: 'this is not a valid level reward!' });
+            const guildData = req.user.guilds.find((i) => i.id == serverID),
+               guild = auxdibot.guilds.cache.get(serverID);
+            if (!guildData || !guild) return res.status(404).json({ error: "couldn't find that server" });
             if (!guildData.owner && !(guildData.permissions & 0x8))
                return res.status(403).json({ error: 'you are not authorized to edit that server' });
-            const regex = emojiRegex();
-            const emojis = reaction.match(regex);
-            const emoji =
-               auxdibot.emojis.cache.find((i) => i.toString() == reaction) || (emojis != null ? emojis[0] : null);
-            if (!emoji) return res.status(400).json({ error: 'invalid emoji' });
+            const role = guild.roles.cache.get(roleID);
+            if (!role) return res.status(400).json({ error: 'invalid role' });
+            if (!Number(level)) return res.status(400).json({ error: 'invalid level' });
             return auxdibot.database.servers
-               .findFirst({ where: { serverID }, select: { suggestions_reactions: true } })
+               .findFirst({ where: { serverID }, select: { level_rewards: true } })
                .then((i) =>
-                  !testLimit(i.suggestions_reactions, Limits.SUGGESTIONS_REACTIONS_DEFAULT_LIMIT)
-                     ? res.status(403).json({ error: 'you have too many suggestions reactions' })
+                  !testLimit(i.level_rewards, Limits.LEVEL_REWARDS_DEFAULT_LIMIT)
+                     ? res.status(403).json({ error: 'you have too many level rewards' })
                      : auxdibot.database.servers
                           .update({
                              where: { serverID },
                              select: { serverID: true, suggestions_reactions: true },
-                             data: { suggestions_reactions: { push: reaction } },
+                             data: { level_rewards: { push: { level: Number(level), roleID: role.id } } },
                           })
                           .then((i) =>
                              i ? res.json({ data: i }) : res.status(500).json({ error: "couldn't update that server" }),
@@ -285,19 +227,19 @@ const suggestions = (auxdibot: Auxdibot, router: Router) => {
             if (!guildData.owner && !(guildData.permissions & 0x8))
                return res.status(403).json({ error: 'you are not authorized to edit that server' });
             return auxdibot.database.servers
-               .findFirst({ where: { serverID: serverID }, select: { suggestions_reactions: true } })
+               .findFirst({ where: { serverID: serverID }, select: { level_rewards: true } })
                .then(async (data) => {
                   if (!data) return res.status(404).json({ error: "couldn't find that server" });
-                  if (data.suggestions_reactions.length < Number(index))
+                  if (data.level_rewards.length < Number(index))
                      return res.status(400).json({ error: 'invalid index provided' });
-                  const schedule = data.suggestions_reactions[index];
-                  data.suggestions_reactions.splice(Number(index), 1);
+                  const reward = data.level_rewards[index];
+                  data.level_rewards.splice(Number(index), 1);
                   return await auxdibot.database.servers
                      .update({
                         where: { serverID: serverID },
-                        data: { suggestions_reactions: data.suggestions_reactions },
+                        data: { level_rewards: data.level_rewards },
                      })
-                     .then(() => res.json(schedule));
+                     .then(() => res.json(reward));
                })
                .catch((x) => {
                   console.error(x);
@@ -307,4 +249,4 @@ const suggestions = (auxdibot: Auxdibot, router: Router) => {
       );
    return router;
 };
-export default suggestions;
+export default levels;
