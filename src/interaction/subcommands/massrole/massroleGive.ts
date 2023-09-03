@@ -46,7 +46,7 @@ export const massroleGive = <AuxdibotSubcommand>{
       });
       handleLog(auxdibot, interaction.data.guild, {
          userID: interaction.data.member.id,
-         description: `Massrole took ${role} from anyone who had it, with lower role hiearchy than Auxdibot.`,
+         description: `Massrole gave ${role} to anyone with lower role hiearchy than Auxdibot.`,
          type: LogAction.MASSROLE_GIVEN,
          date_unix: Date.now(),
       });

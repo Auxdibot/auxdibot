@@ -16,6 +16,8 @@ import embeds from './routes/embeds';
 import starboard from './routes/starboard';
 import suggestions from './routes/suggestions';
 import levels from './routes/levels';
+import reactionRoles from './routes/reaction_roles';
+import massrole from './routes/massrole';
 
 const router = express.Router();
 
@@ -73,6 +75,7 @@ export const serversRoute = (auxdibot: Auxdibot) => {
    starboard(auxdibot, router);
    suggestions(auxdibot, router);
    levels(auxdibot, router);
-
+   reactionRoles(auxdibot, router);
+   massrole(auxdibot, router);
    return router;
 };

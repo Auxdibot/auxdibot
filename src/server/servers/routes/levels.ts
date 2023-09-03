@@ -192,7 +192,7 @@ const levels = (auxdibot: Auxdibot, router: Router) => {
                return res.status(403).json({ error: 'you are not authorized to edit that server' });
             const role = guild.roles.cache.get(roleID);
             if (!role) return res.status(400).json({ error: 'invalid role' });
-            if (!Number(level)) return res.status(400).json({ error: 'invalid level' });
+            if (!Number(level) || Number(level) < 1) return res.status(400).json({ error: 'invalid level' });
             return auxdibot.database.servers
                .findFirst({ where: { serverID }, select: { level_rewards: true } })
                .then((i) =>
