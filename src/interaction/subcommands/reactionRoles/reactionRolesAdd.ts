@@ -36,13 +36,13 @@ export const reactionRolesAdd = <AuxdibotSubcommand>{
          );
       }
       while (split.length) builder.push(split.splice(0, 2));
+      const regex = emojiRegex();
       const reactionsAndRoles: Reaction[] = await builder.reduce(
          async (accumulator: Promise<Reaction[]> | Reaction[], item: string[]) => {
             const arr: Reaction[] = await accumulator;
             if (!interaction.data) return arr;
             if (!item[0] || !item[1]) return arr;
             const role = await interaction.data.guild.roles.fetch((item[1].match(/\d+/) || [])[0] || '');
-            const regex = emojiRegex();
             const emojis = item[0].match(regex);
             const emoji =
                interaction.client.emojis.cache.find((i) => i.toString() == item[0]) ||

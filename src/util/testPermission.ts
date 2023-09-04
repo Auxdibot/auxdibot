@@ -13,17 +13,18 @@ export default async function testPermission(
    const data = await findOrCreateServer(auxdibot, serverID);
    if (executor.id == executor.guild.ownerId || executor.permissions.has(PermissionsBitField.Flags.Administrator))
       return true;
-   const roles = executor.roles.cache.values();
    const permissionSplit = permission.split('.');
    let permissionToTest = '';
    const accessible = permissionSplit.reduce((accumulator: boolean | undefined, currentValue) => {
       if (accumulator == false) return false;
       permissionToTest = permissionToTest.length == 0 ? currentValue : permissionToTest + '.' + currentValue;
-      const overrides = data.permission_overrides.filter(
+      const roles = executor.roles.cache.values();
+      const userOverrides = data.permission_overrides.filter(
          (po) => po.permission == permissionToTest && po.userID == executor.id,
       );
-      if (overrides.length > 0) {
-         for (const override of overrides) {
+
+      if (userOverrides.length > 0) {
+         for (const override of userOverrides) {
             if (!override.allowed) return false;
          }
          return true;
@@ -33,7 +34,7 @@ export default async function testPermission(
             (po) => po.permission == permissionToTest && po.roleID == role.id,
          );
          if (overrideRoles.length > 0) {
-            for (const override of overrides) {
+            for (const override of overrideRoles) {
                if (!override.allowed) return false;
             }
             return true;

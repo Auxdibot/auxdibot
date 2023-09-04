@@ -75,7 +75,7 @@ export default async function createStarredMessage(
          await auxdibot.database.servers
             .update({
                where: { serverID: messageReaction.message.guild.id },
-               data: { starred_messages: server.starred_messages },
+               data: { starred_messages: server.starred_messages, total_starred_messages: { increment: 1 } },
             })
             .catch(() => message.delete());
       }

@@ -64,7 +64,7 @@ export const scheduleMessage = <AuxdibotSubcommand>{
          });
          await handleLog(auxdibot, interaction.data.guild, {
             userID: interaction.data.member.id,
-            description: `Scheduled a message for ${channel}.`,
+            description: `Scheduled a message for ${channel.name}.`,
             type: LogAction.SCHEDULED_MESSAGE_CREATED,
             date_unix: Date.now(),
          });

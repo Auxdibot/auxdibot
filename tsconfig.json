@@ -1,5 +1,4 @@
 {
-  
   "compilerOptions": {
     "target": "ES2022",
     "module": "commonjs",
@@ -10,7 +9,6 @@
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
     "noUnusedLocals": true,
-    "noUnusedParameters": true,
     "noImplicitAny": false,
     "noImplicitThis": false,
     "strictNullChecks": false,
@@ -24,5 +22,6 @@
       { "transform": "typescript-transform-paths", "afterDeclarations": true }
     ]
   },
+  "include": ["src", "global.d.ts"],
   "exclude": ["test"]
 }

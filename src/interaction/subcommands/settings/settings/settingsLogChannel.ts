@@ -38,23 +38,12 @@ export const settingsLogChannel = <AuxdibotSubcommand>{
       embed.description = `The Log Channel for this server has been changed.\r\n\r\nFormerly: ${
          formerChannel ? `<#${formerChannel.id}>` : 'None'
       }\r\n\r\nNow: ${channel || 'None (Disabled)'}`;
-      await handleLog(
-         auxdibot,
-         interaction.data.guild,
-         {
-            type: LogAction.LOG_CHANNEL_CHANGED,
-            userID: interaction.data.member.id,
-            date_unix: Date.now(),
-            description: 'The Log Channel for this server has been changed.',
-         },
-         [
-            {
-               name: 'Log Channel Change',
-               value: `Formerly: ${formerChannel || 'None'}\n\nNow: ${channel || 'None (Disabled)'}`,
-               inline: false,
-            },
-         ],
-      );
+      await handleLog(auxdibot, interaction.data.guild, {
+         type: LogAction.LOG_CHANNEL_CHANGED,
+         userID: interaction.data.member.id,
+         date_unix: Date.now(),
+         description: `The Log Channel for this server has been changed to ${channel.name}`,
+      });
       return await interaction.reply({
          embeds: [embed],
       });

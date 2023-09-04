@@ -1,6 +1,6 @@
 {
   "name": "auxdibot",
-  "version": "1.2.1",
+  "version": "2.0.0",
   "description": "A multipurpose Discord bot, created by Auxdible!",
   "main": "./dist/index.js",
   "scripts": {
@@ -12,7 +12,7 @@
     "test": "ts-mocha -p ./tsconfig.json -u tdd ./test/**/*.test.ts --recursive --paths"
   },
   "author": "Auxdible",
-  "license": "ISC",
+  "license": "MPL-2.0",
   "repository": "https://github.com/Auxdibot/auxdibot",
   "bugs": {
     "url": "https://github.com/Auxdibot/auxdibot/issues"
@@ -20,29 +20,37 @@
   "homepage": "https://github.com/Auxdibot/auxdibot#readme",
   "dependencies": {
     "@prisma/client": "^4.15.0",
+    "@types/passport": "^1.0.12",
+    "@types/passport-discord": "^0.1.6",
+    "cors": "^2.8.5",
     "discord.js": "^14.8.0",
     "emoji-regex": "^10.2.1",
+    "express": "^4.18.2",
+    "express-session": "^1.17.3",
+    "passport": "^0.6.0",
+    "passport-discord": "^0.1.4",
     "toad-scheduler": "^2.3.0"
   },
   "devDependencies": {
+    "@types/chai": "^4.3.5",
     "@types/emoji-regex": "^9.2.0",
+    "@types/express-session": "^1.17.7",
+    "@types/mocha": "^10.0.1",
     "@types/node-schedule": "^2.1.0",
     "@typescript-eslint/eslint-plugin": "^5.59.6",
     "@typescript-eslint/parser": "^5.59.6",
-    "@types/chai": "^4.3.5",
-    "@types/mocha": "^10.0.1",
     "chai": "^4.3.7",
     "dotenv": "^16.0.3",
-    "husky": "^8.0.0",
     "eslint": "^8.40.0",
     "eslint-config-prettier": "^8.8.0",
     "eslint-plugin-prettier": "^4.2.1",
+    "husky": "^8.0.0",
     "lint-staged": "^13.2.2",
     "mocha": "^10.2.0",
-    "prisma": "^4.14.1",
     "module-alias": "^2.2.2",
-    "prettier": "^2.8.8",
     "nodemon": "^2.0.21",
+    "prettier": "^2.8.8",
+    "prisma": "^4.14.1",
     "ts-mocha": "^10.0.0",
     "typescript": "^5.0.2"
   },

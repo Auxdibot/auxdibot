@@ -35,6 +35,10 @@ export default async function messageReactionAdd(
       const starCount =
          (await messageReaction.message.reactions.cache.get(server.starboard_reaction)?.fetch())?.count || 0;
       if (starboard_channel && starboard_channel.isTextBased()) {
+         await auxdibot.database.servers.update({
+            where: { serverID: messageReaction.message.guild.id },
+            data: { total_stars: { increment: 1 } },
+         });
          if (starred && !starboard_channel.messages.cache.get(starred.starboard_message_id)) {
             server.starred_messages.splice(server.starred_messages.indexOf(starred), 1);
             await auxdibot.database.servers

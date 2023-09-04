@@ -16,13 +16,13 @@
          </a>
       </div>
       <div id="badges-row2">
-         <img src="https://img.shields.io/github/commit-activity/w/Auxdible/auxdibot?style=flat-square"/>
-         <img src="https://img.shields.io/github/contributors/Auxdible/auxdibot?style=flat-square"/>
-         <img src="https://img.shields.io/github/last-commit/Auxdible/auxdibot?style=flat-square"/>
+         <img src="https://img.shields.io/github/commit-activity/w/Auxdibot/auxdibot?style=flat-square"/>
+         <img src="https://img.shields.io/github/contributors/Auxdibot/auxdibot?style=flat-square"/>
+         <img src="https://img.shields.io/github/last-commit/Auxdibot/auxdibot?style=flat-square"/>
       </div>
       <div id="badges-row3">
-         <img src="https://img.shields.io/github/stars/Auxdible/auxdibot?style=flat-square"/>
-         <img src="https://img.shields.io/github/forks/Auxdible/auxdibot?style=flat-square"/>
+         <img src="https://img.shields.io/github/stars/Auxdibot/auxdibot?style=flat-square"/>
+         <img src="https://img.shields.io/github/forks/Auxdibot/auxdibot?style=flat-square"/>
       </div>
     </div>
    <h1>Auxdibot 🤖</h1>
@@ -31,7 +31,7 @@
 
 ## About Project
 
-Auxdibot is a multipurpose Discord utility bot, utilizing the Prisma ORM and discord.js with TypeScript.
+Auxdibot is a Discord bot project founded and maintained by Auxdible. Auxdibot utilizes discord.js for handling Discord interactions and Next.js for a fast and user-friendly dashboard, allowing users to interact with Auxdibot on the go.
 
 ### Important Files
 
@@ -109,6 +109,22 @@ If you would like to run Auxdibot on your own machine:
 `⭐` *Starboard*
 
 `⏲️` *Schedules*
+
+`💻` *User-friendly Dashboard*
+
+## FaQ
+
+### Documentation when?
+
+Documentation is currently being worked on for Auxdibot. It will be viewable on GitHub & on [Auxdibot's official site.](https://bot.auxdible.me)
+
+### Found a bug! How do I report it?
+
+Create an issue on this repo or submit a bug report in [Auxdibot's support discord server.](https://discord.gg/tnsFW9CQEn)
+
+### I want a feature added to Auxdibot!
+
+Create a feature request issue on this repo or submit a suggestion in [Auxdibot's support discord server.](https://discord.gg/tnsFW9CQEn)
 
 ## Credits
 
