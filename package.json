@@ -1,6 +1,6 @@
 {
   "name": "auxdibot",
-  "version": "1.2.1",
+  "version": "2.0.0",
   "description": "A multipurpose Discord bot, created by Auxdible!",
   "main": "./dist/index.js",
   "scripts": {
@@ -12,7 +12,7 @@
     "test": "ts-mocha -p ./tsconfig.json -u tdd ./test/**/*.test.ts --recursive --paths"
   },
   "author": "Auxdible",
-  "license": "ISC",
+  "license": "MPL-2.0",
   "repository": "https://github.com/Auxdibot/auxdibot",
   "bugs": {
     "url": "https://github.com/Auxdibot/auxdibot/issues"
