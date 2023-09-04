@@ -16,7 +16,7 @@ const logChannel = (auxdibot: Auxdibot, router: Router) => {
          const serverID = req.params.serverID,
             new_log_channel = req.body['new_log_channel'];
          if (typeof new_log_channel != 'string' && typeof new_log_channel != 'undefined')
-            return res.status(400).json({ error: 'This is not a valid log channel!' });
+            return res.status(400).json({ error: 'this is not a valid log channel!' });
          const guildData = req.user.guilds.find((i) => i.id == serverID);
          const guild = auxdibot.guilds.cache.get(serverID);
          if (!guildData || !guild) return res.status(404).json({ error: "couldn't find that server" });
