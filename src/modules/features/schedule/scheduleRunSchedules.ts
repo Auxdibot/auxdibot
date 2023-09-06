@@ -12,7 +12,9 @@ export default function scheduleRunSchedules(auxdibot: Auxdibot) {
             const server = await findOrCreateServer(auxdibot, guild.id);
             if (server) {
                for (const schedule of server.scheduled_messages) {
-                  if ((schedule.last_run_unix || Date.now()) + schedule.interval_unix <= Date.now()) {
+                  const now = new Date(Date.now());
+                  now.setSeconds(0);
+                  if ((schedule.last_run_unix || now.valueOf()) + schedule.interval_unix <= now.valueOf()) {
                      const channel = schedule.channelID ? guild.channels.cache.get(schedule.channelID) : undefined;
                      if (channel.isTextBased()) {
                         await channel
@@ -30,7 +32,7 @@ export default function scheduleRunSchedules(auxdibot: Auxdibot) {
                            })
                            .catch((x) => console.log(x));
                      }
-                     schedule.last_run_unix = Date.now();
+                     schedule.last_run_unix = now.valueOf();
                      schedule.times_run++;
                      if (schedule.times_to_run && schedule.times_run >= schedule.times_to_run)
                         server.scheduled_messages.splice(server.scheduled_messages.indexOf(schedule), 1);
