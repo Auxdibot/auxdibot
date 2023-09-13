@@ -3,9 +3,9 @@ import { Auxdibot } from '@/interfaces/Auxdibot';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
-import handleLog from '@/util/handleLog';
+import setStarboardChannel from '@/modules/features/starboard/setStarboardChannel';
+import handleError from '@/util/handleError';
 import { EmbedBuilder } from '@discordjs/builders';
-import { LogAction } from '@prisma/client';
 import { ChannelType } from 'discord.js';
 
 export const starboardChannel = <AuxdibotSubcommand>{
@@ -30,33 +30,23 @@ export const starboardChannel = <AuxdibotSubcommand>{
             embeds: [embed],
          });
       }
-      await auxdibot.database.servers.update({
-         where: { serverID: server.serverID },
-         data: { starboard_channel: channel?.id || null },
-      });
-      embed.description = `The starboard channel for this server has been changed.\r\n\r\nFormerly: ${
-         formerChannel ? `<#${formerChannel.id}>` : 'None'
-      }\r\n\r\nNow: ${channel || 'None (Disabled)'}`;
+      setStarboardChannel(auxdibot, interaction.guild, interaction.user, channel)
+         .then(async () => {
+            embed.description = `The starboard channel for this server has been changed.\r\n\r\nFormerly: ${
+               formerChannel ? `<#${formerChannel.id}>` : 'None'
+            }\r\n\r\nNow: ${channel || 'None (Disabled)'}`;
 
-      await handleLog(
-         auxdibot,
-         interaction.data.guild,
-         {
-            type: LogAction.STARBOARD_CHANNEL_CHANGED,
-            userID: interaction.data.member.id,
-            date_unix: Date.now(),
-            description: `The starboard channel for this server has been changed.`,
-         },
-         [
-            {
-               name: 'Starboard Channel Change',
-               value: `Formerly: ${formerChannel || 'None'}\n\nNow: ${channel || 'None (Disabled)'}`,
-               inline: false,
-            },
-         ],
-      );
-      return await interaction.reply({
-         embeds: [embed],
-      });
+            return await interaction.reply({
+               embeds: [embed],
+            });
+         })
+         .catch((x) =>
+            handleError(
+               auxdibot,
+               'STARBOARD_CHANNEL_CHANGE_ERROR',
+               typeof x.message == 'string' ? x.message : "Couldn't change the starboard channel!!",
+               interaction,
+            ),
+         );
    },
 };

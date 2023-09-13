@@ -3,6 +3,7 @@ import { Auxdibot } from '@/interfaces/Auxdibot';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
+import setJoinEmbed from '@/modules/features/greetings/setJoinEmbed';
 import handleError from '@/util/handleError';
 import parsePlaceholders from '@/util/parsePlaceholder';
 import { EmbedBuilder } from '@discordjs/builders';
@@ -36,11 +37,8 @@ export const joinEmbedJSON = <AuxdibotSubcommand>{
                     }
                   : {}),
             });
+         await setJoinEmbed(auxdibot, server.serverID, jsonEmbed);
          const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
-         await auxdibot.database.servers.update({
-            where: { serverID: server.serverID },
-            data: { join_embed: jsonEmbed },
-         });
          embed.title = 'Success!';
          embed.description = `Set the join embed.`;
          return await interaction.reply({ embeds: [embed] });

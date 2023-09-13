@@ -1,6 +1,8 @@
 import Modules from '@/constants/bot/commands/Modules';
 import { Auxdibot } from '@/interfaces/Auxdibot';
+import toggleModule from '@/modules/features/settings/toggleModule';
 import checkAuthenticated from '@/server/checkAuthenticated';
+import checkGuildOwnership from '@/server/checkGuildOwnership';
 import { Router } from 'express';
 /*
    Modules
@@ -11,19 +13,13 @@ const modules = (auxdibot: Auxdibot, router: Router) => {
       .route('/:serverID/modules')
       .get(
          (req, res, next) => checkAuthenticated(req, res, next),
+         (req, res, next) => checkGuildOwnership(auxdibot, req, res, next),
          (req, res) => {
-            if (!req.user?.guilds) return res.status(400).json({ error: 'no servers' });
-            const serverID = req.params.serverID;
-            const guildData = req.user.guilds.find((i) => i.id == serverID);
-            if (!guildData) return res.status(404).json({ error: "couldn't find that server" });
-            if (!guildData.owner && !(guildData.permissions & 0x8))
-               return res.status(403).json({ error: 'you are not authorized to edit that server' });
-
             return auxdibot.database.servers
-               .findFirst({ where: { serverID: serverID }, select: { serverID: true, disabled_modules: true } })
+               .findFirst({ where: { serverID: req.guild.id }, select: { serverID: true, disabled_modules: true } })
                .then(async (data) =>
                   data
-                     ? res.json({ ...guildData, data })
+                     ? res.json({ ...req.guildData, data })
                      : res.status(404).json({ error: "couldn't find that server" }),
                )
                .catch((x) => {
@@ -34,10 +30,9 @@ const modules = (auxdibot: Auxdibot, router: Router) => {
       )
       .patch(
          (req, res, next) => checkAuthenticated(req, res, next),
+         (req, res, next) => checkGuildOwnership(auxdibot, req, res, next),
          (req, res) => {
-            if (!req.user?.guilds) return res.status(400).json({ error: 'no servers' });
-            const serverID = req.params.serverID,
-               module = req.body['module'];
+            const module = req.body['module'];
             if (
                !module ||
                typeof module != 'string' ||
@@ -45,27 +40,11 @@ const modules = (auxdibot: Auxdibot, router: Router) => {
                !Modules[module]?.disableable
             )
                return res.status(400).json({ error: 'This is not a valid module!' });
-            const guildData = req.user.guilds.find((i) => i.id == serverID);
-            if (!guildData) return res.status(404).json({ error: "couldn't find that server" });
-            if (!guildData.owner && !(guildData.permissions & 0x8))
-               return res.status(403).json({ error: 'you are not authorized to edit that server' });
 
-            return auxdibot.database.servers
-               .findFirst({ where: { serverID: serverID }, select: { disabled_modules: true } })
-               .then(async (data) => {
-                  if (!data) return res.status(404).json({ error: "couldn't find that server" });
-                  const modules = data.disabled_modules.filter((i) => i != module);
-                  if (modules.length == data.disabled_modules.length) modules.push(module);
-                  return auxdibot.database.servers
-                     .update({
-                        where: { serverID },
-                        select: { serverID: true, disabled_modules: true },
-                        data: { disabled_modules: modules },
-                     })
-                     .then((i) =>
-                        i ? res.json({ data: i }) : res.status(500).json({ error: "couldn't update that server" }),
-                     );
-               })
+            return toggleModule(auxdibot, req.guild, module)
+               .then((i) =>
+                  i ? res.json({ data: i }) : res.status(500).json({ error: "couldn't update that server" }),
+               )
                .catch((x) => {
                   console.error(x);
                   return res.status(500).json({ error: 'an error occurred' });

@@ -3,9 +3,8 @@ import { Auxdibot } from '@/interfaces/Auxdibot';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
-import handleLog from '@/util/handleLog';
+import setLogChannel from '@/modules/features/logging/setLogChannel';
 import { EmbedBuilder } from '@discordjs/builders';
-import { LogAction } from '@prisma/client';
 import { ChannelType } from 'discord.js';
 
 export const settingsLogChannel = <AuxdibotSubcommand>{
@@ -31,21 +30,13 @@ export const settingsLogChannel = <AuxdibotSubcommand>{
          });
       }
       server.log_channel = channel?.id;
-      await auxdibot.database.servers.update({
-         where: { serverID: server.serverID },
-         data: { log_channel: channel?.id || null },
-      });
-      embed.description = `The Log Channel for this server has been changed.\r\n\r\nFormerly: ${
-         formerChannel ? `<#${formerChannel.id}>` : 'None'
-      }\r\n\r\nNow: ${channel || 'None (Disabled)'}`;
-      await handleLog(auxdibot, interaction.data.guild, {
-         type: LogAction.LOG_CHANNEL_CHANGED,
-         userID: interaction.data.member.id,
-         date_unix: Date.now(),
-         description: `The Log Channel for this server has been changed to ${channel.name}`,
-      });
-      return await interaction.reply({
-         embeds: [embed],
+      return setLogChannel(auxdibot, interaction.guild, interaction.user, channel).then(async () => {
+         embed.description = `The Log Channel for this server has been changed.\r\n\r\nFormerly: ${
+            formerChannel ? `<#${formerChannel.id}>` : 'None'
+         }\r\n\r\nNow: ${channel || 'None (Disabled)'}`;
+         return await interaction.reply({
+            embeds: [embed],
+         });
       });
    },
 };

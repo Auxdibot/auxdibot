@@ -3,9 +3,9 @@ import { Auxdibot } from '@/interfaces/Auxdibot';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
-import handleLog from '@/util/handleLog';
+import setLevelChannel from '@/modules/features/levels/setLevelChannel';
+import handleError from '@/util/handleError';
 import { EmbedBuilder } from '@discordjs/builders';
-import { LogAction } from '@prisma/client';
 import { ChannelType } from 'discord.js';
 
 export const levelsChannel = <AuxdibotSubcommand>{
@@ -29,33 +29,22 @@ export const levelsChannel = <AuxdibotSubcommand>{
             embeds: [embed],
          });
       }
-      await auxdibot.database.servers.update({
-         where: { serverID: server.serverID },
-         data: { level_channel: channel?.id || null },
-      });
-      embed.description = `The level channel for this server has been changed.\r\n\r\nFormerly: ${
-         formerChannel ? `<#${formerChannel.id}>` : 'None'
-      }\r\n\r\nNow: ${channel || 'None (Reply)'}`;
-
-      await handleLog(
-         auxdibot,
-         interaction.data.guild,
-         {
-            type: LogAction.LEVEL_CHANNEL_CHANGED,
-            userID: interaction.data.member.id,
-            date_unix: Date.now(),
-            description: 'The level channel for this server has been changed.',
-         },
-         [
-            {
-               name: 'Level Channel Change',
-               value: `Formerly: ${formerChannel || 'None'}\n\nNow: ${channel || 'None (Reply)'}`,
-               inline: false,
-            },
-         ],
-      );
-      return await interaction.reply({
-         embeds: [embed],
-      });
+      setLevelChannel(auxdibot, interaction.guild, interaction.user, channel)
+         .then(async () => {
+            embed.description = `The level channel for this server has been changed.\r\n\r\nFormerly: ${
+               formerChannel ? `<#${formerChannel.id}>` : 'None'
+            }\r\n\r\nNow: ${channel || 'None (Reply)'}`;
+            return await interaction.reply({
+               embeds: [embed],
+            });
+         })
+         .catch((x) => {
+            handleError(
+               auxdibot,
+               'LEVELS_CHANNEL_SET_ERROR',
+               typeof x.message == 'string' ? x.message : "Couldn't set the level channel.",
+               interaction,
+            );
+         });
    },
 };

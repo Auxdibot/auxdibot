@@ -3,10 +3,11 @@ import { Auxdibot } from '@/interfaces/Auxdibot';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
+import sendEmbed from '@/modules/features/embeds/sendEmbed';
 import handleError from '@/util/handleError';
 import parsePlaceholders from '@/util/parsePlaceholder';
 import { EmbedBuilder } from '@discordjs/builders';
-import { ChannelType } from 'discord.js';
+import { APIEmbed, ChannelType } from 'discord.js';
 
 export const createEmbedJSON = <AuxdibotSubcommand>{
    name: 'create_json',
@@ -21,11 +22,11 @@ export const createEmbedJSON = <AuxdibotSubcommand>{
       const channel = interaction.options.getChannel('channel', true, [ChannelType.GuildText]);
       const json = interaction.options.getString('json', true);
       try {
-         await channel.send({
-            embeds: [
-               JSON.parse(await parsePlaceholders(auxdibot, json, interaction.data.guild, interaction.data.member)),
-            ],
-         });
+         const apiEmbed = JSON.parse(
+            await parsePlaceholders(auxdibot, json, interaction.data.guild, interaction.data.member),
+         ) satisfies APIEmbed;
+
+         await sendEmbed(channel, undefined, apiEmbed);
       } catch (x) {
          return await handleError(
             auxdibot,

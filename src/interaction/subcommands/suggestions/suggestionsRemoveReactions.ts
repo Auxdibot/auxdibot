@@ -3,6 +3,7 @@ import { Auxdibot } from '@/interfaces/Auxdibot';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
+import deleteSuggestionsReaction from '@/modules/features/suggestions/deleteSuggestionsReaction';
 import handleError from '@/util/handleError';
 import { EmbedBuilder } from '@discordjs/builders';
 
@@ -40,14 +41,20 @@ export const suggestionsRemoveReactions = <AuxdibotSubcommand>{
       }
       const suggestionsIndex = server.suggestions_reactions.indexOf(suggestionReaction);
       if (suggestionsIndex != -1) {
-         server.suggestions_reactions.splice(suggestionsIndex, 1);
-         await auxdibot.database.servers.update({
-            where: { serverID: interaction.data.guild.id },
-            data: { suggestions_reactions: server.suggestions_reactions },
-         });
+         deleteSuggestionsReaction(auxdibot, interaction.guild, suggestionsIndex)
+            .then(async () => {
+               const successEmbed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
+               successEmbed.description = `Removed ${suggestionReaction} from the reactions.`;
+               return await interaction.reply({ embeds: [successEmbed] });
+            })
+            .catch((x) => {
+               handleError(
+                  auxdibot,
+                  'SUGGESTIONS_REACTION_REMOVE_ERROR',
+                  typeof x.message == 'string' ? x.message : "Couldn't remove that suggestions reaction!",
+                  interaction,
+               );
+            });
       }
-      const successEmbed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
-      successEmbed.description = `Removed ${suggestionReaction} from the reactions.`;
-      return await interaction.reply({ embeds: [successEmbed] });
    },
 };

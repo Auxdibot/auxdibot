@@ -9,9 +9,9 @@ import handleError from '@/util/handleError';
 import { EmbedBuilder } from '@discordjs/builders';
 import { ChannelType } from 'discord.js';
 import timestampToDuration from '@/util/timestampToDuration';
-import { LogAction, ScheduledMessage } from '@prisma/client';
-import handleLog from '@/util/handleLog';
+import { ScheduledMessage } from '@prisma/client';
 import Limits from '@/constants/database/Limits';
+import createSchedule from '@/modules/features/schedule/createSchedule';
 
 export const scheduleMessage = <AuxdibotSubcommand>{
    name: 'message',
@@ -58,20 +58,12 @@ export const scheduleMessage = <AuxdibotSubcommand>{
             times_run: 0,
             channelID: channel.id,
          };
-         await auxdibot.database.servers.update({
-            where: { serverID: interaction.data.guildData.serverID },
-            data: { scheduled_messages: { push: scheduledMessage } },
+         createSchedule(auxdibot, interaction.guild, interaction.user, scheduledMessage, channel).then(async () => {
+            const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
+            embed.title = 'Success!';
+            embed.description = `Scheduled a message for ${channel}.`;
+            return await interaction.reply({ embeds: [embed] });
          });
-         await handleLog(auxdibot, interaction.data.guild, {
-            userID: interaction.data.member.id,
-            description: `Scheduled a message for ${channel.name}.`,
-            type: LogAction.SCHEDULED_MESSAGE_CREATED,
-            date_unix: Date.now(),
-         });
-         const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
-         embed.title = 'Success!';
-         embed.description = `Scheduled a message for ${channel}.`;
-         return await interaction.reply({ embeds: [embed] });
       } catch (x) {
          console.log(x);
          return await handleError(

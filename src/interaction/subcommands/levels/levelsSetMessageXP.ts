@@ -3,9 +3,11 @@ import { Auxdibot } from '@/interfaces/Auxdibot';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
+import setMessageXP from '@/modules/features/levels/setMessageXP';
+import handleError from '@/util/handleError';
 import { EmbedBuilder } from '@discordjs/builders';
 
-export const setMessageXP = <AuxdibotSubcommand>{
+export const levelsSetMessageXP = <AuxdibotSubcommand>{
    name: 'message_xp',
    info: {
       module: Modules['Levels'],
@@ -16,13 +18,20 @@ export const setMessageXP = <AuxdibotSubcommand>{
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;
       const xp = interaction.options.getNumber('xp', true);
-      await auxdibot.database.servers.update({
-         where: { serverID: interaction.data.guildData.serverID },
-         data: { message_xp: Math.round(xp) },
-      });
-      const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
-      embed.description = `Members will now get ${xp.toLocaleString()} XP from chatting.`;
-      embed.title = 'Success!';
-      return await interaction.reply({ embeds: [embed] });
+      setMessageXP(auxdibot, interaction.guild, xp)
+         .then(async () => {
+            const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
+            embed.description = `Members will now get ${xp.toLocaleString()} XP from chatting.`;
+            embed.title = 'Success!';
+            return await interaction.reply({ embeds: [embed] });
+         })
+         .catch((x) => {
+            handleError(
+               auxdibot,
+               'SET_MESSAGE_XP_ERROR',
+               typeof x.message == 'string' ? x.message : "Couldn't set the message XP for this server!",
+               interaction,
+            );
+         });
    },
 };

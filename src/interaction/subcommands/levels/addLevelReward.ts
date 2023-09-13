@@ -1,11 +1,10 @@
 import Modules from '@/constants/bot/commands/Modules';
-import Limits from '@/constants/database/Limits';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
+import createLevelReward from '@/modules/features/levels/createLevelReward';
 import handleError from '@/util/handleError';
-import { testLimit } from '@/util/testLimit';
 import { EmbedBuilder } from '@discordjs/builders';
 import { PermissionsBitField } from 'discord.js';
 
@@ -60,21 +59,19 @@ export const addLevelReward = <AuxdibotSubcommand>{
             interaction,
          );
       }
-      if (!testLimit(server.level_rewards, Limits.LEVEL_REWARDS_DEFAULT_LIMIT)) {
-         return await handleError(
-            auxdibot,
-            'LEVEL_REWARDS_LIMIT_EXCEEDED',
-            'You have too many level rewards!',
-            interaction,
-         );
-      }
-      await auxdibot.database.servers.update({
-         where: { serverID: server.serverID },
-         data: { level_rewards: { push: { level, roleID: role.id } } },
-      });
-
-      const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
-      embed.description = `Successfully added <@&${role.id}> as a role reward!`;
-      return await interaction.reply({ embeds: [embed] });
+      createLevelReward(auxdibot, interaction.guild, interaction.user, { level, roleID: role.id })
+         .then(async () => {
+            const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
+            embed.description = `Successfully added <@&${role.id}> as a role reward!`;
+            return await interaction.reply({ embeds: [embed] });
+         })
+         .catch((x) => {
+            handleError(
+               auxdibot,
+               'LEVEL_REWARD_ADD_ERROR',
+               typeof x.message == 'string' ? x.message : "Couldn't add that level reward.",
+               interaction,
+            );
+         });
    },
 };

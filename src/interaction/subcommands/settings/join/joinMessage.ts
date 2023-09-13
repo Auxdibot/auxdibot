@@ -9,6 +9,7 @@ import handleError from '@/util/handleError';
 import parsePlaceholders from '@/util/parsePlaceholder';
 import { EmbedBuilder } from '@discordjs/builders';
 import { APIEmbed } from '@prisma/client';
+import setJoinEmbed from '@/modules/features/greetings/setJoinEmbed';
 
 export const joinMessage = <AuxdibotSubcommand>{
    name: 'message',
@@ -26,7 +27,7 @@ export const joinMessage = <AuxdibotSubcommand>{
       const content = interaction.options.getString('content');
       const parameters = argumentsToEmbedParameters(interaction);
       try {
-         const newEmbed = toAPIEmbed(parameters);
+         const newEmbed = toAPIEmbed(parameters) as APIEmbed;
          if (interaction.channel && interaction.channel.isTextBased())
             await interaction.channel.send({
                content: `Here's a preview of the new join embed!\n${server.join_dm_text || ''}`,
@@ -41,10 +42,7 @@ export const joinMessage = <AuxdibotSubcommand>{
                   ),
                ],
             });
-         await auxdibot.database.servers.update({
-            where: { serverID: server.serverID },
-            data: { join_embed: (<unknown>newEmbed) as APIEmbed, join_text: content || server.join_text },
-         });
+         await setJoinEmbed(auxdibot, server.serverID, newEmbed, content);
          const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
          embed.title = 'Success!';
          embed.description = `Set the join embed.`;
