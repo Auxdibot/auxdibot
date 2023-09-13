@@ -1,7 +1,7 @@
 {
   "name": "auxdibot",
-  "version": "2.0.0",
-  "description": "A multipurpose Discord bot, created by Auxdible!",
+  "version": "2.1.0",
+  "description": "Main repo for the Auxdibot discord.js bot, utilizing TypeScript and express for endpoints.",
   "main": "./dist/index.js",
   "scripts": {
     "start": "node ./dist/index.js",
