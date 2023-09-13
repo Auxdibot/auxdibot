@@ -3,11 +3,10 @@ import { Auxdibot } from '@/interfaces/Auxdibot';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
+import removeReactionRole from '@/modules/features/reaction_roles/removeReactionRole';
 import { getMessage } from '@/util/getMessage';
 import handleError from '@/util/handleError';
-import handleLog from '@/util/handleLog';
 import { EmbedBuilder } from '@discordjs/builders';
-import { LogAction } from '@prisma/client';
 
 export const reactionRolesRemove = <AuxdibotSubcommand>{
    name: 'remove',
@@ -45,20 +44,20 @@ export const reactionRolesRemove = <AuxdibotSubcommand>{
       if (message) {
          await message.delete();
       }
-      server.reaction_roles.splice(server.reaction_roles.indexOf(rr), 1);
-      await auxdibot.database.servers.update({
-         where: { serverID: server.serverID },
-         data: { reaction_roles: server.reaction_roles },
-      });
-      const successEmbed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
-      successEmbed.title = '👈 Deleted Reaction Role';
-      successEmbed.description = `Deleted a reaction role${message ? ` in ${message.channel}` : ''}.`;
-      await handleLog(auxdibot, interaction.data.guild, {
-         userID: interaction.data.member.id,
-         description: `Deleted a reaction role${message ? ` in ${message.channel || 'a channel'}` : ''}.`,
-         type: LogAction.REACTION_ROLE_REMOVED,
-         date_unix: Date.now(),
-      });
-      return await interaction.reply({ embeds: [successEmbed] });
+      removeReactionRole(auxdibot, interaction.guild, index - 1, interaction.user)
+         .then(async () => {
+            const successEmbed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
+            successEmbed.title = '👈 Deleted Reaction Role';
+            successEmbed.description = `Deleted a reaction role${message ? ` in ${message.channel}` : ''}.`;
+            return await interaction.reply({ embeds: [successEmbed] });
+         })
+         .catch((x) =>
+            handleError(
+               auxdibot,
+               'REACTION_ROLE_DELETE_ERROR',
+               typeof x.message == 'string' ? x.message : "Couldn't delete that reaction role!",
+               interaction,
+            ),
+         );
    },
 };

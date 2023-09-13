@@ -3,6 +3,7 @@ import { Auxdibot } from '@/interfaces/Auxdibot';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
+import setLeaveEmbed from '@/modules/features/greetings/setLeaveEmbed';
 import handleError from '@/util/handleError';
 import parsePlaceholders from '@/util/parsePlaceholder';
 import { EmbedBuilder } from '@discordjs/builders';
@@ -36,11 +37,8 @@ export const leaveEmbedJSON = <AuxdibotSubcommand>{
                     }
                   : {}),
             });
+         await setLeaveEmbed(auxdibot, server.serverID, jsonEmbed);
          const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
-         await auxdibot.database.servers.update({
-            where: { serverID: server.serverID },
-            data: { leave_embed: jsonEmbed },
-         });
          embed.title = 'Success!';
          embed.description = `Set the leave embed.`;
          return await interaction.reply({ embeds: [embed] });

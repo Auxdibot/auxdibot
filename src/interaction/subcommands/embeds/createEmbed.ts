@@ -9,6 +9,7 @@ import handleError from '@/util/handleError';
 import parsePlaceholders from '@/util/parsePlaceholder';
 import { EmbedBuilder } from '@discordjs/builders';
 import { ChannelType } from 'discord.js';
+import sendEmbed from '@/modules/features/embeds/sendEmbed';
 
 export const createEmbed = <AuxdibotSubcommand>{
    name: 'create',
@@ -24,22 +25,19 @@ export const createEmbed = <AuxdibotSubcommand>{
       const channel = interaction.options.getChannel('channel', true, [ChannelType.GuildText]);
       const content = interaction.options.getString('content')?.replace(/\\n/g, '\n') || '';
       const parameters = argumentsToEmbedParameters(interaction);
+
       try {
-         await channel.send({
-            content: content,
-            embeds: [
-               toAPIEmbed(
-                  JSON.parse(
-                     await parsePlaceholders(
-                        auxdibot,
-                        JSON.stringify(parameters),
-                        interaction.data.guild,
-                        interaction.data.member,
-                     ),
-                  ),
+         const apiEmbed = toAPIEmbed(
+            JSON.parse(
+               await parsePlaceholders(
+                  auxdibot,
+                  JSON.stringify(parameters),
+                  interaction.data.guild,
+                  interaction.data.member,
                ),
-            ],
-         });
+            ),
+         );
+         await sendEmbed(channel, content, apiEmbed);
       } catch (x) {
          return await handleError(auxdibot, 'EMBED_SEND_ERROR', 'There was an error sending that embed!', interaction);
       }

@@ -3,9 +3,9 @@ import { Auxdibot } from '@/interfaces/Auxdibot';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
-import handleLog from '@/util/handleLog';
+import setSuggestionsUpdatesChannel from '@/modules/features/suggestions/setSuggestionsUpdatesChannel';
+import handleError from '@/util/handleError';
 import { EmbedBuilder } from '@discordjs/builders';
-import { LogAction } from '@prisma/client';
 import { ChannelType } from 'discord.js';
 
 export const suggestionsUpdateChannel = <AuxdibotSubcommand>{
@@ -30,32 +30,22 @@ export const suggestionsUpdateChannel = <AuxdibotSubcommand>{
             embeds: [embed],
          });
       }
-      await auxdibot.database.servers.update({
-         where: { serverID: server.serverID },
-         data: { suggestions_updates_channel: channel?.id || null },
-      });
-      embed.description = `The suggestions updates channel for this server has been changed.\r\n\r\nFormerly: ${
-         formerChannel ? `<#${formerChannel.id}>` : 'None'
-      }\r\n\r\nNow: ${channel || 'None (Disabled)'}`;
-      await handleLog(
-         auxdibot,
-         interaction.data.guild,
-         {
-            type: LogAction.SUGGESTIONS_UPDATES_CHANNEL_CHANGED,
-            userID: interaction.data.member.id,
-            date_unix: Date.now(),
-            description: 'The suggestions updates channel for this server has been changed.',
-         },
-         [
-            {
-               name: 'Suggestions Updates Channel Change',
-               value: `Formerly: ${formerChannel || 'None'}\n\nNow: ${channel || 'None (Disabled)'}`,
-               inline: false,
-            },
-         ],
-      );
-      return await interaction.reply({
-         embeds: [embed],
-      });
+      setSuggestionsUpdatesChannel(auxdibot, interaction.guild, interaction.user, channel)
+         .then(async () => {
+            embed.description = `The suggestions updates channel for this server has been changed.\r\n\r\nFormerly: ${
+               formerChannel ? `<#${formerChannel.id}>` : 'None'
+            }\r\n\r\nNow: ${channel || 'None (Disabled)'}`;
+            return await interaction.reply({
+               embeds: [embed],
+            });
+         })
+         .catch((x) => {
+            handleError(
+               auxdibot,
+               'SUGGESTIONS_UPDATES_CHANNEL_SET_ERROR',
+               typeof x.message == 'string' ? x.message : "Couldn't set the suggestions channel!",
+               interaction,
+            );
+         });
    },
 };

@@ -3,6 +3,7 @@ import { Auxdibot } from '@/interfaces/Auxdibot';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
+import setJoinDMEmbed from '@/modules/features/greetings/setJoinDMEmbed';
 import handleError from '@/util/handleError';
 import parsePlaceholders from '@/util/parsePlaceholder';
 import { EmbedBuilder } from '@discordjs/builders';
@@ -22,7 +23,7 @@ export const joinDMEmbedJSON = <AuxdibotSubcommand>{
       const json = interaction.options.getString('json', true);
       const server = interaction.data.guildData;
       try {
-         const jsonEmbed = JSON.parse(json) as APIEmbed;
+         const jsonEmbed = JSON.parse(json) satisfies APIEmbed;
          if (interaction.channel && interaction.channel.isTextBased())
             await interaction.channel.send({
                content: "Here's a preview of the new join DM embed!",
@@ -36,11 +37,8 @@ export const joinDMEmbedJSON = <AuxdibotSubcommand>{
                     }
                   : {}),
             });
+         await setJoinDMEmbed(auxdibot, server.serverID, jsonEmbed);
          const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
-         await auxdibot.database.servers.update({
-            where: { serverID: server.serverID },
-            data: { join_dm_embed: jsonEmbed },
-         });
          embed.title = 'Success!';
          embed.description = `Set the join DM embed.`;
          return await interaction.reply({ embeds: [embed] });

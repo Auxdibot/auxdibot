@@ -9,7 +9,7 @@ import { levelsRemoveXP } from '../../subcommands/levels/levelsRemoveXP';
 import { resetLevels } from '../../subcommands/levels/resetLevels';
 import { levelsStats } from '../../subcommands/levels/levelsStats';
 import { levelsLeaderboard } from '../../subcommands/levels/levelsLeaderboard';
-import { setMessageXP } from '../../subcommands/levels/setMessageXP';
+import { levelsSetMessageXP } from '../../subcommands/levels/levelsSetMessageXP';
 import { levelsToggleEmbed } from '@/interaction/subcommands/levels/levelsToggleEmbed';
 import { levelsChannel } from '@/interaction/subcommands/levels/levelsChannel';
 export default <AuxdibotCommand>{
@@ -117,7 +117,7 @@ export default <AuxdibotCommand>{
       resetLevels,
       levelsStats,
       levelsLeaderboard,
-      setMessageXP,
+      levelsSetMessageXP,
       levelsToggleEmbed,
       levelsChannel,
    ],

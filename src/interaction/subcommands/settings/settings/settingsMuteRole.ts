@@ -3,9 +3,9 @@ import { Auxdibot } from '@/interfaces/Auxdibot';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
-import handleLog from '@/util/handleLog';
+import setMuteRole from '@/modules/features/moderation/setMuteRole';
+import handleError from '@/util/handleError';
 import { EmbedBuilder } from '@discordjs/builders';
-import { LogAction } from '@prisma/client';
 
 export const settingsMuteRole = <AuxdibotSubcommand>{
    name: 'mute_role',
@@ -63,36 +63,22 @@ export const settingsMuteRole = <AuxdibotSubcommand>{
                });
          });
       }
-      await handleLog(
-         auxdibot,
-         interaction.data.guild,
-         {
-            type: LogAction.MUTE_ROLE_CHANGED,
-            userID: interaction.data.member.id,
-            date_unix: Date.now(),
-            description: `The mute role for this server has been changed to ${
-               role ? role.name : "None. This server will now use Discord's timeout system for mutes."
-            }.`,
-         },
-         [
-            {
-               name: 'Mute Role Change',
-               value: `Formerly: ${formerRole ? `<@&${formerRole.id}>` : 'None (Timeout)'}\n\nNow: ${
-                  role ? `<@&${role.id}>` : 'None (Timeout)'
-               }`,
-               inline: false,
-            },
-         ],
-      );
-      await auxdibot.database.servers.update({
-         where: { serverID: server.serverID },
-         data: { mute_role: role?.id || null },
-      });
-      embed.description = `The mute role for this server has been changed.\r\n\r\nFormerly: ${
-         formerRole ? `<@&${formerRole.id}>` : 'None (Timeout)'
-      }\r\n\r\nNow: ${role ? `<@&${role.id}>` : 'None (Timeout)'}`;
-      return await interaction.reply({
-         embeds: [embed],
-      });
+      setMuteRole(auxdibot, interaction.guild, interaction.user, role)
+         .then(async () => {
+            embed.description = `The mute role for this server has been changed.\r\n\r\nFormerly: ${
+               formerRole ? `<@&${formerRole.id}>` : 'None (Timeout)'
+            }\r\n\r\nNow: ${role ? `<@&${role.id}>` : 'None (Timeout)'}`;
+            return await interaction.reply({
+               embeds: [embed],
+            });
+         })
+         .catch((x) => {
+            handleError(
+               auxdibot,
+               'ERROR_SET_MUTE_ROLE',
+               typeof x.message == 'string' ? x.message : "couldn't set the mute role",
+               interaction,
+            );
+         });
    },
 };

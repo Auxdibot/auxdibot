@@ -9,6 +9,7 @@ import handleError from '@/util/handleError';
 import parsePlaceholders from '@/util/parsePlaceholder';
 import { EmbedBuilder } from '@discordjs/builders';
 import { APIEmbed } from '@prisma/client';
+import setLeaveEmbed from '@/modules/features/greetings/setLeaveEmbed';
 
 export const leaveMessage = <AuxdibotSubcommand>{
    name: 'message',
@@ -26,7 +27,7 @@ export const leaveMessage = <AuxdibotSubcommand>{
       const content = interaction.options.getString('content');
       const parameters = argumentsToEmbedParameters(interaction);
       try {
-         const newEmbed = toAPIEmbed(parameters);
+         const newEmbed = toAPIEmbed(parameters) as APIEmbed;
          if (interaction.channel && interaction.channel.isTextBased())
             await interaction.channel.send({
                content: "Here's a preview of the new leave embed!",
@@ -41,10 +42,7 @@ export const leaveMessage = <AuxdibotSubcommand>{
                   ),
                ],
             });
-         await auxdibot.database.servers.update({
-            where: { serverID: server.serverID },
-            data: { leave_embed: (<unknown>newEmbed) as APIEmbed, leave_text: content || server.leave_text },
-         });
+         await setLeaveEmbed(auxdibot, server.serverID, newEmbed, content);
          const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
          embed.title = 'Success!';
          embed.description = `Set the leave embed.`;

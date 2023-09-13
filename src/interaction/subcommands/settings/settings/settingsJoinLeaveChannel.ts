@@ -3,9 +3,9 @@ import { Auxdibot } from '@/interfaces/Auxdibot';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
-import handleLog from '@/util/handleLog';
+import setJoinLeaveChannel from '@/modules/features/greetings/setJoinLeaveChannel';
+import handleError from '@/util/handleError';
 import { EmbedBuilder } from '@discordjs/builders';
-import { LogAction } from '@prisma/client';
 import { ChannelType } from 'discord.js';
 
 export const settingsJoinLeaveChannel = <AuxdibotSubcommand>{
@@ -30,32 +30,23 @@ export const settingsJoinLeaveChannel = <AuxdibotSubcommand>{
          });
       }
       server.join_leave_channel = channel?.id;
-      await auxdibot.database.servers.update({
-         where: { serverID: server.serverID },
-         data: { join_leave_channel: channel?.id || null },
-      });
       embed.description = `The Join/Leave Channel for this server has been changed.\r\n\r\nFormerly: ${
          formerChannel ? `<#${formerChannel.id}>` : 'None'
       }\r\n\r\nNow: ${channel || 'None (Disabled)'}`;
-      await handleLog(
-         auxdibot,
-         interaction.data.guild,
-         {
-            type: LogAction.JOIN_LEAVE_CHANNEL_CHANGED,
-            userID: interaction.data.member.id,
-            date_unix: Date.now(),
-            description: 'The Join/Leave Channel for this server has been changed.',
-         },
-         [
-            {
-               name: 'Join/Leave Channel Change',
-               value: `Formerly: ${formerChannel || 'None'}\n\nNow: ${channel || 'None (Disabled)'}`,
-               inline: false,
-            },
-         ],
-      );
-      return await interaction.reply({
-         embeds: [embed],
-      });
+      await setJoinLeaveChannel(auxdibot, interaction.guild, interaction.user, channel)
+         .then(
+            async () =>
+               await interaction.reply({
+                  embeds: [embed],
+               }),
+         )
+         .catch(() =>
+            handleError(
+               auxdibot,
+               'JOIN_LEAVE_CHANNEL_SET_ERROR',
+               "Couldn't set the Join/Leave channel to that channel!",
+               interaction,
+            ),
+         );
    },
 };

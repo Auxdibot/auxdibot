@@ -33,8 +33,10 @@ const CLIENT_ID = process.env.DISCORD_BOT_CLIENT_ID;
       presence: {
          activities: [
             {
-               type: ActivityType.Listening,
-               name: '/help modules | loading...',
+               type: ActivityType.Custom,
+               name: 'Auxdibot',
+               url: 'https://bot.auxdible.me',
+               state: `⌚ Loading...`,
             },
          ],
       },
