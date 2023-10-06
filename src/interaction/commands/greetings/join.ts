@@ -2,14 +2,14 @@ import { SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import createEmbedParameters from '@/util/createEmbedParameters';
 import Modules from '@/constants/bot/commands/Modules';
-import { leaveMessage } from '../../subcommands/settings/leave/leaveMessage';
-import { leaveEmbedJSON } from '../../subcommands/settings/leave/leaveEmbedJSON';
-import { leavePreview } from '../../subcommands/settings/leave/leavePreview';
+import { joinMessage } from '../../subcommands/settings/join/joinMessage';
+import { joinPreview } from '../../subcommands/settings/join/joinPreview';
+import { joinEmbedJSON } from '../../subcommands/settings/join/joinEmbedJSON';
 
 export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
-      .setName('leave')
-      .setDescription('Change settings for leave messages on the server.')
+      .setName('join')
+      .setDescription('Change settings for join messages on the server.')
       .addSubcommand((builder) =>
          createEmbedParameters(builder.setName('message').setDescription('Display an embed (With placeholders)!')),
       )
@@ -24,15 +24,15 @@ export default <AuxdibotCommand>{
                   .setRequired(true),
             ),
       )
-      .addSubcommand((builder) => builder.setName('preview').setDescription('Preview the leave embed.')),
+      .addSubcommand((builder) => builder.setName('preview').setDescription('Preview the join embed.')),
    info: {
-      module: Modules['Settings'],
+      module: Modules['Greetings'],
       description:
-         'Change settings for leave messages on the server. (Placeholders are supported. Do /help placeholders for a list of placeholders.)',
-      usageExample: '/leave (message|embed_json|preview)',
-      permission: 'settings.leave',
+         'Change settings for join messages on the server. (Placeholders are supported. Do /help placeholders for a list of placeholders.)',
+      usageExample: '/join (message|embed_json|preview)',
+      permission: 'settings.join',
    },
-   subcommands: [leaveMessage, leaveEmbedJSON, leavePreview],
+   subcommands: [joinMessage, joinEmbedJSON, joinPreview],
    async execute() {
       return;
    },
