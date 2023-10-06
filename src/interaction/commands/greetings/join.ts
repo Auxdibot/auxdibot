@@ -2,9 +2,9 @@ import { SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import createEmbedParameters from '@/util/createEmbedParameters';
 import Modules from '@/constants/bot/commands/Modules';
-import { joinMessage } from '../../subcommands/settings/join/joinMessage';
-import { joinPreview } from '../../subcommands/settings/join/joinPreview';
-import { joinEmbedJSON } from '../../subcommands/settings/join/joinEmbedJSON';
+import { joinMessage } from '../../subcommands/greetings/join/joinMessage';
+import { joinPreview } from '../../subcommands/greetings/join/joinPreview';
+import { joinEmbedJSON } from '../../subcommands/greetings/join/joinEmbedJSON';
 
 export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -30,7 +30,7 @@ export default <AuxdibotCommand>{
       description:
          'Change settings for join messages on the server. (Placeholders are supported. Do /help placeholders for a list of placeholders.)',
       usageExample: '/join (message|embed_json|preview)',
-      permission: 'settings.join',
+      permission: 'greetings.join',
    },
    subcommands: [joinMessage, joinEmbedJSON, joinPreview],
    async execute() {

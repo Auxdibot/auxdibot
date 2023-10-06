@@ -1,8 +1,8 @@
 import { SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import Modules from '@/constants/bot/commands/Modules';
-import { massroleGive } from '../../subcommands/massrole/massroleGive';
-import { massroleTake } from '../../subcommands/massrole/massroleTake';
+import { massroleGive } from '../../subcommands/roles/massrole/massroleGive';
+import { massroleTake } from '../../subcommands/roles/massrole/massroleTake';
 
 export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()

@@ -26,11 +26,11 @@ export const moduleEnable = <AuxdibotSubcommand>{
          return await handleError(auxdibot, 'MODULE_ALREADY_ENABLED', 'This module is already enabled!', interaction);
 
       server.disabled_modules.splice(server.disabled_modules.indexOf(module.name), 1);
-      toggleModule(auxdibot, interaction.guild, module.name, false)
+      toggleModule(auxdibot, interaction.guild, module.name, true)
          .then(async () => {
             const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.title = 'Success!';
-            embed.description = `Successfully disabled the ${module.name} module. Its functionality & commands will no longer work until re-enabled.`;
+            embed.description = `Successfully enabled the ${module.name} module. Its functionality & commands will no longer work until re-enabled.`;
             return await interaction.reply({ embeds: [embed] });
          })
          .catch(() => {

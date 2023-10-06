@@ -2,9 +2,9 @@ import { SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import createEmbedParameters from '@/util/createEmbedParameters';
 import Modules from '@/constants/bot/commands/Modules';
-import { joinDMEmbedJSON } from '../../subcommands/settings/join_dm/joinDMEmbedJSON';
-import { joinDMPreview } from '../../subcommands/settings/join_dm/joinDMPreview';
-import { joinDMMessage } from '@/interaction/subcommands/settings/join_dm/joinDMMessage';
+import { joinDMEmbedJSON } from '../../subcommands/greetings/join_dm/joinDMEmbedJSON';
+import { joinDMPreview } from '../../subcommands/greetings/join_dm/joinDMPreview';
+import { joinDMMessage } from '@/interaction/subcommands/greetings/join_dm/joinDMMessage';
 
 export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -30,7 +30,7 @@ export default <AuxdibotCommand>{
       description:
          'Change settings for join DM messages on the server. (Placeholders are supported. Do /help placeholders for a list of placeholders.)',
       usageExample: '/join_dm (message|embed_json|preview)',
-      permission: 'settings.joindm',
+      permission: 'greetings.join_dm',
    },
    subcommands: [joinDMMessage, joinDMEmbedJSON, joinDMPreview],
    async execute() {
