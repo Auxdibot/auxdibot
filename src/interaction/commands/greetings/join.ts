@@ -2,14 +2,14 @@ import { SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import createEmbedParameters from '@/util/createEmbedParameters';
 import Modules from '@/constants/bot/commands/Modules';
-import { joinDMEmbedJSON } from '../../subcommands/settings/join_dm/joinDMEmbedJSON';
-import { joinDMPreview } from '../../subcommands/settings/join_dm/joinDMPreview';
-import { joinDMMessage } from '@/interaction/subcommands/settings/join_dm/joinDMMessage';
+import { joinMessage } from '../../subcommands/greetings/join/joinMessage';
+import { joinPreview } from '../../subcommands/greetings/join/joinPreview';
+import { joinEmbedJSON } from '../../subcommands/greetings/join/joinEmbedJSON';
 
 export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
-      .setName('join_dm')
-      .setDescription('Change settings for join DM messages on the server.')
+      .setName('join')
+      .setDescription('Change settings for join messages on the server.')
       .addSubcommand((builder) =>
          createEmbedParameters(builder.setName('message').setDescription('Display an embed (With placeholders)!')),
       )
@@ -26,13 +26,13 @@ export default <AuxdibotCommand>{
       )
       .addSubcommand((builder) => builder.setName('preview').setDescription('Preview the join embed.')),
    info: {
-      module: Modules['Settings'],
+      module: Modules['Greetings'],
       description:
-         'Change settings for join DM messages on the server. (Placeholders are supported. Do /help placeholders for a list of placeholders.)',
-      usageExample: '/join_dm (message|embed_json|preview)',
-      permission: 'settings.joindm',
+         'Change settings for join messages on the server. (Placeholders are supported. Do /help placeholders for a list of placeholders.)',
+      usageExample: '/join (message|embed_json|preview)',
+      permission: 'greetings.join',
    },
-   subcommands: [joinDMMessage, joinDMEmbedJSON, joinDMPreview],
+   subcommands: [joinMessage, joinEmbedJSON, joinPreview],
    async execute() {
       return;
    },

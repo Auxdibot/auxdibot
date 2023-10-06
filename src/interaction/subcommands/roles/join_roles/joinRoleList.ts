@@ -5,20 +5,20 @@ import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInt
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 import { EmbedBuilder } from '@discordjs/builders';
 
-export const stickyRoleList = <AuxdibotSubcommand>{
+export const joinRoleList = <AuxdibotSubcommand>{
    name: 'list',
    info: {
-      module: Modules['Settings'],
-      description: 'List the roles that are kept when a member rejoins the server.',
-      usageExample: '/sticky_roles list',
-      permission: 'settings.sticky_roles.list',
+      module: Modules['Roles'],
+      description: 'List the roles that are assigned when a member joins the server.',
+      usageExample: '/join_roles list',
+      permission: 'roles.join_roles.list',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;
-      const server = interaction.data.guildData;
       const successEmbed = new EmbedBuilder().setColor(auxdibot.colors.info).toJSON();
-      successEmbed.title = '📝 Sticky Roles';
-      successEmbed.description = server.sticky_roles.reduce(
+      const server = interaction.data.guildData;
+      successEmbed.title = '👋 Join Roles';
+      successEmbed.description = server.join_roles.reduce(
          (accumulator: string, value: string, index: number) => `${accumulator}\n**${index + 1})** <@&${value}>`,
          '',
       );

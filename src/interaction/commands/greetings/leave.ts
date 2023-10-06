@@ -2,9 +2,9 @@ import { SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import createEmbedParameters from '@/util/createEmbedParameters';
 import Modules from '@/constants/bot/commands/Modules';
-import { leaveMessage } from '../../subcommands/settings/leave/leaveMessage';
-import { leaveEmbedJSON } from '../../subcommands/settings/leave/leaveEmbedJSON';
-import { leavePreview } from '../../subcommands/settings/leave/leavePreview';
+import { leaveMessage } from '../../subcommands/greetings/leave/leaveMessage';
+import { leaveEmbedJSON } from '../../subcommands/greetings/leave/leaveEmbedJSON';
+import { leavePreview } from '../../subcommands/greetings/leave/leavePreview';
 
 export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -26,11 +26,11 @@ export default <AuxdibotCommand>{
       )
       .addSubcommand((builder) => builder.setName('preview').setDescription('Preview the leave embed.')),
    info: {
-      module: Modules['Settings'],
+      module: Modules['Greetings'],
       description:
          'Change settings for leave messages on the server. (Placeholders are supported. Do /help placeholders for a list of placeholders.)',
       usageExample: '/leave (message|embed_json|preview)',
-      permission: 'settings.leave',
+      permission: 'greetings.leave',
    },
    subcommands: [leaveMessage, leaveEmbedJSON, leavePreview],
    async execute() {

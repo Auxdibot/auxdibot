@@ -9,17 +9,17 @@ import handleError from '@/util/handleError';
 import parsePlaceholders from '@/util/parsePlaceholder';
 import { EmbedBuilder } from '@discordjs/builders';
 import { APIEmbed } from '@prisma/client';
-import setJoinEmbed from '@/modules/features/greetings/setJoinEmbed';
+import setJoinDMEmbed from '@/modules/features/greetings/setJoinDMEmbed';
 
-export const joinMessage = <AuxdibotSubcommand>{
+export const joinDMMessage = <AuxdibotSubcommand>{
    name: 'message',
    info: {
-      module: Modules['Settings'],
+      module: Modules['Greetings'],
       description:
-         'Set the join message. (Placeholders are supported. Do /help placeholders for a list of placeholders.)',
+         'Set the join DM message. (Placeholders are supported. Do /help placeholders for a list of placeholders.)',
       usageExample:
-         '/join message [content] [color] [title] [title url] [author] [author icon url] [author url] [description] [fields (split title and description with "|d|", and seperate fields with "|s|")] [footer] [footer icon url] [image url] [thumbnail url]',
-      permission: 'settings.join.message',
+         '/join_dm message [content] [color] [title] [title url] [author] [author icon url] [author url] [description] [fields (split title and description with `"|d|"``, and seperate fields with `"|s|"`)] [footer] [footer icon url] [image url] [thumbnail url]',
+      permission: 'greetings.join_dm.message',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;
@@ -30,7 +30,7 @@ export const joinMessage = <AuxdibotSubcommand>{
          const newEmbed = toAPIEmbed(parameters) as APIEmbed;
          if (interaction.channel && interaction.channel.isTextBased())
             await interaction.channel.send({
-               content: `Here's a preview of the new join embed!\n${server.join_dm_text || ''}`,
+               content: `Here's a preview of the new join DM embed!\n${server.join_dm_text || ''}`,
                embeds: [
                   JSON.parse(
                      await parsePlaceholders(
@@ -42,14 +42,13 @@ export const joinMessage = <AuxdibotSubcommand>{
                   ),
                ],
             });
-         await setJoinEmbed(auxdibot, server.serverID, newEmbed, content);
+         await setJoinDMEmbed(auxdibot, server.serverID, newEmbed, content);
          const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
          embed.title = 'Success!';
-         embed.description = `Set the join embed.`;
+         embed.description = `Set the join DM embed.`;
          await interaction.reply({ embeds: [embed] });
       } catch (x) {
          return await handleError(auxdibot, 'EMBED_SEND_ERROR', 'There was an error sending that embed!', interaction);
       }
-      return;
    },
 };

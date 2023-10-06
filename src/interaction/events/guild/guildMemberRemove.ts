@@ -9,7 +9,7 @@ import { LogAction } from '@prisma/client';
 export default async function guildMemberRemove(auxdibot: Auxdibot, member: GuildMember | PartialGuildMember) {
    if (!member) return;
    const server = await findOrCreateServer(auxdibot, member.guild.id);
-   if (server.join_leave_channel) {
+   if (server.join_leave_channel && server.disabled_modules.indexOf('Greetings') == -1) {
       member.guild.channels.fetch(server.join_leave_channel).then(async (channel) => {
          if (channel && channel.isTextBased()) {
             if (server.leave_text || server.leave_embed) {

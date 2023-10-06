@@ -3,20 +3,20 @@ import { Auxdibot } from '@/interfaces/Auxdibot';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
-import setLeaveEmbed from '@/modules/features/greetings/setLeaveEmbed';
+import setJoinEmbed from '@/modules/features/greetings/setJoinEmbed';
 import handleError from '@/util/handleError';
 import parsePlaceholders from '@/util/parsePlaceholder';
 import { EmbedBuilder } from '@discordjs/builders';
 import { APIEmbed } from '@prisma/client';
 
-export const leaveEmbedJSON = <AuxdibotSubcommand>{
+export const joinEmbedJSON = <AuxdibotSubcommand>{
    name: 'embed_json',
    info: {
-      module: Modules['Settings'],
+      module: Modules['Greetings'],
       description:
          'Add an embed to the join message using custom JSON. (Placeholders are supported. Do /help placeholders for a list of placeholders.)',
-      usageExample: '/leave embed_json (json)',
-      permission: 'settings.leave.embed_json',
+      usageExample: '/join embed_json (json)',
+      permission: 'greetings.join.embed_json',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;
@@ -26,7 +26,7 @@ export const leaveEmbedJSON = <AuxdibotSubcommand>{
          const jsonEmbed = JSON.parse(json) as APIEmbed;
          if (interaction.channel && interaction.channel.isTextBased())
             await interaction.channel.send({
-               content: "Here's a preview of the new leave embed!",
+               content: "Here's a preview of the new join embed!",
                ...(Object.entries(json || {}).length != 0
                   ? {
                        embeds: [
@@ -37,10 +37,10 @@ export const leaveEmbedJSON = <AuxdibotSubcommand>{
                     }
                   : {}),
             });
-         await setLeaveEmbed(auxdibot, server.serverID, jsonEmbed);
+         await setJoinEmbed(auxdibot, server.serverID, jsonEmbed);
          const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
          embed.title = 'Success!';
-         embed.description = `Set the leave embed.`;
+         embed.description = `Set the join embed.`;
          return await interaction.reply({ embeds: [embed] });
       } catch (x) {
          return await handleError(

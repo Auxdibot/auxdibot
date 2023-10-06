@@ -16,6 +16,7 @@ export default async function refreshInteractions(auxdibot: Auxdibot, rest: REST
       'suggestions',
       'levels',
       'starboard',
+      'greetings',
    ];
    const commandFiles = [
       {

@@ -12,11 +12,11 @@ import { PermissionsBitField } from 'discord.js';
 export const stickyRoleRemove = <AuxdibotSubcommand>{
    name: 'remove',
    info: {
-      module: Modules['Settings'],
+      module: Modules['Roles'],
       description:
          "Remove a role that is kept when a member rejoins the server. If you've deleted the role, use the index parameter, which is the placement of the item on /sticky_roles list.",
       usageExample: '/sticky_roles remove [role] [index]',
-      permission: 'settings.sticky_roles.remove',
+      permission: 'roles.sticky_roles.remove',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data || !interaction.memberPermissions) return;
