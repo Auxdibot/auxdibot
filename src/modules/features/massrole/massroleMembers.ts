@@ -25,8 +25,8 @@ export default async function massroleMembers(
    handleLog(auxdibot, guild, {
       userID: user.id,
       description: give
-         ? `Massrole gave ${role} to anyone with lower role hiearchy than Auxdibot.`
-         : `Massrole took ${role} from anyone who had it, with lower role hiearchy than Auxdibot.`,
+         ? `Massrole gave ${role.name} to anyone with lower role hiearchy than Auxdibot.`
+         : `Massrole took ${role.name} from anyone who had it, with lower role hiearchy than Auxdibot.`,
       type: give ? LogAction.MASSROLE_GIVEN : LogAction.MASSROLE_TAKEN,
       date_unix: Date.now(),
    });

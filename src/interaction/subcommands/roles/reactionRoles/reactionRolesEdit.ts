@@ -83,7 +83,9 @@ export const reactionRolesEdit = <AuxdibotSubcommand>{
          embed.description = `Edited a reaction role${message ? ` in ${message.channel}` : ''}.`;
          await handleLog(auxdibot, interaction.data.guild, {
             userID: interaction.data.member.id,
-            description: `Edited a reaction role.`,
+            description: `${interaction.data.member.user.username} edited reaction role #${
+               server.reaction_roles.indexOf(rr) == -1 ? 'Unknown' : server.reaction_roles.indexOf(rr)
+            }.`,
             type: LogAction.REACTION_ROLE_EDITED,
             date_unix: Date.now(),
          });
@@ -122,7 +124,9 @@ export const reactionRolesEdit = <AuxdibotSubcommand>{
          embed.description = `Edited a reaction role${message ? ` in ${message.channel}` : ''}.`;
          handleLog(auxdibot, interaction.data.guild, {
             userID: interaction.data.member.id,
-            description: `Edited a reaction role.`,
+            description: `${interaction.data.member.user.username} edited reaction role #${
+               server.reaction_roles.indexOf(rr) == -1 ? 'Unknown' : server.reaction_roles.indexOf(rr)
+            }.`,
             type: LogAction.REACTION_ROLE_EDITED,
             date_unix: Date.now(),
          });

@@ -15,7 +15,7 @@ const log = (auxdibot: Auxdibot, router: Router) => {
          return auxdibot.database.servers
             .findFirst({
                where: { serverID: req.guild.id },
-               select: { serverID: true, latest_log: true, log_channel: true },
+               select: { serverID: true, logs: true, log_channel: true },
             })
             .then(async (data) =>
                data ? res.json({ data }) : res.status(404).json({ error: "couldn't find that server" }),

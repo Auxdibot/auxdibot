@@ -17,7 +17,7 @@ export default async function handleLog(
          const server = await findOrCreateServer(auxdibot, guild.id);
          const logEmbed = new EmbedBuilder()
             .setColor(auxdibot.colors.log)
-            .setAuthor({ name: 'Server Log' })
+            .setAuthor({ name: `Log Action: ${log.type}` })
             .setTitle(LogNames[log.type] || null)
             .setDescription(
                `${log.description}\n\n🕰️ Date: <t:${Math.round(log.date_unix / 1000)}>${

@@ -69,7 +69,7 @@ export const joinRoleAdd = <AuxdibotSubcommand>{
       successEmbed.description = `Added <@&${role.id}> to the join roles.`;
       await handleLog(auxdibot, interaction.data.guild, {
          userID: interaction.data.member.id,
-         description: `Added (Role ID: ${role.id}) to the join roles.`,
+         description: `Added ${role.name} to the join roles.`,
          type: LogAction.JOIN_ROLE_ADDED,
          date_unix: Date.now(),
       });

@@ -1,6 +1,5 @@
 import { Guild, GuildMember, Message, PartialGuildMember, PartialMessage, PermissionsBitField } from 'discord.js';
 import { PunishmentNames } from '@/constants/bot/punishments/PunishmentNames';
-import { LogNames } from '@/constants/bot/log/LogNames';
 import { SuggestionStateName } from '@/constants/bot/suggestions/SuggestionStateName';
 import { Suggestion } from '@prisma/client';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
@@ -41,16 +40,6 @@ export default async function parsePlaceholders(
          : {}),
       ...(server
          ? {
-              ...(server.latest_log
-                 ? {
-                      server_latest_log_name: LogNames[server.latest_log.type],
-                      server_latest_log_description: server.latest_log.description,
-                      server_latest_log_date: new Date(server.latest_log.date_unix).toDateString(),
-                      server_latest_log_date_formatted: `<t:${Math.round(server.latest_log.date_unix / 1000)}>`,
-                      server_latest_log_date_utc: new Date(server.latest_log.date_unix).toUTCString(),
-                      server_latest_log_date_iso: new Date(server.latest_log.date_unix).toISOString(),
-                   }
-                 : {}),
               server_total_punishments: server.punishments.length,
               server_total_permission_overrides: server.permission_overrides.length,
            }
