@@ -12,7 +12,7 @@
     "noImplicitAny": false,
     "noImplicitThis": false,
     "strictNullChecks": false,
-    "importHelpers": true,
+    "importHelpers": false,
     "resolveJsonModule": true,
     "baseUrl": "./src",
     "paths": {
