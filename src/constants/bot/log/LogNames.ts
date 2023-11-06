@@ -1,4 +1,6 @@
-export const LogNames = {
+import { LogAction } from '@prisma/client';
+
+export const LogNames: { [k in LogAction]: string } = {
    LOG_CHANNEL_CHANGED: '🗒️ Log Channel Changed',
    MUTE_ROLE_CHANGED: '🎤 Mute Role Changed',
    WARN: '⚠ Warn',
@@ -7,8 +9,14 @@ export const LogNames = {
    BAN: '🔨 Ban',
    UNMUTE: '🔊 Unmute',
    UNBAN: '📥 Unban',
+   MEMBER_DEAFENED: '🔇 Member Server Deafened',
+   MEMBER_MUTED: '🎤 Member Server Muted',
    MEMBER_JOIN: '👋 Member Join',
    MEMBER_LEAVE: '🚶 Member Leave',
+   CHANNEL_CREATED: '💬 Channel Created',
+   CHANNEL_DELETED: '🚫 Channel Deleted',
+   THREAD_CREATED: '💬 Thread Created',
+   THREAD_DELETED: '🚫 Thread Deleted',
    PUNISHMENT_EXPIRED: '🗓️ Punishment Expired',
    PUNISHMENT_DELETED: '🗑️ Punishment Deleted',
    PERMISSION_CREATED: '✋ Permission Override Created',
