@@ -12,9 +12,10 @@ export default async function handleLog(
    fields?: EmbedField[],
    use_user_avatar?: boolean,
 ) {
+   const server = await findOrCreateServer(auxdibot, guild.id);
+   if (server.filtered_logs.indexOf(log.type) != -1) return;
    return await updateLog(auxdibot, guild.id, log)
       .then(async () => {
-         const server = await findOrCreateServer(auxdibot, guild.id);
          const logEmbed = new EmbedBuilder()
             .setColor(auxdibot.colors.log)
             .setAuthor({ name: `Log Action: ${log.type}` })

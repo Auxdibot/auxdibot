@@ -225,6 +225,7 @@ model servers {
   total_starred_messages             Int                  @default(0)
   total_stars                        Int                  @default(0)
   logs                               Log[]
+  filtered_logs                      LogAction[]
   permission_overrides               PermissionOverride[]
   punishments                        Punishment[]
   suggestions                        Suggestion[]
