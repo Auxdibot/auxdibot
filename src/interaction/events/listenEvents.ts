@@ -13,6 +13,11 @@ import guildCreate from './guild/guildCreate';
 import guildDelete from './guild/guildDelete';
 import guildMemberAdd from './guild/guildMemberAdd';
 import guildMemberRemove from './guild/guildMemberRemove';
+import threadCreate from './thread/threadCreate';
+import threadDelete from './thread/threadDelete';
+import channelCreate from './channel/channelCreate';
+import channelDelete from './channel/channelDelete';
+import voiceStateUpdate from './voice/voiceStateUpdate';
 
 export default function listenEvents(auxdibot: Auxdibot) {
    auxdibot.once('ready', () => onReady(auxdibot));
@@ -30,4 +35,9 @@ export default function listenEvents(auxdibot: Auxdibot) {
    auxdibot.on('messageReactionAdd', (reaction, user) => messageReactionAdd(auxdibot, reaction, user));
    auxdibot.on('messageReactionRemove', (reaction) => messageReactionRemove(auxdibot, reaction));
    auxdibot.on('roleDelete', (role) => roleDelete(auxdibot, role));
+   auxdibot.on('threadCreate', (thread, newlyCreated) => threadCreate(auxdibot, thread, newlyCreated));
+   auxdibot.on('threadDelete', (thread) => threadDelete(auxdibot, thread));
+   auxdibot.on('channelCreate', (channel) => channelCreate(auxdibot, channel));
+   auxdibot.on('channelDelete', (channel) => channelDelete(auxdibot, channel));
+   auxdibot.on('voiceStateUpdate', (oldState, newState) => voiceStateUpdate(auxdibot, oldState, newState));
 }

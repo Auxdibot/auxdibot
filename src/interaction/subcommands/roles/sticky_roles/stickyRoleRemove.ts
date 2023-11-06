@@ -72,10 +72,10 @@ export const stickyRoleRemove = <AuxdibotSubcommand>{
       });
       const successEmbed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
       successEmbed.title = '📝 Removed Sticky Role';
-      successEmbed.description = `Removed <@&${stickyRoleID}> from the sticky roles.`;
+      successEmbed.description = `Removed role <@&${stickyRoleID}> from the sticky roles.`;
       await handleLog(auxdibot, interaction.data.guild, {
          userID: interaction.data.member.id,
-         description: `Removed (Role ID: ${stickyRoleID}) from the sticky roles.`,
+         description: `Removed role ${stickyRole.name} from the sticky roles.`,
          type: LogAction.STICKY_ROLE_REMOVED,
          date_unix: Date.now(),
       });

@@ -7,13 +7,13 @@ import setLogChannel from '@/modules/features/logging/setLogChannel';
 import { EmbedBuilder } from '@discordjs/builders';
 import { ChannelType } from 'discord.js';
 
-export const settingsLogChannel = <AuxdibotSubcommand>{
-   name: 'log_channel',
+export const logsLogChannel = <AuxdibotSubcommand>{
+   name: 'channel',
    info: {
       module: Modules['Settings'],
       description: 'Change the log channel for the server, where all actions are logged to.',
-      usageExample: '/settings log_channel (channel)',
-      permission: 'settings.log_channel',
+      usageExample: '/logs channel (channel)',
+      permission: 'logs.channel',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

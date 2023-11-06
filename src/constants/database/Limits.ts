@@ -9,5 +9,6 @@ enum Limits {
    STICKY_ROLE_DEFAULT_LIMIT = 5,
    REACTION_ROLE_DEFAULT_LIMIT = 10,
    SCHEDULE_LIMIT = 5,
+   LOGGING_LIMIT = 10,
 }
 export default Limits;

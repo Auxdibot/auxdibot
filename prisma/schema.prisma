@@ -64,12 +64,18 @@ enum LogAction {
   UNBAN
   MEMBER_JOIN
   MEMBER_LEAVE
+  MEMBER_DEAFENED
+  MEMBER_MUTED
+  CHANNEL_CREATED
+  CHANNEL_DELETED
   PUNISHMENT_EXPIRED
   PUNISHMENT_DELETED
   PERMISSION_CREATED
   PERMISSION_DELETED
   MESSAGE_EDITED
   MESSAGE_DELETED
+  THREAD_CREATED
+  THREAD_DELETED
   JOIN_LEAVE_CHANNEL_CHANGED
   JOIN_ROLE_ADDED
   JOIN_ROLE_REMOVED
@@ -138,7 +144,7 @@ type ReactionRole {
 type Log {
   type        LogAction
   userID      String
-  date_unix   Int       @default(0)
+  date_unix   Int
   description String    @default("")
 }
 
@@ -224,7 +230,8 @@ model servers {
   starboard_reaction_count           Int?                 @default(5)
   total_starred_messages             Int                  @default(0)
   total_stars                        Int                  @default(0)
-  latest_log                         Log?
+  logs                               Log[]
+  filtered_logs                      LogAction[]
   permission_overrides               PermissionOverride[]
   punishments                        Punishment[]
   suggestions                        Suggestion[]

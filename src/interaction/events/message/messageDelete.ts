@@ -34,7 +34,7 @@ export default async function messageDelete(auxdibot: Auxdibot, message: Message
       await handleLog(auxdibot, message.guild, <Log>{
          type: LogAction.REACTION_ROLE_REMOVED,
          date_unix: Date.now(),
-         description: `Deleted a reaction role${message ? ` in ${message.channel || 'a channel'}` : ''}.`,
+         description: `Deleted a reaction role${message ? ` in ${message.channel?.toString() || 'a channel'}` : ''}.`,
          userID: sender.id,
       });
       return;
@@ -55,7 +55,7 @@ export default async function messageDelete(auxdibot: Auxdibot, message: Message
       await handleLog(auxdibot, message.guild, <Log>{
          type: LogAction.STARBOARD_MESSAGE_DELETED,
          date_unix: Date.now(),
-         description: `Deleted a starred message${message ? ` in ${message.channel || 'a channel'}` : ''}.`,
+         description: `Deleted a starred message${message ? ` in ${message.channel?.toString() || 'a channel'}` : ''}.`,
          userID: sender.id,
       });
       return;
