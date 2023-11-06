@@ -2,8 +2,27 @@ version: '3.8'
 
 services:
    auxdibot:
-      image: auxdibot:latest
       container_name: auxdibot
+      build:
+         context: ./
+         dockerfile: Dockerfile
+         args:
+            MONGO_URI: ${MONGO_URI}
+            DISCORD_BOT_TOKEN: ${DISCORD_BOT_TOKEN}
+            DISCORD_BOT_CLIENT_ID: ${DISCORD_BOT_CLIENT_ID}
+            DISCORD_INVITE_LINK: ${DISCORD_INVITE_LINK}
+            BOT_HOMEPAGE: ${BOT_HOMEPAGE}
+            BOT_STATUS_MESSAGE: ${BOT_STATUS_MESSAGE}
+      image: auxdibot:latest
       env_file:
         - .env
+      restart: always
+      networks:
+         - auxdibot
+      ports:
+         - 1080:1080
+networks:
+   auxdibot:
+      external: true
+
       
