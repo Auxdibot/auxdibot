@@ -64,19 +64,27 @@ const schedules = (auxdibot: Auxdibot, router: Router) => {
                return res.status(400).json({ error: 'missing parameters' });
             try {
                const duration = timestampToDuration(req.body['duration']);
+               const start_date = req.body['start_date'];
+               const startDate = new Date(start_date);
+               if (!(startDate instanceof Date && !isNaN(startDate.valueOf())) && start_date)
+                  return res.status(400).json({ error: 'invalid start date' });
+
                const channel = req.guild.channels.cache.get(req.body['channel']);
                const embed = req.body['embed'] ? (JSON.parse(req.body['embed']) satisfies APIEmbed) : undefined;
                if (!duration || duration == 'permanent') return res.status(400).json({ error: 'invalid duration' });
                if (!channel) return res.status(400).json({ error: 'invalid channel' });
-               const scheduledMessage = {
-                  interval_unix: duration,
+               const scheduledMessage = <ScheduledMessage>{
+                  interval_timestamp: req.body['duration'],
                   message: req.body['message'],
                   embed: embed,
-                  last_run_unix: Date.now() - duration,
+                  last_run: new Date(
+                     (startDate instanceof Date && !isNaN(startDate.valueOf()) ? startDate.valueOf() : Date.now()) -
+                        duration,
+                  ),
                   times_to_run: req.body['times_to_run'] ? Number(req.body['times_to_run']) : undefined,
                   times_run: 0,
                   channelID: req.body['channel'],
-               } satisfies ScheduledMessage;
+               };
                return createSchedule(auxdibot, req.guild, req.user, scheduledMessage, channel)
                   .then((msg) => res.json({ data: msg }))
                   .catch((x) =>
