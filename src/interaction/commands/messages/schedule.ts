@@ -32,6 +32,13 @@ export default <AuxdibotCommand>{
                   option
                      .setName('times_to_run')
                      .setDescription('Times to run this schedule. Leave empty for infinite.'),
+               )
+               .addStringOption((option) =>
+                  option
+                     .setName('start_date')
+                     .setDescription(
+                        'The date to start running the schedule (normal date, ISO date, unix timestamp, etc.)',
+                     ),
                ),
          ),
       )

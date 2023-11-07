@@ -26,7 +26,8 @@ export const scheduleMessage = <AuxdibotSubcommand>{
       if (!interaction.data) return;
       const channel = interaction.options.getChannel('channel', true, [ChannelType.GuildText]),
          interval = interaction.options.getString('interval', true),
-         times_to_run = interaction.options.getNumber('times_to_run');
+         times_to_run = interaction.options.getNumber('times_to_run'),
+         start_date = interaction.options.getString('start_date');
       if (interaction.data.guildData.scheduled_messages.length >= Limits.SCHEDULE_LIMIT) {
          return await handleError(
             auxdibot,
@@ -45,15 +46,20 @@ export const scheduleMessage = <AuxdibotSubcommand>{
             interaction,
          );
       }
-
+      const startDate = new Date(start_date);
+      if (!(startDate instanceof Date && !isNaN(startDate.valueOf())) && start_date) {
+         return await handleError(auxdibot, 'INVALID_DATE', 'The start date provided is invalid!', interaction);
+      }
       const content = interaction.options.getString('content')?.replace(/\\n/g, '\n') || '';
       const parameters = argumentsToEmbedParameters(interaction);
       try {
          const scheduledMessage = <ScheduledMessage>{
-            interval_unix: duration,
+            interval_timestamp: interval,
             message: content,
             embed: toAPIEmbed(parameters),
-            last_run_unix: Date.now() - duration,
+            last_run: new Date(
+               (startDate instanceof Date && !isNaN(startDate.valueOf()) ? startDate.valueOf() : Date.now()) - duration,
+            ),
             times_to_run,
             times_run: 0,
             channelID: channel.id,

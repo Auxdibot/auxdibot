@@ -1,3 +1,4 @@
+import timestampToDuration from '@/util/timestampToDuration';
 import Modules from '@/constants/bot/commands/Modules';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
@@ -21,7 +22,7 @@ export const scheduleList = <AuxdibotSubcommand>{
       successEmbed.description = server.scheduled_messages.reduce(
          (accumulator: string, value, index) =>
             `${accumulator}\r\n\r\n**${index + 1})** Channel: <#${value.channelID}> (next run <t:${Math.round(
-               ((value.last_run_unix || Date.now()) + value.interval_unix) / 1000,
+               (value.last_run.valueOf() + (Number(timestampToDuration(value.interval_timestamp)) || 0)) / 1000,
             )}:R>)`,
          '',
       );
