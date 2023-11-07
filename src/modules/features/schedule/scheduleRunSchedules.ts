@@ -16,12 +16,16 @@ export default function scheduleRunSchedules(auxdibot: Auxdibot) {
             const server = await findOrCreateServer(auxdibot, guild.id);
             if (server) {
                for (const schedule of server.scheduled_messages) {
+                  let scheduleChanged = false;
                   if (schedule.old_last_run_unix && !schedule.last_run) {
                      schedule.last_run = new Date(schedule.old_last_run_unix);
+                     scheduleChanged = true;
                   }
                   if (schedule.old_interval_unix && !schedule.interval_timestamp) {
                      schedule.interval_timestamp = durationToTimestamp(schedule.old_interval_unix);
+                     scheduleChanged = true;
                      if (!schedule.interval_timestamp) {
+                        scheduleChanged = false;
                         server.scheduled_messages.splice(server.scheduled_messages.indexOf(schedule), 1);
                         await auxdibot.database.servers.update({
                            where: { serverID: server.serverID },
@@ -60,6 +64,11 @@ export default function scheduleRunSchedules(auxdibot: Auxdibot) {
                            })
                            .catch((x) => console.log(x));
                      }
+                  } else if (scheduleChanged) {
+                     await auxdibot.database.servers.update({
+                        where: { serverID: server.serverID },
+                        data: { scheduled_messages: server.scheduled_messages },
+                     });
                   }
                }
             }
