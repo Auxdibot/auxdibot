@@ -7,6 +7,7 @@ import { scheduleMessage } from '@/interaction/subcommands/schedule/scheduleMess
 import { scheduleList } from '@/interaction/subcommands/schedule/scheduleList';
 import { scheduleRemove } from '@/interaction/subcommands/schedule/scheduleRemove';
 import { schedulePreview } from '@/interaction/subcommands/schedule/schedulePreview';
+import { scheduleEdit } from '@/interaction/subcommands/schedule/scheduleEdit';
 
 dotenv.config();
 export default <AuxdibotCommand>{
@@ -42,6 +43,31 @@ export default <AuxdibotCommand>{
                ),
          ),
       )
+      .addSubcommand((builder) =>
+         createEmbedParameters(
+            builder
+               .setName('edit')
+               .setDescription('Edit a scheduled message using Auxdibot.')
+               .addNumberOption((option) =>
+                  option
+                     .setName('index')
+                     .setDescription('The index of the scheduled message to edit. (See /schedule list)')
+                     .setRequired(true),
+               )
+               .addChannelOption((option) =>
+                  option
+                     .setName('channel')
+                     .setDescription('The channel to post the embed in.')
+                     .addChannelTypes(ChannelType.GuildText, ChannelType.GuildAnnouncement),
+               )
+               .addStringOption((option) => option.setName('interval').setDescription('Interval as a timestamp'))
+               .addNumberOption((option) =>
+                  option
+                     .setName('times_to_run')
+                     .setDescription('Times to run this schedule. Leave empty for infinite.'),
+               ),
+         ),
+      )
       .addSubcommand((builder) => builder.setName('list').setDescription('List the schedules running on your server.'))
       .addSubcommand((builder) =>
          builder
@@ -62,10 +88,10 @@ export default <AuxdibotCommand>{
    info: {
       module: Modules['Messages'],
       description: 'Schedule embeds, cancel schedules, and list schedules with Auxdibot.',
-      usageExample: '/schedule (message|remove|list|preview)',
+      usageExample: '/schedule (message|remove|list|preview|edit)',
       permission: 'schedule',
    },
-   subcommands: [scheduleMessage, scheduleList, scheduleRemove, schedulePreview],
+   subcommands: [scheduleMessage, scheduleList, scheduleRemove, schedulePreview, scheduleEdit],
    async execute() {
       return;
    },

@@ -39,7 +39,7 @@ type APIEmbed {
   footer      APIEmbedFooter?
   thumbnail   APIEmbedImgThumbnail?
   image       APIEmbedImgThumbnail?
-  color       Int?
+  color       Int?                  @default(0)
   title       String?
   description String?
   type        String?               @default("rich")
@@ -97,6 +97,7 @@ enum LogAction {
   STARBOARD_REACTION_COUNT_CHANGED
   STARBOARD_MESSAGE_DELETED
   SCHEDULED_MESSAGE_CREATED
+  SCHEDULED_MESSAGE_EDITED
   SCHEDULED_MESSAGE_REMOVED
   LEVEL_CHANNEL_CHANGED
 }

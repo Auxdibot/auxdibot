@@ -21,10 +21,12 @@ export const scheduleList = <AuxdibotSubcommand>{
       successEmbed.title = '⏲️ Schedules';
       successEmbed.description = server.scheduled_messages.reduce(
          (accumulator: string, value, index) =>
-            `${accumulator}\r\n\r\n**${index + 1})** Channel: <#${value.channelID}> (next run <t:${Math.round(
+            `${accumulator}\r\n\r\n**${index + 1})** Channel: <#${value.channelID}> \`${
+               value.interval_timestamp
+            }\` (next run <t:${Math.round(
                (value.last_run.valueOf() + (Number(timestampToDuration(value.interval_timestamp)) || 0)) / 1000,
             )}:R>)`,
-         '',
+         'Use `/schedule preview (index)` to preview any schedule!',
       );
       return await interaction.reply({ embeds: [successEmbed] });
    },

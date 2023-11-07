@@ -45,5 +45,6 @@ export const LogNames: { [k in LogAction]: string } = {
    STARBOARD_MESSAGE_DELETED: '⭐ Starboard Message Deleted',
    SCHEDULED_MESSAGE_CREATED: '⏲️ Scheduled Message Created',
    SCHEDULED_MESSAGE_REMOVED: '⏲️ Scheduled Message Deleted',
+   SCHEDULED_MESSAGE_EDITED: '⏲️ Scheduled Message Edited',
    LEVEL_CHANNEL_CHANGED: '🏆 Level Channel Changed',
 };
