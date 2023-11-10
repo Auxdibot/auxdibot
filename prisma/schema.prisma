@@ -47,6 +47,7 @@ type APIEmbed {
 }
 
 enum PunishmentType {
+  DELETE_MESSAGE
   WARN
   KICK
   MUTE
@@ -70,6 +71,9 @@ enum LogAction {
   CHANNEL_DELETED
   PUNISHMENT_EXPIRED
   PUNISHMENT_DELETED
+  PUNISHMENT_EDITED
+  MESSAGES_PURGED
+  AUTOMOD_SETTINGS_CHANGE
   PERMISSION_CREATED
   PERMISSION_DELETED
   MESSAGE_EDITED
@@ -239,15 +243,19 @@ model servers {
   punishments                        Punishment[]
   suggestions                        Suggestion[]
   scheduled_messages                 ScheduledMessage[]
+  punishment_send_reason             Boolean              @default(true)
+  punishment_send_moderator          Boolean              @default(false)
   automod_banned_phrases             String[]             @default([])
-  automod_banned_phrases_punishment  PunishmentType?
-  automod_punish_threshold_warns     Int?
+  automod_banned_phrases_punishment  PunishmentType?      @default(WARN)
+  automod_punish_threshold_warns     Int?                 @default(3)
+  automod_threshold_punishment       PunishmentType?      @default(MUTE)
   automod_moderate_attachments       Boolean              @default(false)
   automod_moderate_attachments_count Int?
   automod_moderate_invites           Boolean              @default(false)
   automod_moderate_invite_count      Int?
   automod_moderate_spam              Boolean              @default(false)
   automod_moderate_spam_seconds      Int?
+  automod_chat_punishment            PunishmentType?      @default(DELETE_MESSAGE)
   automod_role_exceptions            String[]             @default([])
 
   @@unique([serverID])
