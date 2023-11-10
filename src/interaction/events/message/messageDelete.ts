@@ -7,7 +7,7 @@ import handleLog from '@/util/handleLog';
 export default async function messageDelete(auxdibot: Auxdibot, message: Message<boolean> | PartialMessage) {
    const sender = message.member;
 
-   if (!sender || !message.guild) return;
+   if (!sender || message.author.bot || !message.guild) return;
    const server = await findOrCreateServer(auxdibot, message.guild.id);
    const rr = server.reaction_roles.find((rr) => rr.messageID == message.id);
    const suggestion = server.suggestions.find((suggestion) => suggestion.messageID == message.id);

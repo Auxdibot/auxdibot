@@ -10,7 +10,7 @@ export default async function messageUpdate(
    newMessage: Message<boolean> | PartialMessage,
 ) {
    const sender = newMessage.member;
-   if (!sender || !newMessage.guild) return undefined;
+   if (!sender || sender.user.bot || !newMessage.guild) return undefined;
    if (newMessage.member && newMessage.member.user.id == newMessage.client.user.id) return undefined;
    if (oldMessage.content != newMessage.content) {
       await handleLog(

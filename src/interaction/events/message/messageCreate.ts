@@ -7,7 +7,7 @@ import awardXP from '@/modules/features/levels/awardXP';
 import { DEFAULT_LEVELUP_EMBED } from '@/constants/embeds/DefaultEmbeds';
 
 export default async function messageCreate(auxdibot: Auxdibot, message: Message) {
-   if (message.author.bot || message.author.id == message.client.user.id) return;
+   if (message.author.bot) return;
    const sender = message.member;
    if (!sender || !message.guild) return;
    const server = await findOrCreateServer(auxdibot, message.guild.id);
