@@ -56,6 +56,7 @@ export default async function slashCreate(auxdibot: Auxdibot, interaction: ChatI
       noPermissionEmbed.title = '⛔ No Permission!';
       noPermissionEmbed.description = `You do not have permission to use this. (Missing permission: \`${commandData.info.permission}\`)`;
       return await interaction.reply({
+         ephemeral: true,
          embeds: [noPermissionEmbed],
       });
    }
