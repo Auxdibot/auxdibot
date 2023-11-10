@@ -61,7 +61,7 @@ export default async function updateStarredMessage(
                         .setLabel('Original Message')
                         .setEmoji('💬')
                         .setURL(
-                           `https://discord.com/channel.s/${messageReaction.message.guildId}/${messageReaction.message.channelId}/${messageReaction.message.id}`,
+                           `https://discord.com/channels/${messageReaction.message.guildId}/${messageReaction.message.channelId}/${messageReaction.message.id}`,
                         ),
                   )
                   .toJSON(),
