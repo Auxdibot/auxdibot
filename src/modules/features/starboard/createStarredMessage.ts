@@ -22,6 +22,7 @@ export default async function createStarredMessage(
       (await messageReaction.message.reactions.cache.get(server.starboard_reaction)?.fetch())?.count || 0;
    if (!starboard_channel.isTextBased()) return;
    try {
+      if (server.starred_messages.find((i) => i.starred_message_id == messageReaction.message.id)) return;
       const embed = JSON.parse(
          await parsePlaceholders(
             auxdibot,
