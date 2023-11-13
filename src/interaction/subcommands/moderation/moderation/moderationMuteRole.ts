@@ -9,8 +9,9 @@ import { EmbedBuilder } from '@discordjs/builders';
 
 export const moderationMuteRole = <AuxdibotSubcommand>{
    name: 'mute_role',
+   group: 'settings',
    info: {
-      module: Modules['Settings'],
+      module: Modules['Moderation'],
       description: 'Change the mute role for the server, which is automatically assigned to muted users.',
       usageExample: '/moderation mute_role (role)',
       permission: 'moderation.mute_role',
