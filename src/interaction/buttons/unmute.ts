@@ -25,6 +25,8 @@ export default <AuxdibotButton>{
             'There is no mute role assigned for the server! Do `/settings mute_role` to view the command to add a muterole.',
             interaction,
          );
+      const user = interaction.client.users.resolve(user_id);
+      if (!user) return;
       const muted = server.punishments.find((p) => p.userID == user.id && p.type == PunishmentType.MUTE);
       if (!muted) return await handleError(auxdibot, 'USER_NOT_MUTED', "This user isn't muted!", interaction);
 
@@ -45,7 +47,7 @@ export default <AuxdibotButton>{
          dmEmbed.fields = [punishmentInfoField(muted)];
          await member.user.send({ embeds: [dmEmbed] });
       }
-      const user = interaction.client.users.resolve(user_id);
+
       muted.expired = true;
       await auxdibot.database.servers.update({
          where: { serverID: server.serverID },

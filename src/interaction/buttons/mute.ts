@@ -3,12 +3,11 @@ import { EmbedBuilder, GuildMember, MessageComponentInteraction } from 'discord.
 import canExecute from '@/util/canExecute';
 import Modules from '@/constants/bot/commands/Modules';
 import { Auxdibot } from '@/interfaces/Auxdibot';
-import { LogAction, Punishment, PunishmentType } from '@prisma/client';
+import { Punishment, PunishmentType } from '@prisma/client';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import incrementPunishmentsTotal from '@/modules/features/moderation/incrementPunishmentsTotal';
 import { punishmentInfoField } from '@/modules/features/moderation/punishmentInfoField';
 import createPunishment from '@/modules/features/moderation/createPunishment';
-import handleLog from '@/util/handleLog';
 import handleError from '@/util/handleError';
 
 export default <AuxdibotButton>{
@@ -39,53 +38,33 @@ export default <AuxdibotButton>{
       }
       if (server.punishments.find((p) => p.userID == user_id && p.type == PunishmentType.BAN))
          return await handleError(auxdibot, 'USER_ALREADY_MUTED', 'This user is already muted!', interaction);
-      member.roles
-         .add(interaction.guild.roles.resolve(server.mute_role))
-         .then(async () => {
-            if (!interaction.guild || !member) return;
-            const muteData = <Punishment>{
-               type: PunishmentType.MUTE,
-               reason: 'No reason given.',
-               date_unix: Date.now(),
-               dmed: false,
-               expired: false,
-               expires_date_unix: undefined,
-               userID: user_id,
-               moderatorID: interaction.user.id,
-               punishmentID: await incrementPunishmentsTotal(auxdibot, interaction.guild.id),
-            };
-            const dmEmbed = new EmbedBuilder().setColor(auxdibot.colors.punishment).toJSON();
-            dmEmbed.title = '🔇 Mute';
-            dmEmbed.description = `You were muted on ${interaction.guild ? interaction.guild.name : 'Server'}.`;
-            dmEmbed.fields = [punishmentInfoField(muteData)];
-            muteData.dmed = await member.user
-               .send({ embeds: [dmEmbed] })
-               .then(() => true)
-               .catch(() => false);
-            createPunishment(auxdibot, interaction.guild.id, muteData, interaction).then(async () => {
-               await handleLog(
-                  auxdibot,
-                  interaction.guild,
-                  {
-                     userID: member.user.id,
-                     description: `${member.user.username} was muted.`,
-                     date_unix: Date.now(),
-                     type: LogAction.MUTE,
-                  },
-                  [punishmentInfoField(muteData)],
-                  true,
-               );
-               return;
-            });
-         })
-         .catch(async () => {
-            return await handleError(
-               auxdibot,
-               'FAILED_MUTE_USER',
-               `Could not mute this user! Check and see if Auxdibot has the Manage Roles permission, or if the <@&${server.mute_role}> role is above Auxdibot in the role hierarchy.`,
-               interaction,
-            );
-         });
+      const muteData = <Punishment>{
+         type: PunishmentType.MUTE,
+         reason: 'No reason given.',
+         date_unix: Date.now(),
+         dmed: false,
+         expired: false,
+         expires_date_unix: undefined,
+         userID: user_id,
+         moderatorID: interaction.user.id,
+         punishmentID: await incrementPunishmentsTotal(auxdibot, interaction.guild.id),
+      };
+      const dmEmbed = new EmbedBuilder().setColor(auxdibot.colors.punishment).toJSON();
+      dmEmbed.title = '🔇 Mute';
+      dmEmbed.description = `You were muted on ${interaction.guild ? interaction.guild.name : 'Server'}.`;
+      dmEmbed.fields = [punishmentInfoField(muteData)];
+      muteData.dmed = await member.user
+         .send({ embeds: [dmEmbed] })
+         .then(() => true)
+         .catch(() => false);
+      await createPunishment(auxdibot, interaction.guild, muteData, interaction, member.user).catch(async () => {
+         return await handleError(
+            auxdibot,
+            'FAILED_MUTE_USER',
+            `Could not mute this user! Check and see if Auxdibot has the Manage Roles permission, or if the mute role is above Auxdibot in the role hierarchy.`,
+            interaction,
+         );
+      });
       return;
    },
 };

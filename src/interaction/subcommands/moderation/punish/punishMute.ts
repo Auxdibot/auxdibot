@@ -8,45 +8,9 @@ import incrementPunishmentsTotal from '@/modules/features/moderation/incrementPu
 import { punishmentInfoField } from '@/modules/features/moderation/punishmentInfoField';
 import canExecute from '@/util/canExecute';
 import handleError from '@/util/handleError';
-import handleLog from '@/util/handleLog';
 import timestampToDuration from '@/util/timestampToDuration';
 import { EmbedBuilder } from '@discordjs/builders';
-import { LogAction, Punishment, PunishmentType } from '@prisma/client';
-import { User } from 'discord.js';
-
-const mute = async (
-   auxdibot: Auxdibot,
-   muteData: Punishment,
-   user: User,
-   interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>,
-) => {
-   if (!interaction.data) return;
-   const server = interaction.data.guildData;
-
-   const dmEmbed = new EmbedBuilder().setColor(auxdibot.colors.punishment).toJSON();
-   dmEmbed.title = '🔇 Mute';
-   dmEmbed.description = `You were muted on ${interaction.data.guild ? interaction.data.guild.name : 'Server'}.`;
-   dmEmbed.fields = [punishmentInfoField(muteData)];
-   muteData.dmed = await user
-      .send({ embeds: [dmEmbed] })
-      .then(() => true)
-      .catch(() => false);
-   createPunishment(auxdibot, server.serverID, muteData, interaction).then(async () => {
-      await handleLog(
-         auxdibot,
-         interaction.data.guild,
-         {
-            userID: user.id,
-            description: `${user.username} was muted.`,
-            date_unix: Date.now(),
-            type: LogAction.MUTE,
-         },
-         [punishmentInfoField(muteData)],
-         true,
-      );
-      return;
-   });
-};
+import { Punishment, PunishmentType } from '@prisma/client';
 
 export const punishMute = <AuxdibotSubcommand>{
    name: 'mute',
@@ -87,6 +51,16 @@ export const punishMute = <AuxdibotSubcommand>{
             interaction,
          );
       }
+      if (!server.mute_role) {
+         if (duration == 'permanent') {
+            return await handleError(
+               auxdibot,
+               'NO_TIMEOUT_PERMANENT',
+               'Cannot timeout a member permanently!',
+               interaction,
+            );
+         }
+      }
       const expires = duration == 'permanent' || !duration ? 'permanent' : duration + Date.now();
       const muteData = <Punishment>{
          type: PunishmentType.MUTE,
@@ -99,38 +73,23 @@ export const punishMute = <AuxdibotSubcommand>{
          moderatorID: interaction.user.id,
          punishmentID: await incrementPunishmentsTotal(auxdibot, server.serverID),
       };
-      if (!server.mute_role) {
-         if (duration == 'permanent') {
+      const dmEmbed = new EmbedBuilder().setColor(auxdibot.colors.punishment).toJSON();
+      dmEmbed.title = '🔇 Mute';
+      dmEmbed.description = `You were muted on ${interaction.data.guild ? interaction.data.guild.name : 'Server'}.`;
+      dmEmbed.fields = [punishmentInfoField(muteData)];
+      muteData.dmed = await user
+         .send({ embeds: [dmEmbed] })
+         .then(() => true)
+         .catch(() => false);
+      await createPunishment(auxdibot, interaction.data.guild, muteData, interaction, user, duration).catch(
+         async () => {
             return await handleError(
                auxdibot,
-               'NO_TIMEOUT_PERMANENT',
-               'Cannot timeout a member permanently!',
+               'FAILED_MUTE_USER',
+               `Could not mute this user! Check and see if Auxdibot has the Manage Roles (or Timeout Members) permission, or if the mute role is above Auxdibot in the role hierarchy.`,
                interaction,
             );
-         }
-         member
-            .timeout(duration, reason)
-            .then(() => mute(auxdibot, muteData, user, interaction))
-            .catch(async () => {
-               return await handleError(
-                  auxdibot,
-                  'FAILED_TIMEOUT_USER',
-                  `Could not timeout this user! Check and see if Auxdibot has the Timeout Members permission.`,
-                  interaction,
-               );
-            });
-      } else {
-         member.roles
-            .add(interaction.data.guild.roles.resolve(server.mute_role) || '')
-            .then(async () => mute(auxdibot, muteData, user, interaction))
-            .catch(async () => {
-               return await handleError(
-                  auxdibot,
-                  'FAILED_MUTE_USER',
-                  `Could not mute this user! Check and see if Auxdibot has the Manage Roles permission, or if the <@&${server.mute_role}> role is above Auxdibot in the role hierarchy.`,
-                  interaction,
-               );
-            });
-      }
+         },
+      );
    },
 };

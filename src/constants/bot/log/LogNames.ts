@@ -26,6 +26,7 @@ export const LogNames: { [k in LogAction]: string } = {
    PERMISSION_DELETED: '🗑️ Permission Override Deleted',
    MESSAGE_EDITED: '🖊️ Message Edited',
    MESSAGE_DELETED: '🗙 Message Deleted',
+   MESSAGE_DELETED_AUTOMOD: '🤖 Message Deleted (Automod)',
    JOIN_LEAVE_CHANNEL_CHANGED: '📩 Join/Leave Channel Changed',
    JOIN_ROLE_ADDED: '👋 Join Role Added',
    JOIN_ROLE_REMOVED: '👋 Join Role Removed',

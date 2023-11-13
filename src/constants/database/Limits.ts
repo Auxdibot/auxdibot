@@ -10,5 +10,6 @@ enum Limits {
    REACTION_ROLE_DEFAULT_LIMIT = 10,
    SCHEDULE_LIMIT = 5,
    LOGGING_LIMIT = 10,
+   AUTOMOD_BLACKLIST_LIMIT = 25,
 }
 export default Limits;

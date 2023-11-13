@@ -1,6 +1,6 @@
 import { EmbedBuilder, ActionRowBuilder, ButtonBuilder, SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
-import { PunishmentNames } from '@/constants/bot/punishments/PunishmentNames';
+import { PunishmentValues } from '@/constants/bot/punishments/PunishmentValues';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import Modules from '@/constants/bot/commands/Modules';
@@ -69,7 +69,7 @@ export default <AuxdibotCommand>{
                .reverse()
                .slice(0, 10)
                .reduce((str, punishment) => {
-                  const type = PunishmentNames[punishment.type];
+                  const type = PunishmentValues[punishment.type];
                   return (
                      str +
                      `\n**${type.name}** - PID: ${punishment.punishmentID} - <t:${Math.round(

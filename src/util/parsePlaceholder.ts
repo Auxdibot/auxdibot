@@ -1,5 +1,5 @@
 import { Guild, GuildMember, Message, PartialGuildMember, PartialMessage, PermissionsBitField } from 'discord.js';
-import { PunishmentNames } from '@/constants/bot/punishments/PunishmentNames';
+import { PunishmentValues } from '@/constants/bot/punishments/PunishmentValues';
 import { SuggestionStateName } from '@/constants/bot/suggestions/SuggestionStateName';
 import { Suggestion } from '@prisma/client';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
@@ -77,7 +77,7 @@ export default async function parsePlaceholders(
                  ? {
                       member_total_punishments: server.punishments.filter((p) => p.userID == member.user.id).length,
                       member_latest_punishment: latest_punishment
-                         ? PunishmentNames[latest_punishment.type as 'warn' | 'kick' | 'mute' | 'ban'].name
+                         ? PunishmentValues[latest_punishment.type as 'warn' | 'kick' | 'mute' | 'ban'].name
                          : 'None',
                       member_latest_punishment_id: latest_punishment ? latest_punishment.punishmentID : 'None',
                       member_latest_punishment_date: latest_punishment

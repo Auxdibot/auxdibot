@@ -8,9 +8,8 @@ import incrementPunishmentsTotal from '@/modules/features/moderation/incrementPu
 import { punishmentInfoField } from '@/modules/features/moderation/punishmentInfoField';
 import canExecute from '@/util/canExecute';
 import handleError from '@/util/handleError';
-import handleLog from '@/util/handleLog';
 import { EmbedBuilder } from '@discordjs/builders';
-import { LogAction, Punishment, PunishmentType } from '@prisma/client';
+import { Punishment, PunishmentType } from '@prisma/client';
 
 export const punishWarn = <AuxdibotSubcommand>{
    name: 'warn',
@@ -56,20 +55,6 @@ export const punishWarn = <AuxdibotSubcommand>{
          .then(() => true)
          .catch(() => false);
 
-      createPunishment(auxdibot, interaction.data.guild.id, warnData, interaction).then(async () => {
-         await handleLog(
-            auxdibot,
-            interaction.data.guild,
-            {
-               userID: user.id,
-               description: `${user.username} was warned.`,
-               date_unix: Date.now(),
-               type: LogAction.WARN,
-            },
-            [punishmentInfoField(warnData)],
-            true,
-         );
-         return;
-      });
+      await createPunishment(auxdibot, interaction.data.guild, warnData, interaction, member.user);
    },
 };

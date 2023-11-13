@@ -3,7 +3,11 @@ import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import Modules from '@/constants/bot/commands/Modules';
 import { moderationMuteRole } from '@/interaction/subcommands/moderation/moderation/moderationMuteRole';
 import { PunishmentType } from '@prisma/client';
-import { PunishmentNames } from '@/constants/bot/punishments/PunishmentNames';
+import { PunishmentValues } from '@/constants/bot/punishments/PunishmentValues';
+import { blacklistAdd } from '@/interaction/subcommands/moderation/moderation/blacklist/blacklistAdd';
+import { blacklistPunishment } from '@/interaction/subcommands/moderation/moderation/blacklist/blacklistPunishment';
+import { blacklistList } from '@/interaction/subcommands/moderation/moderation/blacklist/blacklistList';
+import { blacklistRemove } from '@/interaction/subcommands/moderation/moderation/blacklist/blacklistRemove';
 
 export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -85,7 +89,7 @@ export default <AuxdibotCommand>{
                         .setDescription('The punishment to use when the warns threshold is exceeded.')
                         .setChoices(
                            ...[PunishmentType.MUTE, PunishmentType.BAN, PunishmentType.KICK].map((i) => ({
-                              name: PunishmentNames[i].title,
+                              name: PunishmentValues[i].title,
                               value: i,
                            })),
                         )
@@ -146,7 +150,7 @@ export default <AuxdibotCommand>{
                         .setChoices(
                            ...Object.keys(PunishmentType)
                               .slice(1, 5)
-                              .map((i) => ({ name: PunishmentNames[i].title, value: i })),
+                              .map((i) => ({ name: PunishmentValues[i].title, value: i })),
                         )
                         .setRequired(true),
                   )
@@ -191,7 +195,7 @@ export default <AuxdibotCommand>{
                         .setChoices(
                            ...Object.keys(PunishmentType)
                               .slice(1, 5)
-                              .map((i) => ({ name: PunishmentNames[i].title, value: i })),
+                              .map((i) => ({ name: PunishmentValues[i].title, value: i })),
                         )
                         .setRequired(true),
                   )
@@ -242,7 +246,7 @@ export default <AuxdibotCommand>{
                         .setChoices(
                            ...Object.keys(PunishmentType)
                               .slice(1, 5)
-                              .map((i) => ({ name: PunishmentNames[i].title, value: i })),
+                              .map((i) => ({ name: PunishmentValues[i].title, value: i })),
                         )
                         .setRequired(true),
                   )
@@ -260,54 +264,41 @@ export default <AuxdibotCommand>{
             .addSubcommand((builder) =>
                builder
                   .setName('add')
-                  .setDescription('Add a blacklisted word or regex pattern to this server.')
+                  .setDescription('Add a blacklisted phrase to this server.')
                   .addStringOption((builder) =>
-                     builder
-                        .setName('censor')
-                        .setDescription('The word or pattern to censor (see regex for patterns)')
-                        .setRequired(true),
-                  )
-                  .addBooleanOption((builder) =>
-                     builder.setName('regex').setDescription('Whether the blacklisted option is a regex pattern.'),
+                     builder.setName('phrase').setDescription('The phrase to censor.').setRequired(true),
                   ),
             )
             .addSubcommand((builder) =>
-               builder
-                  .setName('list')
-                  .setDescription('See a list of every blacklisted word or pattern on this server.'),
+               builder.setName('list').setDescription('See a list of every blacklisted word on this server.'),
             )
             .addSubcommand((builder) =>
                builder
                   .setName('remove')
-                  .setDescription('Remove a censored word from the server.')
+                  .setDescription('Remove a blacklisted phrase from the server.')
                   .addStringOption((builder) =>
-                     builder.setName('blacklist').setDescription('The word or pattern to remove from the blacklist.'),
+                     builder.setName('phrase').setDescription('The phrase to remove from the blacklist.'),
                   )
                   .addNumberOption((builder) =>
                      builder
                         .setName('index')
                         .setDescription(
-                           'The index of the word or pattern to remove from the blacklist. (overrides blacklist option)',
+                           'The index of the phrase to remove from the blacklist. (overrides blacklist option)',
                         ),
                   ),
             )
             .addSubcommand((builder) =>
                builder
                   .setName('punishment')
-                  .setDescription('Set the punishment for a blacklisted word on this server.')
+                  .setDescription('Set the punishment given when a blacklisted word is used.')
                   .addStringOption((builder) =>
                      builder
                         .setName('punishment')
                         .setDescription('The punishment to use when a blacklisted word is used.')
                         .setChoices(
-                           ...Object.keys(PunishmentType).map((i) => ({ name: PunishmentNames[i].title, value: i })),
+                           ...Object.keys(PunishmentType).map((i) => ({ name: PunishmentValues[i].title, value: i })),
                         )
                         .setRequired(true),
-                  )
-                  .addStringOption((builder) =>
-                     builder
-                        .setName('reason')
-                        .setDescription('The reason to give for the punishment when a blacklisted word is used.'),
                   ),
             ),
       ),
@@ -317,7 +308,7 @@ export default <AuxdibotCommand>{
       usageExample: '/moderation (settings|blacklist|attachments|invites|warns|spam|exceptions)',
       permission: 'moderation',
    },
-   subcommands: [moderationMuteRole],
+   subcommands: [moderationMuteRole, blacklistAdd, blacklistPunishment, blacklistList, blacklistRemove],
    async execute() {
       return;
    },
