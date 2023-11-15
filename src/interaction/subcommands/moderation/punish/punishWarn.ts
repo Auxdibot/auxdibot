@@ -5,7 +5,6 @@ import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInt
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 import createPunishment from '@/modules/features/moderation/createPunishment';
 import incrementPunishmentsTotal from '@/modules/features/moderation/incrementPunishmentsTotal';
-import { punishmentInfoField } from '@/modules/features/moderation/punishmentInfoField';
 import canExecute from '@/util/canExecute';
 import handleError from '@/util/handleError';
 import { EmbedBuilder } from '@discordjs/builders';
@@ -45,15 +44,6 @@ export const punishWarn = <AuxdibotSubcommand>{
          type: PunishmentType.WARN,
          punishmentID: await incrementPunishmentsTotal(auxdibot, interaction.data.guild.id),
       };
-
-      const dmEmbed = new EmbedBuilder().setColor(auxdibot.colors.punishment).toJSON();
-      dmEmbed.title = '⚠ Warn';
-      dmEmbed.description = `You were warned on ${interaction.data.guild ? interaction.data.guild.name : 'Server'}.`;
-      dmEmbed.fields = [punishmentInfoField(warnData)];
-      warnData.dmed = await user
-         .send({ embeds: [dmEmbed] })
-         .then(() => true)
-         .catch(() => false);
 
       await createPunishment(auxdibot, interaction.data.guild, warnData, interaction, member.user);
    },

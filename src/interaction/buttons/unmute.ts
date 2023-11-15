@@ -12,7 +12,7 @@ import handleError from '@/util/handleError';
 export default <AuxdibotButton>{
    module: Modules['Moderation'],
    name: 'unmute',
-   permission: 'moderation.mute.remove',
+   permission: 'moderation.punish.mute.remove',
    async execute(auxdibot: Auxdibot, interaction: MessageComponentInteraction) {
       if (!interaction.guild || !interaction.user || !interaction.channel) return;
       const [, user_id] = interaction.customId.split('-');

@@ -26,6 +26,14 @@ export default async function createPunishment(
          data: { punishments: server.punishments },
       });
    }
+   const dmEmbed = new EmbedBuilder().setColor(auxdibot.colors.punishment).toJSON();
+   dmEmbed.title = PunishmentValues[punishment.type].name;
+   dmEmbed.description = `You were ${PunishmentValues[punishment.type].action} on ${guild ? guild.name : 'Server'}.`;
+   dmEmbed.fields = [punishmentInfoField(punishment)];
+   punishment.dmed = await user
+      .send({ embeds: [dmEmbed] })
+      .then(() => true)
+      .catch(() => false);
    switch (punishment.type) {
       case PunishmentType.KICK:
          await guild.members.kick(user, punishment.reason || 'No reason specified.');
@@ -104,16 +112,7 @@ export default async function createPunishment(
                         moderatorID: user.id,
                         punishmentID: await incrementPunishmentsTotal(auxdibot, guild.id),
                      };
-                     const dmEmbed = new EmbedBuilder().setColor(auxdibot.colors.punishment).toJSON();
-                     dmEmbed.title = PunishmentValues[server.automod_threshold_punishment].name;
-                     dmEmbed.description = `You were ${
-                        PunishmentValues[server.automod_threshold_punishment].action
-                     } on ${guild ? guild.name : 'Server'}.`;
-                     dmEmbed.fields = [punishmentInfoField(thresholdPunishment)];
-                     thresholdPunishment.dmed = await user
-                        .send({ embeds: [dmEmbed] })
-                        .then(() => true)
-                        .catch(() => false);
+
                      return await auxdibot.database.servermembers
                         .update({
                            where: { serverID_userID: { serverID: guild.id, userID: data.userID } },

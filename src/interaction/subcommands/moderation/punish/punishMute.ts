@@ -5,7 +5,6 @@ import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInt
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 import createPunishment from '@/modules/features/moderation/createPunishment';
 import incrementPunishmentsTotal from '@/modules/features/moderation/incrementPunishmentsTotal';
-import { punishmentInfoField } from '@/modules/features/moderation/punishmentInfoField';
 import canExecute from '@/util/canExecute';
 import handleError from '@/util/handleError';
 import timestampToDuration from '@/util/timestampToDuration';
@@ -73,14 +72,6 @@ export const punishMute = <AuxdibotSubcommand>{
          moderatorID: interaction.user.id,
          punishmentID: await incrementPunishmentsTotal(auxdibot, server.serverID),
       };
-      const dmEmbed = new EmbedBuilder().setColor(auxdibot.colors.punishment).toJSON();
-      dmEmbed.title = '🔇 Mute';
-      dmEmbed.description = `You were muted on ${interaction.data.guild ? interaction.data.guild.name : 'Server'}.`;
-      dmEmbed.fields = [punishmentInfoField(muteData)];
-      muteData.dmed = await user
-         .send({ embeds: [dmEmbed] })
-         .then(() => true)
-         .catch(() => false);
       await createPunishment(auxdibot, interaction.data.guild, muteData, interaction, user, duration).catch(
          async () => {
             return await handleError(

@@ -6,14 +6,13 @@ import { Auxdibot } from '@/interfaces/Auxdibot';
 import { Punishment, PunishmentType } from '@prisma/client';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import incrementPunishmentsTotal from '@/modules/features/moderation/incrementPunishmentsTotal';
-import { punishmentInfoField } from '@/modules/features/moderation/punishmentInfoField';
 import createPunishment from '@/modules/features/moderation/createPunishment';
 import handleError from '@/util/handleError';
 
 export default <AuxdibotButton>{
    module: Modules['Moderation'],
    name: 'mute',
-   permission: 'moderation.mute',
+   permission: 'moderation.punish.mute',
    async execute(auxdibot: Auxdibot, interaction: MessageComponentInteraction) {
       if (!interaction.guild || !interaction.user || !interaction.channel) return;
       const [, user_id] = interaction.customId.split('-');
@@ -49,14 +48,7 @@ export default <AuxdibotButton>{
          moderatorID: interaction.user.id,
          punishmentID: await incrementPunishmentsTotal(auxdibot, interaction.guild.id),
       };
-      const dmEmbed = new EmbedBuilder().setColor(auxdibot.colors.punishment).toJSON();
-      dmEmbed.title = '🔇 Mute';
-      dmEmbed.description = `You were muted on ${interaction.guild ? interaction.guild.name : 'Server'}.`;
-      dmEmbed.fields = [punishmentInfoField(muteData)];
-      muteData.dmed = await member.user
-         .send({ embeds: [dmEmbed] })
-         .then(() => true)
-         .catch(() => false);
+
       await createPunishment(auxdibot, interaction.guild, muteData, interaction, member.user).catch(async () => {
          return await handleError(
             auxdibot,

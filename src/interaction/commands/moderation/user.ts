@@ -1,4 +1,4 @@
-import { EmbedBuilder, ActionRowBuilder, ButtonBuilder, SlashCommandBuilder } from 'discord.js';
+import { EmbedBuilder, ActionRowBuilder, ButtonBuilder, SlashCommandBuilder, PermissionsBitField } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import { PunishmentValues } from '@/constants/bot/punishments/PunishmentValues';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
@@ -6,6 +6,7 @@ import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandD
 import Modules from '@/constants/bot/commands/Modules';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import { PunishmentType } from '@prisma/client';
+import calcXP from '@/util/calcXP';
 
 export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -28,8 +29,8 @@ export default <AuxdibotCommand>{
          where: { userID: user?.id || interaction.data.member.id, serverID: interaction.data.guild.id },
       });
       const record = server.punishments.filter((p) => p.userID == user.id),
-         banned = server.punishments.find((p) => p.userID == user.id && p.type == PunishmentType.BAN),
-         muted = server.punishments.find((p) => p.userID == user.id && p.type == PunishmentType.MUTE);
+         banned = server.punishments.find((p) => p.userID == user.id && p.type == PunishmentType.BAN && !p.expired),
+         muted = server.punishments.find((p) => p.userID == user.id && p.type == PunishmentType.MUTE && !p.expired);
       let overrides = server.permission_overrides.filter((i) => i.roleID == user.id);
       const embed = new EmbedBuilder().setColor(auxdibot.colors.info).toJSON();
       if (member) {
@@ -37,7 +38,7 @@ export default <AuxdibotCommand>{
             overrides = overrides.concat(server.permission_overrides.filter((i) => i.roleID == role.id));
          }
       }
-      embed.title = `🧍 ${user.username}`;
+      embed.title = `🧍 @${user.username}`;
       embed.thumbnail = {
          url: user.avatarURL({ size: 128 }) || '',
          width: 128,
@@ -48,17 +49,24 @@ export default <AuxdibotCommand>{
          member
             ? {
                  name: 'Member Data',
-                 value: `👋 Join Date: <t:${Math.round(
-                    (member.joinedTimestamp || Date.now()) / 1000,
-                 )}>\n📗 Highest Role: <@&${member.roles.highest.id}>\n${
-                    member.id == interaction.data.guild.ownerId ? '👑 Owner' : ''
+                 value: `👋 Join Date: <t:${Math.round((member.joinedTimestamp || Date.now()) / 1000)}>\n${
+                    data?.warns
+                       ? `⚠️ Warns Threshold: ${data.warns}/${
+                            server.automod_punish_threshold_warns || 'No Threshold'
+                         }\n`
+                       : ''
+                 }${member.roles.cache.size > 0 ? `📗 Highest Role: <@&${member.roles.highest.id}>\n` : ''}${
+                    member.id == interaction.data.guild.ownerId
+                       ? '👑 Owner\n'
+                       : member.permissions.has(PermissionsBitField.Flags.Administrator)
+                       ? '⚒️ Administrator\n'
+                       : ''
                  }${
                     data
-                       ? `🏆 Level: **${
-                            data.level
-                         }** \`${data.xp.toLocaleString()}/${data.xpTill.toLocaleString()} XP\`${
-                            data.suggestions_banned ? '\n🚫 Suggestions Banned' : ''
-                         }`
+                       ? `🏆 Level: **${data.level}** \`${data.xpTill.toLocaleString()}/${calcXP(
+                            data.level,
+                         ).toLocaleString()} XP\`
+                         ${data.suggestions_banned ? '\n🚫 Suggestions Banned' : ''}`
                        : ''
                  }`,
               }
