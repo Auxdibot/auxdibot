@@ -126,5 +126,6 @@ export default async function createPunishment(
                });
          }
          return punishment;
-      });
+      })
+      .catch(() => undefined);
 }

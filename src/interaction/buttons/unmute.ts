@@ -27,7 +27,7 @@ export default <AuxdibotButton>{
          );
       const user = interaction.client.users.resolve(user_id);
       if (!user) return;
-      const muted = server.punishments.find((p) => p.userID == user.id && p.type == PunishmentType.MUTE);
+      const muted = server.punishments.find((p) => p.userID == user.id && p.type == PunishmentType.MUTE && !p.expired);
       if (!muted) return await handleError(auxdibot, 'USER_NOT_MUTED', "This user isn't muted!", interaction);
 
       const member = interaction.guild.members.resolve(user_id);
