@@ -9,6 +9,8 @@ import { blacklistPunishment } from '@/interaction/subcommands/moderation/modera
 import { blacklistList } from '@/interaction/subcommands/moderation/moderation/blacklist/blacklistList';
 import { blacklistRemove } from '@/interaction/subcommands/moderation/moderation/blacklist/blacklistRemove';
 import { warnsThreshold } from '@/interaction/subcommands/moderation/moderation/warns/warnsThreshold';
+import { moderationSendReason } from '@/interaction/subcommands/moderation/moderation/moderationSendReason';
+import { moderationSendModerator } from '@/interaction/subcommands/moderation/moderation/moderationSendModerator';
 
 export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -28,9 +30,9 @@ export default <AuxdibotCommand>{
                builder
                   .setName('send_reason')
                   .setDescription('Change whether users are sent the reason for their punishment.')
-                  .addRoleOption((builder) =>
+                  .addBooleanOption((builder) =>
                      builder
-                        .setName('role')
+                        .setName('send')
                         .setDescription('Whether users are sent the reason for their punishment.')
                         .setRequired(true),
                   ),
@@ -39,7 +41,7 @@ export default <AuxdibotCommand>{
                builder
                   .setName('send_moderator')
                   .setDescription('Change whether users are sent the name of the moderator that punished them.')
-                  .addRoleOption((builder) =>
+                  .addBooleanOption((builder) =>
                      builder
                         .setName('send')
                         .setDescription('Whether users are sent the name of the moderator that punished them.')
@@ -306,7 +308,16 @@ export default <AuxdibotCommand>{
       usageExample: '/moderation (settings|blacklist|attachments|invites|warns|spam|exceptions)',
       permission: 'moderation',
    },
-   subcommands: [moderationMuteRole, blacklistAdd, blacklistPunishment, blacklistList, blacklistRemove, warnsThreshold],
+   subcommands: [
+      moderationMuteRole,
+      blacklistAdd,
+      blacklistPunishment,
+      blacklistList,
+      blacklistRemove,
+      warnsThreshold,
+      moderationSendReason,
+      moderationSendModerator,
+   ],
    async execute() {
       return;
    },

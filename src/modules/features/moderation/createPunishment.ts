@@ -29,7 +29,7 @@ export default async function createPunishment(
    const dmEmbed = new EmbedBuilder().setColor(auxdibot.colors.punishment).toJSON();
    dmEmbed.title = PunishmentValues[punishment.type].name;
    dmEmbed.description = `You were ${PunishmentValues[punishment.type].action} on ${guild ? guild.name : 'Server'}.`;
-   dmEmbed.fields = [punishmentInfoField(punishment)];
+   dmEmbed.fields = [punishmentInfoField(punishment, server.punishment_send_moderator, server.punishment_send_reason)];
    punishment.dmed = await user
       .send({ embeds: [dmEmbed] })
       .then(() => true)
@@ -66,7 +66,7 @@ export default async function createPunishment(
          const embed = new EmbedBuilder().setColor(0x9c0e11).toJSON();
          embed.title = PunishmentValues[punishment.type].name;
          embed.description = `User was ${PunishmentValues[punishment.type].action}.`;
-         embed.fields = [punishmentInfoField(punishment)];
+         embed.fields = [punishmentInfoField(punishment, true, true)];
          embed.footer = {
             text: `Punishment ID: ${punishment.punishmentID}`,
          };
@@ -79,10 +79,10 @@ export default async function createPunishment(
                date_unix: Date.now(),
                type: PunishmentValues[punishment.type].log,
             },
-            [punishmentInfoField(punishment)],
+            [punishmentInfoField(punishment, true, true)],
             true,
          );
-         if (interaction && interaction.isRepliable()) interaction.reply({ embeds: [embed] });
+         if (interaction && interaction.isRepliable() && !interaction.replied) interaction.reply({ embeds: [embed] });
          if (punishment.type == PunishmentType.WARN) {
             await auxdibot.database.servermembers
                .update({

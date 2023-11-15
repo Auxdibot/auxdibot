@@ -9,7 +9,6 @@ import { LogAction, Punishment, PunishmentType } from '@prisma/client';
 import handleLog from '@/util/handleLog';
 import createPunishment from '@/modules/features/moderation/createPunishment';
 import { PunishmentValues } from '@/constants/bot/punishments/PunishmentValues';
-import { punishmentInfoField } from '@/modules/features/moderation/punishmentInfoField';
 import incrementPunishmentsTotal from '@/modules/features/moderation/incrementPunishmentsTotal';
 
 export default async function messageCreate(auxdibot: Auxdibot, message: Message) {
@@ -69,16 +68,6 @@ export default async function messageCreate(auxdibot: Auxdibot, message: Message
                   moderatorID: '',
                   dmed: false,
                };
-               const dmEmbed = new EmbedBuilder().setColor(auxdibot.colors.punishment).toJSON();
-               dmEmbed.title = `${PunishmentValues[server.automod_banned_phrases_punishment].name}`;
-               dmEmbed.description = `You were ${
-                  PunishmentValues[server.automod_banned_phrases_punishment].action
-               } on ${message.guild ? message.guild.name : 'Server'}.`;
-               dmEmbed.fields = [punishmentInfoField(punishment)];
-               punishment.dmed = await sender
-                  .send({ embeds: [dmEmbed] })
-                  .then(() => true)
-                  .catch(() => false);
                message
                   .delete()
                   .then(async () => {

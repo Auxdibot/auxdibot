@@ -32,7 +32,7 @@ export const punishmentDelete = <AuxdibotSubcommand>{
       const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
       embed.title = `${type} deleted. (PID: ${punishment.punishmentID})`;
       embed.description = `${interaction.user} deleted a punishment assigned to <@${punishment.userID}>.`;
-      embed.fields = [punishmentInfoField(punishment)];
+      embed.fields = [punishmentInfoField(punishment, true, true)];
       await interaction.reply({ embeds: [embed] });
    },
 };

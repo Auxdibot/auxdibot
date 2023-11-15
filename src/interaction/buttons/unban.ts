@@ -30,7 +30,7 @@ export default <AuxdibotButton>{
       });
       embed.title = `📥 Unbanned ${user ? user.username : `<@${user_id}>`}`;
       embed.description = `User was unbanned.`;
-      embed.fields = [punishmentInfoField(banned)];
+      embed.fields = [punishmentInfoField(banned, true, true)];
       await handleLog(
          auxdibot,
          interaction.guild,
@@ -40,7 +40,7 @@ export default <AuxdibotButton>{
             date_unix: Date.now(),
             type: LogAction.UNBAN,
          },
-         [punishmentInfoField(banned)],
+         [punishmentInfoField(banned, true, true)],
          true,
       );
       return await interaction.reply({ embeds: [embed] });

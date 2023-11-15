@@ -44,7 +44,7 @@ export default <AuxdibotButton>{
          const dmEmbed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
          dmEmbed.title = '🔊 Unmuted';
          dmEmbed.description = `You were unmuted on ${interaction.guild.name}.`;
-         dmEmbed.fields = [punishmentInfoField(muted)];
+         dmEmbed.fields = [punishmentInfoField(muted, true, true)];
          await member.user.send({ embeds: [dmEmbed] });
       }
 
@@ -55,7 +55,7 @@ export default <AuxdibotButton>{
       });
       embed.title = `🔊 Unmuted ${user ? user.username : `<@${user_id}>`}`;
       embed.description = `User was unmuted.`;
-      embed.fields = [punishmentInfoField(muted)];
+      embed.fields = [punishmentInfoField(muted, true, true)];
       await handleLog(
          auxdibot,
          interaction.guild,
@@ -65,7 +65,7 @@ export default <AuxdibotButton>{
             date_unix: Date.now(),
             type: LogAction.UNMUTE,
          },
-         [punishmentInfoField(muted)],
+         [punishmentInfoField(muted, true, true)],
          true,
       );
       return await interaction.reply({ embeds: [embed] });

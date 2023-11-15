@@ -32,7 +32,7 @@ export default function scheduleExpirationChecks(auxdibot: Auxdibot) {
                            date_unix: Date.now(),
                            userID: auxdibot.user.id,
                         },
-                        [punishmentInfoField(expiredPunishment)],
+                        [punishmentInfoField(expiredPunishment, true, true)],
                      );
                      switch (expiredPunishment.type) {
                         case PunishmentType.BAN:
