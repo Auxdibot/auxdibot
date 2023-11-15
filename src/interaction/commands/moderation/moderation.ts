@@ -8,6 +8,7 @@ import { blacklistAdd } from '@/interaction/subcommands/moderation/moderation/bl
 import { blacklistPunishment } from '@/interaction/subcommands/moderation/moderation/blacklist/blacklistPunishment';
 import { blacklistList } from '@/interaction/subcommands/moderation/moderation/blacklist/blacklistList';
 import { blacklistRemove } from '@/interaction/subcommands/moderation/moderation/blacklist/blacklistRemove';
+import { warnsThreshold } from '@/interaction/subcommands/moderation/moderation/warns/warnsThreshold';
 
 export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -82,7 +83,9 @@ export default <AuxdibotCommand>{
             .addSubcommand((builder) =>
                builder
                   .setName('threshold')
-                  .setDescription('Set the punishment for attachments spam on this server.')
+                  .setDescription(
+                     'Set the punishment to give for receiving warns on your server. (set warns to 0 to disable)',
+                  )
                   .addStringOption((builder) =>
                      builder
                         .setName('punishment')
@@ -102,11 +105,6 @@ export default <AuxdibotCommand>{
                            'The total amount of warns needed to trigger the punishment. (set to 0 to turn off threshold)',
                         )
                         .setRequired(true),
-                  )
-                  .addStringOption((builder) =>
-                     builder
-                        .setName('reason')
-                        .setDescription('The reason to give for the punishment when the warns threshold is exceeded.'),
                   ),
             ),
       )
@@ -308,7 +306,7 @@ export default <AuxdibotCommand>{
       usageExample: '/moderation (settings|blacklist|attachments|invites|warns|spam|exceptions)',
       permission: 'moderation',
    },
-   subcommands: [moderationMuteRole, blacklistAdd, blacklistPunishment, blacklistList, blacklistRemove],
+   subcommands: [moderationMuteRole, blacklistAdd, blacklistPunishment, blacklistList, blacklistRemove, warnsThreshold],
    async execute() {
       return;
    },

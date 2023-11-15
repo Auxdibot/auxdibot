@@ -203,6 +203,7 @@ model servermembers {
   v                  Int?     @map("__v")
   userID             String
   serverID           String
+  warns              Int      @default(0)
   level              Int?     @default(0)
   in_server          Boolean  @default(true)
   sticky_roles       String[] @default([])

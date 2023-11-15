@@ -8,44 +8,37 @@ import { EmbedBuilder } from 'discord.js';
 import { PunishmentType } from '@prisma/client';
 import { PunishmentValues } from '@/constants/bot/punishments/PunishmentValues';
 
-export const blacklistPunishment = <AuxdibotSubcommand>{
-   name: 'punishment',
-   group: 'blacklist',
+export const warnsThreshold = <AuxdibotSubcommand>{
+   name: 'threshold',
+   group: 'warns',
    info: {
       module: Modules['Moderation'],
-      description: 'Set the punishment given when a blacklisted word is used.',
-      usageExample: '/moderation blacklist punishment (punishment)',
-      permission: 'moderation.blacklist.punishment',
+      description: 'Set the punishment to give for receiving warns on your server. (set warns to 0 to disable)',
+      usageExample: '/moderation warns threshold (punishment) (warns)',
+      permission: 'moderation.warns.threshold',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;
-      const punishment = interaction.options.getString('punishment', true);
+      const punishment = interaction.options.getString('punishment', true),
+         warns = interaction.options.getNumber('warns', true);
       const server = interaction.data.guildData;
-      if (server.automod_banned_phrases_punishment == punishment) {
-         return await handleError(
-            auxdibot,
-            'PUNISHMENT_IDENTICAL',
-            'That is the same punishment as the current automod blacklist punishment!',
-            interaction,
-         );
-      }
       if (!PunishmentType[punishment]) {
          return await handleError(
             auxdibot,
             'INVALID_BLACKLIST_PUNISHMENT',
-            'This is an invalid blacklist punishment type!',
+            'This is an invalid threshold punishment type!',
             interaction,
          );
       }
       return auxdibot.database.servers
          .update({
             where: { serverID: server.serverID },
-            data: { automod_banned_phrases_punishment: PunishmentType[punishment] },
+            data: { automod_punish_threshold_warns: warns, automod_threshold_punishment: PunishmentType[punishment] },
          })
          .then(async () => {
             const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.title = 'Success!';
-            embed.description = `Successfully set \`${PunishmentValues[punishment].name}\` as the server blacklist punishment.`;
+            embed.description = `Successfully set \`${PunishmentValues[punishment].name}\` as the server warn threshold punishment. Once a user hits ${warns} warns, they will be ${PunishmentValues[punishment].action}.`;
 
             return await interaction.reply({ embeds: [embed] });
          })
