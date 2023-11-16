@@ -105,6 +105,10 @@ enum LogAction {
   SCHEDULED_MESSAGE_EDITED
   SCHEDULED_MESSAGE_REMOVED
   LEVEL_CHANNEL_CHANGED
+  CHANNEL_LOCKED
+  CHANNEL_UNLOCKED
+  SERVER_LOCKED
+  SERVER_UNLOCKED
 }
 
 type Punishment {
@@ -198,6 +202,12 @@ type AutomodPunishment {
   reason     String         @default("You exceeded a limit!")
 }
 
+type ChannelLock {
+  expiration_date DateTime?
+  channelID       String
+  reason          String?
+}
+
 model servermembers {
   id                 String   @id @default(auto()) @map("_id") @db.ObjectId
   v                  Int?     @map("__v")
@@ -263,6 +273,7 @@ model servers {
   automod_moderate_spam             AutomodPunishment?
   automod_chat_punishment           PunishmentType?      @default(DELETE_MESSAGE)
   automod_role_exceptions           String[]             @default([])
+  locked_channels                   ChannelLock[]
 
   @@unique([serverID])
 }

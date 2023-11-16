@@ -1,0 +1,67 @@
+import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
+import { Auxdibot } from '@/interfaces/Auxdibot';
+import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
+import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
+import Modules from '@/constants/bot/commands/Modules';
+import { EmbedBuilder, PermissionsBitField } from 'discord.js';
+import { deleteLock } from '@/modules/features/moderation/deleteLock';
+import handleLog from '@/util/handleLog';
+import { Log, LogAction } from '@prisma/client';
+
+export const unlockServer = <AuxdibotSubcommand>{
+   name: 'server',
+   info: {
+      module: Modules['Moderation'],
+      description: 'Lock the server. Run /lock channel to lock it again.',
+      usageExample: '/unlock server',
+      permission: 'moderation.lock.server.remove',
+   },
+   async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
+      if (!interaction.data || !interaction.channel) return;
+      const server = interaction.data.guildData;
+      const member = await interaction.guild.members.fetch(interaction.user.id);
+      if (!member.permissions.has(PermissionsBitField.Flags.ManageChannels)) {
+         const noPermissionEmbed = new EmbedBuilder().setColor(auxdibot.colors.denied).toJSON();
+         noPermissionEmbed.title = '⛔ No Permission!';
+         noPermissionEmbed.description = 'You are missing the `Manage Channels` permission on this server!';
+         return await interaction.reply({ embeds: [noPermissionEmbed] });
+      }
+
+      const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
+      embed.title = `🔒 Server Unlocked`;
+      embed.description = `Unlocking server...`;
+      const log = <Log>{
+         type: LogAction.SERVER_UNLOCKED,
+         userID: interaction.user.id,
+         date_unix: Date.now(),
+         description: `The server is now unlocked.`,
+      };
+      handleLog(auxdibot, interaction.guild, log);
+      await interaction.reply({ embeds: [embed] });
+      for (const locked of server.locked_channels) {
+         const channel = await interaction.guild.channels.fetch(locked.channelID);
+         if (channel.isThread()) {
+            return await channel
+               .setLocked(false)
+               .then(async () => {
+                  return await deleteLock(auxdibot, interaction.data.guildData, channel.id);
+               })
+               .catch(async () => undefined);
+         }
+         return await channel.permissionOverwrites
+            .edit(interaction.guild.roles.everyone, {
+               SendMessages: true,
+               SendMessagesInThreads: true,
+               ...(channel.isVoiceBased()
+                  ? {
+                       Connect: true,
+                    }
+                  : {}),
+            })
+            .then(async () => {
+               return await deleteLock(auxdibot, interaction.data.guildData, channel.id);
+            })
+            .catch(async () => undefined);
+      }
+   },
+};

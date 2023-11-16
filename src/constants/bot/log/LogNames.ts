@@ -51,4 +51,8 @@ export const LogNames: { [k in LogAction]: string } = {
    SCHEDULED_MESSAGE_REMOVED: '⏲️ Scheduled Message Deleted',
    SCHEDULED_MESSAGE_EDITED: '⏲️ Scheduled Message Edited',
    LEVEL_CHANNEL_CHANGED: '🏆 Level Channel Changed',
+   CHANNEL_LOCKED: '🔒 Channel Locked',
+   CHANNEL_UNLOCKED: '🔓 Channel Unlocked',
+   SERVER_LOCKED: '🔒 Server Locked',
+   SERVER_UNLOCKED: '🔓 Server Unlocked',
 };

@@ -13,6 +13,7 @@ import scheduleExpirationChecks from './modules/features/moderation/scheduleExpi
 import scheduleRunSchedules from './modules/features/schedule/scheduleRunSchedules';
 import server from './server/server';
 import fetchAnalytics from './modules/analytics/fetchAnalytics';
+import scheduleChannelUnlocks from './modules/features/moderation/scheduleChannelUnlocks';
 
 dotenv.config();
 const TOKEN = process.env.DISCORD_BOT_TOKEN;
@@ -121,6 +122,8 @@ const CLIENT_ID = process.env.DISCORD_BOT_CLIENT_ID;
 
    scheduleExpirationChecks(auxdibot);
    scheduleRunSchedules(auxdibot);
+   scheduleChannelUnlocks(auxdibot);
+
    console.log('-> Logging into client...');
    auxdibot
       .login(TOKEN)
