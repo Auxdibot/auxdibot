@@ -9,24 +9,28 @@ import { LogAction, PunishmentType } from '@prisma/client';
 import { PunishmentValues } from '@/constants/bot/punishments/PunishmentValues';
 import handleLog from '@/util/handleLog';
 
-export const blacklistPunishment = <AuxdibotSubcommand>{
+export const spamPunishment = <AuxdibotSubcommand>{
    name: 'punishment',
-   group: 'blacklist',
+   group: 'spam',
    info: {
       module: Modules['Moderation'],
-      description: 'Set the punishment given when a blacklisted word is used.',
-      usageExample: '/moderation blacklist punishment (punishment)',
+      description: 'Set the punishment for spam on this server.',
+      usageExample: '/moderation spam punishment (punishment) [reason]',
       permission: 'moderation.blacklist.punishment',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;
-      const punishment = interaction.options.getString('punishment', true);
+      const punishment = interaction.options.getString('punishment', true),
+         reason = interaction.options.getString('reason');
       const server = interaction.data.guildData;
-      if (server.automod_banned_phrases_punishment == punishment) {
+      if (
+         server.automod_spam_punishment?.punishment == punishment &&
+         server.automod_spam_punishment?.reason == reason
+      ) {
          return await handleError(
             auxdibot,
             'PUNISHMENT_IDENTICAL',
-            'That is the same punishment as the current automod blacklist punishment!',
+            'That is the same punishment as the current automod spam limit punishment!',
             interaction,
          );
       }
@@ -34,22 +38,27 @@ export const blacklistPunishment = <AuxdibotSubcommand>{
          return await handleError(
             auxdibot,
             'INVALID_PUNISHMENT',
-            'This is an invalid blacklist punishment type!',
+            'This is an invalid spam limit punishment type!',
             interaction,
          );
       }
       return auxdibot.database.servers
          .update({
             where: { serverID: server.serverID },
-            data: { automod_banned_phrases_punishment: PunishmentType[punishment] },
+            data: {
+               automod_spam_punishment: {
+                  punishment: PunishmentType[punishment],
+                  reason: reason || server.automod_spam_punishment.reason,
+               },
+            },
          })
          .then(async () => {
             const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.title = 'Success!';
-            embed.description = `Successfully set \`${PunishmentValues[punishment].name}\` as the server blacklist punishment.`;
+            embed.description = `Successfully set \`${PunishmentValues[punishment].name}\` as the server spam limit punishment.`;
             await handleLog(auxdibot, interaction.data.guild, {
                userID: interaction.data.member.id,
-               description: `The Automod blacklist punishment has been set to ${punishment}`,
+               description: `The Automod spam punishment has been set to ${punishment}`,
                type: LogAction.AUTOMOD_SETTINGS_CHANGE,
                date_unix: Date.now(),
             });
@@ -58,8 +67,8 @@ export const blacklistPunishment = <AuxdibotSubcommand>{
          .catch(() => {
             handleError(
                auxdibot,
-               'ERROR_BLACKLIST_PUNISHMENT',
-               "Couldn't add that as the blacklist punishment!",
+               'ERROR_SPAM_LIMIT_PUNISHMENT',
+               "Couldn't set that as the spam limit punishment!",
                interaction,
             );
          });

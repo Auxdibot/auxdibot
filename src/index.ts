@@ -14,6 +14,7 @@ import scheduleRunSchedules from './modules/features/schedule/scheduleRunSchedul
 import server from './server/server';
 import fetchAnalytics from './modules/analytics/fetchAnalytics';
 import scheduleChannelUnlocks from './modules/features/moderation/scheduleChannelUnlocks';
+import scheduleClearMessageCache from './modules/features/scheduleClearMessageCache';
 
 dotenv.config();
 const TOKEN = process.env.DISCORD_BOT_TOKEN;
@@ -50,6 +51,8 @@ const CLIENT_ID = process.env.DISCORD_BOT_CLIENT_ID;
    console.log('-> Declaring client variables...');
    auxdibot.commands = new Collection();
    auxdibot.buttons = new Collection();
+   auxdibot.messages = new Collection();
+   auxdibot.spam_detections = new Collection();
    auxdibot.scheduler = new ToadScheduler();
    auxdibot.colors = {
       accept: 0x8bc34a,
@@ -123,6 +126,7 @@ const CLIENT_ID = process.env.DISCORD_BOT_CLIENT_ID;
    scheduleExpirationChecks(auxdibot);
    scheduleRunSchedules(auxdibot);
    scheduleChannelUnlocks(auxdibot);
+   scheduleClearMessageCache(auxdibot);
 
    console.log('-> Logging into client...');
    auxdibot

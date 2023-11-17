@@ -197,9 +197,13 @@ type ScheduledMessage {
 
 type AutomodPunishment {
   punishment PunishmentType @default(WARN)
-  seconds    Int            @default(30)
-  amount     Int            @default(5)
   reason     String         @default("You exceeded a limit!")
+}
+
+type AutomodLimit {
+  duration Int
+  messages Int
+  disabled Boolean? @default(false)
 }
 
 type ChannelLock {
@@ -268,10 +272,12 @@ model servers {
   automod_banned_phrases_punishment PunishmentType?      @default(WARN)
   automod_punish_threshold_warns    Int?                 @default(3)
   automod_threshold_punishment      PunishmentType?      @default(MUTE)
-  automod_moderate_attachments      AutomodPunishment?
-  automod_moderate_invites          AutomodPunishment?
-  automod_moderate_spam             AutomodPunishment?
-  automod_chat_punishment           PunishmentType?      @default(DELETE_MESSAGE)
+  automod_attachments_limit         AutomodLimit?
+  automod_invites_limit             AutomodLimit?
+  automod_spam_limit                AutomodLimit?
+  automod_attachments_punishment    AutomodPunishment?
+  automod_invites_punishment        AutomodPunishment?
+  automod_spam_punishment           AutomodPunishment?
   automod_role_exceptions           String[]             @default([])
   locked_channels                   ChannelLock[]
 

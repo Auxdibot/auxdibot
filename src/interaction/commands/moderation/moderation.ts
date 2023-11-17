@@ -11,6 +11,8 @@ import { blacklistRemove } from '@/interaction/subcommands/moderation/moderation
 import { warnsThreshold } from '@/interaction/subcommands/moderation/moderation/warns/warnsThreshold';
 import { moderationSendReason } from '@/interaction/subcommands/moderation/moderation/moderationSendReason';
 import { moderationSendModerator } from '@/interaction/subcommands/moderation/moderation/moderationSendModerator';
+import { spamSet } from '@/interaction/subcommands/moderation/moderation/spam/spamSet';
+import { spamPunishment } from '@/interaction/subcommands/moderation/moderation/spam/spamPunishment';
 
 export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -124,7 +126,7 @@ export default <AuxdibotCommand>{
             )
             .addSubcommand((builder) =>
                builder
-                  .setName('spam')
+                  .setName('set')
                   .setDescription('Set the attachments spam limit for this server.')
                   .addNumberOption((builder) =>
                      builder
@@ -169,7 +171,7 @@ export default <AuxdibotCommand>{
             .setDescription('Settings for spam on this server.')
             .addSubcommand((builder) =>
                builder
-                  .setName('spam')
+                  .setName('set')
                   .setDescription('Set the spam limit for this server.')
                   .addNumberOption((builder) =>
                      builder
@@ -220,7 +222,7 @@ export default <AuxdibotCommand>{
             )
             .addSubcommand((builder) =>
                builder
-                  .setName('spam')
+                  .setName('set')
                   .setDescription('Set the invite spam limit for this server.')
                   .addNumberOption((builder) =>
                      builder
@@ -317,6 +319,8 @@ export default <AuxdibotCommand>{
       warnsThreshold,
       moderationSendReason,
       moderationSendModerator,
+      spamSet,
+      spamPunishment,
    ],
    async execute() {
       return;
