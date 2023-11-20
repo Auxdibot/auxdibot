@@ -11,6 +11,8 @@ export interface Auxdibot extends Client {
    scheduler: ToadScheduler;
    messages: Collection<bigint, CachedMessage>;
    spam_detections: Collection<[string, bigint], Collection<bigint, CachedMessage>>;
+   attachments_detections: Collection<[string, bigint], Collection<bigint, CachedMessage>>;
+   invites_detections: Collection<[string, bigint], Collection<bigint, CachedMessage>>;
    colors: {
       accept: number;
       denied: number;

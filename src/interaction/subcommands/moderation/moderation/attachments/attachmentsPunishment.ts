@@ -9,14 +9,14 @@ import { LogAction, PunishmentType } from '@prisma/client';
 import { PunishmentValues } from '@/constants/bot/punishments/PunishmentValues';
 import handleLog from '@/util/handleLog';
 
-export const spamPunishment = <AuxdibotSubcommand>{
+export const attachmentsPunishment = <AuxdibotSubcommand>{
    name: 'punishment',
-   group: 'spam',
+   group: 'attachments',
    info: {
       module: Modules['Moderation'],
-      description: 'Set the punishment for spam on this server.',
-      usageExample: '/moderation spam punishment (punishment) [reason]',
-      permission: 'moderation.spam.punishment',
+      description: 'Set the punishment for attachments spam on this server.',
+      usageExample: '/moderation attachments punishment (punishment) [reason]',
+      permission: 'moderation.attachments.punishment',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;
@@ -24,13 +24,13 @@ export const spamPunishment = <AuxdibotSubcommand>{
          reason = interaction.options.getString('reason');
       const server = interaction.data.guildData;
       if (
-         server.automod_spam_punishment?.punishment == punishment &&
-         server.automod_spam_punishment?.reason == reason
+         server.automod_attachments_punishment?.punishment == punishment &&
+         server.automod_attachments_punishment?.reason == reason
       ) {
          return await handleError(
             auxdibot,
             'PUNISHMENT_IDENTICAL',
-            'That is the same punishment as the current automod spam limit punishment!',
+            'That is the same punishment as the current automod attachments spam limit punishment!',
             interaction,
          );
       }
@@ -38,7 +38,7 @@ export const spamPunishment = <AuxdibotSubcommand>{
          return await handleError(
             auxdibot,
             'INVALID_PUNISHMENT',
-            'This is an invalid spam limit punishment type!',
+            'This is an invalid attachments spam punishment type!',
             interaction,
          );
       }
@@ -46,19 +46,19 @@ export const spamPunishment = <AuxdibotSubcommand>{
          .update({
             where: { serverID: server.serverID },
             data: {
-               automod_spam_punishment: {
+               automod_attachments_punishment: {
                   punishment: PunishmentType[punishment],
-                  reason: reason || server.automod_spam_punishment.reason,
+                  reason: reason || server.automod_attachments_punishment.reason,
                },
             },
          })
          .then(async () => {
             const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.title = 'Success!';
-            embed.description = `Successfully set \`${PunishmentValues[punishment].name}\` as the server spam limit punishment.`;
+            embed.description = `Successfully set \`${PunishmentValues[punishment].name}\` as the server attachments spam punishment.`;
             await handleLog(auxdibot, interaction.data.guild, {
                userID: interaction.data.member.id,
-               description: `The Automod spam punishment has been set to ${punishment}`,
+               description: `The Automod attachments spam punishment has been set to ${punishment}`,
                type: LogAction.AUTOMOD_SETTINGS_CHANGE,
                date_unix: Date.now(),
             });
@@ -67,8 +67,8 @@ export const spamPunishment = <AuxdibotSubcommand>{
          .catch(() => {
             handleError(
                auxdibot,
-               'ERROR_SPAM_LIMIT_PUNISHMENT',
-               "Couldn't set that as the spam limit punishment!",
+               'ERROR_ATTACHMENTS_LIMIT_PUNISHMENT',
+               "Couldn't set that as the attachments limit punishment!",
                interaction,
             );
          });

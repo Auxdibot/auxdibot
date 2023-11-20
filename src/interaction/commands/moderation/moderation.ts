@@ -13,6 +13,10 @@ import { moderationSendReason } from '@/interaction/subcommands/moderation/moder
 import { moderationSendModerator } from '@/interaction/subcommands/moderation/moderation/moderationSendModerator';
 import { spamSet } from '@/interaction/subcommands/moderation/moderation/spam/spamSet';
 import { spamPunishment } from '@/interaction/subcommands/moderation/moderation/spam/spamPunishment';
+import { attachmentsPunishment } from '@/interaction/subcommands/moderation/moderation/attachments/attachmentsPunishment';
+import { attachmentsSet } from '@/interaction/subcommands/moderation/moderation/attachments/attachmentsSet';
+import { invitesPunishment } from '@/interaction/subcommands/moderation/moderation/invites/invitesPunishment';
+import { invitesSet } from '@/interaction/subcommands/moderation/moderation/invites/invitesSet';
 
 export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -115,22 +119,14 @@ export default <AuxdibotCommand>{
       .addSubcommandGroup((builder) =>
          builder
             .setName('attachments')
-            .setDescription('Settings for attachments on this server.')
-            .addSubcommand((builder) =>
-               builder
-                  .setName('allow')
-                  .setDescription('Set whether attachments are allowed on this server.')
-                  .addBooleanOption((builder) =>
-                     builder.setName('allowed').setDescription('Whether invites are allowed on this server.'),
-                  ),
-            )
+            .setDescription('Settings for attachments spam on this server.')
             .addSubcommand((builder) =>
                builder
                   .setName('set')
                   .setDescription('Set the attachments spam limit for this server.')
                   .addNumberOption((builder) =>
                      builder
-                        .setName('invites')
+                        .setName('attachments')
                         .setDescription('The amount of attachments that are sent.')
                         .setRequired(true),
                   )
@@ -211,15 +207,7 @@ export default <AuxdibotCommand>{
       .addSubcommandGroup((builder) =>
          builder
             .setName('invites')
-            .setDescription('Settings for invites on this server.')
-            .addSubcommand((builder) =>
-               builder
-                  .setName('allow')
-                  .setDescription('Set whether invites are allowed on this server.')
-                  .addBooleanOption((builder) =>
-                     builder.setName('allowed').setDescription('Whether invites are allowed on this server.'),
-                  ),
-            )
+            .setDescription('Settings for invites spam on this server.')
             .addSubcommand((builder) =>
                builder
                   .setName('set')
@@ -321,6 +309,10 @@ export default <AuxdibotCommand>{
       moderationSendModerator,
       spamSet,
       spamPunishment,
+      attachmentsPunishment,
+      attachmentsSet,
+      invitesPunishment,
+      invitesSet,
    ],
    async execute() {
       return;

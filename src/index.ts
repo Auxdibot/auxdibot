@@ -53,6 +53,8 @@ const CLIENT_ID = process.env.DISCORD_BOT_CLIENT_ID;
    auxdibot.buttons = new Collection();
    auxdibot.messages = new Collection();
    auxdibot.spam_detections = new Collection();
+   auxdibot.invites_detections = new Collection();
+   auxdibot.attachments_detections = new Collection();
    auxdibot.scheduler = new ToadScheduler();
    auxdibot.colors = {
       accept: 0x8bc34a,

@@ -46,6 +46,52 @@ export default async function messageCreate(auxdibot: Auxdibot, message: Message
          await createPunishment(auxdibot, message.guild, punishment, undefined, sender.user);
       }
    }
+   if (server.automod_attachments_limit?.duration && server.automod_attachments_punishment?.punishment) {
+      const previousMessages = auxdibot.messages.filter(
+         (i, sent) =>
+            sent > BigInt(Date.now() - server.automod_attachments_limit.duration) &&
+            i.attachments &&
+            !auxdibot.attachments_detections.find((i) => i.has(sent)),
+      );
+      if (previousMessages.size > server.automod_attachments_limit.messages) {
+         const punishment = <Punishment>{
+            punishmentID: await incrementPunishmentsTotal(auxdibot, server.serverID),
+            type: server.automod_attachments_punishment.punishment,
+            date_unix: Date.now(),
+            reason:
+               server.automod_attachments_punishment.reason ||
+               'You have exceeded the attachments limit for this server!',
+            userID: sender.id,
+            expired: false,
+            moderatorID: '',
+            dmed: false,
+         };
+         auxdibot.attachments_detections.set([message.guildId, BigInt(Date.now())], previousMessages);
+         await createPunishment(auxdibot, message.guild, punishment, undefined, sender.user);
+      }
+   }
+   if (server.automod_invites_limit?.duration && server.automod_invites_punishment?.punishment) {
+      const previousMessages = auxdibot.messages.filter(
+         (i, sent) =>
+            sent > BigInt(Date.now() - server.automod_invites_limit.duration) &&
+            i.invites &&
+            !auxdibot.invites_detections.find((i) => i.has(sent)),
+      );
+      if (previousMessages.size > server.automod_invites_limit.messages) {
+         const punishment = <Punishment>{
+            punishmentID: await incrementPunishmentsTotal(auxdibot, server.serverID),
+            type: server.automod_invites_punishment.punishment,
+            date_unix: Date.now(),
+            reason: server.automod_invites_punishment.reason || 'You have exceeded the invites limit for this server!',
+            userID: sender.id,
+            expired: false,
+            moderatorID: '',
+            dmed: false,
+         };
+         auxdibot.invites_detections.set([message.guildId, BigInt(Date.now())], previousMessages);
+         await createPunishment(auxdibot, message.guild, punishment, undefined, sender.user);
+      }
+   }
    if (server.message_xp <= 0) return;
    if (!server.disabled_modules.find((item) => item == Modules['Levels'].name)) {
       const level = await auxdibot.database.servermembers
