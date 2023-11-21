@@ -47,6 +47,7 @@ type APIEmbed {
 }
 
 enum PunishmentType {
+  DELETE_MESSAGE
   WARN
   KICK
   MUTE
@@ -70,10 +71,14 @@ enum LogAction {
   CHANNEL_DELETED
   PUNISHMENT_EXPIRED
   PUNISHMENT_DELETED
+  PUNISHMENT_EDITED
+  MESSAGES_PURGED
+  AUTOMOD_SETTINGS_CHANGE
   PERMISSION_CREATED
   PERMISSION_DELETED
   MESSAGE_EDITED
   MESSAGE_DELETED
+  MESSAGE_DELETED_AUTOMOD
   THREAD_CREATED
   THREAD_DELETED
   JOIN_LEAVE_CHANNEL_CHANGED
@@ -100,6 +105,12 @@ enum LogAction {
   SCHEDULED_MESSAGE_EDITED
   SCHEDULED_MESSAGE_REMOVED
   LEVEL_CHANNEL_CHANGED
+  CHANNEL_LOCKED
+  CHANNEL_UNLOCKED
+  SERVER_LOCKED
+  SERVER_UNLOCKED
+  REPORTS_CHANNEL_CHANGED
+  REPORTS_ROLE_CHANGED
 }
 
 type Punishment {
@@ -186,15 +197,34 @@ type ScheduledMessage {
   times_to_run       Int?
 }
 
+type AutomodPunishment {
+  punishment PunishmentType @default(WARN)
+  reason     String         @default("You exceeded a limit!")
+}
+
+type AutomodLimit {
+  duration Int
+  messages Int
+  disabled Boolean? @default(false)
+}
+
+type ChannelLock {
+  expiration_date DateTime?
+  channelID       String
+  reason          String?
+}
+
 model servermembers {
   id                 String   @id @default(auto()) @map("_id") @db.ObjectId
   v                  Int?     @map("__v")
   userID             String
   serverID           String
+  warns              Int      @default(0)
   level              Int?     @default(0)
   in_server          Boolean  @default(true)
   sticky_roles       String[] @default([])
   suggestions_banned Boolean? @default(false)
+  reports_banned     Boolean? @default(false)
   xp                 Int?     @default(0)
   xpTill             Int?     @default(0)
 
@@ -202,53 +232,59 @@ model servermembers {
 }
 
 model servers {
-  id                                 String               @id @default(auto()) @map("_id") @db.ObjectId
-  v                                  Int?                 @map("__v")
-  serverID                           String
-  disabled_modules                   String[]
-  join_dm_embed                      APIEmbed?
-  join_embed                         APIEmbed?
-  leave_embed                        APIEmbed?
-  join_dm_text                       String?
-  join_text                          String?
-  leave_text                         String?
-  join_leave_channel                 String?
-  log_channel                        String?
-  mute_role                          String?
-  join_roles                         String[]
-  sticky_roles                       String[]
-  reaction_roles                     ReactionRole[]
-  suggestions_reactions              String[]             @default([])
-  suggestions_channel                String?
-  suggestions_updates_channel        String?
-  suggestions_auto_delete            Boolean              @default(true)
-  suggestions_discussion_threads     Boolean              @default(true)
-  message_xp                         Int                  @default(20)
-  level_rewards                      LevelReward[]
-  level_channel                      String?
-  level_embed                        Boolean              @default(true)
-  starred_messages                   StarredMessage[]
-  starboard_channel                  String?
-  starboard_reaction                 String?              @default("⭐")
-  starboard_reaction_count           Int?                 @default(5)
-  total_starred_messages             Int                  @default(0)
-  total_stars                        Int                  @default(0)
-  logs                               Log[]
-  filtered_logs                      LogAction[]
-  permission_overrides               PermissionOverride[]
-  punishments                        Punishment[]
-  suggestions                        Suggestion[]
-  scheduled_messages                 ScheduledMessage[]
-  automod_banned_phrases             String[]             @default([])
-  automod_banned_phrases_punishment  PunishmentType?
-  automod_punish_threshold_warns     Int?
-  automod_moderate_attachments       Boolean              @default(false)
-  automod_moderate_attachments_count Int?
-  automod_moderate_invites           Boolean              @default(false)
-  automod_moderate_invite_count      Int?
-  automod_moderate_spam              Boolean              @default(false)
-  automod_moderate_spam_seconds      Int?
-  automod_role_exceptions            String[]             @default([])
+  id                                String               @id @default(auto()) @map("_id") @db.ObjectId
+  v                                 Int?                 @map("__v")
+  serverID                          String
+  disabled_modules                  String[]
+  join_dm_embed                     APIEmbed?
+  join_embed                        APIEmbed?
+  leave_embed                       APIEmbed?
+  join_dm_text                      String?
+  join_text                         String?
+  leave_text                        String?
+  join_leave_channel                String?
+  log_channel                       String?
+  mute_role                         String?
+  join_roles                        String[]
+  sticky_roles                      String[]
+  reaction_roles                    ReactionRole[]
+  suggestions_reactions             String[]             @default([])
+  suggestions_channel               String?
+  suggestions_updates_channel       String?
+  suggestions_auto_delete           Boolean              @default(true)
+  suggestions_discussion_threads    Boolean              @default(true)
+  message_xp                        Int                  @default(20)
+  level_rewards                     LevelReward[]
+  level_channel                     String?
+  level_embed                       Boolean              @default(true)
+  starred_messages                  StarredMessage[]
+  starboard_channel                 String?
+  starboard_reaction                String?              @default("⭐")
+  starboard_reaction_count          Int?                 @default(5)
+  total_starred_messages            Int                  @default(0)
+  total_stars                       Int                  @default(0)
+  logs                              Log[]
+  filtered_logs                     LogAction[]
+  permission_overrides              PermissionOverride[]
+  punishments                       Punishment[]
+  suggestions                       Suggestion[]
+  scheduled_messages                ScheduledMessage[]
+  punishment_send_reason            Boolean              @default(true)
+  punishment_send_moderator         Boolean              @default(false)
+  automod_banned_phrases            String[]             @default([])
+  automod_banned_phrases_punishment PunishmentType?      @default(WARN)
+  automod_punish_threshold_warns    Int?                 @default(3)
+  automod_threshold_punishment      PunishmentType?      @default(MUTE)
+  automod_attachments_limit         AutomodLimit?
+  automod_invites_limit             AutomodLimit?
+  automod_spam_limit                AutomodLimit?
+  automod_attachments_punishment    AutomodPunishment?
+  automod_invites_punishment        AutomodPunishment?
+  automod_spam_punishment           AutomodPunishment?
+  reports_channel                   String?
+  report_role                       String?
+  automod_role_exceptions           String[]             @default([])
+  locked_channels                   ChannelLock[]
 
   @@unique([serverID])
 }

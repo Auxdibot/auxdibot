@@ -5,12 +5,10 @@ import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInt
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 import createPunishment from '@/modules/features/moderation/createPunishment';
 import incrementPunishmentsTotal from '@/modules/features/moderation/incrementPunishmentsTotal';
-import { punishmentInfoField } from '@/modules/features/moderation/punishmentInfoField';
 import canExecute from '@/util/canExecute';
 import handleError from '@/util/handleError';
-import handleLog from '@/util/handleLog';
 import { EmbedBuilder } from '@discordjs/builders';
-import { LogAction, Punishment, PunishmentType } from '@prisma/client';
+import { Punishment, PunishmentType } from '@prisma/client';
 
 export const punishWarn = <AuxdibotSubcommand>{
    name: 'warn',
@@ -47,29 +45,6 @@ export const punishWarn = <AuxdibotSubcommand>{
          punishmentID: await incrementPunishmentsTotal(auxdibot, interaction.data.guild.id),
       };
 
-      const dmEmbed = new EmbedBuilder().setColor(auxdibot.colors.punishment).toJSON();
-      dmEmbed.title = '⚠ Warn';
-      dmEmbed.description = `You were warned on ${interaction.data.guild ? interaction.data.guild.name : 'Server'}.`;
-      dmEmbed.fields = [punishmentInfoField(warnData)];
-      warnData.dmed = await user
-         .send({ embeds: [dmEmbed] })
-         .then(() => true)
-         .catch(() => false);
-
-      createPunishment(auxdibot, interaction.data.guild.id, warnData, interaction).then(async () => {
-         await handleLog(
-            auxdibot,
-            interaction.data.guild,
-            {
-               userID: user.id,
-               description: `${user.username} was warned.`,
-               date_unix: Date.now(),
-               type: LogAction.WARN,
-            },
-            [punishmentInfoField(warnData)],
-            true,
-         );
-         return;
-      });
+      await createPunishment(auxdibot, interaction.data.guild, warnData, interaction, member.user);
    },
 };

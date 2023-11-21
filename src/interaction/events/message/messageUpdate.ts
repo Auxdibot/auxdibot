@@ -10,9 +10,10 @@ export default async function messageUpdate(
    newMessage: Message<boolean> | PartialMessage,
 ) {
    const sender = newMessage.member;
-   if (!sender || !newMessage.guild) return undefined;
-   if (newMessage.member && newMessage.member.user.id == newMessage.client.user.id) return undefined;
-   if (oldMessage.content != newMessage.content) {
+   if (!sender || sender.user.bot || !newMessage.guild) return;
+   if (newMessage.member && newMessage.member.user.id == newMessage.client.user.id) return;
+   const oldContent = await oldMessage.fetch();
+   if (oldContent.content && oldContent.content != newMessage.content) {
       await handleLog(
          auxdibot,
          newMessage.guild,
@@ -25,7 +26,7 @@ export default async function messageUpdate(
          [
             {
                name: 'Edited Message',
-               value: `Old: \n\`\`\`${oldMessage.cleanContent}\`\`\`\n\nNew: \n\`\`\`${newMessage.cleanContent}\`\`\``,
+               value: `Old: \n\`\`\`${oldContent.cleanContent}\`\`\`\n\nNew: \n\`\`\`${newMessage.cleanContent}\`\`\``,
                inline: false,
             },
          ],

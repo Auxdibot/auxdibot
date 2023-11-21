@@ -34,7 +34,7 @@ export const punishUnban = <AuxdibotSubcommand>{
       const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
       embed.title = `📥 Unbanned ${user.username}`;
       embed.description = `User was unbanned.`;
-      embed.fields = [punishmentInfoField(banned)];
+      embed.fields = [punishmentInfoField(banned, true, true)];
       await handleLog(
          auxdibot,
          interaction.data.guild,
@@ -44,7 +44,7 @@ export const punishUnban = <AuxdibotSubcommand>{
             date_unix: Date.now(),
             type: LogAction.UNBAN,
          },
-         [punishmentInfoField(banned)],
+         [punishmentInfoField(banned, true, true)],
          true,
       );
       await interaction.reply({ embeds: [embed] });

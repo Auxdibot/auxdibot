@@ -11,13 +11,13 @@ import handleError from '@/util/handleError';
 export default <AuxdibotButton>{
    module: Modules['Moderation'],
    name: 'unban',
-   permission: 'moderation.ban.remove',
+   permission: 'moderation.punish.ban.remove',
    async execute(auxdibot: Auxdibot, interaction: MessageComponentInteraction) {
       if (!interaction.guild || !interaction.user || !interaction.channel) return;
       const [, user_id] = interaction.customId.split('-');
       const server = await findOrCreateServer(auxdibot, interaction.guild.id);
       if (!server) return;
-      const banned = server.punishments.find((p) => p.userID == user.id && p.type == PunishmentType.BAN);
+      const banned = server.punishments.find((p) => p.userID == user.id && p.type == PunishmentType.BAN && !p.expired);
       if (!banned) return await handleError(auxdibot, 'USER_NOT_BANNED', "This user isn't banned!", interaction);
 
       const user = interaction.client.users.resolve(user_id);
@@ -30,7 +30,7 @@ export default <AuxdibotButton>{
       });
       embed.title = `📥 Unbanned ${user ? user.username : `<@${user_id}>`}`;
       embed.description = `User was unbanned.`;
-      embed.fields = [punishmentInfoField(banned)];
+      embed.fields = [punishmentInfoField(banned, true, true)];
       await handleLog(
          auxdibot,
          interaction.guild,
@@ -40,7 +40,7 @@ export default <AuxdibotButton>{
             date_unix: Date.now(),
             type: LogAction.UNBAN,
          },
-         [punishmentInfoField(banned)],
+         [punishmentInfoField(banned, true, true)],
          true,
       );
       return await interaction.reply({ embeds: [embed] });

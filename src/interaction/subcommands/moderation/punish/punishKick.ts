@@ -5,12 +5,10 @@ import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInt
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 import createPunishment from '@/modules/features/moderation/createPunishment';
 import incrementPunishmentsTotal from '@/modules/features/moderation/incrementPunishmentsTotal';
-import { punishmentInfoField } from '@/modules/features/moderation/punishmentInfoField';
 import canExecute from '@/util/canExecute';
 import handleError from '@/util/handleError';
-import handleLog from '@/util/handleLog';
 import { EmbedBuilder } from '@discordjs/builders';
-import { LogAction, Punishment, PunishmentType } from '@prisma/client';
+import { Punishment, PunishmentType } from '@prisma/client';
 
 export const punishKick = <AuxdibotSubcommand>{
    name: 'kick',
@@ -35,39 +33,19 @@ export const punishKick = <AuxdibotSubcommand>{
          return await interaction.reply({ embeds: [noPermissionEmbed] });
       }
 
-      interaction.data.guild.members
-         .kick(user, reason)
-         .then(async () => {
-            if (!interaction.data) return;
-            const kickData = <Punishment>{
-               type: PunishmentType.KICK,
-               reason,
-               date_unix: Date.now(),
-               dmed: false,
-               expired: true,
-               expires_date_unix: undefined,
-               userID: user.id,
-               moderatorID: interaction.user.id,
-               punishmentID: await incrementPunishmentsTotal(auxdibot, interaction.data.guildData.serverID),
-            };
-            createPunishment(auxdibot, interaction.data.guildData.serverID, kickData, interaction).then(async () => {
-               await handleLog(
-                  auxdibot,
-                  interaction.data.guild,
-                  {
-                     userID: user.id,
-                     description: `${user.username} was kicked.`,
-                     date_unix: Date.now(),
-                     type: LogAction.KICK,
-                  },
-                  [punishmentInfoField(kickData)],
-                  true,
-               );
-               return;
-            });
-         })
-         .catch(async () => {
-            return await handleError(auxdibot, 'FAILED_KICK_USER', "Couldn't kick that user.", interaction);
-         });
+      const kickData = <Punishment>{
+         type: PunishmentType.KICK,
+         reason,
+         date_unix: Date.now(),
+         dmed: false,
+         expired: true,
+         expires_date_unix: undefined,
+         userID: user.id,
+         moderatorID: interaction.user.id,
+         punishmentID: await incrementPunishmentsTotal(auxdibot, interaction.data.guildData.serverID),
+      };
+      await createPunishment(auxdibot, interaction.data.guild, kickData, interaction, member.user).catch(async () => {
+         return await handleError(auxdibot, 'FAILED_KICK_USER', "Couldn't kick that user.", interaction);
+      });
    },
 };

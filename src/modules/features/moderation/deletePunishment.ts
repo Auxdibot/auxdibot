@@ -28,7 +28,7 @@ export default async function deletePunishment(
                userID: user.id,
                description: `${user.username} deleted a punishment. (PID: ${punishment.punishmentID})`,
             },
-            [punishmentInfoField(punishment)],
+            [punishmentInfoField(punishment, true, true)],
          );
          return punishment;
       })

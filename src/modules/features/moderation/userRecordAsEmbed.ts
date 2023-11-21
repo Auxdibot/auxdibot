@@ -1,6 +1,6 @@
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
-import { PunishmentNames } from '@/constants/bot/punishments/PunishmentNames';
+import { PunishmentValues } from '@/constants/bot/punishments/PunishmentValues';
 import { Punishment } from '@prisma/client';
 import { EmbedBuilder } from 'discord.js';
 
@@ -13,7 +13,7 @@ export default async function userRecordAsEmbed(auxdibot: Auxdibot, serverID: st
       {
          name: `Punishments`,
          value: record.reverse().reduce((str: string, punishment: Punishment) => {
-            const type = PunishmentNames[punishment.type];
+            const type = PunishmentValues[punishment.type];
             return (
                str +
                `\n**${type.name}** - PID: ${punishment.punishmentID} - <t:${Math.round(punishment.date_unix / 1000)}>`

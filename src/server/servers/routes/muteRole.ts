@@ -8,6 +8,7 @@ import { Router } from 'express';
    Change the mute role and view it for the server.
 */
 const muteRole = (auxdibot: Auxdibot, router: Router) => {
+   // todo for backwards compatability purposes until the dashboard website is updated
    router
       .route('/:serverID/mute_role')
       .get(

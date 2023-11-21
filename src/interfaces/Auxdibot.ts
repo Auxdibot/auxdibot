@@ -3,11 +3,16 @@ import AuxdibotCommand from './commands/AuxdibotCommand';
 import AuxdibotButton from './buttons/AuxdibotButton';
 import { PrismaClient } from '@prisma/client';
 import { ToadScheduler } from 'toad-scheduler';
+import { CachedMessage } from './messages/CachedMessage';
 export interface Auxdibot extends Client {
    commands: Collection<string, AuxdibotCommand>;
    buttons: Collection<string, AuxdibotButton>;
    database: PrismaClient;
    scheduler: ToadScheduler;
+   messages: Collection<bigint, CachedMessage>;
+   spam_detections: Collection<[string, bigint], Collection<bigint, CachedMessage>>;
+   attachments_detections: Collection<[string, bigint], Collection<bigint, CachedMessage>>;
+   invites_detections: Collection<[string, bigint], Collection<bigint, CachedMessage>>;
    colors: {
       accept: number;
       denied: number;

@@ -1,5 +1,5 @@
 import Modules from '@/constants/bot/commands/Modules';
-import { PunishmentNames } from '@/constants/bot/punishments/PunishmentNames';
+import { PunishmentValues } from '@/constants/bot/punishments/PunishmentValues';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
@@ -28,11 +28,11 @@ export const punishmentDelete = <AuxdibotSubcommand>{
 
       deletePunishment(auxdibot, interaction.guild, punishment_id, interaction.user);
 
-      const type = PunishmentNames[punishment.type].name;
+      const type = PunishmentValues[punishment.type].name;
       const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
       embed.title = `${type} deleted. (PID: ${punishment.punishmentID})`;
       embed.description = `${interaction.user} deleted a punishment assigned to <@${punishment.userID}>.`;
-      embed.fields = [punishmentInfoField(punishment)];
+      embed.fields = [punishmentInfoField(punishment, true, true)];
       await interaction.reply({ embeds: [embed] });
    },
 };

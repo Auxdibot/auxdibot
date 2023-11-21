@@ -1,4 +1,4 @@
-import { Message, PartialMessage } from 'discord.js';
+import { AuditLogEvent, GuildAuditLogs, Message, PartialMessage } from 'discord.js';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import deleteSuggestion from '@/modules/features/suggestions/deleteSuggestion';
@@ -6,8 +6,20 @@ import { Log, LogAction } from '@prisma/client';
 import handleLog from '@/util/handleLog';
 export default async function messageDelete(auxdibot: Auxdibot, message: Message<boolean> | PartialMessage) {
    const sender = message.member;
-
-   if (!sender || !message.guild) return;
+   // weird bandaid for checking if it's the bot deleting messages
+   const auditEntry: GuildAuditLogs<AuditLogEvent.MessageDelete> | undefined = await message.guild
+      .fetchAuditLogs({ limit: 10, type: AuditLogEvent.MessageDelete })
+      .then((a) =>
+         a.entries.find(
+            (i) =>
+               i.target.id == message.client.user.id &&
+               i.extra.channel.id == message.channel.id &&
+               Date.now() - i.createdTimestamp < 100000,
+         ),
+      )
+      .catch(() => undefined);
+   if (auditEntry && auditEntry?.entries?.size > 0) return;
+   if (!sender || sender.user.bot || !message.guild) return;
    const server = await findOrCreateServer(auxdibot, message.guild.id);
    const rr = server.reaction_roles.find((rr) => rr.messageID == message.id);
    const suggestion = server.suggestions.find((suggestion) => suggestion.messageID == message.id);

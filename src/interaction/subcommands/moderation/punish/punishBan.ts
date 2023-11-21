@@ -5,13 +5,11 @@ import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInt
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 import createPunishment from '@/modules/features/moderation/createPunishment';
 import incrementPunishmentsTotal from '@/modules/features/moderation/incrementPunishmentsTotal';
-import { punishmentInfoField } from '@/modules/features/moderation/punishmentInfoField';
 import canExecute from '@/util/canExecute';
 import handleError from '@/util/handleError';
-import handleLog from '@/util/handleLog';
 import timestampToDuration from '@/util/timestampToDuration';
 import { EmbedBuilder } from '@discordjs/builders';
-import { LogAction, Punishment, PunishmentType } from '@prisma/client';
+import { Punishment, PunishmentType } from '@prisma/client';
 
 export const punishBan = <AuxdibotSubcommand>{
    name: 'ban',
@@ -56,47 +54,32 @@ export const punishBan = <AuxdibotSubcommand>{
          );
       }
       const expires = duration == 'permanent' ? 'permanent' : duration + Date.now();
-      interaction.data.guild.members
-         .ban(user, {
-            reason,
-            deleteMessageSeconds: deleteMessageDays * 24 * 60 * 60,
-         })
-         .then(async () => {
-            if (!interaction.data) return;
-            const banData = <Punishment>{
-               type: PunishmentType.BAN,
-               reason,
-               date_unix: Date.now(),
-               dmed: false,
-               expired: false,
-               expires_date_unix: expires && typeof expires != 'string' ? expires : undefined,
-               userID: user.id,
-               moderatorID: interaction.user.id,
-               punishmentID: await incrementPunishmentsTotal(auxdibot, interaction.data.guildData.serverID),
-            };
-            createPunishment(auxdibot, interaction.data.guildData.serverID, banData).then(async () => {
-               await handleLog(
-                  auxdibot,
-                  interaction.data.guild,
-                  {
-                     userID: user.id,
-                     description: `${user.username} was banned.`,
-                     date_unix: Date.now(),
-                     type: LogAction.BAN,
-                  },
-                  [punishmentInfoField(banData)],
-                  true,
-               );
-               return;
-            });
-         })
-         .catch(async () => {
-            return await handleError(
-               auxdibot,
-               'FAILED_BAN_USER',
-               "Couldn't ban that user. Check if they have a higher role than Auxdibot.",
-               interaction,
-            );
-         });
+      const banData = <Punishment>{
+         type: PunishmentType.BAN,
+         reason,
+         date_unix: Date.now(),
+         dmed: false,
+         expired: false,
+         expires_date_unix: expires && typeof expires != 'string' ? expires : undefined,
+         userID: user.id,
+         moderatorID: interaction.user.id,
+         punishmentID: await incrementPunishmentsTotal(auxdibot, interaction.data.guildData.serverID),
+      };
+      await createPunishment(
+         auxdibot,
+         interaction.data.guild,
+         banData,
+         interaction,
+         member.user,
+         duration,
+         deleteMessageDays,
+      ).catch(async () => {
+         return await handleError(
+            auxdibot,
+            'FAILED_BAN_USER',
+            "Couldn't ban that user. Check if they have a higher role than Auxdibot.",
+            interaction,
+         );
+      });
    },
 };

@@ -1,5 +1,5 @@
 import Modules from '@/constants/bot/commands/Modules';
-import { PunishmentNames } from '@/constants/bot/punishments/PunishmentNames';
+import { PunishmentValues } from '@/constants/bot/punishments/PunishmentValues';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
@@ -24,7 +24,7 @@ export const punishmentLatest = <AuxdibotSubcommand>{
          {
             name: `Latest Punishments on ${interaction.data.guild.name}`,
             value: punishments.reduce((str, punishment) => {
-               const type = PunishmentNames[punishment.type];
+               const type = PunishmentValues[punishment.type];
                return (
                   str +
                   `\n**${type.name}** - PID: ${punishment.punishmentID} - <t:${Math.round(

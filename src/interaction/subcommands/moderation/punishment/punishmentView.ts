@@ -1,5 +1,5 @@
 import Modules from '@/constants/bot/commands/Modules';
-import { PunishmentNames } from '@/constants/bot/punishments/PunishmentNames';
+import { PunishmentValues } from '@/constants/bot/punishments/PunishmentValues';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
@@ -24,11 +24,11 @@ export const punishmentView = <AuxdibotSubcommand>{
       if (!punishment) {
          return await handleError(auxdibot, 'PUNISHMENT_NOT_FOUND', 'This punishment does not exist!', interaction);
       }
-      const type = PunishmentNames[punishment.type].name;
+      const type = PunishmentValues[punishment.type].name;
       const embed = new EmbedBuilder().setColor(auxdibot.colors.info).toJSON();
       embed.title = `${type} Information (PID: ${punishment.punishmentID})`;
       embed.description = `This is the punishment information for <@${punishment.userID}>`;
-      embed.fields = [punishmentInfoField(punishment)];
+      embed.fields = [punishmentInfoField(punishment, true, true)];
       return await interaction.reply({ embeds: [embed] });
    },
 };

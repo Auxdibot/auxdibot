@@ -7,13 +7,14 @@ import setMuteRole from '@/modules/features/moderation/setMuteRole';
 import handleError from '@/util/handleError';
 import { EmbedBuilder } from '@discordjs/builders';
 
-export const settingsMuteRole = <AuxdibotSubcommand>{
+export const moderationMuteRole = <AuxdibotSubcommand>{
    name: 'mute_role',
+   group: 'settings',
    info: {
-      module: Modules['Settings'],
+      module: Modules['Moderation'],
       description: 'Change the mute role for the server, which is automatically assigned to muted users.',
-      usageExample: '/settings mute_role (role)',
-      permission: 'settings.mute_role',
+      usageExample: '/moderation mute_role (role)',
+      permission: 'moderation.settings.mute_role',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;
@@ -28,6 +29,7 @@ export const settingsMuteRole = <AuxdibotSubcommand>{
          noPermissionEmbed.description = `This role is higher than yours!`;
          return await interaction.reply({
             embeds: [noPermissionEmbed],
+            ephemeral: true,
          });
       }
       if (role && interaction.data.guild.roles.comparePositions(interaction.data.member.roles.highest, role.id) <= 0) {
@@ -36,6 +38,7 @@ export const settingsMuteRole = <AuxdibotSubcommand>{
          noPermissionEmbed.description = `This role is higher up on the role hierarchy than Auxdibot's roles!`;
          return await interaction.reply({
             embeds: [noPermissionEmbed],
+            ephemeral: true,
          });
       }
       const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();

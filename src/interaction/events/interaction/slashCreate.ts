@@ -39,7 +39,11 @@ export default async function slashCreate(auxdibot: Auxdibot, interaction: ChatI
    }
 
    const commandData =
-      command.subcommands?.find((subcommand) => subcommand.name == interaction.options.getSubcommand()) || command;
+      command.subcommands?.find(
+         (subcommand) =>
+            subcommand.name == interaction.options.getSubcommand() &&
+            subcommand.group == interaction.options.getSubcommandGroup(),
+      ) || command;
    if (server && server.disabled_modules.find((item) => item == commandData.info.module.name))
       return await interaction.reply({ embeds: [auxdibot.embeds.disabled.toJSON()] });
    if (
@@ -56,6 +60,7 @@ export default async function slashCreate(auxdibot: Auxdibot, interaction: ChatI
       noPermissionEmbed.title = '⛔ No Permission!';
       noPermissionEmbed.description = `You do not have permission to use this. (Missing permission: \`${commandData.info.permission}\`)`;
       return await interaction.reply({
+         ephemeral: true,
          embeds: [noPermissionEmbed],
       });
    }

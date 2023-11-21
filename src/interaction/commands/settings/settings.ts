@@ -3,7 +3,7 @@ import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import Modules from '@/constants/bot/commands/Modules';
 import { settingsView } from '../../subcommands/settings/settings/settingsView';
 import { settingsJoinLeaveChannel } from '../../subcommands/settings/settings/settingsJoinLeaveChannel';
-import { settingsMuteRole } from '../../subcommands/settings/settings/settingsMuteRole';
+import { moderationMuteRole } from '../../subcommands/moderation/moderation/moderationMuteRole';
 
 export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -20,12 +20,6 @@ export default <AuxdibotCommand>{
                   .addChannelTypes(ChannelType.GuildText),
             ),
       )
-      .addSubcommand((builder) =>
-         builder
-            .setName('mute_role')
-            .setDescription('Change the mute role for this server.')
-            .addRoleOption((builder) => builder.setName('role').setDescription('The role to apply when muted.')),
-      )
       .addSubcommand((builder) => builder.setName('view').setDescription("View this server's settings.")),
    info: {
       module: Modules['Settings'],
@@ -33,7 +27,7 @@ export default <AuxdibotCommand>{
       usageExample: '/settings (view|mute_role|join_leave_channel)',
       permission: 'settings',
    },
-   subcommands: [settingsView, settingsJoinLeaveChannel, settingsMuteRole],
+   subcommands: [settingsView, settingsJoinLeaveChannel, moderationMuteRole],
    async execute() {
       return;
    },
