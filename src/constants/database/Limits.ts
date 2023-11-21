@@ -11,5 +11,6 @@ enum Limits {
    SCHEDULE_LIMIT = 5,
    LOGGING_LIMIT = 10,
    AUTOMOD_BLACKLIST_LIMIT = 25,
+   AUTOMOD_EXCEPTION_LIMIT = 5,
 }
 export default Limits;

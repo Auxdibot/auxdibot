@@ -16,17 +16,18 @@ export default async function messageCreate(auxdibot: Auxdibot, message: Message
    const sender = message.member;
    if (!sender || !message.guild || message.channel.isDMBased()) return;
    const server = await findOrCreateServer(auxdibot, message.guild.id);
-
+   cacheMessage(auxdibot, message);
    /*
    Automod
    */
-   checkBlacklistedWords(auxdibot, server, message);
 
-   cacheMessage(auxdibot, message);
+   if (!server.automod_role_exceptions.some((i) => message.member.roles.cache.has(i))) {
+      checkBlacklistedWords(auxdibot, server, message);
 
-   checkMessageSpam(auxdibot, server, message);
-   checkAttachmentsSpam(auxdibot, server, message);
-   checkInvitesSpam(auxdibot, server, message);
+      checkMessageSpam(auxdibot, server, message);
+      checkAttachmentsSpam(auxdibot, server, message);
+      checkInvitesSpam(auxdibot, server, message);
+   }
 
    if (server.message_xp <= 0) return;
    /*

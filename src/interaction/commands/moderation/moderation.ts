@@ -19,6 +19,9 @@ import { invitesPunishment } from '@/interaction/subcommands/moderation/moderati
 import { invitesSet } from '@/interaction/subcommands/moderation/moderation/invites/invitesSet';
 import { moderationReportsChannel } from '@/interaction/subcommands/moderation/moderation/moderationReportsChannel';
 import { moderationReportsRole } from '@/interaction/subcommands/moderation/moderation/moderationReportsRole';
+import { exceptionsList } from '@/interaction/subcommands/moderation/moderation/exceptions/exceptionsList';
+import { exceptionsRemove } from '@/interaction/subcommands/moderation/moderation/exceptions/exceptionsRemove';
+import { exceptionsAdd } from '@/interaction/subcommands/moderation/moderation/exceptions/exceptionsAdd';
 
 export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -79,29 +82,34 @@ export default <AuxdibotCommand>{
       .addSubcommandGroup((builder) =>
          builder
             .setName('exceptions')
-            .setDescription('Settings for automod role exceptions on this server.')
+            .setDescription('Settings for AutoMod role exceptions on this server.')
             .addSubcommand((builder) =>
                builder
                   .setName('add')
                   .setDescription(
-                     'Add a role exception to automod. The role added will not be affected by limits or blackisted words.',
+                     'Add a role exception to AutoMod. The role added will not be affected by limits or blackisted words.',
                   )
                   .addRoleOption((builder) =>
                      builder
                         .setName('role')
-                        .setDescription('The role to add as an exception to automod..')
+                        .setDescription('The role to add as an exception to AutoMod.')
                         .setRequired(true),
                   ),
             )
             .addSubcommand((builder) =>
+               builder.setName('list').setDescription('See a list of every AutoMod role exception on this server.'),
+            )
+            .addSubcommand((builder) =>
                builder
                   .setName('remove')
-                  .setDescription('Remove a role exception to automod.')
+                  .setDescription('Remove an AutoMod role exception.')
                   .addRoleOption((builder) =>
+                     builder.setName('role').setDescription('The role to remove from AutoMod exceptions.'),
+                  )
+                  .addNumberOption((builder) =>
                      builder
-                        .setName('role')
-                        .setDescription('The role to add as an exception to automod..')
-                        .setRequired(true),
+                        .setName('index')
+                        .setDescription('The index of the role to remove from AutoMod exceptions.'),
                   ),
             ),
       )
@@ -336,6 +344,9 @@ export default <AuxdibotCommand>{
       attachmentsSet,
       invitesPunishment,
       invitesSet,
+      exceptionsAdd,
+      exceptionsList,
+      exceptionsRemove,
    ],
    async execute() {
       return;
