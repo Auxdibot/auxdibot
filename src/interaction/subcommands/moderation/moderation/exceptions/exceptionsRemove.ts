@@ -3,10 +3,9 @@ import { Auxdibot } from '@/interfaces/Auxdibot';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
+import { removeAutoModException } from '@/modules/features/moderation/exceptions/removeAutoModException';
 import handleError from '@/util/handleError';
-import handleLog from '@/util/handleLog';
 import { EmbedBuilder } from '@discordjs/builders';
-import { LogAction } from '@prisma/client';
 import { PermissionsBitField } from 'discord.js';
 
 export const exceptionsRemove = <AuxdibotSubcommand>{
@@ -65,20 +64,21 @@ export const exceptionsRemove = <AuxdibotSubcommand>{
             interaction,
          );
       }
-      server.automod_role_exceptions.splice(server.automod_role_exceptions.indexOf(exceptionID), 1);
-      await auxdibot.database.servers.update({
-         where: { serverID: server.serverID },
-         data: { automod_role_exceptions: server.automod_role_exceptions },
-      });
-      const successEmbed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
-      successEmbed.title = '🛡️ Removed AutoMod Exception';
-      successEmbed.description = `Removed <@&${exceptionID}> from the AutoMod role exceptions.`;
-      await handleLog(auxdibot, interaction.data.guild, {
-         userID: interaction.data.member.id,
-         description: `Removed ${role.name} from the AutoMod role exceptions.`,
-         type: LogAction.AUTOMOD_SETTINGS_CHANGE,
-         date_unix: Date.now(),
-      });
-      return await interaction.reply({ embeds: [successEmbed] });
+      await removeAutoModException(auxdibot, interaction.guild, exceptionID, undefined, interaction.data.member.id)
+         .then(async () => {
+            const successEmbed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
+            successEmbed.title = '🛡️ Removed AutoMod Exception';
+            successEmbed.description = `Removed <@&${exceptionID}> from the AutoMod role exceptions.`;
+
+            return await interaction.reply({ embeds: [successEmbed] });
+         })
+         .catch(() => {
+            handleError(
+               auxdibot,
+               'AUTOMOD_EXCEPTION_REMOVE_ERROR',
+               "Couldn't remove that role from the exceptions!",
+               interaction,
+            );
+         });
    },
 };

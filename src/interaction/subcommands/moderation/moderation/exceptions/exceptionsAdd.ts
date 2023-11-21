@@ -4,11 +4,10 @@ import { Auxdibot } from '@/interfaces/Auxdibot';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
+import { addAutoModException } from '@/modules/features/moderation/exceptions/addAutoModException';
 import handleError from '@/util/handleError';
-import handleLog from '@/util/handleLog';
 import { testLimit } from '@/util/testLimit';
 import { EmbedBuilder } from '@discordjs/builders';
-import { LogAction } from '@prisma/client';
 import { PermissionsBitField } from 'discord.js';
 
 export const exceptionsAdd = <AuxdibotSubcommand>{
@@ -67,19 +66,20 @@ export const exceptionsAdd = <AuxdibotSubcommand>{
             interaction,
          );
       }
-      await auxdibot.database.servers.update({
-         where: { serverID: server.serverID },
-         data: { automod_role_exceptions: { push: role.id } },
-      });
-      const successEmbed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
-      successEmbed.title = '🛡️ Added AutoMod Exception Role';
-      successEmbed.description = `Added <@&${role.id}> to the AutoMod exception roles.`;
-      await handleLog(auxdibot, interaction.data.guild, {
-         userID: interaction.data.member.id,
-         description: `Added ${role.name} to the AutoMod exception roles.`,
-         type: LogAction.AUTOMOD_SETTINGS_CHANGE,
-         date_unix: Date.now(),
-      });
-      return await interaction.reply({ embeds: [successEmbed] });
+      await addAutoModException(auxdibot, interaction.guild, role, interaction.data.member.id)
+         .then(async () => {
+            const successEmbed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
+            successEmbed.title = '🛡️ Added AutoMod Exception Role';
+            successEmbed.description = `Added <@&${role.id}> to the AutoMod exception roles.`;
+            return await interaction.reply({ embeds: [successEmbed] });
+         })
+         .catch(() => {
+            handleError(
+               auxdibot,
+               'AUTOMOD_EXCEPTION_ADD_ERROR',
+               "Couldn't add that role as an exception!",
+               interaction,
+            );
+         });
    },
 };

@@ -3,6 +3,7 @@ import { Auxdibot } from '@/interfaces/Auxdibot';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
+import setSendReason from '@/modules/features/moderation/setSendReason';
 import handleError from '@/util/handleError';
 import { EmbedBuilder } from '@discordjs/builders';
 
@@ -31,8 +32,7 @@ export const moderationSendReason = <AuxdibotSubcommand>{
             embeds: [embed],
          });
       }
-      return await auxdibot.database.servers
-         .update({ where: { serverID: server.serverID }, data: { punishment_send_reason: send } })
+      return await setSendReason(auxdibot, interaction.guild, interaction.user, send)
          .then(async () => {
             embed.description = `The punishment message for this server has been changed. ${
                send

@@ -90,7 +90,7 @@ If you would like to run Auxdibot on your own machine:
 
 ## Features
 
-`🔨` *Punishments & Moderation*
+`🔨` *Punishments & Moderation & AutoMod*
 
 `🗒️` *Logging*
 
