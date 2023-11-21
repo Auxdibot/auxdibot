@@ -55,4 +55,6 @@ export const LogNames: { [k in LogAction]: string } = {
    CHANNEL_UNLOCKED: '🔓 Channel Unlocked',
    SERVER_LOCKED: '🔒 Server Locked',
    SERVER_UNLOCKED: '🔓 Server Unlocked',
+   REPORTS_CHANNEL_CHANGED: '📩 Reports Channel Changed',
+   REPORTS_ROLE_CHANGED: '📩 Reports Role Changed',
 };

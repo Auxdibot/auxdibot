@@ -1,4 +1,4 @@
-import { SlashCommandBuilder } from 'discord.js';
+import { ChannelType, SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import Modules from '@/constants/bot/commands/Modules';
 import { moderationMuteRole } from '@/interaction/subcommands/moderation/moderation/moderationMuteRole';
@@ -17,6 +17,8 @@ import { attachmentsPunishment } from '@/interaction/subcommands/moderation/mode
 import { attachmentsSet } from '@/interaction/subcommands/moderation/moderation/attachments/attachmentsSet';
 import { invitesPunishment } from '@/interaction/subcommands/moderation/moderation/invites/invitesPunishment';
 import { invitesSet } from '@/interaction/subcommands/moderation/moderation/invites/invitesSet';
+import { moderationReportsChannel } from '@/interaction/subcommands/moderation/moderation/moderationReportsChannel';
+import { moderationReportsRole } from '@/interaction/subcommands/moderation/moderation/moderationReportsRole';
 
 export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -31,6 +33,25 @@ export default <AuxdibotCommand>{
                   .setName('mute_role')
                   .setDescription('Change the mute role for this server.')
                   .addRoleOption((builder) => builder.setName('role').setDescription('The role to apply when muted.')),
+            )
+            .addSubcommand((builder) =>
+               builder
+                  .setName('reports_channel')
+                  .setDescription('Change the reports channel for this server.')
+                  .addChannelOption((builder) =>
+                     builder
+                        .setName('channel')
+                        .setDescription('The channel to set as the reports channel.')
+                        .addChannelTypes(ChannelType.GuildText),
+                  ),
+            )
+            .addSubcommand((builder) =>
+               builder
+                  .setName('reports_role')
+                  .setDescription('Change the reports role for this server.')
+                  .addRoleOption((builder) =>
+                     builder.setName('role').setDescription('The role to ping when a report is created.'),
+                  ),
             )
             .addSubcommand((builder) =>
                builder
@@ -307,6 +328,8 @@ export default <AuxdibotCommand>{
       warnsThreshold,
       moderationSendReason,
       moderationSendModerator,
+      moderationReportsChannel,
+      moderationReportsRole,
       spamSet,
       spamPunishment,
       attachmentsPunishment,

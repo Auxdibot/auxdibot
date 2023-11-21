@@ -109,6 +109,8 @@ enum LogAction {
   CHANNEL_UNLOCKED
   SERVER_LOCKED
   SERVER_UNLOCKED
+  REPORTS_CHANNEL_CHANGED
+  REPORTS_ROLE_CHANGED
 }
 
 type Punishment {
@@ -278,6 +280,8 @@ model servers {
   automod_attachments_punishment    AutomodPunishment?
   automod_invites_punishment        AutomodPunishment?
   automod_spam_punishment           AutomodPunishment?
+  reports_channel                   String?
+  report_role                       String?
   automod_role_exceptions           String[]             @default([])
   locked_channels                   ChannelLock[]
 
