@@ -7,13 +7,13 @@ import setReportRole from '@/modules/features/moderation/reports/setReportsRole'
 import handleError from '@/util/handleError';
 import { EmbedBuilder } from '@discordjs/builders';
 
-export const moderationReportsRole = <AuxdibotSubcommand>{
-   name: 'reports_role',
-   group: 'settings',
+export const reportsRole = <AuxdibotSubcommand>{
+   name: 'role',
+   group: 'reports',
    info: {
       module: Modules['Moderation'],
       description: 'Change the reports role for this server.',
-      usageExample: '/moderation settings reports_role (role)',
+      usageExample: '/moderation reports role (role)',
       permission: 'moderation.reports.role',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {

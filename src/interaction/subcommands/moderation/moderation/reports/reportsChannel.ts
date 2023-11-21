@@ -7,13 +7,13 @@ import setReportsChannel from '@/modules/features/moderation/reports/setReportsC
 import { EmbedBuilder } from '@discordjs/builders';
 import { ChannelType } from 'discord.js';
 
-export const moderationReportsChannel = <AuxdibotSubcommand>{
-   name: 'reports_channel',
-   group: 'settings',
+export const reportsChannel = <AuxdibotSubcommand>{
+   name: 'channel',
+   group: 'reports',
    info: {
       module: Modules['Moderation'],
       description: 'Change the reports channel for this server.',
-      usageExample: '/moderation settings reports_channel (channel)',
+      usageExample: '/moderation reports channel (channel)',
       permission: 'moderation.reports.channel',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {

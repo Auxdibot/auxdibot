@@ -30,6 +30,18 @@ export default <AuxdibotCommand>{
          channel: GuildBasedChannel | undefined = await interaction.guild.channels.cache.find(
             (i) => i.id == server.reports_channel,
          );
+      const memberData = await auxdibot.database.servermembers.findFirst({
+         where: { serverID: server.serverID, userID: interaction.user.id },
+      });
+      if (memberData && memberData.reports_banned) {
+         return await handleError(
+            auxdibot,
+            'REPORTS_BANNED',
+            'You are banned from making reports on this server!',
+            interaction,
+            true,
+         );
+      }
       if (!channel) {
          return handleError(
             auxdibot,

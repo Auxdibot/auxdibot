@@ -17,11 +17,13 @@ import { attachmentsPunishment } from '@/interaction/subcommands/moderation/mode
 import { attachmentsSet } from '@/interaction/subcommands/moderation/moderation/attachments/attachmentsSet';
 import { invitesPunishment } from '@/interaction/subcommands/moderation/moderation/invites/invitesPunishment';
 import { invitesSet } from '@/interaction/subcommands/moderation/moderation/invites/invitesSet';
-import { moderationReportsChannel } from '@/interaction/subcommands/moderation/moderation/moderationReportsChannel';
-import { moderationReportsRole } from '@/interaction/subcommands/moderation/moderation/moderationReportsRole';
+import { reportsChannel } from '@/interaction/subcommands/moderation/moderation/reports/reportsChannel';
+import { reportsRole } from '@/interaction/subcommands/moderation/moderation/reports/reportsRole';
 import { exceptionsList } from '@/interaction/subcommands/moderation/moderation/exceptions/exceptionsList';
 import { exceptionsRemove } from '@/interaction/subcommands/moderation/moderation/exceptions/exceptionsRemove';
 import { exceptionsAdd } from '@/interaction/subcommands/moderation/moderation/exceptions/exceptionsAdd';
+import { reportsBan } from '@/interaction/subcommands/moderation/moderation/reports/reportsBan';
+import { reportsUnban } from '@/interaction/subcommands/moderation/moderation/reports/reportsUnban';
 
 export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -36,25 +38,6 @@ export default <AuxdibotCommand>{
                   .setName('mute_role')
                   .setDescription('Change the mute role for this server.')
                   .addRoleOption((builder) => builder.setName('role').setDescription('The role to apply when muted.')),
-            )
-            .addSubcommand((builder) =>
-               builder
-                  .setName('reports_channel')
-                  .setDescription('Change the reports channel for this server.')
-                  .addChannelOption((builder) =>
-                     builder
-                        .setName('channel')
-                        .setDescription('The channel to set as the reports channel.')
-                        .addChannelTypes(ChannelType.GuildText),
-                  ),
-            )
-            .addSubcommand((builder) =>
-               builder
-                  .setName('reports_role')
-                  .setDescription('Change the reports role for this server.')
-                  .addRoleOption((builder) =>
-                     builder.setName('role').setDescription('The role to ping when a report is created.'),
-                  ),
             )
             .addSubcommand((builder) =>
                builder
@@ -76,6 +59,46 @@ export default <AuxdibotCommand>{
                         .setName('send')
                         .setDescription('Whether users are sent the name of the moderator that punished them.')
                         .setRequired(true),
+                  ),
+            ),
+      )
+      .addSubcommandGroup((builder) =>
+         builder
+            .setName('reports')
+            .setDescription('Settings for reporting on this server.')
+            .addSubcommand((builder) =>
+               builder
+                  .setName('channel')
+                  .setDescription('Change the reports channel for this server.')
+                  .addChannelOption((builder) =>
+                     builder
+                        .setName('channel')
+                        .setDescription('The channel to set as the reports channel.')
+                        .addChannelTypes(ChannelType.GuildText),
+                  ),
+            )
+            .addSubcommand((builder) =>
+               builder
+                  .setName('role')
+                  .setDescription('Change the reports role for this server.')
+                  .addRoleOption((builder) =>
+                     builder.setName('role').setDescription('The role to ping when a report is created.'),
+                  ),
+            )
+            .addSubcommand((builder) =>
+               builder
+                  .setName('ban')
+                  .setDescription('Ban a user from making reports.')
+                  .addUserOption((builder) =>
+                     builder.setName('user').setDescription('The user to ban from making reports.').setRequired(true),
+                  ),
+            )
+            .addSubcommand((builder) =>
+               builder
+                  .setName('unban')
+                  .setDescription('Unban a user from making reports.')
+                  .addUserOption((builder) =>
+                     builder.setName('user').setDescription('The user to unban from making reports.').setRequired(true),
                   ),
             ),
       )
@@ -336,8 +359,10 @@ export default <AuxdibotCommand>{
       warnsThreshold,
       moderationSendReason,
       moderationSendModerator,
-      moderationReportsChannel,
-      moderationReportsRole,
+      reportsChannel,
+      reportsRole,
+      reportsBan,
+      reportsUnban,
       spamSet,
       spamPunishment,
       attachmentsPunishment,

@@ -66,7 +66,9 @@ export default <AuxdibotCommand>{
                        ? `🏆 Level: **${data.level}** \`${data.xpTill.toLocaleString()}/${calcXP(
                             data.level,
                          ).toLocaleString()} XP\`
-                         ${data.suggestions_banned ? '\n🚫 Suggestions Banned' : ''}`
+                         ${data.suggestions_banned ? '\n🚫 Suggestions Banned' : ''}${
+                            data.reports_banned ? '\n🚫 Reports Banned' : ''
+                         }`
                        : ''
                  }`,
               }

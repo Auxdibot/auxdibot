@@ -224,6 +224,7 @@ model servermembers {
   in_server          Boolean  @default(true)
   sticky_roles       String[] @default([])
   suggestions_banned Boolean? @default(false)
+  reports_banned     Boolean? @default(false)
   xp                 Int?     @default(0)
   xpTill             Int?     @default(0)
 
