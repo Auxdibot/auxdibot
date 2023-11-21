@@ -5,94 +5,33 @@ import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import awardXP from '@/modules/features/levels/awardXP';
 import { DEFAULT_LEVELUP_EMBED } from '@/constants/embeds/DefaultEmbeds';
-import { Punishment } from '@prisma/client';
-import createPunishment from '@/modules/features/moderation/createPunishment';
-import incrementPunishmentsTotal from '@/modules/features/moderation/incrementPunishmentsTotal';
-import checkBlacklistedWords from '@/modules/features/moderation/checkBlacklistedWords';
+import checkBlacklistedWords from '@/modules/features/moderation/automod/checkBlacklistedWords';
+import { cacheMessage } from '@/modules/features/cacheMessage';
+import checkMessageSpam from '@/modules/features/moderation/automod/checkMessageSpam';
+import checkAttachmentsSpam from '@/modules/features/moderation/automod/checkAttachmentsSpam';
+import checkInvitesSpam from '@/modules/features/moderation/automod/checkInvitesSpam';
 
 export default async function messageCreate(auxdibot: Auxdibot, message: Message) {
    if (message.author.bot) return;
    const sender = message.member;
    if (!sender || !message.guild || message.channel.isDMBased()) return;
    const server = await findOrCreateServer(auxdibot, message.guild.id);
+
+   /*
+   Automod
+   */
    checkBlacklistedWords(auxdibot, server, message);
-   if (!auxdibot.messages.find((i) => i.message == message.id)) {
-      auxdibot.messages.set(BigInt(Date.now()), {
-         message: message.id,
-         channel: message.channelId,
-         author: message.author.id,
-         attachments: message.attachments.size > 0,
-         invites: message.content.includes('discord.gg/' || 'discordapp.com/invite/' || 'discord.com/invite/'),
-      });
-   }
-   if (server.automod_spam_limit?.duration && server.automod_spam_punishment?.punishment) {
-      const previousMessages = auxdibot.messages.filter(
-         (_i, sent) =>
-            sent > BigInt(Date.now() - server.automod_spam_limit.duration) &&
-            !auxdibot.spam_detections.find((i) => i.has(sent)),
-      );
-      if (previousMessages.size > server.automod_spam_limit.messages) {
-         const punishment = <Punishment>{
-            punishmentID: await incrementPunishmentsTotal(auxdibot, server.serverID),
-            type: server.automod_spam_punishment.punishment,
-            date_unix: Date.now(),
-            reason: server.automod_spam_punishment.reason || 'You have exceeded the spam limit for this server!',
-            userID: sender.id,
-            expired: false,
-            moderatorID: '',
-            dmed: false,
-         };
-         auxdibot.spam_detections.set([message.guildId, BigInt(Date.now())], previousMessages);
-         await createPunishment(auxdibot, message.guild, punishment, undefined, sender.user);
-      }
-   }
-   if (server.automod_attachments_limit?.duration && server.automod_attachments_punishment?.punishment) {
-      const previousMessages = auxdibot.messages.filter(
-         (i, sent) =>
-            sent > BigInt(Date.now() - server.automod_attachments_limit.duration) &&
-            i.attachments &&
-            !auxdibot.attachments_detections.find((i) => i.has(sent)),
-      );
-      if (previousMessages.size > server.automod_attachments_limit.messages) {
-         const punishment = <Punishment>{
-            punishmentID: await incrementPunishmentsTotal(auxdibot, server.serverID),
-            type: server.automod_attachments_punishment.punishment,
-            date_unix: Date.now(),
-            reason:
-               server.automod_attachments_punishment.reason ||
-               'You have exceeded the attachments limit for this server!',
-            userID: sender.id,
-            expired: false,
-            moderatorID: '',
-            dmed: false,
-         };
-         auxdibot.attachments_detections.set([message.guildId, BigInt(Date.now())], previousMessages);
-         await createPunishment(auxdibot, message.guild, punishment, undefined, sender.user);
-      }
-   }
-   if (server.automod_invites_limit?.duration && server.automod_invites_punishment?.punishment) {
-      const previousMessages = auxdibot.messages.filter(
-         (i, sent) =>
-            sent > BigInt(Date.now() - server.automod_invites_limit.duration) &&
-            i.invites &&
-            !auxdibot.invites_detections.find((i) => i.has(sent)),
-      );
-      if (previousMessages.size > server.automod_invites_limit.messages) {
-         const punishment = <Punishment>{
-            punishmentID: await incrementPunishmentsTotal(auxdibot, server.serverID),
-            type: server.automod_invites_punishment.punishment,
-            date_unix: Date.now(),
-            reason: server.automod_invites_punishment.reason || 'You have exceeded the invites limit for this server!',
-            userID: sender.id,
-            expired: false,
-            moderatorID: '',
-            dmed: false,
-         };
-         auxdibot.invites_detections.set([message.guildId, BigInt(Date.now())], previousMessages);
-         await createPunishment(auxdibot, message.guild, punishment, undefined, sender.user);
-      }
-   }
+
+   cacheMessage(auxdibot, message);
+
+   checkMessageSpam(auxdibot, server, message);
+   checkAttachmentsSpam(auxdibot, server, message);
+   checkInvitesSpam(auxdibot, server, message);
+
    if (server.message_xp <= 0) return;
+   /*
+   Leveling
+   */
    if (!server.disabled_modules.find((item) => item == Modules['Levels'].name)) {
       const level = await auxdibot.database.servermembers
          .findFirst({

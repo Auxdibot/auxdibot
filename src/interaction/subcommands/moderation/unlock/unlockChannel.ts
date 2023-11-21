@@ -5,7 +5,7 @@ import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandD
 import Modules from '@/constants/bot/commands/Modules';
 import { Channel, ChannelType, EmbedBuilder, PermissionsBitField } from 'discord.js';
 import handleError from '@/util/handleError';
-import { deleteLock } from '@/modules/features/moderation/deleteLock';
+import { deleteLock } from '@/modules/features/moderation/lock/deleteLock';
 import handleLog from '@/util/handleLog';
 import { Log, LogAction } from '@prisma/client';
 

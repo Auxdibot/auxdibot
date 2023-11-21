@@ -1,4 +1,4 @@
-import { Auxdibot } from '../../../interfaces/Auxdibot';
+import { Auxdibot } from '../../../../interfaces/Auxdibot';
 import { servers } from '@prisma/client';
 
 export async function deleteLock(auxdibot: Auxdibot, server: servers, channelID: string) {

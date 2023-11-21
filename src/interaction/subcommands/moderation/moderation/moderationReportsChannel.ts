@@ -3,7 +3,7 @@ import { Auxdibot } from '@/interfaces/Auxdibot';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
-import setReportsChannel from '@/modules/features/moderation/setReportsChannel';
+import setReportsChannel from '@/modules/features/moderation/reports/setReportsChannel';
 import { EmbedBuilder } from '@discordjs/builders';
 import { ChannelType } from 'discord.js';
 

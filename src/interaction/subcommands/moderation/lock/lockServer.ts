@@ -4,7 +4,7 @@ import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import Modules from '@/constants/bot/commands/Modules';
 import { EmbedBuilder, PermissionsBitField } from 'discord.js';
-import { createLock } from '@/modules/features/moderation/createLock';
+import { createLock } from '@/modules/features/moderation/lock/createLock';
 import { ChannelLock, LogAction } from '@prisma/client';
 import timestampToDuration from '@/util/timestampToDuration';
 import handleLog from '@/util/handleLog';

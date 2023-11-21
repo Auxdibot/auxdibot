@@ -13,7 +13,7 @@ import scheduleExpirationChecks from './modules/features/moderation/scheduleExpi
 import scheduleRunSchedules from './modules/features/schedule/scheduleRunSchedules';
 import server from './server/server';
 import fetchAnalytics from './modules/analytics/fetchAnalytics';
-import scheduleChannelUnlocks from './modules/features/moderation/scheduleChannelUnlocks';
+import scheduleChannelUnlocks from './modules/features/moderation/lock/scheduleChannelUnlocks';
 import scheduleClearMessageCache from './modules/features/scheduleClearMessageCache';
 
 dotenv.config();

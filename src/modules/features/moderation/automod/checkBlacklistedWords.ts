@@ -1,9 +1,9 @@
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import { LogAction, Punishment, PunishmentType, servers } from '@prisma/client';
 import { EmbedBuilder, Message } from 'discord.js';
-import createPunishment from './createPunishment';
+import createPunishment from '../createPunishment';
 import handleLog from '@/util/handleLog';
-import incrementPunishmentsTotal from './incrementPunishmentsTotal';
+import incrementPunishmentsTotal from '../incrementPunishmentsTotal';
 import { PunishmentValues } from '@/constants/bot/punishments/PunishmentValues';
 
 export default async function checkBlacklistedWords(auxdibot: Auxdibot, server: servers, message: Message) {

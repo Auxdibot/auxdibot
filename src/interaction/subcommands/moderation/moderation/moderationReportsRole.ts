@@ -3,7 +3,7 @@ import { Auxdibot } from '@/interfaces/Auxdibot';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
-import setReportRole from '@/modules/features/moderation/setReportsRole';
+import setReportRole from '@/modules/features/moderation/reports/setReportsRole';
 import handleError from '@/util/handleError';
 import { EmbedBuilder } from '@discordjs/builders';
 
