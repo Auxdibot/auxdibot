@@ -1,6 +1,6 @@
 <div align="center" id="header">
    <a href="https://bot.auxdible.me">
-      <img src="https://bot.auxdible.me/icon.png" alt="Auxdibot icon" width=250/>
+      <img src="https://bot.auxdible.me/logo.png" alt="Auxdibot logo" width=186/>
    </a>
    
    <div id="badges">
@@ -31,7 +31,7 @@
 
 ## About Project
 
-Auxdibot is a Discord bot project founded and maintained by Auxdible. Auxdibot utilizes discord.js for handling Discord interactions and Next.js for a fast and user-friendly dashboard, allowing users to interact with Auxdibot on the go.
+Auxdibot is a Discord bot project founded and maintained by Auxdible. Auxdibot utilizes discord.js for handling Discord interactions and Next.js for a fast and user-friendly dashboard, allowing users to interact with Auxdibot on the go. Additionally, Auxdibot features a wide variety of features for admins to manage their servers with. Auxdibot receives consistant updates and constant bug fixes, making it a reliable choice for your server!
 
 ### Important Files
 
@@ -45,48 +45,6 @@ Auxdibot is a Discord bot project founded and maintained by Auxdible. Auxdibot u
 ## How to Use
 
 Auxdibot uses Discord's slash command system. If you want to run any command you must prefix it with a `/` and ensure you are running one of Auxdibot's commands.
-
-### Basic Commands
-
-* `/help modules` - *View every module Auxdibot has, each containing various commands.*
-
-* `/help module (module)` - *View all the commands for a specific module on Auxdibot.*
-
-* `/help command (command) [subcommand]` - *View the usage and description of any Auxdibot command.*
-  
-* `/help placeholders` - *View every placeholder.*
-
-* `/user (user)` - *View information about a user and enforce punishments with an easy-to-use button row.*
-
-* `/punishment` - *View a punishment, list the latest server punishments, and view/edit a user's punishment record.*
-
-* `/settings` - *View the settings for your server, or change certain settings for your server.*
-
-* `/permissions` - *View, delete or create permission overrides for certain permissions on Auxdibot.*
-
-* `/embed` - *Create or edit Discord Embeds with **ZERO** coding knowledge! Custom JSON is also supported.*
-
-* `/suggestions` - *Change the settings for suggestions, or create a suggestion with `/suggestions create`*
-
-* `/levels` - *Manage levels on your server, or check the leaderboard! You can view another member or your own level stats with `/levels stats`!*
-
-* `/starboard` - *Change the settings for the starboard on your own server.*
-
-## How to Run
-
-If you would like to run Auxdibot on your own machine:
-
-* Go to the file where you would like the `auxdibot` file to be stored.
-* Install Git and run `git clone https://github.com/Auxdible/auxdibot.git`
-* Run `npm i --save` in the root `auxdibot` file
-* Run `npx prisma generate` in the root `auxdibot` file
-* Run `npm run build` in the root `auxdibot` file
-* The build will be located at `/dist`
-* Create a `.env` file in the root `auxdibot` file (or use ecosystem.config.js if you are using `pm2`)
-* Configure the `.env` file with all the parameters specified in `sample.env`
-    * This step **WILL** require a MongoDB URI, Discord Bot Token, and Discord Bot Client ID. Status is optional, default "undefined"
-* Run `npm start` to start Auxdibot!
-
 
 ## Features
 
@@ -112,11 +70,7 @@ If you would like to run Auxdibot on your own machine:
 
 `💻` *User-friendly Dashboard*
 
-## FaQ
-
-### Documentation when?
-
-Documentation is currently being worked on for Auxdibot. It will be viewable on GitHub & on [Auxdibot's official site.](https://bot.auxdible.me)
+## Frequently Asked Questions
 
 ### Found a bug! How do I report it?
 
