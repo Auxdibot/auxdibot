@@ -23,7 +23,7 @@ export default <AuxdibotCommand>{
                   option
                      .setName('channel')
                      .setDescription('The channel to post the embed in.')
-                     .addChannelTypes(ChannelType.GuildText)
+                     .addChannelTypes(ChannelType.GuildText, ChannelType.GuildAnnouncement)
                      .setRequired(true),
                ),
          ),

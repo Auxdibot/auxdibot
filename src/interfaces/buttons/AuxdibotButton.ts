@@ -6,6 +6,6 @@ export default interface AuxdibotButton {
    module: AuxdibotFeatureModule;
    name: string;
    permission: string | undefined;
-   execute(auxdibot: Auxdibot, interaction: MessageComponentInteraction): any;
+   execute(auxdibot: Auxdibot, interaction: MessageComponentInteraction): void;
    allowedDefault?: boolean;
 }

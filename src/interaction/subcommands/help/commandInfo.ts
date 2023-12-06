@@ -5,7 +5,17 @@ import { BaseAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandDa
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 import handleError from '@/util/handleError';
+import { groupBy } from 'lodash';
 import { EmbedBuilder } from '@discordjs/builders';
+import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
+import { CustomEmojis } from '@/constants/bot/CustomEmojis';
+
+const subcommandToBrief = (command: AuxdibotCommand, group: string, sub: AuxdibotSubcommand) =>
+   `\n\n> **/${command.data.name}${group != 'undefined' ? ` ${group}` : ''}${
+      sub ? ` ${sub.name}` : ''
+   }**\nPermission: **${sub.info.permission}** ${sub.info.dmableCommand ? '💬 DMs' : ''} ${
+      command.info.allowedDefault ? '✅ Allowed' : ''
+   }\n*${sub.info.description}*\n\`Usage: ${sub.info.usageExample}\``;
 
 export const commandInfo = <AuxdibotSubcommand>{
    name: 'command',
@@ -18,15 +28,9 @@ export const commandInfo = <AuxdibotSubcommand>{
       dmableCommand: true,
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<BaseAuxdibotCommandData>) {
-      const command_name = interaction.options.getString('command_name', true),
-         subcommand_name = interaction.options.getString('subcommand_name');
+      const command_name = interaction.options.getString('command_name', true);
       const command = auxdibot.commands.get(command_name);
-      const subcommand =
-         subcommand_name && command && command.subcommands
-            ? command.subcommands.filter((subcommand) => subcommand.name == subcommand_name)[0]
-            : undefined;
-      const info = subcommand ? subcommand.info : command ? command.info : undefined;
-      if (!info) {
+      if (!command) {
          return await handleError(
             auxdibot,
             'COMMAND_NOT_FOUND',
@@ -34,25 +38,31 @@ export const commandInfo = <AuxdibotSubcommand>{
             interaction,
          );
       }
+      const subcommands = groupBy(command.subcommands, (sub) => sub.group);
 
       const helpCommandEmbed = new EmbedBuilder().setColor(auxdibot.colors.info).toJSON();
-      helpCommandEmbed.title = `❔ /${command.data.name} ${subcommand ? subcommand.name : ''}`;
+      helpCommandEmbed.title = `❔ /${command.data.name} Info`;
       helpCommandEmbed.author = {
-         name: `Category: ${info.module.name}`,
+         name: `Permission: ${command.info.permission}`,
       };
-      helpCommandEmbed.fields = [
-         {
-            name: 'Command Info',
-            value: `${info.description}`,
-         },
-         {
-            name: 'Usage',
-            value: `\`${info.usageExample}\``,
-         },
-      ];
-      helpCommandEmbed.footer = {
-         text: `Permission: ${info.permission}`,
-      };
+      helpCommandEmbed.description = `${command.info.description}\n\n\**Usage**: \`${command.info.usageExample}\`\n${
+         command.info.dmableCommand ? '\n💬 This command can be used in DMs' : ''
+      }${command.info.allowedDefault ? '\n✅ This command is allowed by default.' : ''}${
+         subcommands['undefined']
+            ? subcommands['undefined'].reduce(
+                 (acc, b) => acc + subcommandToBrief(command, 'undefined', b),
+                 `\n\n${CustomEmojis.DOCS} **Subcommands**`,
+              )
+            : ''
+      }`;
+      helpCommandEmbed.fields = Object.keys(subcommands)
+         .sort((a, b) => subcommands[a].length - subcommands[b].length)
+         .filter((a) => a != 'undefined')
+         .map((i) => ({
+            name: `${CustomEmojis.DOCS} /${command.data.name} ${i} | Command Group`,
+            value: subcommands[i].reduce((acc, b) => acc + subcommandToBrief(command, i, b), ''),
+            inline: true,
+         }));
       return await interaction.reply({
          embeds: [helpCommandEmbed],
          components: [promoRow.toJSON()],
