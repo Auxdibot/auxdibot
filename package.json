@@ -19,6 +19,7 @@
   "homepage": "https://github.com/Auxdibot/auxdibot#readme",
   "dependencies": {
     "@prisma/client": "^4.15.0",
+    "@types/lodash": "^4.14.202",
     "@types/passport": "^1.0.12",
     "@types/passport-discord": "^0.1.6",
     "cors": "^2.8.5",
@@ -26,6 +27,7 @@
     "emoji-regex": "^10.2.1",
     "express": "^4.18.2",
     "express-session": "^1.17.3",
+    "lodash": "^4.17.21",
     "passport": "^0.6.0",
     "passport-discord": "^0.1.4",
     "toad-scheduler": "^2.3.0"
