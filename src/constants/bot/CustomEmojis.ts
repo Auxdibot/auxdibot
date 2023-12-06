@@ -14,4 +14,5 @@ export const CustomEmojis = {
    SCHEDULES: '<:schedules:1179197484732518440>',
    STARBOARD: '<:starboard:1179197485953077359>',
    SUGGESTIONS: '<:suggestions:1179197488566124564>',
+   GREETINGS: '<:greetings:1181292264631320678>',
 };

@@ -1,3 +1,4 @@
+import { helpAll } from './../../subcommands/help/helpAll';
 import { APIApplicationCommandOptionChoice, SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import Modules from '@/constants/bot/commands/Modules';
@@ -10,6 +11,11 @@ export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
       .setName('help')
       .setDescription('View the help for Auxdibot.')
+      .addSubcommand((builder) =>
+         builder
+            .setName('all')
+            .setDescription("View Auxdibot's help menu, containing all the information you need to know."),
+      )
       .addSubcommand((builder) => builder.setName('modules').setDescription("View Auxdibot's modules."))
       .addSubcommand((builder) => builder.setName('placeholders').setDescription("View Auxdibot's placeholders."))
       .addSubcommand((builder) =>
@@ -48,12 +54,12 @@ export default <AuxdibotCommand>{
    info: {
       module: Modules['General'],
       description: "View Auxdibot's modules, view information about a module or view information about a command.",
-      usageExample: '/help (placeholders|modules|module|command)',
+      usageExample: '/help (all|placeholders|modules|module|command)',
       allowedDefault: true,
       permission: 'commands.help',
       dmableCommand: true,
    },
-   subcommands: [modulesList, placeholdersList, moduleInfo, commandInfo],
+   subcommands: [helpAll, modulesList, placeholdersList, moduleInfo, commandInfo],
    async execute() {
       return;
    },

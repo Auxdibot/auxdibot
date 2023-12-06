@@ -8,7 +8,7 @@ export default async function messageDelete(auxdibot: Auxdibot, message: Message
    const sender = message.member;
    // weird bandaid for checking if it's the bot deleting messages
    const auditEntry: GuildAuditLogs<AuditLogEvent.MessageDelete> | undefined = await message.guild
-      .fetchAuditLogs({ limit: 10, type: AuditLogEvent.MessageDelete })
+      ?.fetchAuditLogs({ limit: 10, type: AuditLogEvent.MessageDelete })
       .then((a) =>
          a.entries.find(
             (i) =>

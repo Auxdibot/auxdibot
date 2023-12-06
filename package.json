@@ -1,14 +1,13 @@
 {
   "name": "auxdibot",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "description": "Main repo for the Auxdibot discord.js bot, utilizing TypeScript and express for endpoints.",
   "main": "./dist/index.js",
   "scripts": {
     "start": "node ./dist/index.js",
     "dev": "nodemon ./dist/index.js",
-    "build": "rm -rf ./dist && tsc",
+    "build": "tsc",
     "lint": "eslint --ignore-path .eslintignore --ext .js,.ts . --quiet --fix",
-    "prepare": "cd .. && husky install client/.husky",
     "test": "ts-mocha -p ./tsconfig.json -u tdd ./test/**/*.test.ts --recursive --paths"
   },
   "author": "Auxdible",

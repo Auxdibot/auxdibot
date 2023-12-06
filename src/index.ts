@@ -15,6 +15,7 @@ import server from './server/server';
 import fetchAnalytics from './modules/analytics/fetchAnalytics';
 import scheduleChannelUnlocks from './modules/features/moderation/lock/scheduleChannelUnlocks';
 import scheduleClearMessageCache from './modules/features/scheduleClearMessageCache';
+import { CustomEmojis } from './constants/bot/CustomEmojis';
 
 dotenv.config();
 const TOKEN = process.env.DISCORD_BOT_TOKEN;
@@ -76,10 +77,15 @@ const CLIENT_ID = process.env.DISCORD_BOT_CLIENT_ID;
    auxdibot.embeds = {
       welcome: new EmbedBuilder()
          .setColor(auxdibot.colors.default)
-         .setTitle('👋 Hello!')
+         .setTitle(`${CustomEmojis.GREETINGS} Hello, I'm Auxdibot!`)
+         .setThumbnail(`${process.env.BOT_HOMEPAGE}/logo.png`)
          .setDescription(
-            `I'm Auxdibot! I'm a multipurpose Discord bot, developed by Auxdible. You can do \`/help modules\` at any time to view all of my modules, and \`/help command\` to view information about a specific command. Visit my home site & dashboard [here](${process.env.BOT_HOMEPAGE})!`,
-         ),
+            `Auxdibot is a Discord bot project founded and maintained by Auxdible. Auxdibot features a wide variety of features for admins to manage their servers with. Auxdibot receives consistant updates and constant bug fixes, making it a reliable choice for your server! Visit Auxdibot's website & dashboard [here](${process.env.BOT_HOMEPAGE})!`,
+         )
+         .setFields({
+            name: 'Where do I start?',
+            value: `Auxdibot features two amazing ways for administrators to start learning how to use Auxdibot!\n\n\ ${CustomEmojis.HELP} - The \`/help all\` slash command.\n ${CustomEmojis.DOCS} - The [official Auxdibot documentation](${process.env.BOT_HOMEPAGE}/docs)`,
+         }),
       disabled: new EmbedBuilder()
          .setColor(auxdibot.colors.denied)
          .setTitle('⛔ Disabled')
