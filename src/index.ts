@@ -2,7 +2,7 @@ import { ToadScheduler } from 'toad-scheduler';
 import 'module-alias/register';
 import { ActivityType, Client, Collection, EmbedBuilder, REST } from 'discord.js';
 
-import dotenv from 'dotenv';
+import 'dotenv/config';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import { AuxdibotIntents } from '@/constants/bot/AuxdibotIntents';
 import listenEvents from '@/interaction/events/listenEvents';
@@ -17,7 +17,6 @@ import scheduleChannelUnlocks from './modules/features/moderation/lock/scheduleC
 import scheduleClearMessageCache from './modules/features/scheduleClearMessageCache';
 import { CustomEmojis } from './constants/bot/CustomEmojis';
 
-dotenv.config();
 const TOKEN = process.env.DISCORD_BOT_TOKEN;
 const CLIENT_ID = process.env.DISCORD_BOT_CLIENT_ID;
 (async () => {
