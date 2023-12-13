@@ -18,8 +18,12 @@ export default async function addReactionRole(
    const reactionsAndRoles = await reactions.reduce(async (acc: Promise<Reaction[]> | Reaction[], item) => {
       let arr = await acc;
       const role = await guild.roles.fetch((item.roleID.match(/\d+/) || [])[0] || '').catch(() => undefined);
-      const emoji = emojiRegex().test(item.emoji) ? item.emoji : undefined;
-      if (role && emoji) arr.length == 0 ? (arr = [{ role: role.id, emoji }]) : arr.push({ role: role.id, emoji });
+      const serverEmoji = auxdibot.emojis.cache.get((item.emoji.match(/\d+/) || [])[0]);
+      const emoji = serverEmoji || (emojiRegex().test(item.emoji) ? item.emoji : undefined);
+      if (role && emoji)
+         arr.length == 0
+            ? (arr = [{ role: role.id, emoji: emoji.valueOf() }])
+            : arr.push({ role: role.id, emoji: emoji.valueOf() });
       return arr;
    }, []);
    if (reactionsAndRoles.length == 0) throw new Error('invalid reactions and roles');
@@ -35,7 +39,9 @@ export default async function addReactionRole(
                     .setDescription(
                        reactionsAndRoles.reduce(
                           (accumulator: string, item, index) =>
-                             `${accumulator}\r\n\r\n> **${index + 1})** ${item.emoji} - <@&${item.role}>`,
+                             `${accumulator}\r\n\r\n> **${index + 1})** ${
+                                auxdibot.emojis.cache.get(item.emoji) || item.emoji
+                             } - <@&${item.role}>`,
                           '',
                        ),
                     )
