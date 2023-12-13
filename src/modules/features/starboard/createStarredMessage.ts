@@ -3,6 +3,7 @@ import { DEFAULT_STARBOARD_MESSAGE_EMBED } from '@/constants/embeds/DefaultEmbed
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import parsePlaceholders from '@/util/parsePlaceholder';
+import { testLimit } from '@/util/testLimit';
 import {
    ActionRowBuilder,
    ButtonBuilder,
@@ -48,38 +49,37 @@ export default async function createStarredMessage(
               )
             : undefined,
       );
-      if (server.starred_messages.length < Limits.ACTIVE_STARRED_MESSAGES_DEFAULT_LIMIT) {
-         const components = [
-            new ActionRowBuilder<ButtonBuilder>()
-               .addComponents(
-                  new ButtonBuilder()
-                     .setStyle(ButtonStyle.Link)
-                     .setLabel('Original Message')
-                     .setEmoji('💬')
-                     .setURL(
-                        `https://discord.com/channels/${messageReaction.message.guildId}/${messageReaction.message.channelId}/${messageReaction.message.id}`,
-                     ),
-               )
-               .toJSON(),
-         ];
-         if (attachmentsComponent.components.length > 0) components.push(attachmentsComponent.toJSON());
-         const message = await starboard_channel.send({
-            content: `**${starCount} ${server.starboard_reaction || 'No Emoji'}** | ${messageReaction.message.channel}`,
-            embeds: [quoteEmbed, embed].filter((i) => i),
-            ...(components?.length > 0 ? { components } : {}),
-            files: Array.from(messageReaction.message.attachments.values()),
-         });
-         server.starred_messages.push({
-            starboard_message_id: message.id,
-            starred_message_id: messageReaction.message.id,
-         });
-         await auxdibot.database.servers
-            .update({
-               where: { serverID: messageReaction.message.guild.id },
-               data: { starred_messages: server.starred_messages, total_starred_messages: { increment: 1 } },
-            })
-            .catch(() => message.delete());
-      }
+      testLimit(server.starred_messages, Limits.ACTIVE_STARRED_MESSAGES_DEFAULT_LIMIT, true);
+      const components = [
+         new ActionRowBuilder<ButtonBuilder>()
+            .addComponents(
+               new ButtonBuilder()
+                  .setStyle(ButtonStyle.Link)
+                  .setLabel('Original Message')
+                  .setEmoji('💬')
+                  .setURL(
+                     `https://discord.com/channels/${messageReaction.message.guildId}/${messageReaction.message.channelId}/${messageReaction.message.id}`,
+                  ),
+            )
+            .toJSON(),
+      ];
+      if (attachmentsComponent.components.length > 0) components.push(attachmentsComponent.toJSON());
+      const message = await starboard_channel.send({
+         content: `**${starCount} ${server.starboard_reaction || 'No Emoji'}** | ${messageReaction.message.channel}`,
+         embeds: [quoteEmbed, embed].filter((i) => i),
+         ...(components?.length > 0 ? { components } : {}),
+         files: Array.from(messageReaction.message.attachments.values()),
+      });
+      server.starred_messages.push({
+         starboard_message_id: message.id,
+         starred_message_id: messageReaction.message.id,
+      });
+      await auxdibot.database.servers
+         .update({
+            where: { serverID: messageReaction.message.guild.id },
+            data: { starred_messages: server.starred_messages, total_starred_messages: { increment: 1 } },
+         })
+         .catch(() => message.delete());
    } catch (x) {
       console.log(x);
    }
