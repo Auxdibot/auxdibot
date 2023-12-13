@@ -25,6 +25,7 @@ async function stateCommand(
    const id = interaction.options.getNumber('id'),
       reason = interaction.options.getString('reason');
    const suggestion = server.suggestions.find((sugg) => sugg.suggestionID == id);
+   await interaction.deferReply({ ephemeral: true });
    if (!suggestion) {
       return await handleError(auxdibot, 'SUGGESTION_NOT_FOUND', "Couldn't find that suggestion!", interaction);
    }
@@ -41,7 +42,7 @@ async function stateCommand(
          : await getMessage(interaction.data.guild, suggestion.messageID)
       : undefined;
    if (!message) {
-      deleteSuggestion(auxdibot, interaction.data.guild.id, suggestion.suggestionID);
+      await deleteSuggestion(auxdibot, interaction.data.guild.id, suggestion.suggestionID);
       return await handleError(
          auxdibot,
          'SUGGESTION_MESSAGE_NOT_FOUND',
@@ -50,8 +51,13 @@ async function stateCommand(
       );
    }
    if (server.suggestions_auto_delete) {
-      deleteSuggestion(auxdibot, interaction.data.guild.id, suggestion.suggestionID);
-      await message.delete().catch(() => undefined);
+      await deleteSuggestion(auxdibot, interaction.data.guild.id, suggestion.suggestionID);
+      await message
+         .delete()
+         .then(async () => {
+            if (message.hasThread) await message.thread.delete().catch(() => undefined);
+         })
+         .catch(() => undefined);
       await handleLog(auxdibot, interaction.data.guild, {
          userID: interaction.data.member.id,
          description: `${interaction.data.member.user.username} deleted Suggestion #${suggestion.suggestionID}`,
@@ -85,7 +91,7 @@ async function stateCommand(
    successEmbed.description = `The suggestion #${suggestion.suggestionID} has been updated. (Now: ${
       SuggestionStateName[suggestion.status]
    })`;
-   return await interaction.reply({ embeds: [successEmbed], ephemeral: true });
+   return await interaction.editReply({ embeds: [successEmbed] });
 }
 
 export const approveSuggestion = <AuxdibotSubcommand>{
