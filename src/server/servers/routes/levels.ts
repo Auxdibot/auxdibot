@@ -71,7 +71,9 @@ const levels = (auxdibot: Auxdibot, router: Router) => {
          const messageXP = req.body['message_xp'];
          if ((typeof messageXP != 'string' && typeof messageXP != 'number') || !Number(messageXP))
             return res.status(400).json({ error: 'this is not a valid message XP count!' });
-         return setMessageXP(auxdibot, req.guild, Number(messageXP))
+         const xp = Math.round(Number(messageXP));
+         if (xp < 0) return res.status(400).json({ error: 'xp must be greater than zero' });
+         return setMessageXP(auxdibot, req.guild, Math.round(Number(messageXP)) || undefined)
             .then(async (i) => {
                return i ? res.json({ data: i }) : res.status(500).json({ error: "couldn't update that server" });
             })
