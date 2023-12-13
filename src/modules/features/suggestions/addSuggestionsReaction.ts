@@ -22,7 +22,7 @@ export default async function addSuggestionsReaction(
          return await auxdibot.database.servers.update({
             where: { serverID: guild.id },
             select: { serverID: true, suggestions_reactions: true },
-            data: { suggestions_reactions: { push: emoji.toString() } },
+            data: { suggestions_reactions: { push: emoji.valueOf() } },
          });
       });
 }

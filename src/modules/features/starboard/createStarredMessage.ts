@@ -64,8 +64,9 @@ export default async function createStarredMessage(
             .toJSON(),
       ];
       if (attachmentsComponent.components.length > 0) components.push(attachmentsComponent.toJSON());
+      const reaction = auxdibot.emojis.cache.get(server.starboard_reaction) || server.starboard_reaction;
       const message = await starboard_channel.send({
-         content: `**${starCount} ${server.starboard_reaction || 'No Emoji'}** | ${messageReaction.message.channel}`,
+         content: `**${starCount} ${reaction || 'No Emoji'}** | ${messageReaction.message.channel}`,
          embeds: [quoteEmbed, embed].filter((i) => i),
          ...(components?.length > 0 ? { components } : {}),
          files: Array.from(messageReaction.message.attachments.values()),

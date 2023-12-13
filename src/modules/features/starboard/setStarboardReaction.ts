@@ -18,7 +18,7 @@ export default async function setStarboardReaction(
       .update({
          where: { serverID: guild.id },
          select: { starboard_reaction: true, serverID: true },
-         data: { starboard_reaction: emoji.toString() },
+         data: { starboard_reaction: emoji.valueOf() },
       })
       .then(async (i) => {
          await handleLog(auxdibot, guild, {
