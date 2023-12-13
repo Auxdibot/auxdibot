@@ -17,7 +17,11 @@ export const levelsSetMessageXP = <AuxdibotSubcommand>{
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;
-      const xp = interaction.options.getNumber('xp', true);
+      const xp = Math.round(interaction.options.getNumber('xp', true));
+
+      if (xp < 0) {
+         handleError(auxdibot, 'XP_LESS_THAN_ZERO', 'Message XP cannot be less than zero!', interaction);
+      }
       setMessageXP(auxdibot, interaction.guild, xp)
          .then(async () => {
             const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
