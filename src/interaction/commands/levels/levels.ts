@@ -12,6 +12,8 @@ import { levelsLeaderboard } from '../../subcommands/levels/levelsLeaderboard';
 import { levelsSetMessageXP } from '../../subcommands/levels/levelsSetMessageXP';
 import { levelsToggleEmbed } from '@/interaction/subcommands/levels/levelsToggleEmbed';
 import { levelsChannel } from '@/interaction/subcommands/levels/levelsChannel';
+import { resetAllLevels } from '@/interaction/subcommands/levels/resetAllLevels';
+
 export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
       .setName('levels')
@@ -70,10 +72,15 @@ export default <AuxdibotCommand>{
       .addSubcommand((builder) =>
          builder
             .setName('reset')
-            .setDescription("Reset a user's level and XP..")
+            .setDescription("Reset a user's level and XP.")
             .addUserOption((argBuilder) =>
                argBuilder.setName('user').setDescription('The user to be reset.').setRequired(true),
             ),
+      )
+      .addSubcommand((builder) =>
+         builder
+            .setName('reset_all')
+            .setDescription("Reset every member's level and XP. (WARNING: THIS CANNOT BE RECOVERED)"),
       )
       .addSubcommand((builder) =>
          builder
@@ -105,7 +112,7 @@ export default <AuxdibotCommand>{
       module: Modules['Levels'],
       description: 'Change settings for leveling on this server.',
       usageExample:
-         '/levels (leaderboard|add_reward|rewards|remove_reward|award_xp|reset|remove_xp|message_xp|toggle_embed|channel)',
+         '/levels (leaderboard|add_reward|rewards|remove_reward|award_xp|reset|reset_all|remove_xp|message_xp|toggle_embed|channel)',
       permission: 'levels',
    },
    subcommands: [
@@ -120,6 +127,7 @@ export default <AuxdibotCommand>{
       levelsSetMessageXP,
       levelsToggleEmbed,
       levelsChannel,
+      resetAllLevels,
    ],
    async execute() {
       return;
