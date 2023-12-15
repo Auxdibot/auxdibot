@@ -27,7 +27,6 @@ export const lockChannel = <AuxdibotSubcommand>{
             ChannelType.GuildForum,
             ChannelType.GuildVoice,
             ChannelType.PublicThread,
-            ChannelType.PrivateThread,
             ChannelType.AnnouncementThread,
          ]) || interaction.channel;
       const reason = interaction.options.getString('reason'),
