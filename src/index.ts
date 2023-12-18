@@ -81,10 +81,18 @@ const CLIENT_ID = process.env.DISCORD_BOT_CLIENT_ID;
          .setDescription(
             `Auxdibot is a Discord bot project founded and maintained by Auxdible. Auxdibot features a wide variety of features for admins to manage their servers with. Auxdibot receives consistant updates and constant bug fixes, making it a reliable choice for your server! Visit Auxdibot's website & dashboard [here](${process.env.BOT_HOMEPAGE})!`,
          )
-         .setFields({
-            name: 'Where do I start?',
-            value: `Auxdibot features two amazing ways for administrators to start learning how to use Auxdibot!\n\n\ ${CustomEmojis.HELP} - The \`/help all\` slash command.\n ${CustomEmojis.DOCS} - The [official Auxdibot documentation](${process.env.BOT_HOMEPAGE}/docs)`,
-         }),
+         .setFields(
+            {
+               name: 'Where do I start?',
+               value: `Auxdibot features two amazing ways for administrators to start learning how to use Auxdibot!\n\n\ ${CustomEmojis.HELP} - The \`/help all\` slash command.\n ${CustomEmojis.DOCS} - The [official Auxdibot documentation](${process.env.BOT_HOMEPAGE}/docs)`,
+               inline: true,
+            },
+            {
+               name: 'How do I set up Auxdibot?',
+               value: "Auxdibot comes ready-to-use straight from the moment the bot joins your server! Auxdibot can be set up automatically by running `/setup auto` to create channels for every feature on your server or you can use Auxdibot's commands to tweak the settings for your server and `/settings view` to see your changes.",
+               inline: true,
+            },
+         ),
       disabled: new EmbedBuilder()
          .setColor(auxdibot.colors.denied)
          .setTitle('⛔ Disabled')
