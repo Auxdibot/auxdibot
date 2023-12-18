@@ -12,7 +12,7 @@ export default async function handleError(
       .setAuthor({ name: `An error occurred!` })
       .setDescription(`${error_message}`)
       .setFooter({ text: `Error code: ${error}` });
-   interaction.isRepliable() && interaction.deferred && interaction.replied
+   interaction.isRepliable() && interaction.deferred
       ? interaction.editReply({ embeds: [errorEmbed] })
       : interaction.isRepliable() && !interaction.replied
       ? interaction.reply({ embeds: [errorEmbed], ephemeral: !!ephemeral })
