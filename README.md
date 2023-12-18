@@ -46,6 +46,8 @@ Auxdibot is a Discord bot project founded and maintained by Auxdible. Auxdibot u
 
 Auxdibot uses Discord's slash command system. If you want to run any command you must prefix it with a `/` and ensure you are running one of Auxdibot's commands.
 
+*Additionally, you can automatically setup Auxdibot for your server using the `/setup auto` command!*
+
 ## Features
 
 `🔨` *Punishments & Moderation & AutoMod*

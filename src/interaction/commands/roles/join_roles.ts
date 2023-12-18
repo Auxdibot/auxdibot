@@ -12,26 +12,26 @@ export default <AuxdibotCommand>{
       .addSubcommand((builder) =>
          builder
             .setName('add')
-            .setDescription('Add a role to be kept when a member rejoins the server.')
+            .setDescription('Add a role to be assigned when a member joins the server.')
             .addRoleOption((argBuilder) =>
                argBuilder
                   .setName('role')
-                  .setDescription('The role to be kept when a member rejoins the server.')
+                  .setDescription('The role to be assigned when a member joins the server.')
                   .setRequired(true),
             ),
       )
       .addSubcommand((builder) =>
          builder
             .setName('remove')
-            .setDescription('Remove a role that is kept when a member rejoins the server.')
+            .setDescription('Remove a role that is assigned when a member joins the server.')
             .addRoleOption((argBuilder) =>
-               argBuilder.setName('role').setDescription('The role to be kept when a member rejoins the server.'),
+               argBuilder.setName('role').setDescription('The role to be assigned when a member joins the server.'),
             )
             .addNumberOption((argBuilder) =>
                argBuilder
                   .setName('index')
                   .setDescription(
-                     'The index of the sticky role to remove, which is the placement of the item on /join_roles list',
+                     'The index of the join role to remove, which is the placement of the item on /join_roles list',
                   ),
             ),
       )
