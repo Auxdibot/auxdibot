@@ -12,7 +12,7 @@ const roles = (auxdibot: Auxdibot, router: Router) => {
       (req, res, next) => checkAuthenticated(req, res, next),
       (req, res, next) => checkGuildOwnership(auxdibot, req, res, next),
       (req, res) => {
-         return res.json(req.guild.roles.cache.map((value) => value));
+         return res.json(req.guild.roles.cache.map((value) => value).sort((a, b) => b.position - a.position));
       },
    );
    return router;
