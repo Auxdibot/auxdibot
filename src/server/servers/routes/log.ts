@@ -38,7 +38,7 @@ const log = (auxdibot: Auxdibot, router: Router) => {
             return res.status(400).json({ error: 'This is not a valid log action!' });
 
          return toggleLogFilter(auxdibot, req.guild, LogAction[log])
-            .then((i) => (i ? res.json({ data: i }) : res.status(500).json({ error: "couldn't update that server" })))
+            .then((i) => res.json({ data: i }))
             .catch((x) => {
                console.error(x);
                return res.status(500).json({ error: 'an error occurred' });
