@@ -12,7 +12,7 @@ export default async function addSuggestionsReaction(
 ) {
    const regex = emojiRegex();
    const emojis = reaction.match(regex);
-   const emoji = auxdibot.emojis.cache.find((i) => i.toString() == reaction) || (emojis != null ? emojis[0] : null);
+   const emoji = auxdibot.emojis.cache.find((i) => i.valueOf() == reaction) || (emojis != null ? emojis[0] : null);
    if (!emoji) throw new Error('invalid emoji');
    return auxdibot.database.servers
       .findFirst({ where: { serverID: guild.id }, select: { suggestions_reactions: true } })
