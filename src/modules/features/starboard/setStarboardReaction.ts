@@ -12,7 +12,7 @@ export default async function setStarboardReaction(
 ) {
    const regex = emojiRegex();
    const emojis = emojiStr.match(regex);
-   const emoji = auxdibot.emojis.cache.find((i) => i.toString() == emojiStr) || (emojis != null ? emojis[0] : null);
+   const emoji = auxdibot.emojis.cache.find((i) => i.valueOf() == emojiStr) || (emojis != null ? emojis[0] : null);
    if (!emoji) throw new Error('invalid emoji');
    return auxdibot.database.servers
       .update({
