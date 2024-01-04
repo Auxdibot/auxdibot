@@ -16,7 +16,7 @@ export default async function setSuggestionsDiscussionThreads(
             .update({
                where: { serverID: guild.id },
                select: { serverID: true, suggestions_discussion_threads: true },
-               data: { suggestions_auto_delete: discussion_threads || !data.suggestions_discussion_threads },
+               data: { suggestions_discussion_threads: discussion_threads || !data.suggestions_discussion_threads },
             })
             .then(async (i) => {
                await handleLog(auxdibot, guild, {
