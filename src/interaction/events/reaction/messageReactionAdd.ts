@@ -18,13 +18,15 @@ export default async function messageReactionAdd(
    if (!server.disabled_modules.find((item) => item == Modules['Roles'].name)) {
       const rrData = server.reaction_roles.find((rr) => messageReaction.message.id == rr.messageID);
       if (rrData) {
-         const rr = rrData.reactions.find((react) => react.emoji == messageReaction.emoji.valueOf());
+         const rr = rrData.reactions.find(
+            (react) => react.emoji == (messageReaction.emoji.valueOf() || messageReaction.emoji.toString()),
+         );
          if (rr) {
             await messageReaction.users.remove(user.id);
             if (member.roles.resolve(rr.role)) {
                await member.roles.remove(rr.role).catch(() => undefined);
             } else {
-               await member.roles.add(rr.role).catch(() => undefined);
+               await member.roles.add(rr.role).catch((x) => console.log(x));
             }
          }
       }
