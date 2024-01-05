@@ -17,8 +17,8 @@ export default async function addReactionRole(
 ) {
    const reactionsAndRoles = await reactions.reduce(async (acc: Promise<Reaction[]> | Reaction[], item) => {
       let arr = await acc;
-      const role = await guild.roles.fetch((item.roleID.match(/\d+/) || [])[0] || '').catch(() => undefined);
-      const serverEmoji = auxdibot.emojis.cache.get((item.emoji.match(/\d+/) || [])[0]);
+      const role = await guild.roles.fetch((item.roleID?.match(/\d+/) || [])[0] || '').catch(() => undefined);
+      const serverEmoji = auxdibot.emojis.cache.get((item.emoji?.match(/\d+/) || [])[0]);
       const emoji = serverEmoji || (emojiRegex().test(item.emoji) ? item.emoji : undefined);
       if (role && emoji)
          arr.length == 0
