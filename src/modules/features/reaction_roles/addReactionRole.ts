@@ -22,8 +22,8 @@ export default async function addReactionRole(
       const emoji = serverEmoji || (emojiRegex().test(item.emoji) ? item.emoji : undefined);
       if (role && emoji)
          arr.length == 0
-            ? (arr = [{ role: role.id, emoji: emoji.valueOf() }])
-            : arr.push({ role: role.id, emoji: emoji.valueOf() });
+            ? (arr = [{ role: role.id, emoji: emoji.valueOf() || emoji.toString() }])
+            : arr.push({ role: role.id, emoji: emoji.valueOf() || emoji.toString() });
       return arr;
    }, []);
    if (reactionsAndRoles.length == 0) throw new Error('invalid reactions and roles');
