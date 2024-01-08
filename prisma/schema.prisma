@@ -214,6 +214,25 @@ type ChannelLock {
   reason          String?
 }
 
+type CardBackground {
+  color1 String  @default("#000000")
+  color2 String  @default("#000000")
+  radial Boolean
+}
+
+enum Fonts {
+  MONTSERRAT
+  RALEWAY
+  OSWALD
+  PLAYFAIR_DISPLAY
+  JOSEFIN_SLAB
+  BAUHAUS_98
+  INTER
+  ROBOTO
+  LATO
+  OPEN_SANS
+}
+
 model servermembers {
   id                 String   @id @default(auto()) @map("_id") @db.ObjectId
   v                  Int?     @map("__v")
@@ -285,6 +304,22 @@ model servers {
   report_role                       String?
   automod_role_exceptions           String[]             @default([])
   locked_channels                   ChannelLock[]
+
+  @@unique([serverID])
+}
+
+model servercards {
+  id          String          @id @default(auto()) @map("_id") @db.ObjectId
+  v           Int?            @map("__v")
+  serverID    String
+  description String?
+  website_url String?
+  background  CardBackground?
+  header_font Fonts?          @default(BAUHAUS_98)
+  text_font   Fonts?          @default(OPEN_SANS)
+  rules       String?
+  public      Boolean         @default(false)
+  featured    Boolean         @default(false)
 
   @@unique([serverID])
 }
