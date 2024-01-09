@@ -25,17 +25,6 @@ const router = express.Router();
 
 export const serversRoute = (auxdibot: Auxdibot) => {
    /*
-   root
-   Obtain a list of servers
-   */
-   router.get(
-      '/',
-      (req, res, next) => checkAuthenticated(req, res, next),
-      (req, res) => {
-         return res.json(req.user?.guilds).status(200);
-      },
-   );
-   /*
    /:serverID
    Obtain data about your server
    */
@@ -81,5 +70,6 @@ export const serversRoute = (auxdibot: Auxdibot) => {
    massrole(auxdibot, router);
    greetings(auxdibot, router);
    moderation(auxdibot, router);
+
    return router;
 };
