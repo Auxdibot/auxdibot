@@ -13,6 +13,7 @@ import { serversRoute } from './servers';
 import Strategy from 'passport-discord';
 import bodyParser from 'body-parser';
 import checkAuthenticated from './checkAuthenticated';
+import cards from './servers/routes/cards';
 export default async function server(auxdibot: Auxdibot) {
    const app = express();
 
@@ -43,6 +44,14 @@ export default async function server(auxdibot: Auxdibot) {
       return cb(null, user);
    });
 
+   app.get(
+      '/',
+      (req, res, next) => checkAuthenticated(req, res, next),
+      (req, res) => {
+         return res.json(req.user?.guilds).status(200);
+      },
+   );
+   cards(auxdibot, app);
    app.use('/analytics', analyticsRoute(auxdibot));
    app.use('/auth', authRoute());
    app.use('/servers', serversRoute(auxdibot));
