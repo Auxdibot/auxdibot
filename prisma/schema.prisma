@@ -233,6 +233,11 @@ enum Fonts {
   OPEN_SANS
 }
 
+enum UserBadge {
+  OLD_USER
+  PARTNER
+}
+
 enum GradientTypes {
   LINEAR
   RADIAL
@@ -315,17 +320,19 @@ model servers {
 }
 
 model servercards {
-  id          String          @id @default(auto()) @map("_id") @db.ObjectId
-  v           Int?            @map("__v")
-  serverID    String
-  description String?
-  invite_url  String?
-  background  CardBackground?
-  header_font Fonts?          @default(BAUHAUS_93)
-  text_font   Fonts?          @default(OPEN_SANS)
-  rules       String?
-  public      Boolean         @default(false)
-  featured    Boolean         @default(false)
+  id               String          @id @default(auto()) @map("_id") @db.ObjectId
+  v                Int?            @map("__v")
+  serverID         String
+  description      String?
+  invite_url       String?
+  background       CardBackground?
+  header_font      Fonts?          @default(BAUHAUS_93)
+  text_font        Fonts?          @default(OPEN_SANS)
+  rules            String[]
+  public           Boolean         @default(false)
+  featured         Boolean         @default(false)
+  featured_channel String?
+  dark             Boolean         @default(true)
 
   @@unique([serverID])
 }
@@ -341,9 +348,9 @@ model totals {
 }
 
 model users {
-  id     String @id @default(auto()) @map("_id") @db.ObjectId
-  v      Int    @map("__v")
+  id     String      @id @default(auto()) @map("_id") @db.ObjectId
   userID String
+  badges UserBadge[]
 
   @@unique([userID])
 }
