@@ -30,7 +30,7 @@ export default async function server(auxdibot: Auxdibot) {
    );
    app.use(passport.initialize());
    app.use(passport.session());
-   initDiscord();
+   initDiscord(auxdibot);
 
    passport.serializeUser((user: Strategy.Profile, cb) => {
       return cb(null, {

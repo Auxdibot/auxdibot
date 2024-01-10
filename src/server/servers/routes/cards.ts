@@ -1,4 +1,6 @@
 import { Auxdibot } from '@/interfaces/Auxdibot';
+import { UserBadge } from '@prisma/client';
+import { Channel } from 'discord.js';
 import { Express } from 'express';
 /*
    Cards
@@ -13,6 +15,13 @@ const cards = (auxdibot: Auxdibot, app: Express) => {
             if (!card) return res.status(404).json({ error: "couldn't find card" });
             const discordServer = await auxdibot.guilds.fetch(card.serverID);
             if (!discordServer) return res.status(404).json({ error: "couldn't find server" });
+            const channel: Channel | undefined =
+               card.featured_channel &&
+               (await discordServer.channels.fetch(card.featured_channel).catch(() => undefined));
+            const owner = await auxdibot.database.users.findFirst({
+               where: { userID: discordServer?.ownerId || null },
+            });
+
             return res.status(200).json({
                server: {
                   name: discordServer.name,
@@ -27,6 +36,29 @@ const cards = (auxdibot: Auxdibot, app: Express) => {
                rules: card.rules,
                text_font: card.text_font,
                invite_url: card.invite_url,
+               dark: card.dark,
+               badges: [
+                  discordServer.memberCount >= 100 && 'HUNDRED_MEMBERS',
+                  discordServer.memberCount >= 1000 && 'THOUSAND_MEMBERS',
+                  card.featured && 'FEATURED',
+                  card.public && 'PUBLIC',
+                  owner?.badges.includes(UserBadge.OLD_USER) && 'OLD_OWNER',
+               ].filter((i) => i),
+               channel: channel &&
+                  channel.isTextBased() &&
+                  !channel.isDMBased() && {
+                     name: channel.name,
+                     messages: await channel.messages
+                        .fetch({ limit: 3 })
+                        .then((data) =>
+                           data.map((i) => ({
+                              author: i.author.username,
+                              message: i.cleanContent,
+                              date: i.createdTimestamp,
+                           })),
+                        )
+                        .catch(() => undefined),
+                  },
                featured: card.featured,
             });
          })
