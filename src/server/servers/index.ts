@@ -20,6 +20,7 @@ import reactionRoles from './routes/reaction_roles';
 import massrole from './routes/massrole';
 import greetings from './routes/greetings';
 import moderation from './routes/moderation';
+import updateCard from './routes/updateCard';
 
 const router = express.Router();
 
@@ -70,6 +71,6 @@ export const serversRoute = (auxdibot: Auxdibot) => {
    massrole(auxdibot, router);
    greetings(auxdibot, router);
    moderation(auxdibot, router);
-
+   updateCard(auxdibot, router);
    return router;
 };
