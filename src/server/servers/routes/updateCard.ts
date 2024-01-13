@@ -42,7 +42,7 @@ const updateCard = (auxdibot: Auxdibot, router: Router) => {
             if (!Fonts[text_font]) return res.status(400).json({ error: 'Invalid text font.' });
             const channel = await req.guild.channels.fetch(channelID).catch(() => undefined);
             if (channelID && !channel) return res.status(400).json({ error: 'Invalid channel.' });
-            if (!/^https:\/\/discord\.gg\/(invite\/|)\w{8}$/.test(invite_url))
+            if (!/^https:\/\/discord\.gg\/(invite\/|)\w+$/.test(invite_url))
                return res.status(400).json({ error: 'Invalid invite link.' });
             const data = {
                background: {
