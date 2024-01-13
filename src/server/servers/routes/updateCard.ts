@@ -33,10 +33,10 @@ const updateCard = (auxdibot: Auxdibot, router: Router) => {
                return res.status(400).json({ error: 'Invalid background gradient type.' });
             if (Array.isArray(rules) && rules.length > 10)
                return res.status(400).json({ error: 'Maximum of ten rules allowed.' });
-            const checkLengthRules = rules.findIndex((i) => i.length > 120);
-            if (checkLengthRules != -1)
+            const checkLengthRules = rules?.findIndex((i) => i.length > 120);
+            if (checkLengthRules != undefined && checkLengthRules != -1)
                return res.status(400).json({ error: 'Rule #' + (checkLengthRules + 1) + ' is too long!' });
-            if (description.length > 500)
+            if ((description?.length ?? 0) > 500)
                return res.status(400).json({ error: 'Description is longer than 500 characters!' });
             if (!Fonts[header_font]) return res.status(400).json({ error: 'Invalid header font.' });
             if (!Fonts[text_font]) return res.status(400).json({ error: 'Invalid text font.' });
@@ -77,7 +77,7 @@ const updateCard = (auxdibot: Auxdibot, router: Router) => {
          (req, res) => {
             return auxdibot.database.servercards
                .delete({ where: { serverID: req.guild.id } })
-               .then((data) => res.status(200).json({ success: 'Deleted servercard.' }))
+               .then(() => res.status(200).json({ success: 'Deleted servercard.' }))
                .catch(() => res.status(500).json({ error: 'An error occurred.' }));
          },
       );
