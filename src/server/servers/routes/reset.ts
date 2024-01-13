@@ -15,15 +15,18 @@ const reset = (auxdibot: Auxdibot, router: Router) => {
       (req, res) => {
          return auxdibot.database.servers
             .delete({ where: { serverID: req.guild.id } })
-            .then((i) =>
-               i
-                  ? auxdibot.database.servers
-                       .create({ data: { serverID: i.serverID, ...defaultServer } })
-                       .then((i) =>
-                          i ? res.json({ data: i }) : res.status(500).json({ error: 'error creating server data' }),
-                       )
-                  : res.status(404).json({ error: 'no server found' }),
-            )
+            .then(async (i) => {
+               await auxdibot.database.servercards.delete({ where: { serverID: req.guild.id } }).catch(() => undefined);
+               await auxdibot.database.servermembers
+                  .delete({ where: { serverID_userID: { serverID: req.guild.id, userID: undefined } } })
+                  .catch(() => undefined);
+               await auxdibot.database.totals.delete({ where: { serverID: req.guild.id } }).catch(() => undefined);
+               return i
+                  ? auxdibot.database.servers.create({ data: { serverID: i.serverID, ...defaultServer } }).then((i) => {
+                       return i ? res.json({ data: i }) : res.status(500).json({ error: 'error creating server data' });
+                    })
+                  : res.status(404).json({ error: 'no server found' });
+            })
             .catch((x) => {
                console.error(x);
                return res.status(500).json({ error: 'an error occurred' });
