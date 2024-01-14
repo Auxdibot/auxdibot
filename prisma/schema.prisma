@@ -147,10 +147,21 @@ type Reaction {
   role  String
 }
 
+enum ReactionRoleType {
+  DEFAULT
+  STICKY
+  SELECT_ONE
+  BUTTON
+  BUTTON_SELECT_ONE
+  SELECT_ONE_MENU
+  SELECT_MENU
+}
+
 type ReactionRole {
   messageID String
   channelID String
   reactions Reaction[]
+  type      ReactionRoleType @default(DEFAULT)
 }
 
 type Log {
