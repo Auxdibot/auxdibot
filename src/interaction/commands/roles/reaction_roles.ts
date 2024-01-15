@@ -1,4 +1,4 @@
-import { SlashCommandBuilder, ChannelType } from 'discord.js';
+import { SlashCommandBuilder, ChannelType, SlashCommandSubcommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import createEmbedParameters from '@/util/createEmbedParameters';
 import Modules from '@/constants/bot/commands/Modules';
@@ -8,36 +8,23 @@ import { reactionRolesAddJSON } from '../../subcommands/roles/reactionRoles/reac
 import { reactionRolesEdit } from '../../subcommands/roles/reactionRoles/reactionRolesEdit';
 import { reactionRolesList } from '../../subcommands/roles/reactionRoles/reactionRolesList';
 import { reactionRolesRemove } from '../../subcommands/roles/reactionRoles/reactionRolesRemove';
-
+import { ReactionRoleType } from '@prisma/client';
+import { ReactionRoleTypeNames } from '@/constants/bot/roles/ReactionRoleTypeNames';
+const createRoleTypes = (builder: SlashCommandSubcommandBuilder) =>
+   builder.addStringOption((builder) =>
+      builder
+         .setName('type')
+         .setDescription('The way users will interact with this reaction role.')
+         .setChoices(...Object.keys(ReactionRoleType).map((i) => ({ name: ReactionRoleTypeNames[i], value: i }))),
+   );
 export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
       .setName('reaction_roles')
       .setDescription('Create, edit, remove, or list the currently active reaction roles.')
       .addSubcommand((builder) =>
-         builder
-            .setName('add')
-            .setDescription('Add a reaction role to the server.')
-            .addChannelOption((argBuilder) =>
-               argBuilder
-                  .setName('channel')
-                  .setDescription('The channel to put the reaction role embed in.')
-                  .addChannelTypes(ChannelType.GuildText)
-                  .setRequired(true),
-            )
-            .addStringOption((argBuilder) =>
-               argBuilder
-                  .setName('roles')
-                  .setDescription('Space between emoji & role. (ex. [emoji] [role] [...emoji2] [...role2])')
-                  .setRequired(true),
-            )
-            .addStringOption((argBuilder) =>
-               argBuilder.setName('title').setDescription('Title of the reaction roles.'),
-            ),
-      )
-      .addSubcommand((builder) =>
-         createEmbedParameters(
+         createRoleTypes(
             builder
-               .setName('add_custom')
+               .setName('add')
                .setDescription('Add a reaction role to the server.')
                .addChannelOption((argBuilder) =>
                   argBuilder
@@ -51,32 +38,59 @@ export default <AuxdibotCommand>{
                      .setName('roles')
                      .setDescription('Space between emoji & role. (ex. [emoji] [role] [...emoji2] [...role2])')
                      .setRequired(true),
+               )
+               .addStringOption((argBuilder) =>
+                  argBuilder.setName('title').setDescription('Title of the reaction roles.'),
                ),
          ),
       )
       .addSubcommand((builder) =>
-         builder
-            .setName('add_json')
-            .setDescription('Add a reaction role to the server.')
-            .addChannelOption((argBuilder) =>
-               argBuilder
-                  .setName('channel')
-                  .setDescription('The channel to put the reaction role embed in.')
-                  .addChannelTypes(ChannelType.GuildText)
-                  .setRequired(true),
-            )
-            .addStringOption((argBuilder) =>
-               argBuilder
-                  .setName('roles')
-                  .setDescription('Space between emoji & role. (ex. [emoji] [role] [...emoji2] [...role2])')
-                  .setRequired(true),
-            )
-            .addStringOption((argBuilder) =>
-               argBuilder
-                  .setName('json')
-                  .setDescription('The JSON for the Discord Embed attached to the reaction role.')
-                  .setRequired(true),
+         createEmbedParameters(
+            createRoleTypes(
+               builder
+                  .setName('add_custom')
+                  .setDescription('Add a reaction role to the server.')
+                  .addChannelOption((argBuilder) =>
+                     argBuilder
+                        .setName('channel')
+                        .setDescription('The channel to put the reaction role embed in.')
+                        .addChannelTypes(ChannelType.GuildText)
+                        .setRequired(true),
+                  )
+                  .addStringOption((argBuilder) =>
+                     argBuilder
+                        .setName('roles')
+                        .setDescription('Space between emoji & role. (ex. [emoji] [role] [...emoji2] [...role2])')
+                        .setRequired(true),
+                  ),
             ),
+         ),
+      )
+      .addSubcommand((builder) =>
+         createRoleTypes(
+            builder
+               .setName('add_json')
+               .setDescription('Add a reaction role to the server.')
+               .addChannelOption((argBuilder) =>
+                  argBuilder
+                     .setName('channel')
+                     .setDescription('The channel to put the reaction role embed in.')
+                     .addChannelTypes(ChannelType.GuildText)
+                     .setRequired(true),
+               )
+               .addStringOption((argBuilder) =>
+                  argBuilder
+                     .setName('roles')
+                     .setDescription('Space between emoji & role. (ex. [emoji] [role] [...emoji2] [...role2])')
+                     .setRequired(true),
+               )
+               .addStringOption((argBuilder) =>
+                  argBuilder
+                     .setName('json')
+                     .setDescription('The JSON for the Discord Embed attached to the reaction role.')
+                     .setRequired(true),
+               ),
+         ),
       )
       .addSubcommand((builder) =>
          builder
