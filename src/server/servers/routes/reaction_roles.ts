@@ -3,7 +3,7 @@ import addReactionRole from '@/modules/features/reaction_roles/addReactionRole';
 import removeReactionRole from '@/modules/features/reaction_roles/removeReactionRole';
 import checkAuthenticated from '@/server/checkAuthenticated';
 import checkGuildOwnership from '@/server/checkGuildOwnership';
-import { APIEmbed, ReactionRole, ReactionRoleType } from '@prisma/client';
+import { APIEmbed, ReactionRoleType } from '@prisma/client';
 import { Router } from 'express';
 /*
    Reaction Roles
@@ -52,6 +52,8 @@ const reactionRoles = (auxdibot: Auxdibot, router: Router) => {
                const channel = req.guild.channels.cache.get(req.body['channel']);
                const embed = req.body['embed'] ? (JSON.parse(req.body['embed']) satisfies APIEmbed) : undefined;
                const type = ReactionRoleType[req.body['type'] ?? 'DEFAULT'] ?? ReactionRoleType.DEFAULT;
+               if (reactionsParsed.length > 10)
+                  return res.status(400).json({ error: 'You have provided too many reactions and roles!' });
                return addReactionRole(
                   auxdibot,
                   req.guild,
