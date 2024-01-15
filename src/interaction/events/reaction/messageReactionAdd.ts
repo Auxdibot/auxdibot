@@ -17,12 +17,12 @@ export default async function messageReactionAdd(
    if (!member) return;
    if (!server.disabled_modules.find((item) => item == Modules['Roles'].name)) {
       const rrData = server.reaction_roles.find((rr) => messageReaction.message.id == rr.messageID);
-      if (rrData) {
+      if (rrData && ['DEFAULT', 'STICKY', 'SELECT_ONE'].includes(rrData.type)) {
          const rr = rrData.reactions.find(
             (react) => react.emoji == (messageReaction.emoji.valueOf() || messageReaction.emoji.toString()),
          );
          if (rr) {
-            await messageReaction.users.remove(user.id);
+            if (rrData.type != 'STICKY') await messageReaction.users.remove(user.id);
             if (member.roles.resolve(rr.role)) {
                await member.roles.remove(rr.role).catch(() => undefined);
             } else {

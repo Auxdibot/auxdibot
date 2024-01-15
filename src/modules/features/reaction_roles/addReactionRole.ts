@@ -45,26 +45,6 @@ export default async function addReactionRole(
    );
    if (reactionsAndRoles.length == 0) throw new Error('invalid reactions and roles');
    if (!channel || !channel.isTextBased()) throw new Error('invalid channel');
-   const component =
-      type == 'SELECT_ONE_MENU' || type == 'SELECT_MENU'
-         ? new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(
-              new StringSelectMenuBuilder()
-                 .setCustomId('rr')
-                 .setMinValues(1)
-                 .setMaxValues(type == 'SELECT_ONE_MENU' ? 1 : reactionsAndRoles.length)
-                 .setPlaceholder('Select a role.')
-                 .setDisabled(false)
-                 .addOptions(
-                    ...reactionsAndRoles.map((i) =>
-                       new StringSelectMenuOptionBuilder()
-                          .setEmoji(i.emoji)
-                          .setLabel(i.role.name)
-                          .setValue(i.role.id)
-                          .setDescription(`You will receive the ${i.role.name} role.`),
-                    ),
-                 ),
-           )
-         : undefined;
    return channel
       .send({
          embeds: embed
@@ -85,15 +65,18 @@ export default async function addReactionRole(
                     .toJSON(),
               ],
          content: content || '',
-         components: component ? [component] : [],
       })
-      .then((msg: Message) => {
+      .then(async (msg: Message) => {
          const row = new ActionRowBuilder<StringSelectMenuBuilder | ButtonBuilder>();
          switch (type) {
-            case 'DEFAULT' || 'STICKY' || 'SELECT_ONE':
+            case ReactionRoleType.DEFAULT:
+            case ReactionRoleType.STICKY_SELECT_ONE:
+            case ReactionRoleType.STICKY:
+            case ReactionRoleType.SELECT_ONE:
                reactionsAndRoles.forEach((i) => msg.react(i.emoji));
                break;
-            case 'BUTTON' || 'BUTTON_SELECT_ONE':
+            case ReactionRoleType.BUTTON:
+            case ReactionRoleType.BUTTON_SELECT_ONE:
                row.addComponents(
                   ...reactionsAndRoles.map((i) =>
                      new ButtonBuilder()
@@ -104,9 +87,28 @@ export default async function addReactionRole(
                   ),
                );
                break;
+            case ReactionRoleType.SELECT_MENU:
+            case ReactionRoleType.SELECT_ONE_MENU:
+               row.addComponents(
+                  new StringSelectMenuBuilder()
+                     .setCustomId('rr')
+                     .setMinValues(1)
+                     .setMaxValues(type == 'SELECT_ONE_MENU' ? 1 : reactionsAndRoles.length)
+                     .setPlaceholder('Select a role.')
+                     .setDisabled(false)
+                     .addOptions(
+                        ...reactionsAndRoles.map((i) =>
+                           new StringSelectMenuOptionBuilder()
+                              .setEmoji(i.emoji)
+                              .setLabel(i.role.name)
+                              .setValue(i.role.id)
+                              .setDescription(`You will receive the ${i.role.name} role.`),
+                        ),
+                     ),
+               );
          }
          if (row.components.length > 0) {
-            msg.edit({
+            await msg.edit({
                components: [row.toJSON()],
             });
          }
@@ -118,6 +120,7 @@ export default async function addReactionRole(
                      push: {
                         messageID: msg.id,
                         channelID: msg.channel.id,
+                        type,
                         reactions: reactionsAndRoles.map((i) => ({ role: i.role.id, emoji: i.emoji })),
                      },
                   },
