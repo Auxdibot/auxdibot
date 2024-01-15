@@ -9,7 +9,7 @@ import handleError from '@/util/handleError';
 import handleLog from '@/util/handleLog';
 import { testLimit } from '@/util/testLimit';
 import { EmbedBuilder } from '@discordjs/builders';
-import { LogAction } from '@prisma/client';
+import { LogAction, ReactionRoleType } from '@prisma/client';
 import { ChannelType } from 'discord.js';
 
 export const reactionRolesAdd = <AuxdibotSubcommand>{
@@ -24,7 +24,8 @@ export const reactionRolesAdd = <AuxdibotSubcommand>{
       if (!interaction.data) return;
       const channel = interaction.options.getChannel('channel', true, [ChannelType.GuildText]),
          roles = interaction.options.getString('roles', true),
-         title = interaction.options.getString('title') || 'React to receive roles!';
+         title = interaction.options.getString('title') || 'React to receive roles!',
+         type = interaction.options.getString('type', false) || 'DEFAULT';
       const split = roles.split(' ');
       const builder = [];
       if (!testLimit(interaction.data.guildData.reaction_roles, Limits.REACTION_ROLE_DEFAULT_LIMIT)) {
@@ -35,11 +36,31 @@ export const reactionRolesAdd = <AuxdibotSubcommand>{
             interaction,
          );
       }
+      if (!ReactionRoleType[type]) {
+         return await handleError(auxdibot, 'INVALID_TYPE', 'This is not a valid reaction role type!', interaction);
+      }
       while (split.length) {
          const [emoji, roleID] = split.splice(0, 2);
          builder.push({ emoji, roleID });
       }
-      addReactionRole(auxdibot, interaction.guild, channel, title, builder)
+      if (builder.length > 10) {
+         return await handleError(
+            auxdibot,
+            'TOO_MANY_REACTIONS',
+            'You can only have up to 10 roles on one message!',
+            interaction,
+         );
+      }
+      addReactionRole(
+         auxdibot,
+         interaction.guild,
+         channel,
+         title,
+         builder,
+         undefined,
+         undefined,
+         ReactionRoleType[type],
+      )
          .then(async () => {
             const resEmbed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             resEmbed.title = '👈 Created Reaction Role';
