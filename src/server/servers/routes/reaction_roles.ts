@@ -3,7 +3,7 @@ import addReactionRole from '@/modules/features/reaction_roles/addReactionRole';
 import removeReactionRole from '@/modules/features/reaction_roles/removeReactionRole';
 import checkAuthenticated from '@/server/checkAuthenticated';
 import checkGuildOwnership from '@/server/checkGuildOwnership';
-import { APIEmbed } from '@prisma/client';
+import { APIEmbed, ReactionRole, ReactionRoleType } from '@prisma/client';
 import { Router } from 'express';
 /*
    Reaction Roles
@@ -51,7 +51,17 @@ const reactionRoles = (auxdibot: Auxdibot, router: Router) => {
                ) satisfies Array<ReactionRoleRequest>;
                const channel = req.guild.channels.cache.get(req.body['channel']);
                const embed = req.body['embed'] ? (JSON.parse(req.body['embed']) satisfies APIEmbed) : undefined;
-               return addReactionRole(auxdibot, req.guild, channel, title, reactionsParsed, embed, req.body['message'])
+               const type = ReactionRoleType[req.body['type'] ?? 'DEFAULT'] ?? ReactionRoleType.DEFAULT;
+               return addReactionRole(
+                  auxdibot,
+                  req.guild,
+                  channel,
+                  title,
+                  reactionsParsed,
+                  embed,
+                  req.body['message'],
+                  type,
+               )
                   .then((i) => res.json({ created: i }))
                   .catch((x) =>
                      res.status(500).json({ error: typeof x.message == 'string' ? x.message : 'an error occurred' }),

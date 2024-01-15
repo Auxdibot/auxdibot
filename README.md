@@ -70,6 +70,8 @@ Auxdibot uses Discord's slash command system. If you want to run any command you
 
 `⏲️` *Schedules*
 
+`🖼️` *Server Cards/Websites*
+
 `💻` *User-friendly Dashboard*
 
 ## Frequently Asked Questions
