@@ -18,12 +18,14 @@ import threadDelete from './thread/threadDelete';
 import channelCreate from './channel/channelCreate';
 import channelDelete from './channel/channelDelete';
 import voiceStateUpdate from './voice/voiceStateUpdate';
+import selectMenuCreate from './interaction/selectMenuCreate';
 
 export default function listenEvents(auxdibot: Auxdibot) {
    auxdibot.once('ready', () => onReady(auxdibot));
    auxdibot.on('interactionCreate', (interaction: BaseInteraction) => {
       if (interaction.isButton()) buttonCreate(auxdibot, interaction);
       else if (interaction.isChatInputCommand()) slashCreate(auxdibot, interaction);
+      else if (interaction.isAnySelectMenu()) selectMenuCreate(auxdibot, interaction);
    });
    auxdibot.on('guildCreate', (guild) => guildCreate(auxdibot, guild));
    auxdibot.on('guildDelete', (guild) => guildDelete(auxdibot, guild));
