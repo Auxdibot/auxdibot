@@ -67,7 +67,9 @@ export default async function addReactionRole(
          content: content || '',
       })
       .then(async (msg: Message) => {
-         const row = new ActionRowBuilder<StringSelectMenuBuilder | ButtonBuilder>();
+         let rows: ActionRowBuilder<ButtonBuilder | StringSelectMenuBuilder>[] = [
+            new ActionRowBuilder<StringSelectMenuBuilder>(),
+         ];
          switch (type) {
             case ReactionRoleType.DEFAULT:
             case ReactionRoleType.STICKY_SELECT_ONE:
@@ -77,19 +79,23 @@ export default async function addReactionRole(
                break;
             case ReactionRoleType.BUTTON:
             case ReactionRoleType.BUTTON_SELECT_ONE:
-               row.addComponents(
-                  ...reactionsAndRoles.map((i) =>
-                     new ButtonBuilder()
-                        .setCustomId(`rr-${i.role.id}`)
-                        .setEmoji(i.emoji)
-                        .setLabel(i.role.name)
-                        .setStyle(ButtonStyle.Secondary),
+               rows = Array.from({ length: Math.ceil(reactionsAndRoles.length / 5) }, (v, i) =>
+                  reactionsAndRoles.slice(i * 5, i * 5 + 5),
+               ).map((a) =>
+                  new ActionRowBuilder<ButtonBuilder>().addComponents(
+                     a.map((i) =>
+                        new ButtonBuilder()
+                           .setCustomId(`rr-${i.role.id}`)
+                           .setEmoji(i.emoji)
+                           .setLabel(i.role.name)
+                           .setStyle(ButtonStyle.Secondary),
+                     ),
                   ),
                );
                break;
             case ReactionRoleType.SELECT_MENU:
             case ReactionRoleType.SELECT_ONE_MENU:
-               row.addComponents(
+               rows[0].addComponents(
                   new StringSelectMenuBuilder()
                      .setCustomId('rr')
                      .setMinValues(1)
@@ -107,9 +113,9 @@ export default async function addReactionRole(
                      ),
                );
          }
-         if (row.components.length > 0) {
+         if (rows.find((i) => i.components.length > 0)) {
             await msg.edit({
-               components: [row.toJSON()],
+               components: rows.map((i) => i.toJSON()),
             });
          }
          return auxdibot.database.servers
