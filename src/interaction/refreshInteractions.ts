@@ -71,4 +71,18 @@ export default async function refreshInteractions(auxdibot: Auxdibot, rest: REST
          }
       }
    }
+   /********************************************************************************/
+   // Declare select menus
+   console.log('-> Declaring select menu interactions...');
+   const select_menus = [];
+   const selectMenuFiles = fs.readdirSync(path.join(__dirname, '/menus')).filter((file) => file.endsWith('.js'));
+   for (const file of selectMenuFiles) {
+      const fileRequire = await import(`./menus/${file}`);
+      if (fileRequire.default) {
+         select_menus.push(fileRequire.default);
+         if (auxdibot.select_menus) {
+            auxdibot.select_menus.set(fileRequire.default.name, fileRequire.default);
+         }
+      }
+   }
 }

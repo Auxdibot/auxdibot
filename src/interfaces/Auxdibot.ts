@@ -4,9 +4,11 @@ import AuxdibotButton from './buttons/AuxdibotButton';
 import { PrismaClient } from '@prisma/client';
 import { ToadScheduler } from 'toad-scheduler';
 import { CachedMessage } from './messages/CachedMessage';
+import AuxdibotSelectMenu from './menus/AuxdibotSelectMenu';
 export interface Auxdibot extends Client {
    commands: Collection<string, AuxdibotCommand>;
    buttons: Collection<string, AuxdibotButton>;
+   select_menus: Collection<string, AuxdibotSelectMenu>;
    database: PrismaClient;
    scheduler: ToadScheduler;
    messages: Collection<bigint, CachedMessage>;
