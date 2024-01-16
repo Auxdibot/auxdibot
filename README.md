@@ -1,6 +1,6 @@
 <div align="center" id="header">
    <a href="https://bot.auxdible.me">
-      <img src="https://bot.auxdible.me/logo.png" alt="Auxdibot logo" width=186/>
+      <img src="https://bot.auxdible.me/logo.png" alt="Auxdibot logo" style="padding-bottom: 2rem;" width=186/>
    </a>
    
    <div id="badges">
@@ -26,12 +26,20 @@
       </div>
     </div>
    <h1>Auxdibot 🤖</h1>
+   
 </div>
 
+<div align="center" id="body">
+   <h2>
+      Auxdibot's Mission
+   </h2>
+   <i>Auxdibot is created through dedication to serve YOU, the user, in every stage of your server. From creation to community, we have a tool provided for every use-case.</i>
+   
+</div>
 
 ## About Project
 
-Auxdibot is a Discord bot project founded and maintained by Auxdible. Auxdibot utilizes discord.js for handling Discord interactions and Next.js for a fast and user-friendly dashboard, allowing users to interact with Auxdibot on the go. Additionally, Auxdibot features a wide variety of features for admins to manage their servers with. Auxdibot receives consistant updates and constant bug fixes, making it a reliable choice for your server!
+Auxdibot is a Discord bot project founded and maintained by Auxdible. Auxdibot features a wide variety of features for admins to manage their servers with. Auxdibot receives consistant updates and constant bug fixes, making it a reliable choice for your server!
 
 ### Important Files
 
@@ -50,29 +58,55 @@ Auxdibot uses Discord's slash command system. If you want to run any command you
 
 ## Features
 
-`🔨` *Punishments & Moderation & AutoMod*
+`🔨 ` *Moderation*
 
-`🗒️` *Logging*
+A moderation suite containing a fleshed out AutoMod system, extensive punishment history, and an ability to manage users on the fly with the /users command.
 
 `✋` *Permissions*
 
+An expansive permissions system, capable of creating complex rules allowing certain roles to utilize certain Auxdibot features.
+
+
+`🗒️` *Logging*
+
+An in-depth logging system, auditing every action taken on your Discord server through Auxdibot.
+
+
 `💻` *Embed Creator*
 
-`👋` *Join, Join DM & Leave Messages*
+An easy-to-use embed creation tool, allowing administrators to build customizable and approachable embeds for their members to view.
+
+`👋` *Greetings (Join, Join DM, Leave)*
+
+A tool provided by Auxdibot for administrators to create customizable greeting and departure messages for their server.
 
 `👈` *Role Management (Join Roles, Sticky Roles, Massrole, Reaction Roles)*
 
+An expansive suite of role commands created to ease the burden of role management from administrators.
+
 `🔺` *Suggestions*
+
+A drop-in solution for administrators to receive feedback from the members of their server. Admins can implement custom suggestions reactions and react to user feedback with various responses. (Added, Denied, Accepted, Considered)
 
 `🏆` *Levels*
 
+An innovative leveling system allowing users to gain experience for interacting with your server. Admins can reward users with Level Rewards for their chat activity.
+
 `⭐` *Starboard*
+
+A solution built to highlight the top posts from your community. Extremely customizable and built for servers of all sizes, providing the full context of every "starred" message.
 
 `⏲️` *Schedules*
 
+Auxdibot's method of building timed messages. Administrators can schedule messages to run on an interval, with custom embed content and a custom start date.
+
 `🖼️` *Server Cards/Websites*
 
+A cutting-edge solution for building a website for your server. Using Auxdibot's dashboard, administrators can create their own stylistically creative server cards.
+
 `💻` *User-friendly Dashboard*
+
+An approachable dashboard created for administrators to quickly interact with their server, browse documentation, or view updates for Auxdibot!
 
 ## Frequently Asked Questions
 
