@@ -32,9 +32,11 @@ export default async function addReactionRole(
    const reactionsAndRoles = await reactions.reduce(
       async (acc: Promise<ReactionsAndRolesBuilder[]> | ReactionsAndRolesBuilder[], item) => {
          let arr = await acc;
-         const role = await guild.roles.fetch((item.roleID?.match(/\d+/) || [])[0] || '').catch(() => undefined);
+         const role: Role = await guild.roles.fetch((item.roleID?.match(/\d+/) || [])[0] || '').catch(() => undefined);
          const serverEmoji = auxdibot.emojis.cache.get((item.emoji?.match(/\d+/) || [])[0]);
          const emoji = serverEmoji || (emojiRegex().test(item.emoji) ? item.emoji : undefined);
+         if (role && role.position > role.guild.members.me.roles.highest.position)
+            throw new Error(`The ${role.name} role is higher than Auxdibot's highest role!`);
          if (role && emoji)
             arr.length == 0
                ? (arr = [{ role: role, emoji: emoji.valueOf() || emoji.toString() }])
@@ -134,7 +136,8 @@ export default async function addReactionRole(
             })
             .then(() => true);
       })
-      .catch(() => {
+      .catch((x) => {
+         if (x.code == '50013') throw new Error('Auxdibot does not have permission to send messages!');
          throw new Error('failed to send embed');
       });
 }
