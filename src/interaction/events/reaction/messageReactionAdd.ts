@@ -23,24 +23,26 @@ export default async function messageReactionAdd(
          );
          if (rr) {
             if (rrData.type != 'STICKY' && rrData.type != 'STICKY_SELECT_ONE')
-               await messageReaction.users.remove(user.id);
+               await messageReaction.users.remove(user.id).catch(() => undefined);
 
             if (rrData.type == 'STICKY_SELECT_ONE') {
                const userReacted = messageReaction.message.reactions.cache.filter(
                   (i) => i.emoji.valueOf() != rr.emoji && i.emoji.toString() != rr.emoji,
                );
                for (const reaction of userReacted.values()) {
-                  reaction.users.remove(user.id);
-                  member.roles.remove(
-                     rrData.reactions.find(
-                        (i) =>
-                           i.emoji == messageReaction.emoji.valueOf() || i.emoji == messageReaction.emoji.toString(),
-                     ).role,
-                  );
+                  reaction.users.remove(user.id).catch(() => undefined);
+                  member.roles
+                     .remove(
+                        rrData.reactions.find(
+                           (i) =>
+                              i.emoji == messageReaction.emoji.valueOf() || i.emoji == messageReaction.emoji.toString(),
+                        ).role,
+                     )
+                     .catch(() => undefined);
                }
                const userRoles = rrData.reactions.filter((i) => i.role != rr.role);
                for (const role of userRoles) {
-                  await member.roles.remove(role.role);
+                  await member.roles.remove(role.role).catch(() => undefined);
                }
             }
             if (member.roles.resolve(rr.role)) {

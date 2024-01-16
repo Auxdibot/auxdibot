@@ -15,7 +15,7 @@ export default async function messageReactionRemove(
    if (!member) return;
    if (!server.disabled_modules.find((item) => item == Modules['Roles'].name)) {
       const rrData = server.reaction_roles.find((rr) => messageReaction.message.id == rr.messageID);
-      if (rrData) {
+      if (rrData && ['STICKY', 'STICKY_SELECT_ONE'].includes(rrData.type)) {
          const rr = rrData.reactions.find(
             (react) => react.emoji == (messageReaction.emoji.valueOf() || messageReaction.emoji.toString()),
          );
