@@ -22,7 +22,9 @@ const embeds = (auxdibot: Auxdibot, router: Router) => {
             if (!channel || !channel.isTextBased()) return res.status(400).json({ error: 'invalid channel' });
             return sendEmbed(channel, req.body['message'], embed)
                .then(() => res.json({ success: 'successfully sent embed to ' + channel.name }))
-               .catch(() => res.status(500).json({ error: 'failed to send embed' }));
+               .catch((x) => {
+                  res.status(500).json({ error: x.message });
+               });
          } catch (x) {
             console.log(x);
             return res.status(500).json({ error: 'an error occurred' });
