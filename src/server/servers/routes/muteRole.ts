@@ -6,6 +6,8 @@ import { Router } from 'express';
 /*
    Mute Role
    Change the mute role and view it for the server.
+
+   TODO: This endpoint will be deprecated upon dashboard automod update
 */
 const muteRole = (auxdibot: Auxdibot, router: Router) => {
    // todo for backwards compatability purposes until the dashboard website is updated

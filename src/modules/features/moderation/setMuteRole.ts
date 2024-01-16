@@ -9,6 +9,32 @@ export default async function setMuteRole(
    user: { id: string },
    role?: Role | APIRole,
 ) {
+   const guildRole = role ? guild.roles.cache.get(role.id) : null;
+   if (guildRole) {
+      await guildRole.setPermissions([], 'Clearing all permissions.').catch(() => undefined);
+      guild.channels.cache.forEach((r) => {
+         if (r.isDMBased() || r.isThread() || !guildRole) return;
+         r.permissionOverwrites
+            .create(guildRole, {
+               SendMessages: false,
+               SendMessagesInThreads: false,
+               AddReactions: false,
+               CreatePublicThreads: false,
+               AttachFiles: false,
+               EmbedLinks: false,
+               CreatePrivateThreads: false,
+               CreateInstantInvite: false,
+               ChangeNickname: false,
+            })
+            .catch(() => undefined);
+         if (r.isVoiceBased())
+            r.permissionOverwrites
+               .create(guildRole, {
+                  Connect: false,
+               })
+               .catch(() => undefined);
+      });
+   }
    return auxdibot.database.servers
       .update({
          where: { serverID: guild.id },
