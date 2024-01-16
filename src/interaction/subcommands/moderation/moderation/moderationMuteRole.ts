@@ -6,6 +6,7 @@ import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 import setMuteRole from '@/modules/features/moderation/setMuteRole';
 import handleError from '@/util/handleError';
 import { EmbedBuilder } from '@discordjs/builders';
+import { PermissionFlagsBits } from 'discord.js';
 
 export const moderationMuteRole = <AuxdibotSubcommand>{
    name: 'mute_role',
@@ -32,14 +33,21 @@ export const moderationMuteRole = <AuxdibotSubcommand>{
             ephemeral: true,
          });
       }
+      if (!interaction.guild.members.me.permissions.has(PermissionFlagsBits.ManageRoles)) {
+         return await handleError(
+            auxdibot,
+            'AUXDIBOT_MISSING_PERMISSION',
+            'Auxdibot does not have permission to Manage Roles!',
+            interaction,
+         );
+      }
       if (role && interaction.data.guild.roles.comparePositions(interaction.data.member.roles.highest, role.id) <= 0) {
-         const noPermissionEmbed = new EmbedBuilder().setColor(auxdibot.colors.denied).toJSON();
-         noPermissionEmbed.title = '⛔ No Permission!';
-         noPermissionEmbed.description = `This role is higher up on the role hierarchy than Auxdibot's roles!`;
-         return await interaction.reply({
-            embeds: [noPermissionEmbed],
-            ephemeral: true,
-         });
+         return await handleError(
+            auxdibot,
+            'AUXDIBOT_MISSING_PERMISSION',
+            "This role is higher than Auxdibot's current highest role!",
+            interaction,
+         );
       }
       const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
       embed.title = '⚙️ Mute Role Change';
@@ -49,23 +57,8 @@ export const moderationMuteRole = <AuxdibotSubcommand>{
             embeds: [embed],
          });
       }
-      const formerRole = interaction.data.guild.roles.cache.get(server.mute_role || ''),
-         guildRole = role ? interaction.data.guild.roles.cache.get(role.id) : null;
-      if (guildRole) {
-         await guildRole.setPermissions([], 'Clearing all permissions.').catch(() => undefined);
-         interaction.data.guild.channels.cache.forEach((r) => {
-            if (r.isDMBased() || r.isThread() || !guildRole) return;
-            r.permissionOverwrites.create(guildRole, {
-               SendMessages: false,
-               SendMessagesInThreads: false,
-               AddReactions: false,
-            });
-            if (r.isVoiceBased())
-               r.permissionOverwrites.create(guildRole, {
-                  Connect: false,
-               });
-         });
-      }
+      const formerRole = interaction.data.guild.roles.cache.get(server.mute_role || '');
+
       setMuteRole(auxdibot, interaction.guild, interaction.user, role)
          .then(async () => {
             embed.description = `The mute role for this server has been changed.\r\n\r\nFormerly: ${
