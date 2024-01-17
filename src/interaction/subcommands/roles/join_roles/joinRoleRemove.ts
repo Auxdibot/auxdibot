@@ -5,9 +5,7 @@ import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInt
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 import removeJoinRole from '@/modules/features/roles/join_roles/removeJoinRole';
 import handleError from '@/util/handleError';
-import handleLog from '@/util/handleLog';
 import { EmbedBuilder } from '@discordjs/builders';
-import { LogAction } from '@prisma/client';
 import { PermissionsBitField } from 'discord.js';
 
 export const joinRoleRemove = <AuxdibotSubcommand>{
@@ -46,17 +44,11 @@ export const joinRoleRemove = <AuxdibotSubcommand>{
          );
       }
 
-      removeJoinRole(auxdibot, interaction.guild, role)
+      removeJoinRole(auxdibot, interaction.guild, role, joinRoleID, interaction.user)
          .then(async () => {
             const successEmbed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             successEmbed.title = '👋 Removed Join Role';
             successEmbed.description = `Removed <@&${joinRoleID}> from the join roles.`;
-            await handleLog(auxdibot, interaction.data.guild, {
-               userID: interaction.data.member.id,
-               description: `Removed ${role.name} from the join roles.`,
-               type: LogAction.JOIN_ROLE_REMOVED,
-               date_unix: Date.now(),
-            });
             return await interaction.reply({ embeds: [successEmbed] });
          })
          .catch(async (x) => {

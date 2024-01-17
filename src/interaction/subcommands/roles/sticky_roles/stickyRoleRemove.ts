@@ -5,9 +5,7 @@ import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInt
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 import removeStickyRole from '@/modules/features/roles/sticky_roles/removeStickyRole';
 import handleError from '@/util/handleError';
-import handleLog from '@/util/handleLog';
 import { EmbedBuilder } from '@discordjs/builders';
-import { LogAction } from '@prisma/client';
 import { PermissionsBitField } from 'discord.js';
 
 export const stickyRoleRemove = <AuxdibotSubcommand>{
@@ -46,17 +44,11 @@ export const stickyRoleRemove = <AuxdibotSubcommand>{
          }
       }
 
-      removeStickyRole(auxdibot, interaction.guild, role)
+      removeStickyRole(auxdibot, interaction.guild, role, stickyRoleID, interaction.user)
          .then(async () => {
             const successEmbed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             successEmbed.title = '📝 Removed Sticky Role';
             successEmbed.description = `Removed role <@&${stickyRoleID}> from the sticky roles.`;
-            await handleLog(auxdibot, interaction.data.guild, {
-               userID: interaction.data.member.id,
-               description: `Removed role ${stickyRole.name} from the sticky roles.`,
-               type: LogAction.STICKY_ROLE_REMOVED,
-               date_unix: Date.now(),
-            });
             return await interaction.reply({ embeds: [successEmbed] });
          })
          .catch(async (x) => {

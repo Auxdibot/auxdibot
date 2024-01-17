@@ -21,6 +21,8 @@ import massrole from './routes/massrole';
 import greetings from './routes/greetings';
 import moderation from './routes/moderation';
 import updateCard from './routes/updateCard';
+import joinRoles from './routes/join_roles';
+import stickyRoles from './routes/sticky_roles';
 
 const router = express.Router();
 
@@ -72,5 +74,8 @@ export const serversRoute = (auxdibot: Auxdibot) => {
    greetings(auxdibot, router);
    moderation(auxdibot, router);
    updateCard(auxdibot, router);
+   joinRoles(auxdibot, router);
+   stickyRoles(auxdibot, router);
+
    return router;
 };
