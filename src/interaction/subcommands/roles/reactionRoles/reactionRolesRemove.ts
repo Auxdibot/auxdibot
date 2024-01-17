@@ -3,7 +3,7 @@ import { Auxdibot } from '@/interfaces/Auxdibot';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
-import removeReactionRole from '@/modules/features/reaction_roles/removeReactionRole';
+import removeReactionRole from '@/modules/features/roles/reaction_roles/removeReactionRole';
 import { getMessage } from '@/util/getMessage';
 import handleError from '@/util/handleError';
 import { EmbedBuilder } from '@discordjs/builders';

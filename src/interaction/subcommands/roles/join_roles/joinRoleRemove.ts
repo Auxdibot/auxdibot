@@ -3,6 +3,7 @@ import { Auxdibot } from '@/interfaces/Auxdibot';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
+import removeJoinRole from '@/modules/features/roles/join_roles/removeJoinRole';
 import handleError from '@/util/handleError';
 import handleLog from '@/util/handleLog';
 import { EmbedBuilder } from '@discordjs/builders';
@@ -30,14 +31,6 @@ export const joinRoleRemove = <AuxdibotSubcommand>{
             ? server.join_roles[index - 1]
             : undefined;
 
-      if (!joinRoleID) {
-         return await handleError(
-            auxdibot,
-            'JOIN_ROLE_NOT_FOUND',
-            "This role isn't added as a join role!",
-            interaction,
-         );
-      }
       const joinRole = interaction.data.guild.roles.cache.get(joinRoleID);
       if (
          joinRole &&
@@ -52,32 +45,22 @@ export const joinRoleRemove = <AuxdibotSubcommand>{
             interaction,
          );
       }
-      if (
-         joinRole &&
-         interaction.data.guild.members.me &&
-         joinRole.comparePositionTo(interaction.data.guild.members.me.roles.highest) >= 0
-      ) {
-         return await handleError(
-            auxdibot,
-            'ROLE_POSITION_HIGHER_BOT',
-            "This role has a higher position than Auxdibot's highest role!",
-            interaction,
-         );
-      }
-      server.join_roles.splice(server.join_roles.indexOf(joinRoleID), 1);
-      await auxdibot.database.servers.update({
-         where: { serverID: server.serverID },
-         data: { join_roles: server.join_roles },
-      });
-      const successEmbed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
-      successEmbed.title = '👋 Removed Join Role';
-      successEmbed.description = `Removed <@&${joinRoleID}> from the join roles.`;
-      await handleLog(auxdibot, interaction.data.guild, {
-         userID: interaction.data.member.id,
-         description: `Removed ${role.name} from the join roles.`,
-         type: LogAction.JOIN_ROLE_REMOVED,
-         date_unix: Date.now(),
-      });
-      return await interaction.reply({ embeds: [successEmbed] });
+
+      removeJoinRole(auxdibot, interaction.guild, role)
+         .then(async () => {
+            const successEmbed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
+            successEmbed.title = '👋 Removed Join Role';
+            successEmbed.description = `Removed <@&${joinRoleID}> from the join roles.`;
+            await handleLog(auxdibot, interaction.data.guild, {
+               userID: interaction.data.member.id,
+               description: `Removed ${role.name} from the join roles.`,
+               type: LogAction.JOIN_ROLE_REMOVED,
+               date_unix: Date.now(),
+            });
+            return await interaction.reply({ embeds: [successEmbed] });
+         })
+         .catch(async (x) => {
+            await handleError(auxdibot, 'FAILED_JOIN_ROLE_REMOVE', x.message, interaction);
+         });
    },
 };

@@ -1,6 +1,6 @@
 import { Auxdibot } from '@/interfaces/Auxdibot';
-import addReactionRole from '@/modules/features/reaction_roles/addReactionRole';
-import removeReactionRole from '@/modules/features/reaction_roles/removeReactionRole';
+import addReactionRole from '@/modules/features/roles/reaction_roles/addReactionRole';
+import removeReactionRole from '@/modules/features/roles/reaction_roles/removeReactionRole';
 import checkAuthenticated from '@/server/checkAuthenticated';
 import checkGuildOwnership from '@/server/checkGuildOwnership';
 import { APIEmbed, ReactionRoleType } from '@prisma/client';
