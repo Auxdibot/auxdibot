@@ -4,7 +4,7 @@ import { Auxdibot } from '@/interfaces/Auxdibot';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
-import addReactionRole from '@/modules/features/reaction_roles/addReactionRole';
+import addReactionRole from '@/modules/features/roles/reaction_roles/addReactionRole';
 import handleError from '@/util/handleError';
 import handleLog from '@/util/handleLog';
 import { testLimit } from '@/util/testLimit';

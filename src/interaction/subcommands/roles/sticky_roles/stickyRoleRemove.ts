@@ -3,6 +3,7 @@ import { Auxdibot } from '@/interfaces/Auxdibot';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
+import removeStickyRole from '@/modules/features/roles/sticky_roles/removeStickyRole';
 import handleError from '@/util/handleError';
 import handleLog from '@/util/handleLog';
 import { EmbedBuilder } from '@discordjs/builders';
@@ -29,14 +30,6 @@ export const stickyRoleRemove = <AuxdibotSubcommand>{
             : index
             ? server.sticky_roles[index - 1]
             : undefined;
-      if (!stickyRoleID) {
-         return await handleError(
-            auxdibot,
-            'STICKY_ROLE_NOT_FOUND',
-            "This role isn't added as a sticky role!",
-            interaction,
-         );
-      }
       const stickyRole = interaction.data.guild.roles.cache.get(stickyRoleID);
       if (stickyRole) {
          if (
@@ -51,34 +44,23 @@ export const stickyRoleRemove = <AuxdibotSubcommand>{
                interaction,
             );
          }
-         if (
-            stickyRole &&
-            interaction.data.guild.members.me &&
-            stickyRole.comparePositionTo(interaction.data.guild.members.me.roles.highest) >= 0
-         ) {
-            return await handleError(
-               auxdibot,
-               'ROLE_POSITION_HIGHER_BOT',
-               "This role has a higher position than Auxdibot's highest role!",
-               interaction,
-            );
-         }
       }
 
-      server.sticky_roles.splice(server.sticky_roles.indexOf(stickyRoleID), 1);
-      await auxdibot.database.servers.update({
-         where: { serverID: server.serverID },
-         data: { sticky_roles: server.sticky_roles },
-      });
-      const successEmbed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
-      successEmbed.title = '📝 Removed Sticky Role';
-      successEmbed.description = `Removed role <@&${stickyRoleID}> from the sticky roles.`;
-      await handleLog(auxdibot, interaction.data.guild, {
-         userID: interaction.data.member.id,
-         description: `Removed role ${stickyRole.name} from the sticky roles.`,
-         type: LogAction.STICKY_ROLE_REMOVED,
-         date_unix: Date.now(),
-      });
-      return await interaction.reply({ embeds: [successEmbed] });
+      removeStickyRole(auxdibot, interaction.guild, role)
+         .then(async () => {
+            const successEmbed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
+            successEmbed.title = '📝 Removed Sticky Role';
+            successEmbed.description = `Removed role <@&${stickyRoleID}> from the sticky roles.`;
+            await handleLog(auxdibot, interaction.data.guild, {
+               userID: interaction.data.member.id,
+               description: `Removed role ${stickyRole.name} from the sticky roles.`,
+               type: LogAction.STICKY_ROLE_REMOVED,
+               date_unix: Date.now(),
+            });
+            return await interaction.reply({ embeds: [successEmbed] });
+         })
+         .catch(async (x) => {
+            await handleError(auxdibot, 'FAILED_STICKY_ROLE_REMOVE', x.message, interaction);
+         });
    },
 };
