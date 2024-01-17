@@ -5,9 +5,7 @@ import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInt
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 import addStickyRole from '@/modules/features/roles/sticky_roles/addStickyRole';
 import handleError from '@/util/handleError';
-import handleLog from '@/util/handleLog';
 import { EmbedBuilder } from '@discordjs/builders';
-import { LogAction } from '@prisma/client';
 import { PermissionsBitField } from 'discord.js';
 
 export const stickyRoleAdd = <AuxdibotSubcommand>{
@@ -34,17 +32,11 @@ export const stickyRoleAdd = <AuxdibotSubcommand>{
             interaction,
          );
       }
-      addStickyRole(auxdibot, interaction.guild, role)
+      addStickyRole(auxdibot, interaction.guild, role, interaction.user)
          .then(async () => {
             const successEmbed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             successEmbed.title = '📝 Added Sticky Role';
             successEmbed.description = `Added <@&${role.id}> to the sticky roles.`;
-            await handleLog(auxdibot, interaction.data.guild, {
-               userID: interaction.data.member.id,
-               description: `Added ${role.name} to sticky roles.`,
-               type: LogAction.STICKY_ROLE_ADDED,
-               date_unix: Date.now(),
-            });
             return await interaction.reply({ embeds: [successEmbed] });
          })
          .catch(async (x) => {

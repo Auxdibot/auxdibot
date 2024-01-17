@@ -5,9 +5,8 @@ import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInt
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 import addJoinRole from '@/modules/features/roles/join_roles/addJoinRole';
 import handleError from '@/util/handleError';
-import handleLog from '@/util/handleLog';
 import { EmbedBuilder } from '@discordjs/builders';
-import { LogAction } from '@prisma/client';
+
 import { PermissionsBitField } from 'discord.js';
 
 export const joinRoleAdd = <AuxdibotSubcommand>{
@@ -34,17 +33,11 @@ export const joinRoleAdd = <AuxdibotSubcommand>{
          );
       }
 
-      addJoinRole(auxdibot, interaction.guild, role)
+      addJoinRole(auxdibot, interaction.guild, role, interaction.user)
          .then(async () => {
             const successEmbed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             successEmbed.title = '👋 Added Join Role';
             successEmbed.description = `Added <@&${role.id}> to the join roles.`;
-            await handleLog(auxdibot, interaction.data.guild, {
-               userID: interaction.data.member.id,
-               description: `Added ${role.name} to the join roles.`,
-               type: LogAction.JOIN_ROLE_ADDED,
-               date_unix: Date.now(),
-            });
             return await interaction.reply({ embeds: [successEmbed] });
          })
          .catch(async (x) => {
