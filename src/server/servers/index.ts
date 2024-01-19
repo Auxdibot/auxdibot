@@ -9,7 +9,6 @@ import nick from './routes/nick';
 import modules from './routes/modules';
 import punishments from './routes/punishments';
 import roles from './routes/roles';
-import muteRole from './routes/muteRole';
 import schedules from './routes/schedules';
 import permissions from './routes/permissions';
 import embeds from './routes/embeds';
@@ -62,7 +61,6 @@ export const serversRoute = (auxdibot: Auxdibot) => {
    nick(auxdibot, router);
    punishments(auxdibot, router);
    roles(auxdibot, router);
-   muteRole(auxdibot, router);
    schedules(auxdibot, router);
    permissions(auxdibot, router);
    embeds(auxdibot, router);

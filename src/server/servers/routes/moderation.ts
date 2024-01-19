@@ -10,6 +10,7 @@ import checkAuthenticated from '@/server/checkAuthenticated';
 import checkGuildOwnership from '@/server/checkGuildOwnership';
 import { PunishmentType } from '@prisma/client';
 import { Router } from 'express';
+import { isNumber } from 'lodash';
 /*
    Moderation
    Moderation endpoints for Auxdibot
@@ -40,6 +41,7 @@ const moderation = (auxdibot: Auxdibot, router: Router) => {
                   punishment_send_moderator: true,
                   punishment_send_reason: true,
                   locked_channels: true,
+                  mute_role: true,
                },
             })
             .then(async (data) =>
@@ -372,37 +374,18 @@ const moderation = (auxdibot: Auxdibot, router: Router) => {
       (req, res, next) => checkGuildOwnership(auxdibot, req, res, next),
       (req, res) => {
          const warns = req.body['warns'];
-         if (typeof warns != 'number') return res.status(400).json({ error: 'This is not a valid warns threshold!' });
-
-         return auxdibot.database.servers
-            .update({
-               where: { serverID: req.guild.id },
-               data: { automod_punish_threshold_warns: warns },
-               select: { serverID: true, automod_punish_threshold_warns: true },
-            })
-            .then((i) => res.json({ data: i }))
-            .catch((x) => {
-               console.error(x);
-               return res.status(500).json({ error: typeof x.message == 'string' ? x.message : 'an error occurred' });
-            });
-      },
-   );
-   router.post(
-      '/:serverID/moderation/threshold/punishment',
-      (req, res, next) => checkAuthenticated(req, res, next),
-      (req, res, next) => checkGuildOwnership(auxdibot, req, res, next),
-      (req, res) => {
+         if (!Number(warns)) return res.status(400).json({ error: 'This is not a valid warns threshold!' });
          const punishment = req.body['punishment'];
          if (typeof punishment != 'string' || !PunishmentType[punishment])
             return res.status(400).json({ error: 'This is not a valid punishment!' });
-
          return auxdibot.database.servers
             .update({
                where: { serverID: req.guild.id },
                data: {
+                  automod_punish_threshold_warns: Number(warns),
                   automod_threshold_punishment: PunishmentType[punishment],
                },
-               select: { serverID: true, automod_threshold_punishment: true },
+               select: { serverID: true, automod_punish_threshold_warns: true, automod_threshold_punishment: true },
             })
             .then((i) => res.json({ data: i }))
             .catch((x) => {
@@ -428,7 +411,7 @@ const moderation = (auxdibot: Auxdibot, router: Router) => {
                )
                .catch((x) => {
                   console.error(x);
-                  return res.status(500).json({ error: 'an error occurred' });
+                  return res.status(500).json({ error: x.message ?? 'an error occurred' });
                });
          },
       )
@@ -437,7 +420,7 @@ const moderation = (auxdibot: Auxdibot, router: Router) => {
          (req, res, next) => checkGuildOwnership(auxdibot, req, res, next),
          (req, res) => {
             const index = req.body['index'];
-            if (typeof index != 'number' && typeof index != 'string')
+            if (!isNumber(Number(index)) || Number(index) < 0)
                return res.status(400).json({ error: 'This is not a valid index!' });
             return removeAutoModException(auxdibot, req.guild, undefined, Number(index), req.user.id)
                .then((i) =>
@@ -445,9 +428,7 @@ const moderation = (auxdibot: Auxdibot, router: Router) => {
                )
                .catch((x) => {
                   console.error(x);
-                  return res
-                     .status(500)
-                     .json({ error: typeof x.message == 'string' ? x.message : 'an error occurred' });
+                  return res.status(500).json({ error: x.message ?? 'an error occurred' });
                });
          },
       );
