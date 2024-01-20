@@ -182,11 +182,13 @@ const moderation = (auxdibot: Auxdibot, router: Router) => {
                })
                .then((data) => {
                   data.automod_banned_phrases.splice(Number(index), 1);
-                  return auxdibot.database.servers.update({
-                     where: { serverID: req.guild.id },
-                     data: { automod_banned_phrases: data.automod_banned_phrases },
-                     select: { serverID: true, automod_banned_phrases: true },
-                  });
+                  return auxdibot.database.servers
+                     .update({
+                        where: { serverID: req.guild.id },
+                        data: { automod_banned_phrases: data.automod_banned_phrases },
+                        select: { serverID: true, automod_banned_phrases: true },
+                     })
+                     .then((data) => res.json({ data }));
                })
                .catch((x) => {
                   console.error(x);
@@ -403,8 +405,6 @@ const moderation = (auxdibot: Auxdibot, router: Router) => {
             const roleID = req.body['role'];
             const role = req.guild.roles.cache.get(roleID);
             if (!role && roleID) return res.status(404).json({ error: 'invalid role' });
-            if (role && req.guild.roles.comparePositions(req.guild.members.me.roles.highest, role.id) <= 0)
-               return res.status(500).json({ error: "role higher than auxdibot's highest role" });
             return addAutoModException(auxdibot, req.guild, role, req.user.id)
                .then((i) =>
                   i ? res.json({ data: i }) : res.status(500).json({ error: "couldn't update that server" }),

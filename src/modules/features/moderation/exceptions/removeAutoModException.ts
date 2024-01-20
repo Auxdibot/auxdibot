@@ -15,7 +15,7 @@ export async function removeAutoModException(
          where: { serverID: guild.id },
       })
       .then(async (server) => {
-         const roleIndex = index || server.automod_role_exceptions.indexOf(roleID);
+         const roleIndex = index ?? server.automod_role_exceptions.indexOf(roleID);
          server.automod_role_exceptions.splice(roleIndex, 1);
          return auxdibot.database.servers
             .update({

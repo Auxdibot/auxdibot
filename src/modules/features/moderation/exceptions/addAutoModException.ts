@@ -10,6 +10,8 @@ export async function addAutoModException(auxdibot: Auxdibot, guild: Guild, role
    const server = await findOrCreateServer(auxdibot, guild.id);
    if (!testLimit(server.automod_role_exceptions, Limits.AUTOMOD_EXCEPTION_LIMIT))
       throw new Error('You have too many role exceptions!');
+   if (server.automod_role_exceptions.includes(role.id))
+      throw new Error('You have already added this role as an exception!');
    return await auxdibot.database.servers
       .update({
          where: { serverID: guild.id },

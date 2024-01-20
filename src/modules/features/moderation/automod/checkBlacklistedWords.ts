@@ -23,31 +23,34 @@ export default async function checkBlacklistedWords(auxdibot: Auxdibot, server: 
                   inline: false,
                },
             ];
-            message.delete().then(async () => {
-               await message.author
-                  .send({ embeds: [dmEmbed] })
-                  .then(() => true)
-                  .catch(() => false);
-               await handleLog(
-                  auxdibot,
-                  message.guild,
-                  {
-                     type: LogAction.MESSAGE_DELETED_AUTOMOD,
-                     userID: message.author.id,
-                     date_unix: Date.now(),
-                     description: `A message was deleted in ${
-                        !message.channel.isDMBased() ? message.channel.name : 'a channel'
-                     } because it included the blacklisted phrase "${blacklist}"`,
-                  },
-                  [
+            message
+               .delete()
+               .then(async () => {
+                  await message.author
+                     .send({ embeds: [dmEmbed] })
+                     .then(() => true)
+                     .catch(() => false);
+                  await handleLog(
+                     auxdibot,
+                     message.guild,
                      {
-                        name: 'Deleted Message',
-                        value: `Deleted Content: \n\`\`\`${message.cleanContent}\`\`\``,
-                        inline: false,
+                        type: LogAction.MESSAGE_DELETED_AUTOMOD,
+                        userID: message.author.id,
+                        date_unix: Date.now(),
+                        description: `A message was deleted in ${
+                           !message.channel.isDMBased() ? message.channel.name : 'a channel'
+                        } because it included the blacklisted phrase "${blacklist}"`,
                      },
-                  ],
-               );
-            });
+                     [
+                        {
+                           name: 'Deleted Message',
+                           value: `Deleted Content: \n\`\`\`${message.cleanContent}\`\`\``,
+                           inline: false,
+                        },
+                     ],
+                  );
+               })
+               .catch(() => undefined);
          } else {
             const punishment = <Punishment>{
                punishmentID: await incrementPunishmentsTotal(auxdibot, server.serverID),
