@@ -217,7 +217,6 @@ type AutomodPunishment {
 type AutomodLimit {
   duration Int
   messages Int
-  disabled Boolean? @default(false)
 }
 
 type ChannelLock {
