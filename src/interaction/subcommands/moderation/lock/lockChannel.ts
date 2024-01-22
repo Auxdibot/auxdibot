@@ -47,6 +47,14 @@ export const lockChannel = <AuxdibotSubcommand>{
          );
       }
       const time = duration ? timestampToDuration(duration) : undefined;
+      if (Number(time) < 60000) {
+         return handleError(
+            auxdibot,
+            'TOO_SHORT_DURATION',
+            'You need to specify a duration longer than one minute!',
+            interaction,
+         );
+      }
       const lock = <ChannelLock>{
          channelID: channel.id,
          expiration_date: Number(time) ? new Date(Date.now() + Number(time)) : undefined,

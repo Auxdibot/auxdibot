@@ -46,6 +46,14 @@ export const scheduleMessage = <AuxdibotSubcommand>{
             interaction,
          );
       }
+      if (Number(duration) < 60000) {
+         return handleError(
+            auxdibot,
+            'TOO_SHORT_DURATION',
+            'You need to specify a duration longer than one minute!',
+            interaction,
+         );
+      }
       const startDate = new Date(start_date);
       if (!(startDate instanceof Date && !isNaN(startDate.valueOf())) && start_date) {
          return await handleError(auxdibot, 'INVALID_DATE', 'The start date provided is invalid!', interaction);

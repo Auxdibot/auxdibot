@@ -50,6 +50,14 @@ export const punishMute = <AuxdibotSubcommand>{
             interaction,
          );
       }
+      if (Number(duration) < 60000) {
+         return handleError(
+            auxdibot,
+            'TOO_SHORT_DURATION',
+            'You need to specify a duration longer than one minute!',
+            interaction,
+         );
+      }
       if (!server.mute_role) {
          if (duration == 'permanent') {
             return await handleError(

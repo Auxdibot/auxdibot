@@ -16,7 +16,7 @@ export default async function setReportsChannel(
    return auxdibot.database.servers
       .update({
          where: { serverID: guild.id },
-         select: { log_channel: true, serverID: true },
+         select: { reports_channel: true, serverID: true },
          data: { reports_channel: channel?.id || null },
       })
       .then(async (i) => {

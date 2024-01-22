@@ -74,7 +74,7 @@ export default async function slashCreate(auxdibot: Auxdibot, interaction: ChatI
    try {
       await commandData.execute(auxdibot, interactionData);
    } catch (x) {
-      console.log(x);
+      console.error(x);
       return handleError(
          auxdibot,
          'COMMAND_ERROR',

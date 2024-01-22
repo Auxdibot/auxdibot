@@ -8,6 +8,7 @@ import { createLock } from '@/modules/features/moderation/lock/createLock';
 import { ChannelLock, LogAction } from '@prisma/client';
 import timestampToDuration from '@/util/timestampToDuration';
 import handleLog from '@/util/handleLog';
+import handleError from '@/util/handleError';
 
 export const lockServer = <AuxdibotSubcommand>{
    name: 'server',
@@ -29,6 +30,14 @@ export const lockServer = <AuxdibotSubcommand>{
          return await interaction.reply({ embeds: [noPermissionEmbed] });
       }
       const time = duration ? timestampToDuration(duration) : undefined;
+      if (Number(time) < 60000) {
+         return handleError(
+            auxdibot,
+            'TOO_SHORT_DURATION',
+            'You need to specify a duration longer than one minute!',
+            interaction,
+         );
+      }
       const expiration_date = Number(time) ? new Date(Date.now() + Number(time)) : undefined;
       const embed = new EmbedBuilder().setColor(auxdibot.colors.punishment).toJSON();
       embed.title = `🔒 Server Locked`;
