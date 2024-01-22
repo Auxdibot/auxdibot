@@ -5,8 +5,7 @@ import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import handleError from '@/util/handleError';
 import { EmbedBuilder } from 'discord.js';
-import handleLog from '@/util/handleLog';
-import { LogAction } from '@prisma/client';
+import changeAttachmentsLimit from '@/modules/features/moderation/attachments/changeAttachmentsLimit';
 
 export const attachmentsSet = <AuxdibotSubcommand>{
    name: 'set',
@@ -42,29 +41,18 @@ export const attachmentsSet = <AuxdibotSubcommand>{
          );
       }
 
-      return auxdibot.database.servers
-         .update({
-            where: { serverID: server.serverID },
-            data: {
-               automod_attachments_limit:
-                  attachments == 0 || duration == 0 ? null : { messages: attachments, duration: duration * 1000 },
-            },
-         })
+      return changeAttachmentsLimit(
+         auxdibot,
+         interaction.guild,
+         interaction.user,
+         attachments == 0 || duration == 0 ? null : { messages: attachments, duration: duration * 1000 },
+      )
          .then(async () => {
             const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.title = '⚙️ Automod Attachments Limit Set';
             if (attachments == 0) embed.description = 'Disabled attachments filter.';
             else
                embed.description = `📁 Attachments: \`${attachments} attachments\`\n🕰️ Spam Duration: \`${duration}s\``;
-            await handleLog(auxdibot, interaction.data.guild, {
-               userID: interaction.data.member.id,
-               description:
-                  attachments == 0 || duration == 0
-                     ? 'Disabled attachments filter.'
-                     : `The Automod attachments limit has been set to ${attachments} attachments every ${duration} seconds.`,
-               type: LogAction.AUTOMOD_SETTINGS_CHANGE,
-               date_unix: Date.now(),
-            });
             return await interaction.reply({ embeds: [embed] });
          })
          .catch(() => {

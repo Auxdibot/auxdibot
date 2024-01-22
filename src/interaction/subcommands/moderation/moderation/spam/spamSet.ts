@@ -5,8 +5,7 @@ import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import handleError from '@/util/handleError';
 import { EmbedBuilder } from 'discord.js';
-import handleLog from '@/util/handleLog';
-import { LogAction } from '@prisma/client';
+import changeSpamLimit from '@/modules/features/moderation/spam/changeSpamLimit';
 
 export const spamSet = <AuxdibotSubcommand>{
    name: 'set',
@@ -39,27 +38,17 @@ export const spamSet = <AuxdibotSubcommand>{
          );
       }
 
-      return auxdibot.database.servers
-         .update({
-            where: { serverID: server.serverID },
-            data: {
-               automod_spam_limit: messages == 0 || duration == 0 ? null : { messages, duration: duration * 1000 },
-            },
-         })
+      return changeSpamLimit(
+         auxdibot,
+         interaction.guild,
+         interaction.user,
+         messages == 0 || duration == 0 ? null : { messages, duration: duration * 1000 },
+      )
          .then(async () => {
             const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.title = '⚙️ Automod Spam Limit Set';
             if (messages == 0) embed.description = 'Disabled spam filter.';
             else embed.description = `💬 Spam Messages: \`${messages} messages\`\n🕰️ Spam Duration: \`${duration}s\``;
-            await handleLog(auxdibot, interaction.data.guild, {
-               userID: interaction.data.member.id,
-               description:
-                  messages == 0 || duration == 0
-                     ? 'Disabled spam filter.'
-                     : `The Automod spam limit has been set to ${messages} messages every ${duration} seconds.`,
-               type: LogAction.AUTOMOD_SETTINGS_CHANGE,
-               date_unix: Date.now(),
-            });
             return await interaction.reply({ embeds: [embed] });
          })
          .catch(() => {

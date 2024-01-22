@@ -48,7 +48,10 @@ export const attachmentsPunishment = <AuxdibotSubcommand>{
             data: {
                automod_attachments_punishment: {
                   punishment: PunishmentType[punishment],
-                  reason: reason || server.automod_attachments_punishment.reason,
+                  reason:
+                     reason ??
+                     server.automod_spam_punishment.reason ??
+                     'You have broken the spam limit for this server.',
                },
             },
          })

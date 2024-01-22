@@ -5,8 +5,7 @@ import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import handleError from '@/util/handleError';
 import { EmbedBuilder } from 'discord.js';
-import handleLog from '@/util/handleLog';
-import { LogAction } from '@prisma/client';
+import changeInvitesLimit from '@/modules/features/moderation/invites/changeInvitesLimit';
 
 export const invitesSet = <AuxdibotSubcommand>{
    name: 'set',
@@ -42,28 +41,17 @@ export const invitesSet = <AuxdibotSubcommand>{
          );
       }
 
-      return auxdibot.database.servers
-         .update({
-            where: { serverID: server.serverID },
-            data: {
-               automod_invites_limit:
-                  invites == 0 || duration == 0 ? null : { messages: invites, duration: duration * 1000 },
-            },
-         })
+      return changeInvitesLimit(
+         auxdibot,
+         interaction.guild,
+         interaction.user,
+         invites == 0 || duration == 0 ? null : { messages: invites, duration: duration * 1000 },
+      )
          .then(async () => {
             const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.title = '⚙️ Automod Invites Limit Set';
             if (invites == 0) embed.description = 'Disabled invites filter.';
             else embed.description = `📩 Invites: \`${invites} invites\`\n🕰️ Spam Duration: \`${duration}s\``;
-            await handleLog(auxdibot, interaction.data.guild, {
-               userID: interaction.data.member.id,
-               description:
-                  invites == 0 || duration == 0
-                     ? 'Disabled invites filter.'
-                     : `The Automod invites limit has been set to ${invites} invites every ${duration} seconds.`,
-               type: LogAction.AUTOMOD_SETTINGS_CHANGE,
-               date_unix: Date.now(),
-            });
             return await interaction.reply({ embeds: [embed] });
          })
          .catch(() => {
