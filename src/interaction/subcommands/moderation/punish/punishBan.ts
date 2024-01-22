@@ -53,6 +53,14 @@ export const punishBan = <AuxdibotSubcommand>{
             interaction,
          );
       }
+      if (Number(duration) < 60000) {
+         return handleError(
+            auxdibot,
+            'TOO_SHORT_DURATION',
+            'You need to specify a duration longer than one minute!',
+            interaction,
+         );
+      }
       const expires = duration == 'permanent' ? 'permanent' : duration + Date.now();
       const banData = <Punishment>{
          type: PunishmentType.BAN,

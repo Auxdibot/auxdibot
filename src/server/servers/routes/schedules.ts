@@ -64,6 +64,9 @@ const schedules = (auxdibot: Auxdibot, router: Router) => {
                return res.status(400).json({ error: 'missing parameters' });
             try {
                const duration = timestampToDuration(req.body['duration']);
+               if (Number(duration) < 60000) {
+                  return res.status(400).json({ error: 'The duration specified is less than one minute!' });
+               }
                const start_date = req.body['start_date'];
                const startDate = new Date(start_date);
                if (!(startDate instanceof Date && !isNaN(startDate.valueOf())) && start_date)

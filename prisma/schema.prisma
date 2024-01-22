@@ -211,7 +211,7 @@ type ScheduledMessage {
 
 type AutomodPunishment {
   punishment PunishmentType @default(WARN)
-  reason     String         @default("You exceeded a limit!")
+  reason     String?        @default("You exceeded a limit!")
 }
 
 type AutomodLimit {

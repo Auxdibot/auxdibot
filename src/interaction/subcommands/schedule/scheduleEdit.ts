@@ -49,6 +49,14 @@ export const scheduleEdit = <AuxdibotSubcommand>{
                interaction,
             );
          }
+         if (Number(duration) < 60000) {
+            return handleError(
+               auxdibot,
+               'TOO_SHORT_DURATION',
+               'You need to specify a duration longer than one minute!',
+               interaction,
+            );
+         }
          schedule.interval_timestamp = interval;
       }
       if (times_to_run) schedule.times_to_run = times_to_run;

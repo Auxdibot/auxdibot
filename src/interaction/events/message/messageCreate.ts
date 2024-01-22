@@ -66,9 +66,7 @@ export default async function messageCreate(auxdibot: Auxdibot, message: Message
                   await message.reply({ embeds: [embed as APIEmbed] });
                }
             }
-         } catch (x) {
-            console.log(x);
-         }
+         } catch (x) {}
          const reward = server.level_rewards.find((reward) => reward.level == newLevel);
          if (reward) {
             const role = message.guild.roles.cache.get(reward.roleID);

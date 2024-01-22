@@ -1,4 +1,6 @@
 import { Auxdibot } from '@/interfaces/Auxdibot';
+import addBlacklistedPhrase from '@/modules/features/moderation/blacklist/addBlacklistedPhrase';
+import removeBlacklistedWord from '@/modules/features/moderation/blacklist/removeBlacklistedWord';
 import { addAutoModException } from '@/modules/features/moderation/exceptions/addAutoModException';
 import { removeAutoModException } from '@/modules/features/moderation/exceptions/removeAutoModException';
 import setReportsChannel from '@/modules/features/moderation/reports/setReportsChannel';
@@ -42,6 +44,7 @@ const moderation = (auxdibot: Auxdibot, router: Router) => {
                   punishment_send_reason: true,
                   locked_channels: true,
                   mute_role: true,
+                  reports_channel: true,
                },
             })
             .then(async (data) =>
@@ -52,7 +55,6 @@ const moderation = (auxdibot: Auxdibot, router: Router) => {
                   : res.status(404).json({ error: "couldn't find that server" }),
             )
             .catch((x) => {
-               console.error(x);
                return res.status(500).json({ error: 'an error occurred' });
             });
       },
@@ -66,7 +68,6 @@ const moderation = (auxdibot: Auxdibot, router: Router) => {
          return setSendModerator(auxdibot, req.guild, req.user)
             .then((i) => res.json({ data: i }))
             .catch((x) => {
-               console.error(x);
                return res.status(500).json({ error: typeof x.message == 'string' ? x.message : 'an error occurred' });
             });
       },
@@ -80,7 +81,6 @@ const moderation = (auxdibot: Auxdibot, router: Router) => {
          return setSendReason(auxdibot, req.guild, req.user)
             .then((i) => res.json({ data: i }))
             .catch((x) => {
-               console.error(x);
                return res.status(500).json({ error: typeof x.message == 'string' ? x.message : 'an error occurred' });
             });
       },
@@ -99,7 +99,6 @@ const moderation = (auxdibot: Auxdibot, router: Router) => {
          return setReportsChannel(auxdibot, req.guild, req.user, channel)
             .then((i) => res.json({ data: i }))
             .catch((x) => {
-               console.error(x);
                return res.status(500).json({ error: typeof x.message == 'string' ? x.message : 'an error occurred' });
             });
       },
@@ -113,12 +112,9 @@ const moderation = (auxdibot: Auxdibot, router: Router) => {
          const new_reports_role = req.body['new_reports_role'];
          const role = req.guild.roles.cache.get(new_reports_role);
          if (!role && new_reports_role) return res.status(404).json({ error: 'invalid role' });
-         if (role && req.guild.roles.comparePositions(req.guild.members.me.roles.highest, role.id) <= 0)
-            return res.status(500).json({ error: "role higher than auxdibot's highest role" });
          return setReportRole(auxdibot, req.guild, req.user, role)
             .then((i) => (i ? res.json({ data: i }) : res.status(500).json({ error: "couldn't update that server" })))
             .catch((x) => {
-               console.error(x);
                return res.status(500).json({ error: 'an error occurred' });
             });
       },
@@ -137,7 +133,6 @@ const moderation = (auxdibot: Auxdibot, router: Router) => {
          return setMuteRole(auxdibot, req.guild, req.user, role)
             .then((i) => (i ? res.json({ data: i }) : res.status(500).json({ error: "couldn't update that server" })))
             .catch((x) => {
-               console.error(x);
                return res.status(500).json({ error: 'an error occurred' });
             });
       },
@@ -153,18 +148,10 @@ const moderation = (auxdibot: Auxdibot, router: Router) => {
             if (typeof blacklisted_phrase != 'string')
                return res.status(400).json({ error: 'This is not a valid blacklisted phrase!' });
 
-            return auxdibot.database.servers
-               .update({
-                  where: { serverID: req.guild.id },
-                  data: { automod_banned_phrases: { push: blacklisted_phrase } },
-                  select: { serverID: true, automod_banned_phrases: true },
-               })
+            return addBlacklistedPhrase(auxdibot, req.guild, req.user, blacklisted_phrase)
                .then((i) => res.json({ data: i }))
                .catch((x) => {
-                  console.error(x);
-                  return res
-                     .status(500)
-                     .json({ error: typeof x.message == 'string' ? x.message : 'an error occurred' });
+                  return res.status(500).json({ error: x?.message ?? 'an error occurred' });
                });
          },
       )
@@ -173,28 +160,11 @@ const moderation = (auxdibot: Auxdibot, router: Router) => {
          (req, res, next) => checkGuildOwnership(auxdibot, req, res, next),
          (req, res) => {
             const index = req.body['index'];
-            if (typeof index != 'number' && typeof index != 'string')
-               return res.status(400).json({ error: 'This is not a valid index!' });
-            return auxdibot.database.servers
-               .findFirst({
-                  where: { serverID: req.guild.id },
-                  select: { serverID: true, automod_banned_phrases: true },
-               })
-               .then((data) => {
-                  data.automod_banned_phrases.splice(Number(index), 1);
-                  return auxdibot.database.servers
-                     .update({
-                        where: { serverID: req.guild.id },
-                        data: { automod_banned_phrases: data.automod_banned_phrases },
-                        select: { serverID: true, automod_banned_phrases: true },
-                     })
-                     .then((data) => res.json({ data }));
-               })
+            if (!isNumber(Number(index))) return res.status(400).json({ error: 'This is not a valid index!' });
+            return removeBlacklistedWord(auxdibot, req.guild, req.user, Number(index))
+               .then((data) => res.json({ data }))
                .catch((x) => {
-                  console.error(x);
-                  return res
-                     .status(500)
-                     .json({ error: typeof x.message == 'string' ? x.message : 'an error occurred' });
+                  return res.status(500).json({ error: x?.message ?? 'an error occurred' });
                });
          },
       );
@@ -205,18 +175,17 @@ const moderation = (auxdibot: Auxdibot, router: Router) => {
       (req, res) => {
          const messages = req.body['messages'],
             duration = req.body['duration'];
-         if (typeof messages != 'number' || typeof duration != 'number')
+         if (!isNumber(Number(duration)) || !isNumber(Number(messages)))
             return res.status(400).json({ error: 'This is not a valid spam limit!' });
 
          return auxdibot.database.servers
             .update({
                where: { serverID: req.guild.id },
-               data: { automod_spam_limit: { duration, messages } },
+               data: { automod_spam_limit: { set: { duration: Number(duration), messages: Number(messages) } } },
                select: { serverID: true, automod_spam_limit: true },
             })
             .then((i) => res.json({ data: i }))
             .catch((x) => {
-               console.error(x);
                return res.status(500).json({ error: typeof x.message == 'string' ? x.message : 'an error occurred' });
             });
       },
@@ -228,18 +197,19 @@ const moderation = (auxdibot: Auxdibot, router: Router) => {
       (req, res) => {
          const attachments = req.body['attachments'],
             duration = req.body['duration'];
-         if (typeof attachments != 'number' || typeof duration != 'number')
+         if (!isNumber(Number(duration)) || !isNumber(Number(attachments)))
             return res.status(400).json({ error: 'This is not a valid spam limit!' });
 
          return auxdibot.database.servers
             .update({
                where: { serverID: req.guild.id },
-               data: { automod_attachments_limit: { duration, messages: attachments } },
-               select: { serverID: true, automod_spam_limit: true },
+               data: {
+                  automod_attachments_limit: { set: { duration: Number(duration), messages: Number(attachments) } },
+               },
+               select: { serverID: true, automod_attachments_limit: true },
             })
             .then((i) => res.json({ data: i }))
             .catch((x) => {
-               console.error(x);
                return res.status(500).json({ error: typeof x.message == 'string' ? x.message : 'an error occurred' });
             });
       },
@@ -251,18 +221,17 @@ const moderation = (auxdibot: Auxdibot, router: Router) => {
       (req, res) => {
          const invites = req.body['invites'],
             duration = req.body['duration'];
-         if (typeof invites != 'number' || typeof duration != 'number')
+         if (!isNumber(Number(duration)) || !isNumber(Number(invites)))
             return res.status(400).json({ error: 'This is not a valid spam limit!' });
 
          return auxdibot.database.servers
             .update({
                where: { serverID: req.guild.id },
-               data: { automod_invites_limit: { duration, messages: invites } },
-               select: { serverID: true, automod_spam_limit: true },
+               data: { automod_invites_limit: { set: { duration: Number(duration), messages: Number(invites) } } },
+               select: { serverID: true, automod_invites_limit: true },
             })
             .then((i) => res.json({ data: i }))
             .catch((x) => {
-               console.error(x);
                return res.status(500).json({ error: typeof x.message == 'string' ? x.message : 'an error occurred' });
             });
       },
@@ -286,7 +255,6 @@ const moderation = (auxdibot: Auxdibot, router: Router) => {
             })
             .then((i) => res.json({ data: i }))
             .catch((x) => {
-               console.error(x);
                return res.status(500).json({ error: typeof x.message == 'string' ? x.message : 'an error occurred' });
             });
       },
@@ -299,20 +267,19 @@ const moderation = (auxdibot: Auxdibot, router: Router) => {
       (req, res) => {
          const punishment = req.body['punishment'],
             reason = req.body['reason'];
-         if (typeof punishment != 'string' || !PunishmentType[punishment])
-            return res.status(400).json({ error: 'This is not a valid punishment!' });
 
          return auxdibot.database.servers
             .update({
                where: { serverID: req.guild.id },
                data: {
-                  automod_spam_punishment: { punishment: PunishmentType[punishment], reason: reason || undefined },
+                  automod_spam_punishment: PunishmentType[punishment]
+                     ? { punishment: PunishmentType[punishment], reason: reason || undefined }
+                     : undefined,
                },
                select: { serverID: true, automod_spam_punishment: true },
             })
             .then((i) => res.json({ data: i }))
             .catch((x) => {
-               console.error(x);
                return res.status(500).json({ error: typeof x.message == 'string' ? x.message : 'an error occurred' });
             });
       },
@@ -331,16 +298,14 @@ const moderation = (auxdibot: Auxdibot, router: Router) => {
             .update({
                where: { serverID: req.guild.id },
                data: {
-                  automod_attachments_punishment: {
-                     punishment: PunishmentType[punishment],
-                     reason: reason || undefined,
-                  },
+                  automod_attachments_punishment: PunishmentType[punishment]
+                     ? { punishment: PunishmentType[punishment], reason: reason || undefined }
+                     : undefined,
                },
                select: { serverID: true, automod_attachments_punishment: true },
             })
             .then((i) => res.json({ data: i }))
             .catch((x) => {
-               console.error(x);
                return res.status(500).json({ error: typeof x.message == 'string' ? x.message : 'an error occurred' });
             });
       },
@@ -359,13 +324,14 @@ const moderation = (auxdibot: Auxdibot, router: Router) => {
             .update({
                where: { serverID: req.guild.id },
                data: {
-                  automod_invites_punishment: { punishment: PunishmentType[punishment], reason: reason || undefined },
+                  automod_invites_punishment: PunishmentType[punishment]
+                     ? { punishment: PunishmentType[punishment], reason: reason || undefined }
+                     : undefined,
                },
                select: { serverID: true, automod_invites_punishment: true },
             })
             .then((i) => res.json({ data: i }))
             .catch((x) => {
-               console.error(x);
                return res.status(500).json({ error: typeof x.message == 'string' ? x.message : 'an error occurred' });
             });
       },
@@ -391,7 +357,6 @@ const moderation = (auxdibot: Auxdibot, router: Router) => {
             })
             .then((i) => res.json({ data: i }))
             .catch((x) => {
-               console.error(x);
                return res.status(500).json({ error: typeof x.message == 'string' ? x.message : 'an error occurred' });
             });
       },
@@ -410,7 +375,6 @@ const moderation = (auxdibot: Auxdibot, router: Router) => {
                   i ? res.json({ data: i }) : res.status(500).json({ error: "couldn't update that server" }),
                )
                .catch((x) => {
-                  console.error(x);
                   return res.status(500).json({ error: x.message ?? 'an error occurred' });
                });
          },
@@ -427,7 +391,6 @@ const moderation = (auxdibot: Auxdibot, router: Router) => {
                   i ? res.json({ data: i }) : res.status(500).json({ error: "couldn't update that server" }),
                )
                .catch((x) => {
-                  console.error(x);
                   return res.status(500).json({ error: x.message ?? 'an error occurred' });
                });
          },

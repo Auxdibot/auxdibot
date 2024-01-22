@@ -8,6 +8,7 @@ export default async function connectPrisma(auxdibot: Auxdibot) {
       await client.$connect().then(() => console.log(`-> Connected to MongoDB!`));
    } catch (x) {
       console.error('! -> There was an issue trying to connect to MongoDB using Prisma!');
+      console.error(x);
       return undefined;
    }
 }
