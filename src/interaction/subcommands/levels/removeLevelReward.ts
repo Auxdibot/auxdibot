@@ -23,7 +23,7 @@ export const removeLevelReward = <AuxdibotSubcommand>{
       if (!reward) {
          return await handleError(auxdibot, 'REWARD_ROLE_NOT_FOUND', "This reward role doesn't exist!", interaction);
       }
-      deleteLevelReward(auxdibot, interaction.guild, server.level_rewards.indexOf(reward))
+      deleteLevelReward(auxdibot, interaction.guild, interaction.user, server.level_rewards.indexOf(reward))
          .then(async () => {
             const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.description = `Successfully removed <@&${reward.roleID}> from the role rewards!`;
