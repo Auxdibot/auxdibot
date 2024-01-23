@@ -1,6 +1,7 @@
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import checkAuthenticated from '@/server/checkAuthenticated';
 import checkGuildOwnership from '@/server/checkGuildOwnership';
+import { testInvite } from '@/util/testInvite';
 import { verifyHex } from '@/util/verifyHex';
 import { Fonts, GradientTypes } from '@prisma/client';
 import { Router } from 'express';
@@ -42,8 +43,7 @@ const updateCard = (auxdibot: Auxdibot, router: Router) => {
             if (!Fonts[text_font]) return res.status(400).json({ error: 'Invalid text font.' });
             const channel = await req.guild.channels.fetch(channelID).catch(() => undefined);
             if (channelID && !channel) return res.status(400).json({ error: 'Invalid channel.' });
-            if (!/^https:\/\/discord\.gg\/(invite\/|)\w+$/.test(invite_url))
-               return res.status(400).json({ error: 'Invalid invite link.' });
+            if (!testInvite(invite_url)) return res.status(400).json({ error: 'Invalid invite link.' });
             const data = {
                background: {
                   color1: '#' + bg_color1,
