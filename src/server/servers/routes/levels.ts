@@ -147,7 +147,7 @@ const levels = (auxdibot: Auxdibot, router: Router) => {
             const index = req.body['index'];
             if (typeof index != 'number' && typeof index != 'string')
                return res.status(400).json({ error: 'This is not a valid index!' });
-            return deleteLevelReward(auxdibot, req.guild, Number(index))
+            return deleteLevelReward(auxdibot, req.guild, req.user, Number(index))
                .then((i) =>
                   i ? res.json({ data: i }) : res.status(500).json({ error: "couldn't update that server" }),
                )
