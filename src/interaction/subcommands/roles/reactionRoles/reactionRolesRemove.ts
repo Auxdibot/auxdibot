@@ -40,11 +40,7 @@ export const reactionRolesRemove = <AuxdibotSubcommand>{
          message_channel && message_channel.isTextBased()
             ? message_channel.messages.cache.get(rr.messageID)
             : await getMessage(interaction.data.guild, rr.messageID);
-
-      if (message) {
-         await message.delete();
-      }
-      removeReactionRole(auxdibot, interaction.guild, index - 1, interaction.user)
+      removeReactionRole(auxdibot, interaction.guild, server.reaction_roles.indexOf(rr), interaction.user)
          .then(async () => {
             const successEmbed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             successEmbed.title = '👈 Deleted Reaction Role';
