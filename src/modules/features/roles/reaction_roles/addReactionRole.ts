@@ -35,9 +35,10 @@ export default async function addReactionRole(
          const role: Role = await guild.roles.fetch((item.roleID?.match(/\d+/) || [])[0] || '').catch(() => undefined);
          const serverEmoji = auxdibot.emojis.cache.get((item.emoji?.match(/\d+/) || [])[0]);
          const emoji = serverEmoji || (emojiRegex().test(item.emoji) ? item.emoji : undefined);
-         if (role && role.position > role.guild.members.me.roles.highest.position)
+
+         if (role && role.guild && role.position > role.guild.members.me.roles.highest.position)
             throw new Error(`The ${role.name} role is higher than Auxdibot's highest role!`);
-         if (role && emoji)
+         if (role && emoji && typeof emoji == 'string')
             arr.length == 0
                ? (arr = [{ role: role, emoji: emoji.valueOf() || emoji.toString() }])
                : arr.push({ role: role, emoji: emoji.valueOf() || emoji.toString() });
@@ -47,6 +48,7 @@ export default async function addReactionRole(
    );
    if (reactionsAndRoles.length == 0) throw new Error('invalid reactions and roles');
    if (!channel || !channel.isTextBased()) throw new Error('invalid channel');
+   let message = null;
    return channel
       .send({
          embeds: embed
@@ -69,6 +71,7 @@ export default async function addReactionRole(
          content: content || '',
       })
       .then(async (msg: Message) => {
+         message = msg;
          let rows: ActionRowBuilder<ButtonBuilder | StringSelectMenuBuilder>[] = [
             new ActionRowBuilder<StringSelectMenuBuilder>(),
          ];
@@ -77,7 +80,7 @@ export default async function addReactionRole(
             case ReactionRoleType.STICKY_SELECT_ONE:
             case ReactionRoleType.STICKY:
             case ReactionRoleType.SELECT_ONE:
-               reactionsAndRoles.forEach((i) => msg.react(i.emoji));
+               reactionsAndRoles.forEach((i) => msg.react(i.emoji).catch(() => undefined));
                break;
             case ReactionRoleType.BUTTON:
             case ReactionRoleType.BUTTON_SELECT_ONE:
@@ -137,6 +140,7 @@ export default async function addReactionRole(
             .then(() => true);
       })
       .catch((x) => {
+         if (message) message.delete().catch(() => undefined);
          if (x.code == '50013') throw new Error('Auxdibot does not have permission to send messages!');
          throw new Error('failed to send embed');
       });
