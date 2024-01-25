@@ -41,7 +41,7 @@ const joinRoles = (auxdibot: Auxdibot, router: Router) => {
                .catch(() => undefined);
             if (!role) return res.status(400).json({ error: 'Not a valid role.' });
 
-            addJoinRole(auxdibot, req.guild, role)
+            addJoinRole(auxdibot, req.guild, role, req.user)
                .then((data) => res.json({ data }))
                .catch((x) => res.status(500).json({ error: x.message }));
          },
