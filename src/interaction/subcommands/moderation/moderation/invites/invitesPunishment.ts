@@ -42,6 +42,14 @@ export const invitesPunishment = <AuxdibotSubcommand>{
             interaction,
          );
       }
+      if (reason.length > 500) {
+         return await handleError(
+            auxdibot,
+            'REASON_TOO_LONG',
+            'The reason specified is too long! (Max characters: 500)',
+            interaction,
+         );
+      }
       return auxdibot.database.servers
          .update({
             where: { serverID: server.serverID },

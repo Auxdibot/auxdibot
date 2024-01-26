@@ -262,7 +262,7 @@ const moderation = (auxdibot: Auxdibot, router: Router) => {
       (req, res) => {
          const punishment = req.body['punishment'],
             reason = req.body['reason'];
-
+         if (reason.length > 500) return res.status(400).json({ error: 'Your reason specified is too long!' });
          return auxdibot.database.servers
             .update({
                where: { serverID: req.guild.id },
@@ -288,7 +288,7 @@ const moderation = (auxdibot: Auxdibot, router: Router) => {
             reason = req.body['reason'];
          if (typeof punishment != 'string' || !PunishmentType[punishment])
             return res.status(400).json({ error: 'This is not a valid punishment!' });
-
+         if (reason.length > 500) return res.status(400).json({ error: 'Your reason specified is too long!' });
          return auxdibot.database.servers
             .update({
                where: { serverID: req.guild.id },
@@ -314,7 +314,7 @@ const moderation = (auxdibot: Auxdibot, router: Router) => {
             reason = req.body['reason'];
          if (typeof punishment != 'string' || !PunishmentType[punishment])
             return res.status(400).json({ error: 'This is not a valid punishment!' });
-
+         if (reason.length > 500) return res.status(400).json({ error: 'Your reason specified is too long!' });
          return auxdibot.database.servers
             .update({
                where: { serverID: req.guild.id },
