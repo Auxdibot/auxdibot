@@ -45,6 +45,13 @@ export const punishWarn = <AuxdibotSubcommand>{
          punishmentID: await incrementPunishmentsTotal(auxdibot, interaction.data.guild.id),
       };
 
-      await createPunishment(auxdibot, interaction.data.guild, warnData, interaction, member.user);
+      await createPunishment(auxdibot, interaction.data.guild, warnData, interaction, member.user).catch(async (x) => {
+         await handleError(
+            auxdibot,
+            'PUNISHMENT_CREATION_ERROR',
+            x.message ?? 'An unknown error occurred while creating the punishment!',
+            interaction,
+         );
+      });
    },
 };

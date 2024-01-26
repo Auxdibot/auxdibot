@@ -44,8 +44,13 @@ export const punishKick = <AuxdibotSubcommand>{
          moderatorID: interaction.user.id,
          punishmentID: await incrementPunishmentsTotal(auxdibot, interaction.data.guildData.serverID),
       };
-      await createPunishment(auxdibot, interaction.data.guild, kickData, interaction, member.user).catch(async () => {
-         return await handleError(auxdibot, 'FAILED_KICK_USER', "Couldn't kick that user.", interaction);
+      await createPunishment(auxdibot, interaction.data.guild, kickData, interaction, member.user).catch(async (x) => {
+         await handleError(
+            auxdibot,
+            'PUNISHMENT_CREATION_ERROR',
+            x.message ?? 'An unknown error occurred while creating the punishment!',
+            interaction,
+         );
       });
    },
 };

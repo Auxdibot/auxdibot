@@ -81,11 +81,11 @@ export const punishBan = <AuxdibotSubcommand>{
          member.user,
          duration,
          deleteMessageDays,
-      ).catch(async () => {
-         return await handleError(
+      ).catch(async (x) => {
+         await handleError(
             auxdibot,
-            'FAILED_BAN_USER',
-            "Couldn't ban that user. Check if they have a higher role than Auxdibot.",
+            'PUNISHMENT_CREATION_ERROR',
+            x.message ?? 'An unknown error occurred while creating the punishment!',
             interaction,
          );
       });
