@@ -26,6 +26,7 @@ export default async function createPunishment(
          data: { punishments: server.punishments },
       });
    }
+   if (punishment.reason.length > 500) throw new Error('Your punishment reason is too long!');
    const dmEmbed = new EmbedBuilder().setColor(auxdibot.colors.punishment).toJSON();
    dmEmbed.title = PunishmentValues[punishment.type].name;
    dmEmbed.description = `You were ${PunishmentValues[punishment.type].action} on ${guild ? guild.name : 'Server'}.`;
@@ -36,13 +37,19 @@ export default async function createPunishment(
       .catch(() => false);
    switch (punishment.type) {
       case PunishmentType.KICK:
-         await guild.members.kick(user, punishment.reason || 'No reason specified.');
+         await guild.members.kick(user, punishment.reason || 'No reason specified.').catch((x) => {
+            if (x.code == '50013') throw new Error('Auxdibot does not have permission to Kick Members!');
+         });
          break;
       case PunishmentType.BAN:
-         await guild.members.ban(user, {
-            reason: punishment.reason,
-            deleteMessageSeconds: deleteMessageDays * 24 * 60 * 60,
-         });
+         await guild.members
+            .ban(user, {
+               reason: punishment.reason,
+               deleteMessageSeconds: deleteMessageDays * 24 * 60 * 60,
+            })
+            .catch((x) => {
+               if (x.code == '50013') throw new Error('Auxdibot does not have permission to Ban Members!');
+            });
          break;
       case PunishmentType.MUTE:
          const role = await guild.roles.fetch(server.mute_role).catch(() => undefined);
@@ -51,7 +58,9 @@ export default async function createPunishment(
             throw new Error('Member is not in server!');
          }
          if (role && server.mute_role) {
-            await member.roles.add(role);
+            await member.roles.add(role).catch((x) => {
+               if (x.code == '50013') throw new Error('Auxdibot does not have permission to Manage Roles!');
+            });
          } else {
             if (!duration || !Number(duration)) {
                throw new Error('Permanent punishment date with no mute role!');

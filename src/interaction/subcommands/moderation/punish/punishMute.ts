@@ -81,11 +81,11 @@ export const punishMute = <AuxdibotSubcommand>{
          punishmentID: await incrementPunishmentsTotal(auxdibot, server.serverID),
       };
       await createPunishment(auxdibot, interaction.data.guild, muteData, interaction, user, duration).catch(
-         async () => {
-            return await handleError(
+         async (x) => {
+            await handleError(
                auxdibot,
-               'FAILED_MUTE_USER',
-               `Could not mute this user! Check and see if Auxdibot has the Manage Roles (or Timeout Members) permission, or if the mute role is above Auxdibot in the role hierarchy.`,
+               'PUNISHMENT_CREATION_ERROR',
+               x.message ?? 'An unknown error occurred while creating the punishment!',
                interaction,
             );
          },
