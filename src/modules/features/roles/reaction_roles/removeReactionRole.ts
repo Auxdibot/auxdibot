@@ -22,10 +22,10 @@ export default async function removeReactionRole(
             channel && channel.isTextBased()
                ? await channel.messages.fetch(reactionRole.messageID).catch(() => undefined)
                : undefined;
-         if (message) message.delete();
+         if (message) message.delete().catch(() => undefined);
          data.reaction_roles.splice(Number(index), 1);
          await handleLog(auxdibot, guild, {
-            userID: user?.id || auxdibot.user.id,
+            userID: user?.id ?? auxdibot.user.id,
             description: `Deleted a reaction role${
                channel && !channel.isDMBased() ? ` in ${channel.name || 'a channel'}` : ''
             }.`,
@@ -36,5 +36,8 @@ export default async function removeReactionRole(
             where: { serverID: guild.id },
             data: { reaction_roles: data.reaction_roles },
          });
+      })
+      .catch((x) => {
+         throw new Error(x.message ?? 'an error occurred');
       });
 }

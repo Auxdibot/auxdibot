@@ -79,14 +79,18 @@ const reactionRoles = (auxdibot: Auxdibot, router: Router) => {
          (req, res, next) => checkGuildOwnership(auxdibot, req, res, next),
          (req, res) => {
             const index = req.body['index'];
-            if (typeof index != 'number' && typeof index != 'string')
-               return res.status(400).json({ error: 'This is not a valid index!' });
-            return removeReactionRole(auxdibot, req.guild, Number(index), req.user)
-               .then((i) => res.json({ data: i.reaction_roles }))
-               .catch((x) => {
-                  console.error(x);
-                  return res.status(500).json({ error: 'an error occurred' });
-               });
+            if (!Number.isInteger(Number(index))) return res.status(400).json({ error: 'This is not a valid index!' });
+            try {
+               return removeReactionRole(auxdibot, req.guild, Number(index), req.user)
+                  .then((i) => res.json({ data: i.reaction_roles }))
+                  .catch((x) => {
+                     console.error(x);
+                     return res.status(500).json({ error: x.message ?? 'an error occurred' });
+                  });
+            } catch (x) {
+               console.error(x);
+               return res.status(500).json({ error: 'an error occurred' });
+            }
          },
       );
    return router;

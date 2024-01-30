@@ -12,7 +12,16 @@ const emojis = (auxdibot: Auxdibot, router: Router) => {
       (req, res, next) => checkAuthenticated(req, res, next),
       (req, res, next) => checkGuildOwnership(auxdibot, req, res, next),
       (req, res) => {
-         return res.json(req.guild.emojis.cache.filter((i) => i.available));
+         return res.json({
+            server_icon: req.guild.iconURL({ size: 64 }),
+            emojis: req.guild.emojis.cache
+               .filter((i) => i.available)
+               .map((i) => ({
+                  name: i.name,
+                  image: i.imageURL({ size: 64 }),
+                  id: i.id,
+               })),
+         });
       },
    );
    return router;
