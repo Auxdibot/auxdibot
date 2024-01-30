@@ -8,20 +8,20 @@ import handleError from '@/util/handleError';
 import { EmbedBuilder } from '@discordjs/builders';
 import { ChannelType } from 'discord.js';
 
-export const settingsJoinLeaveChannel = <AuxdibotSubcommand>{
-   name: 'join_leave_channel',
+export const greetingsChannel = <AuxdibotSubcommand>{
+   name: 'channel',
    info: {
-      module: Modules['Settings'],
-      description: 'Change the channel where join and leave messages are broadcast.',
-      usageExample: '/settings join_leave_channel (channel)',
-      permission: 'settings.join_leave_channel',
+      module: Modules['Greetings'],
+      description: 'Set the greetings channel for this server, where join and leave messages are broadcast.',
+      usageExample: '/greetings channel (channel)',
+      permission: 'greetings.channel',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;
       const channel = interaction.options.getChannel('channel', false, [ChannelType.GuildText]);
       const server = interaction.data.guildData;
       const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
-      embed.title = '⚙️ Join/Leave Channel Change';
+      embed.title = '⚙️ Greetings Channel Change';
       const formerChannel = interaction.data.guild.channels.resolve(server.join_leave_channel || '');
       if (channel && channel.id == server.join_leave_channel) {
          embed.description = `Nothing changed. Channel is the same as one specified in settings.`;
@@ -30,9 +30,10 @@ export const settingsJoinLeaveChannel = <AuxdibotSubcommand>{
          });
       }
       server.join_leave_channel = channel?.id;
-      embed.description = `The Join/Leave Channel for this server has been changed.\r\n\r\nFormerly: ${
+      embed.description = `The Greetings Channel for this server has been changed.\r\n\r\nFormerly: ${
          formerChannel ? `<#${formerChannel.id}>` : 'None'
       }\r\n\r\nNow: ${channel || 'None (Disabled)'}`;
+      // TODO: change all join/leave channel instances to greetings channel.. yeesh
       await setJoinLeaveChannel(auxdibot, interaction.guild, interaction.user, channel)
          .then(
             async () =>
@@ -43,8 +44,8 @@ export const settingsJoinLeaveChannel = <AuxdibotSubcommand>{
          .catch(() =>
             handleError(
                auxdibot,
-               'JOIN_LEAVE_CHANNEL_SET_ERROR',
-               "Couldn't set the Join/Leave channel to that channel!",
+               'GREETINGS_CHANNEL_SET_ERROR',
+               "Couldn't set the Greetings channel to that channel!",
                interaction,
             ),
          );
