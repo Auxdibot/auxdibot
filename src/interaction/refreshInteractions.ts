@@ -60,12 +60,10 @@ export default async function refreshInteractions(auxdibot: Auxdibot, rest: REST
    /********************************************************************************/
    // Declare buttons
    console.log('-> Declaring button interactions...');
-   const buttons = [];
    const buttonFiles = fs.readdirSync(path.join(__dirname, '/buttons')).filter((file) => file.endsWith('.js'));
    for (const file of buttonFiles) {
       const fileRequire = await import(`./buttons/${file}`);
       if (fileRequire.default) {
-         buttons.push(fileRequire.default);
          if (auxdibot.buttons) {
             auxdibot.buttons.set(fileRequire.default.name, fileRequire.default);
          }
@@ -74,14 +72,24 @@ export default async function refreshInteractions(auxdibot: Auxdibot, rest: REST
    /********************************************************************************/
    // Declare select menus
    console.log('-> Declaring select menu interactions...');
-   const select_menus = [];
    const selectMenuFiles = fs.readdirSync(path.join(__dirname, '/menus')).filter((file) => file.endsWith('.js'));
    for (const file of selectMenuFiles) {
       const fileRequire = await import(`./menus/${file}`);
       if (fileRequire.default) {
-         select_menus.push(fileRequire.default);
          if (auxdibot.select_menus) {
             auxdibot.select_menus.set(fileRequire.default.name, fileRequire.default);
+         }
+      }
+   }
+   /********************************************************************************/
+   // Declare modals
+   console.log('-> Declaring select menu interactions...');
+   const modalFiles = fs.readdirSync(path.join(__dirname, '/modals')).filter((file) => file.endsWith('.js'));
+   for (const file of modalFiles) {
+      const fileRequire = await import(`./modals/${file}`);
+      if (fileRequire.default) {
+         if (auxdibot.modals) {
+            auxdibot.modals.set(fileRequire.default.name, fileRequire.default);
          }
       }
    }
