@@ -123,6 +123,17 @@ export const SettingsEmbeds: { [k: string]: (auxdibot: Auxdibot, servers: server
                         : 'Unset'
                   }`,
             },
+            {
+               name: '🔒 Locked Channels',
+               value:
+                  server.locked_channels.reduce(
+                     (accumulator: string, val) =>
+                        `${accumulator}\r\n* <#${val.channelID}> ${
+                           val.expiration_date ? `<t:${Math.round(val.expiration_date.valueOf() / 1000)}>` : ''
+                        }${val.reason ? `\nReason: \`${val.reason}\`` : ''}`,
+                     '',
+                  ) || 'None',
+            },
          )
          .toJSON(),
    permissions: (auxdibot, server) =>
