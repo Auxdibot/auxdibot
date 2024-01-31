@@ -21,7 +21,7 @@ export const blacklistList = <AuxdibotSubcommand>{
       const server = interaction.data.guildData;
       successEmbed.title = '🚫 Blacklisted Phrases';
       successEmbed.description = server.automod_banned_phrases.reduce(
-         (accumulator: string, value, index) => `${accumulator}\r\n\r\n**${index + 1})** \`${value}\``,
+         (accumulator: string, value, index) => `${accumulator}\r\n**${index + 1})** \`${value}\``,
          `Blacklist Violation Punishment: \`${
             PunishmentValues[server.automod_banned_phrases_punishment]?.name || 'None'
          }\``,

@@ -52,6 +52,7 @@ const CLIENT_ID = process.env.DISCORD_BOT_CLIENT_ID;
    auxdibot.commands = new Collection();
    auxdibot.buttons = new Collection();
    auxdibot.select_menus = new Collection();
+   auxdibot.modals = new Collection();
    auxdibot.messages = new Collection();
    auxdibot.spam_detections = new Collection();
    auxdibot.invites_detections = new Collection();

@@ -1,10 +1,12 @@
+import { CustomEmojis } from '@/constants/bot/CustomEmojis';
 import Modules from '@/constants/bot/commands/Modules';
+import { SettingsEmbeds } from '@/constants/bot/commands/SettingsEmbeds';
 import { promoRow } from '@/constants/bot/promoRow';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
-import { EmbedBuilder } from '@discordjs/builders';
+import { ActionRowBuilder, ButtonBuilder } from 'discord.js';
 
 export const settingsView = <AuxdibotSubcommand>{
    name: 'view',
@@ -17,75 +19,55 @@ export const settingsView = <AuxdibotSubcommand>{
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;
       const server = interaction.data.guildData;
-      const embed = new EmbedBuilder().setColor(auxdibot.colors.info).toJSON();
-      embed.description = `You can edit and view these settings more in-depth on [Auxdibot's Dashboard](https://bot.auxdible.me)\n\n🗒️ **Log Channel**: ${
-         server.log_channel ? `<#${server.log_channel}>` : '`None`'
-      }
-      \r\n📩 **Join/Leave Channel**: ${server.join_leave_channel ? `<#${server.join_leave_channel}>` : '`None`'}
-      \r\n🎤 **Mute Role**: ${server.mute_role ? `<@&${server.mute_role}>` : '`None (Timeout)`'}
-      \r\n💬 **Message XP**: \`${server.message_xp}\`
-      \r\n🎖️ **Level Channel**: ${server.level_channel ? `<#${server.level_channel}>` : '`None (Reply)`'}
-      \r\n🏆 **Levelup Embed**: ${server.level_embed ? '`Send embed.`' : '`Do not send embed.`'}`;
-      embed.fields = [
-         {
-            name: '👋 Join Roles',
-            value: server.join_roles.reduce(
-               (accumulator: string, val: string, index: number) => `${accumulator}\r\n> **${index + 1})** <@&${val}>`,
-               '',
-            ),
-            inline: true,
-         },
-         {
-            name: '📝 Sticky Roles',
-            value: server.sticky_roles.reduce(
-               (accumulator: string, val: string, index: number) => `${accumulator}\r\n> **${index + 1})** <@&${val}>`,
-               '',
-            ),
-            inline: true,
-         },
-         {
-            name: '❓ Suggestions',
-            value: `> **Channel**: ${
-               server.suggestions_channel ? `<#${server.suggestions_channel}>` : '`None (Suggestions are disabled.)`'
-            }
-              > **Updates Channel**: ${
-                 server.suggestions_updates_channel ? `<#${server.suggestions_updates_channel}>` : '`None`'
-              }
-              > **Auto Delete**: \`${server.suggestions_auto_delete ? 'Delete.' : 'Do not Delete.'}\`
-              > **Discussion Threads**: \`${
-                 server.suggestions_discussion_threads ? 'Create Thread.' : 'Do not create a Thread.'
-              }\``,
-         },
-         {
-            name: '⛔ Disabled Features',
-            value: server.disabled_modules.reduce(
-               (accumulator: string, val: string) => `${accumulator}\r\n> *${Modules[val]?.name || 'Unknown'}*`,
-               '',
-            ),
-            inline: true,
-         },
-         {
-            name: '🏆 Level Reward Roles',
-            value: server.level_rewards.reduce(
-               (accumulator: string, val, index: number) =>
-                  `${accumulator}\r\n> **${index + 1})** <@&${val.roleID}> (\`Level ${val.level}\`)`,
-               '',
-            ),
-            inline: true,
-         },
-         {
-            name: '⭐ Starboard',
-            value: `> **Channel**: ${
-               server.starboard_channel ? `<#${server.starboard_channel}>` : '`None (Starboard is disabled.)`'
-            }
-              > **Reaction**: ${server.starboard_reaction || '`None (Starboard is disabled.)`'}
-              > **Reaction Count**: \`${server.starboard_reaction_count}\``,
-         },
-      ];
+      const card = auxdibot.database.servercards.findFirst({ where: { serverID: server.serverID } });
+
+      const modulesRow1 = new ActionRowBuilder<ButtonBuilder>().addComponents(
+            new ButtonBuilder()
+               .setStyle(1)
+               .setCustomId('settings-general')
+               .setLabel('Settings')
+               .setEmoji(CustomEmojis.BOLT),
+            new ButtonBuilder()
+               .setStyle(1)
+               .setCustomId('settings-moderation')
+               .setLabel('Moderation')
+               .setEmoji(CustomEmojis.MODERATION),
+            new ButtonBuilder()
+               .setStyle(1)
+               .setCustomId('settings-permissions')
+               .setLabel('Permissions')
+               .setEmoji(CustomEmojis.PERMISSIONS),
+            new ButtonBuilder()
+               .setStyle(1)
+               .setCustomId('settings-roles')
+               .setLabel('Roles')
+               .setEmoji(CustomEmojis.ROLES),
+         ),
+         modulesRow2 = new ActionRowBuilder<ButtonBuilder>().addComponents(
+            new ButtonBuilder()
+               .setStyle(1)
+               .setCustomId('settings-greetings')
+               .setLabel('Greetings')
+               .setEmoji(CustomEmojis.GREETINGS),
+            new ButtonBuilder()
+               .setStyle(1)
+               .setCustomId('settings-levels')
+               .setLabel('Levels')
+               .setEmoji(CustomEmojis.LEVELS),
+            new ButtonBuilder()
+               .setStyle(1)
+               .setCustomId('settings-suggestions')
+               .setLabel('Suggestions')
+               .setEmoji(CustomEmojis.SUGGESTIONS),
+            new ButtonBuilder()
+               .setStyle(1)
+               .setCustomId('settings-starboard')
+               .setLabel('Starboard')
+               .setEmoji(CustomEmojis.STARBOARD),
+         );
       return await interaction.reply({
-         content: '# ⚙️ Server Settings',
-         embeds: [embed],
-         components: [promoRow],
+         embeds: [SettingsEmbeds['general'](auxdibot, server, card)],
+         components: [modulesRow1, modulesRow2, promoRow],
       });
    },
 };
