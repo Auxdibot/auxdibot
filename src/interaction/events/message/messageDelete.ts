@@ -20,12 +20,12 @@ export default async function messageDelete(auxdibot: Auxdibot, message: Message
       )
       .catch(() => undefined);
    if (auditEntry && auditEntry?.entries?.size > 0) return;
-   if (!sender || !message.guild) return;
    const server = await findOrCreateServer(auxdibot, message.guild.id);
    const rr = server.reaction_roles.find((rr) => rr.messageID == message.id);
    if (rr) {
       removeReactionRole(auxdibot, message.guild, server.reaction_roles.indexOf(rr), undefined);
    }
+
    const suggestion = server.suggestions.find((suggestion) => suggestion.messageID == message.id);
    const starboard = server.starred_messages.find(
       (starred_message) =>
@@ -36,8 +36,8 @@ export default async function messageDelete(auxdibot: Auxdibot, message: Message
       await handleLog(auxdibot, message.guild, <Log>{
          type: LogAction.SUGGESTION_DELETED,
          date_unix: Date.now(),
-         description: `${sender.user.username} deleted Suggestion #${suggestion.suggestionID}`,
-         userID: sender.id,
+         description: `A suggestion message deletion deleted Suggestion #${suggestion.suggestionID}`,
+         userID: message?.member?.id ?? auxdibot.user.id,
       });
    }
 
@@ -58,7 +58,7 @@ export default async function messageDelete(auxdibot: Auxdibot, message: Message
          type: LogAction.STARBOARD_MESSAGE_DELETED,
          date_unix: Date.now(),
          description: `Deleted a starred message${message ? ` in ${message.channel?.toString() || 'a channel'}` : ''}.`,
-         userID: sender.id,
+         userID: message?.member?.id ?? auxdibot.user.id,
       });
    }
    if (sender.user.bot) return;
@@ -68,8 +68,8 @@ export default async function messageDelete(auxdibot: Auxdibot, message: Message
       <Log>{
          type: LogAction.MESSAGE_EDITED,
          date_unix: Date.now(),
-         description: `A message by ${sender.user.username} was deleted.`,
-         userID: sender.id,
+         description: `A message by ${sender?.user?.username ?? auxdibot.user.username} was deleted.`,
+         userID: message?.member?.id ?? auxdibot.user.id,
       },
       [
          {

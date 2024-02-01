@@ -10,6 +10,7 @@ import { reactionRolesList } from '../../subcommands/roles/reactionRoles/reactio
 import { reactionRolesRemove } from '../../subcommands/roles/reactionRoles/reactionRolesRemove';
 import { ReactionRoleType } from '@prisma/client';
 import { ReactionRoleTypeNames } from '@/constants/bot/roles/ReactionRoleTypeNames';
+import { reactionRolesAddMessage } from '@/interaction/subcommands/roles/reactionRoles/reactionRolesAddMessage';
 const createRoleTypes = (builder: SlashCommandSubcommandBuilder) =>
    builder.addStringOption((builder) =>
       builder
@@ -43,6 +44,30 @@ export default <AuxdibotCommand>{
                   argBuilder.setName('title').setDescription('Title of the reaction roles.'),
                ),
          ),
+      )
+      .addSubcommand((builder) =>
+         builder
+            .setName('add_message')
+            .setDescription('Add a reaction role to the server using an existing message.')
+            .addStringOption((argBuilder) =>
+               argBuilder.setName('message').setDescription('The message to use as a reaction role.').setRequired(true),
+            )
+            .addStringOption((argBuilder) =>
+               argBuilder
+                  .setName('roles')
+                  .setDescription('Space between emoji & role. (ex. [emoji] [role] [...emoji2] [...role2])')
+                  .setRequired(true),
+            )
+            .addStringOption((builder) =>
+               builder
+                  .setName('type')
+                  .setDescription('The way users will interact with this reaction role.')
+                  .setChoices(
+                     ...Object.keys(ReactionRoleType)
+                        .filter((i) => ['DEFAULT', 'STICKY', 'SELECT_ONE', 'STICKY_SELECT_ONE'].includes(i))
+                        .map((i) => ({ name: ReactionRoleTypeNames[i], value: i })),
+                  ),
+            ),
       )
       .addSubcommand((builder) =>
          createEmbedParameters(
@@ -135,13 +160,14 @@ export default <AuxdibotCommand>{
    info: {
       module: Modules['Roles'],
       description: 'Create, edit, remove, or list the currently active reaction roles.',
-      usageExample: '/reaction_roles (add|add_custom|add_json|remove|edit|list)',
+      usageExample: '/reaction_roles (add|add_custom|add_json|add_message|remove|edit|list)',
       permission: 'rr',
    },
    subcommands: [
       reactionRolesAdd,
       reactionRolesAddCustom,
       reactionRolesAddJSON,
+      reactionRolesAddMessage,
       reactionRolesEdit,
       reactionRolesList,
       reactionRolesRemove,
