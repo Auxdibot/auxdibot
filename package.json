@@ -22,6 +22,7 @@
       "@types/lodash": "^4.14.202",
       "@types/passport": "^1.0.12",
       "@types/passport-discord": "^0.1.6",
+      "axios": "^1.6.7",
       "cors": "^2.8.5",
       "discord.js": "^14.8.0",
       "emoji-regex": "^10.2.1",
@@ -30,6 +31,7 @@
       "lodash": "^4.17.21",
       "passport": "^0.6.0",
       "passport-discord": "^0.1.4",
+      "rss-parser": "^3.13.0",
       "toad-scheduler": "^2.3.0"
    },
    "devDependencies": {

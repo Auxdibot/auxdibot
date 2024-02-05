@@ -14,6 +14,7 @@ import Strategy from 'passport-discord';
 import bodyParser from 'body-parser';
 import checkAuthenticated from './checkAuthenticated';
 import cards from './servers/routes/cards';
+import { notificationsRoute } from './notifications';
 export default async function server(auxdibot: Auxdibot) {
    const app = express();
 
@@ -55,6 +56,7 @@ export default async function server(auxdibot: Auxdibot) {
    app.use('/analytics', analyticsRoute(auxdibot));
    app.use('/auth', authRoute());
    app.use('/servers', serversRoute(auxdibot));
+   app.use('/notifications', notificationsRoute());
    app.get(
       '/user',
       (req, res, next) => checkAuthenticated(req, res, next),

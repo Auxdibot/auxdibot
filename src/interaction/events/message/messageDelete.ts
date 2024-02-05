@@ -13,7 +13,7 @@ export default async function messageDelete(auxdibot: Auxdibot, message: Message
       .then((a) =>
          a.entries.find(
             (i) =>
-               i.target.id == message.client.user.id &&
+               i.target.id == message.client?.user?.id &&
                i.extra.channel.id == message.channel.id &&
                Date.now() - i.createdTimestamp < 100000,
          ),
@@ -61,7 +61,7 @@ export default async function messageDelete(auxdibot: Auxdibot, message: Message
          userID: message?.member?.id ?? auxdibot.user.id,
       });
    }
-   if (sender.user.bot) return;
+   if (!sender || sender?.user.bot || sender?.id == auxdibot.user.id) return;
    await handleLog(
       auxdibot,
       message.guild,

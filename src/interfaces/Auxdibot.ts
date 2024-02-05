@@ -6,6 +6,7 @@ import { ToadScheduler } from 'toad-scheduler';
 import { CachedMessage } from './messages/CachedMessage';
 import AuxdibotSelectMenu from './menus/AuxdibotSelectMenu';
 import AuxdibotModal from './modals/AuxdibotModal';
+import Subscriber from '@/modules/features/notifications/Subscriber';
 export interface Auxdibot extends Client {
    commands: Collection<string, AuxdibotCommand>;
    buttons: Collection<string, AuxdibotButton>;
@@ -17,6 +18,7 @@ export interface Auxdibot extends Client {
    spam_detections: Collection<[string, bigint], Collection<bigint, CachedMessage>>;
    attachments_detections: Collection<[string, bigint], Collection<bigint, CachedMessage>>;
    invites_detections: Collection<[string, bigint], Collection<bigint, CachedMessage>>;
+   subscriber: Subscriber;
    colors: {
       accept: number;
       denied: number;
