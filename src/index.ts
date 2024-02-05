@@ -16,6 +16,8 @@ import fetchAnalytics from './modules/analytics/fetchAnalytics';
 import scheduleChannelUnlocks from './modules/features/moderation/lock/scheduleChannelUnlocks';
 import scheduleClearMessageCache from './modules/features/scheduleClearMessageCache';
 import { CustomEmojis } from './constants/bot/CustomEmojis';
+import Subscriber from './modules/features/notifications/Subscriber';
+import createSubscribers from './modules/features/notifications/createSubscribers';
 
 const TOKEN = process.env.DISCORD_BOT_TOKEN;
 const CLIENT_ID = process.env.DISCORD_BOT_CLIENT_ID;
@@ -58,6 +60,7 @@ const CLIENT_ID = process.env.DISCORD_BOT_CLIENT_ID;
    auxdibot.invites_detections = new Collection();
    auxdibot.attachments_detections = new Collection();
    auxdibot.scheduler = new ToadScheduler();
+   auxdibot.subscriber = new Subscriber();
    auxdibot.colors = {
       accept: 0x8bc34a,
       denied: 0xf44336,
@@ -144,6 +147,7 @@ const CLIENT_ID = process.env.DISCORD_BOT_CLIENT_ID;
    scheduleRunSchedules(auxdibot);
    scheduleChannelUnlocks(auxdibot);
    scheduleClearMessageCache(auxdibot);
+   createSubscribers(auxdibot);
 
    console.log('-> Logging into client...');
    auxdibot

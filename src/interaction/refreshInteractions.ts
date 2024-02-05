@@ -83,7 +83,7 @@ export default async function refreshInteractions(auxdibot: Auxdibot, rest: REST
    }
    /********************************************************************************/
    // Declare modals
-   console.log('-> Declaring select menu interactions...');
+   console.log('-> Declaring modal interactions...');
    const modalFiles = fs.readdirSync(path.join(__dirname, '/modals')).filter((file) => file.endsWith('.js'));
    for (const file of modalFiles) {
       const fileRequire = await import(`./modals/${file}`);

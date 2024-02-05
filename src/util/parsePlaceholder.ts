@@ -4,6 +4,7 @@ import { SuggestionStateName } from '@/constants/bot/suggestions/SuggestionState
 import { Suggestion } from '@prisma/client';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import { Auxdibot } from '@/interfaces/Auxdibot';
+import { GenericFeed } from '@/interfaces/notifications/GenericFeed';
 
 export default async function parsePlaceholders(
    auxdibot: Auxdibot,
@@ -12,6 +13,7 @@ export default async function parsePlaceholders(
    guildMember?: GuildMember | PartialGuildMember,
    suggestion?: Suggestion,
    starred_message?: Message<boolean> | PartialMessage,
+   feed_data?: GenericFeed,
 ) {
    const server = guild ? await findOrCreateServer(auxdibot, guild.id) : undefined;
    let member = guildMember;
@@ -118,6 +120,18 @@ export default async function parsePlaceholders(
               starboard_message_date_formatted: `<t:${Math.round(starred_message.createdTimestamp / 1000)}>`,
               starboard_message_date_utc: new Date(starred_message.createdTimestamp).toUTCString(),
               starboard_message_date_iso: new Date(starred_message.createdTimestamp).toISOString(),
+           }
+         : undefined),
+      ...(feed_data
+         ? {
+              feed_title: feed_data.title ?? '',
+              feed_content: feed_data.content ?? '',
+              feed_link: feed_data.link ?? '',
+              feed_author: feed_data.author ?? '',
+              feed_date: new Date(feed_data.date).toDateString(),
+              feed_date_formatted: `<t:${Math.round(feed_data.date / 1000)}>`,
+              feed_date_utc: new Date(feed_data.date).toUTCString(),
+              feed_date_iso: new Date(feed_data.date).toISOString(),
            }
          : undefined),
       message_date: new Date().toDateString(),

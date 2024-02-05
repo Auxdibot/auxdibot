@@ -113,6 +113,8 @@ enum LogAction {
   SERVER_UNLOCKED
   REPORTS_CHANNEL_CHANGED
   REPORTS_ROLE_CHANGED
+  NOTIFICATION_CREATED
+  NOTIFICATION_DELETED
 }
 
 type Punishment {
@@ -177,6 +179,25 @@ type Log {
 type StarredMessage {
   starboard_message_id String
   starred_message_id   String
+}
+
+enum FeedType {
+  TWITCH
+  YOUTUBE
+  RSS
+}
+
+type MessageContent {
+  content String?
+  embed   APIEmbed?
+}
+
+type Notification {
+  topicURL      String
+  message       MessageContent
+  channelID     String
+  type          FeedType
+  previous_data String?
 }
 
 enum SuggestionState {
@@ -325,6 +346,7 @@ model servers {
   automod_invites_punishment        AutomodPunishment?
   automod_spam_punishment           AutomodPunishment?
   reports_channel                   String?
+  notifications                     Notification[]
   report_role                       String?
   automod_role_exceptions           String[]             @default([])
   locked_channels                   ChannelLock[]

@@ -18,7 +18,7 @@ const emojis = (auxdibot: Auxdibot, router: Router) => {
                .filter((i) => i.available)
                .map((i) => ({
                   name: i.name,
-                  image: i.imageURL({ size: 64 }),
+                  image: i.url,
                   id: i.id,
                })),
          });

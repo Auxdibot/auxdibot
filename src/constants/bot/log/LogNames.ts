@@ -59,4 +59,6 @@ export const LogNames: { [k in LogAction]: string } = {
    SERVER_UNLOCKED: '🔓 Server Unlocked',
    REPORTS_CHANNEL_CHANGED: '📩 Reports Channel Changed',
    REPORTS_ROLE_CHANGED: '📩 Reports Role Changed',
+   NOTIFICATION_CREATED: '💬 Notification Created',
+   NOTIFICATION_DELETED: '💬 Notification Deleted',
 };
