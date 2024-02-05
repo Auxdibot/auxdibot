@@ -65,7 +65,11 @@ export default class Subscriber {
                const server = await findOrCreateServer(auxdibot, guild.id);
                for (const i of server.notifications) {
                   if (i.topicURL == topic) {
-                     if (data && JSON.stringify(data) != i.previous_data) {
+                     if (
+                        data &&
+                        JSON.stringify(data) != i.previous_data &&
+                        (data?.date ?? Date.now()) > (JSON.parse(i.previous_data)?.date ?? 0)
+                     ) {
                         console.log(data);
                         server.notifications[server.notifications.indexOf(i)] = {
                            ...i,

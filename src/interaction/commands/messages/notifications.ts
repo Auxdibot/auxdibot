@@ -5,6 +5,7 @@ import createEmbedParameters from '@/util/createEmbedParameters';
 import Modules from '@/constants/bot/commands/Modules';
 import { notificationsYoutube } from '@/interaction/subcommands/notifications/notificationsYoutube';
 import { notificationsDelete } from '@/interaction/subcommands/notifications/notificationsDelete';
+import { notificationsList } from '@/interaction/subcommands/notifications/notificationsList';
 
 dotenv.config();
 export default <AuxdibotCommand>{
@@ -35,14 +36,15 @@ export default <AuxdibotCommand>{
             .addNumberOption((option) =>
                option.setName('index').setDescription('The index of the notification.').setRequired(true),
             ),
-      ),
+      )
+      .addSubcommand((builder) => builder.setName('list').setDescription('List all Auxdibot notification feeds.')),
    info: {
       module: Modules['Messages'],
       description: 'Create notifications for your favorite social media/RSS feeds.',
-      usageExample: '/notifications (youtube)',
+      usageExample: '/notifications (youtube|delete|list)',
       permission: 'notifications',
    },
-   subcommands: [notificationsYoutube, notificationsDelete],
+   subcommands: [notificationsYoutube, notificationsDelete, notificationsList],
    async execute() {
       return;
    },

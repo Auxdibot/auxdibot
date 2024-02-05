@@ -1,3 +1,4 @@
+import { FeedNames } from './../../../constants/bot/notifications/FeedNames';
 import Modules from '@/constants/bot/commands/Modules';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
@@ -28,12 +29,14 @@ export const notificationsDelete = <AuxdibotSubcommand>{
       deleteNotification(auxdibot, interaction.guild, interaction.user, index - 1)
          .then(async () => {
             const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
-            embed.title = '🗨️ Deleted Notification Feed';
+            embed.title = '📬 Deleted Notification Feed';
             embed.description = `Deleted notification feed #${index}`;
             embed.fields = [
                {
                   name: 'Notification Feed',
-                  value: `\`${notification.type}\` - \`${notification.topicURL}\``,
+                  value: `${FeedNames[notification.type]} (<#${notification.channelID}>): [View Output](${
+                     notification.topicURL
+                  })`,
                },
             ];
             handleLog(auxdibot, interaction.guild, {

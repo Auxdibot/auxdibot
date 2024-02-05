@@ -83,7 +83,7 @@ export const notificationsYoutube = <AuxdibotSubcommand>{
             }.`;
 
             const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
-            embed.title = '🗨️ Created Notification Feed';
+            embed.title = '📬 Created Notification Feed';
             embed.description = description;
             handleLog(auxdibot, interaction.guild, {
                type: LogAction.NOTIFICATION_CREATED,
