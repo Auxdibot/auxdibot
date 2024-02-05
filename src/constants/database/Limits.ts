@@ -12,5 +12,6 @@ enum Limits {
    LOGGING_LIMIT = 10,
    AUTOMOD_BLACKLIST_LIMIT = 50,
    AUTOMOD_EXCEPTION_LIMIT = 5,
+   NOTIFICATIONS_LIMIT = 3,
 }
 export default Limits;
