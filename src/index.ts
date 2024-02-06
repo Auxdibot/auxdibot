@@ -147,7 +147,7 @@ const CLIENT_ID = process.env.DISCORD_BOT_CLIENT_ID;
    scheduleRunSchedules(auxdibot);
    scheduleChannelUnlocks(auxdibot);
    scheduleClearMessageCache(auxdibot);
-   createSubscribers(auxdibot);
+   auxdibot.subscriber.twitchInit().then(() => createSubscribers(auxdibot));
 
    console.log('-> Logging into client...');
    auxdibot

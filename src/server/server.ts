@@ -56,7 +56,7 @@ export default async function server(auxdibot: Auxdibot) {
    app.use('/analytics', analyticsRoute(auxdibot));
    app.use('/auth', authRoute());
    app.use('/servers', serversRoute(auxdibot));
-   app.use('/notifications', notificationsRoute());
+   app.use('/notifications', notificationsRoute(auxdibot));
    app.get(
       '/user',
       (req, res, next) => checkAuthenticated(req, res, next),
