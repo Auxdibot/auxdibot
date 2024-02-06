@@ -27,9 +27,11 @@ export const notificationsList = <AuxdibotSubcommand>{
             value: server.notifications.reduce(
                (accumulator, notification, index) =>
                   accumulator +
-                  `\n\n**#${index + 1}**) ${FeedNames[notification.type]} (<#${
-                     notification.channelID
-                  }>): [View Output](${notification.topicURL})`,
+                  `\n\n**#${index + 1}**) ${FeedNames[notification.type]} (<#${notification.channelID}>): ${
+                     ['YOUTUBE', 'RSS'].includes(notification.type)
+                        ? `[View Output](${notification.topicURL})`
+                        : notification.topicURL
+                  }`,
                '',
             ),
          },

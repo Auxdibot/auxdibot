@@ -16,4 +16,5 @@ export const CustomEmojis = {
    SUGGESTIONS: '<:suggestions:1179197488566124564>',
    GREETINGS: '<:greetings:1181292264631320678>',
    YOUTUBE: '<:youtube:1204087920911196252>',
+   TWITCH: '<:twitch:1204446883821396018>',
 };

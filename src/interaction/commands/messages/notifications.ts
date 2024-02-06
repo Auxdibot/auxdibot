@@ -6,6 +6,7 @@ import Modules from '@/constants/bot/commands/Modules';
 import { notificationsYoutube } from '@/interaction/subcommands/notifications/notificationsYoutube';
 import { notificationsDelete } from '@/interaction/subcommands/notifications/notificationsDelete';
 import { notificationsList } from '@/interaction/subcommands/notifications/notificationsList';
+import { notificationsTwitch } from '@/interaction/subcommands/notifications/notificationsTwitch';
 
 dotenv.config();
 export default <AuxdibotCommand>{
@@ -30,6 +31,23 @@ export default <AuxdibotCommand>{
          ),
       )
       .addSubcommand((builder) =>
+         createEmbedParameters(
+            builder
+               .setName('twitch')
+               .setDescription('Create a feed listener using Auxdibot.')
+               .addChannelOption((option) =>
+                  option
+                     .setName('channel')
+                     .setDescription('The channel to post the feed in.')
+                     .addChannelTypes(ChannelType.GuildText)
+                     .setRequired(true),
+               )
+               .addStringOption((option) =>
+                  option.setName('username').setDescription('Twitch channel username (ex. auxdible)').setRequired(true),
+               ),
+         ),
+      )
+      .addSubcommand((builder) =>
          builder
             .setName('delete')
             .setDescription('Delete an Auxdibot notification feed.')
@@ -41,10 +59,10 @@ export default <AuxdibotCommand>{
    info: {
       module: Modules['Messages'],
       description: 'Create notifications for your favorite social media/RSS feeds.',
-      usageExample: '/notifications (youtube|delete|list)',
+      usageExample: '/notifications (youtube|twitch|delete|list)',
       permission: 'notifications',
    },
-   subcommands: [notificationsYoutube, notificationsDelete, notificationsList],
+   subcommands: [notificationsYoutube, notificationsDelete, notificationsList, notificationsTwitch],
    async execute() {
       return;
    },

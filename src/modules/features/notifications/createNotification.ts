@@ -1,9 +1,9 @@
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import { APIEmbed, Channel, Guild } from 'discord.js';
-import axios from 'axios';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import { testLimit } from '@/util/testLimit';
 import Limits from '@/constants/database/Limits';
+import { FeedType } from '@prisma/client';
 
 export default async function createNotification(
    auxdibot: Auxdibot,
@@ -11,21 +11,18 @@ export default async function createNotification(
    channel: Channel,
    topicUrl: string,
    content: { content: string; embed: APIEmbed },
+   type: FeedType,
 ) {
    const server = await findOrCreateServer(auxdibot, guild.id);
    if (!testLimit(server.notifications, Limits.NOTIFICATIONS_LIMIT)) {
       throw new Error('You have too many notifications!');
    }
-   const topic = await axios
-      .get(`${topicUrl}`)
-      .then((data) => {
-         return data.data;
-      })
-      .catch(() => {
-         throw new Error("Can't fetch from that topicUrl");
-      });
-   if (!topic) throw new Error("Can't fetch from that topicUrl");
-
+   const topic = await auxdibot.subscriber.subscribe(topicUrl, type, auxdibot, guild.id).catch((x) => {
+      console.log(x);
+      return undefined;
+   });
+   if (!topic)
+      throw new Error("Failed to subscribe to that topic. Maybe the specified username/handle/url doesn't exist?");
    return auxdibot.database.servers.update({
       where: { serverID: guild.id },
       data: {
@@ -34,7 +31,7 @@ export default async function createNotification(
                channelID: channel.id,
                message: content,
                topicURL: topicUrl,
-               type: 'YOUTUBE',
+               type,
             },
          },
       },
