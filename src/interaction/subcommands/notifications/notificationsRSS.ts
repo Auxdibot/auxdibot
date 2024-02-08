@@ -12,12 +12,12 @@ import { toAPIEmbed } from '@/util/toAPIEmbed';
 import { LogAction } from '@prisma/client';
 import { ChannelType, EmbedBuilder } from 'discord.js';
 
-export const notificationsTwitch = <AuxdibotSubcommand>{
-   name: 'twitch',
+export const notificationsRSS = <AuxdibotSubcommand>{
+   name: 'rss',
    info: {
       module: Modules['Messages'],
-      description: 'Listen for streams on Twitch using Auxdibot.',
-      usageExample: '/notifications twitch (channel) (username) [embed settings]',
+      description: 'Listen for RSS feed updated using Auxdibot.',
+      usageExample: '/notifications rss (channel) (url) [embed settings]',
       permission: 'notifications.youtube',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
@@ -26,7 +26,7 @@ export const notificationsTwitch = <AuxdibotSubcommand>{
          ChannelType.GuildText,
          ChannelType.GuildAnnouncement,
       ]);
-      const username = interaction.options.getString('username', true);
+      const url = interaction.options.getString('url', true);
       const content = interaction.options.getString('content');
       const parameters = argumentsToEmbedParameters(interaction);
       try {
@@ -44,19 +44,19 @@ export const notificationsTwitch = <AuxdibotSubcommand>{
             auxdibot,
             interaction.guild,
             channel,
-            username,
+            url,
             content || apiEmbed
                ? {
                     content: content?.replace(/\\n/g, '\n'),
                     embed: apiEmbed,
                  }
                : {
-                    content: '> 🎦 Twitch Stream Online\n\n%feed_link%',
+                    content: '> 🔔 Feed Update\n\n%feed_link%',
                     embed: null,
                  },
-            'TWITCH',
+            'RSS',
          ).then(async () => {
-            const description = `Created a new notification feed for the Twitch channel \`${username}\`.`;
+            const description = `Created a new notification feed for \`${url}\`.`;
 
             const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.title = '📬 Created Notification Feed';

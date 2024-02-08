@@ -34,9 +34,11 @@ export const notificationsDelete = <AuxdibotSubcommand>{
             embed.fields = [
                {
                   name: 'Notification Feed',
-                  value: `${FeedNames[notification.type]} (<#${notification.channelID}>): [View Output](${
-                     notification.topicURL
-                  })`,
+                  value: `${FeedNames[notification.type]} (<#${notification.channelID}>): ${
+                     ['YOUTUBE', 'RSS'].includes(notification.type)
+                        ? `[View Output](${notification.topicURL})`
+                        : `[${notification.topicURL}](https://twitch.tv/${notification.topicURL})`
+                  }`,
                },
             ];
             handleLog(auxdibot, interaction.guild, {

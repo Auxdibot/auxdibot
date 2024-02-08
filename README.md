@@ -104,6 +104,10 @@ Auxdibot's method of building timed messages. Administrators can schedule messag
 
 A cutting-edge solution for building a website for your server. Using Auxdibot's dashboard, administrators can create their own stylistically creative server cards.
 
+`📽️` *Social Media Notifications*
+
+A user friendly, customizable notification system to ping members for the latest and greatest videos/streams/feeds on your social media platform of choice! (RSS Supported)
+
 `💻` *User-friendly Dashboard*
 
 An approachable dashboard created for administrators to quickly interact with their server, browse documentation, or view updates for Auxdibot!
