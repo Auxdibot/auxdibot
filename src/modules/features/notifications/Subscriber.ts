@@ -5,6 +5,7 @@ import { AsyncTask, SimpleIntervalJob } from 'toad-scheduler';
 import { FeedType } from '@prisma/client';
 import Parser from 'rss-parser';
 import publishNotification from './publishNotification';
+import { GenericFeed } from '@/interfaces/notifications/GenericFeed';
 
 export default class Subscriber {
    subscriptions: { topic: string; type: FeedType; guilds: string[] }[];
@@ -33,7 +34,7 @@ export default class Subscriber {
                ? {
                     title: data.items[0].title,
                     link: data.items[0].link,
-                    content: data.items[0].content,
+                    content: data.items[0].content?.replace(/<[^>]*>/g, '').toString() ?? data.items[0].description,
                     date: new Date(data.items[0].pubDate)?.valueOf() ?? Date.now(),
                     author: data.items[0].author,
                  }
@@ -104,7 +105,7 @@ export default class Subscriber {
    }
 
    private async fetchFeedData(auxdibot: Auxdibot, topic: string, preventPublish?: boolean) {
-      const data = await this.fetchFeed(topic).catch(() => {
+      const data: GenericFeed = await this.fetchFeed(topic).catch(() => {
          return undefined;
       });
 

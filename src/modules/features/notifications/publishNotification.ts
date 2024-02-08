@@ -1,7 +1,6 @@
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import { GenericFeed } from '@/interfaces/notifications/GenericFeed';
 import parsePlaceholders from '@/util/parsePlaceholder';
-import { toAPIEmbed } from '@/util/toAPIEmbed';
 import { Notification } from '@prisma/client';
 import { Guild } from 'discord.js';
 
@@ -26,17 +25,15 @@ export default async function publishNotification(
          ),
          embeds: notification.message.embed
             ? [
-                 toAPIEmbed(
-                    JSON.parse(
-                       await parsePlaceholders(
-                          auxdibot,
-                          JSON.stringify(notification.message.embed),
-                          guild,
-                          undefined,
-                          undefined,
-                          undefined,
-                          data,
-                       ),
+                 JSON.parse(
+                    await parsePlaceholders(
+                       auxdibot,
+                       JSON.stringify(notification.message.embed),
+                       guild,
+                       undefined,
+                       undefined,
+                       undefined,
+                       data,
                     ),
                  ),
               ]

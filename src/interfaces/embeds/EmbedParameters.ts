@@ -1,7 +1,7 @@
 import { EmbedField } from 'discord.js';
 
 export default interface EmbedParameters {
-   color?: string;
+   color?: string | number;
    title?: string;
    title_url?: string;
    description?: string;

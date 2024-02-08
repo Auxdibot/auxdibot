@@ -33,7 +33,11 @@ export const editEmbed = <AuxdibotSubcommand>{
          const embed = message.embeds[0].toJSON();
          embed.url = parameters.title_url;
          embed.title = parameters.title ? await parsePlaceholders(auxdibot, parameters.title) : embed.title;
-         embed.color = parameters.color ? parseInt('0x' + parameters.color.replaceAll('#', ''), 16) : embed.color;
+         embed.color = parameters.color
+            ? typeof parameters.color == 'number'
+               ? parameters.color
+               : parseInt('0x' + parameters.color.replaceAll('#', ''), 16)
+            : embed.color;
          embed.description = parameters.description
             ? await parsePlaceholders(auxdibot, parameters.description)
             : embed.description;
