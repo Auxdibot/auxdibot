@@ -7,7 +7,6 @@ import createNotification from '@/modules/features/notifications/createNotificat
 import argumentsToEmbedParameters from '@/util/argumentsToEmbedParameters';
 import handleError from '@/util/handleError';
 import handleLog from '@/util/handleLog';
-import parsePlaceholders from '@/util/parsePlaceholder';
 import { toAPIEmbed } from '@/util/toAPIEmbed';
 import { LogAction } from '@prisma/client';
 import { ChannelType, EmbedBuilder } from 'discord.js';
@@ -30,16 +29,7 @@ export const notificationsTwitch = <AuxdibotSubcommand>{
       const content = interaction.options.getString('content');
       const parameters = argumentsToEmbedParameters(interaction);
       try {
-         const apiEmbed = toAPIEmbed(
-            JSON.parse(
-               await parsePlaceholders(
-                  auxdibot,
-                  JSON.stringify(parameters),
-                  interaction.data.guild,
-                  interaction.data.member,
-               ),
-            ),
-         );
+         const apiEmbed = toAPIEmbed(parameters);
          return await createNotification(
             auxdibot,
             interaction.guild,

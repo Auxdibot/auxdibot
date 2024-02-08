@@ -9,33 +9,24 @@ export function toAPIEmbed(parameters: EmbedParameters): APIEmbed | undefined {
       parameters.footer_text == null
    )
       return undefined;
-   const embed = new EmbedBuilder()
-      .setColor(
-         parameters.color && /(#|)[0-9a-fA-F]{6}/.test(parameters.color)
-            ? parseInt('0x' + parameters.color.replaceAll('#', ''), 16)
-            : null,
-      )
-      .setTitle(parameters.title || null)
-      .setURL(parameters.title_url || null)
-      .setDescription(parameters.description || null)
-      .setAuthor(
-         parameters.author_text
-            ? {
-                 name: parameters.author_text,
-                 url: parameters.author_url,
-                 iconURL: parameters.author_icon,
-              }
-            : null,
-      )
-      .setFooter(
-         parameters.footer_text
-            ? {
-                 text: parameters.footer_text,
-                 iconURL: parameters.footer_icon,
-              }
-            : null,
-      )
-      .toJSON();
+   const embed = new EmbedBuilder().toJSON();
+   if (parameters.author_text)
+      embed.author = {
+         name: parameters.author_text,
+         url: parameters.author_url ?? undefined,
+         icon_url: parameters.author_icon ?? undefined,
+      };
+   if (parameters.description) embed.description = parameters.description;
+   if (parameters.title) embed.title = parameters.title;
+   if (parameters.title_url) embed.url = parameters.title_url;
+   if (parameters.color)
+      embed.color =
+         typeof parameters.color == 'number'
+            ? parameters.color
+            : parseInt('0x' + parameters.color.replaceAll('#', ''), 16);
+
+   if (parameters.footer_text)
+      embed.footer = { text: parameters.footer_text, icon_url: parameters.footer_icon ?? undefined };
    embed.fields = parameters.fields;
    embed.thumbnail = parameters.thumbnail_url
       ? {
