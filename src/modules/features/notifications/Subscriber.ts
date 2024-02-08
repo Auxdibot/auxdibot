@@ -22,6 +22,7 @@ export default class Subscriber {
             return this.twitch_access_token;
          })
          .catch(() => undefined);
+      this.clearInactiveTwitchSubscriptions();
       return data;
    }
    async fetchFeed(topic: string) {
@@ -82,108 +83,144 @@ export default class Subscriber {
             });
       }
    }
+   private async clearInactiveTwitchSubscriptions() {
+      const headers = {
+         'Client-ID': process.env.TWITCH_CLIENT_ID,
+         Authorization: `Bearer ${this.twitch_access_token}`,
+      };
+
+      try {
+         const response = await axios.get('https://api.twitch.tv/helix/eventsub/subscriptions', { headers: headers });
+
+         for (const subscription of response.data.data) {
+            if (subscription.status !== 'enabled')
+               await axios.delete(`https://api.twitch.tv/helix/eventsub/subscriptions?id=${subscription.id}`, {
+                  headers: headers,
+               });
+         }
+      } catch (error) {
+         return undefined;
+      }
+   }
+
+   private async fetchFeedData(auxdibot: Auxdibot, topic: string, preventPublish?: boolean) {
+      const data = await this.fetchFeed(topic).catch(() => {
+         return undefined;
+      });
+
+      if (!data) return;
+      for (const guild of auxdibot.guilds.cache.values()) {
+         const server = await findOrCreateServer(auxdibot, guild.id);
+         for (const i of server.notifications) {
+            if (i.topicURL == topic) {
+               if (
+                  data &&
+                  JSON.stringify(data) != i.previous_data &&
+                  (data?.date ?? Date.now()) > (JSON.parse(i.previous_data)?.date ?? 0)
+               ) {
+                  server.notifications[server.notifications.indexOf(i)] = {
+                     ...i,
+                     previous_data: JSON.stringify(data),
+                  };
+                  auxdibot.database.servers
+                     .update({
+                        where: { serverID: guild.id },
+                        data: { notifications: server.notifications },
+                     })
+                     .then(async () => {
+                        if (!preventPublish) publishNotification(auxdibot, guild, i, data).catch(() => undefined);
+                     })
+                     .catch(() => {
+                        return undefined;
+                     });
+               }
+            }
+         }
+      }
+   }
+   private async createFeedConnection(topic: string, auxdibot: Auxdibot) {
+      const data = await this.fetchFeed(topic).catch(() => {
+         return undefined;
+      });
+
+      if (!data) return;
+      this.fetchFeedData(auxdibot, topic, true).catch(() => undefined);
+      const task = new AsyncTask(
+         `subscriptions ${topic}`,
+         async () => this.fetchFeedData(auxdibot, topic).catch(() => undefined),
+         (err) => {
+            console.log('Error occurred in subscription task!');
+            console.log(err);
+         },
+      );
+      auxdibot.scheduler.addIntervalJob(new SimpleIntervalJob({ minutes: 2, runImmediately: true }, task));
+      return task;
+   }
+   private async createTwitchConnection(topic: string) {
+      const headers = {
+         'Client-ID': process.env.TWITCH_CLIENT_ID,
+         Authorization: `Bearer ${this.twitch_access_token}`,
+         'Content-Type': 'application/json',
+      };
+      const user = await axios
+         .get(`https://api.twitch.tv/helix/users?login=${topic}`, { headers: headers })
+         .then((data) => data.data?.data[0])
+         .catch(() => undefined);
+      if (!user || !user['id']) return;
+
+      const data = {
+         type: 'stream.online',
+         version: '1',
+         condition: {
+            broadcaster_user_id: user['id'],
+         },
+         transport: {
+            method: 'webhook',
+            callback: `${process.env.SITE_URL}/api/v1/notifications/callbacks/twitch`,
+            secret: process.env.HMAC_SECRET,
+         },
+      };
+
+      const response = await axios
+         .post('https://api.twitch.tv/helix/eventsub/subscriptions', data, {
+            headers: headers,
+         })
+         .then((data) => data.data)
+         .catch(async (error) => {
+            if (error?.response?.status == 409) {
+               return await axios
+                  .get(`https://api.twitch.tv/helix/eventsub/subscriptions?broadcaster_id=${user['id']}`, {
+                     headers: headers,
+                  })
+                  .then((data) => data.data)
+                  .catch(() => undefined);
+            }
+            return undefined;
+         });
+      if (!response?.data?.length) return;
+      return response.data[0].id;
+   }
    async subscribe(topic: string, type: FeedType, auxdibot: Auxdibot, guildId: string) {
       const subscription = this.subscriptions.find((i) => i.topic == topic);
+
       if (this.subscriptions.find((i) => i.topic == topic)) {
          if (!subscription.guilds.includes(guildId)) subscription.guilds.push(guildId);
          return true;
       }
-
-      if (type == 'YOUTUBE' || type == 'RSS') {
-         const initial = await this.testFeed(topic).catch(() => undefined);
-         if (!initial) return undefined;
-         const task = new AsyncTask(
-            `subscriptions ${topic}`,
-            async () => {
-               const data = await this.fetchFeed(topic).catch(() => {
-                  return undefined;
-               });
-
-               if (!data) return;
-
-               for (const guild of auxdibot.guilds.cache.values()) {
-                  const server = await findOrCreateServer(auxdibot, guild.id);
-                  for (const i of server.notifications) {
-                     if (i.topicURL == topic) {
-                        if (
-                           data &&
-                           JSON.stringify(data) != i.previous_data &&
-                           (data?.date ?? Date.now()) > (JSON.parse(i.previous_data)?.date ?? 0)
-                        ) {
-                           console.log(data);
-                           server.notifications[server.notifications.indexOf(i)] = {
-                              ...i,
-                              previous_data: JSON.stringify(data),
-                           };
-                           auxdibot.database.servers
-                              .update({
-                                 where: { serverID: guild.id },
-                                 data: { notifications: server.notifications },
-                              })
-                              .then(async () => {
-                                 publishNotification(auxdibot, guild, i, data).catch(() => undefined);
-                              })
-                              .catch(() => {
-                                 return undefined;
-                              });
-                        }
-                     }
-                  }
-               }
-               return true;
-            },
-            (err) => {
-               console.log('Error occurred in subscription task!');
-               console.log(err);
-            },
-         );
-         auxdibot.scheduler.addIntervalJob(new SimpleIntervalJob({ minutes: 2 }, task));
-         this.subscriptions.push({ topic, type, guilds: [guildId] });
-         return topic;
-      } else if (type == 'TWITCH') {
-         const headers = {
-            'Client-ID': process.env.TWITCH_CLIENT_ID,
-            Authorization: `Bearer ${this.twitch_access_token}`,
-            'Content-Type': 'application/json',
-         };
-         const user = await axios
-            .get(`https://api.twitch.tv/helix/users?login=${topic}`, { headers: headers })
-            .then((data) => data.data?.data[0])
-            .catch(() => undefined);
-         if (!user || !user['id']) return;
-
-         const data = {
-            type: 'stream.online',
-            version: '1',
-            condition: {
-               broadcaster_user_id: user['id'],
-            },
-            transport: {
-               method: 'webhook',
-               callback: `${process.env.SITE_URL}/api/v1/notifications/callbacks/twitch`,
-               secret: process.env.HMAC_SECRET,
-            },
-         };
-
-         const response = await axios
-            .post('https://api.twitch.tv/helix/eventsub/subscriptions', data, {
-               headers: headers,
-            })
-            .then((data) => data.data)
-            .catch(async (error) => {
-               if (error?.response?.status == 409) {
-                  return await axios
-                     .get(`https://api.twitch.tv/helix/eventsub/subscriptions?broadcaster_id=${user['id']}`, {
-                        headers: headers,
-                     })
-                     .then((data) => data.data)
-                     .catch(() => undefined);
-               }
-               return undefined;
-            });
-         if (!response?.data?.length) return;
-         this.subscriptions.push({ topic: response?.data[0]?.id, type, guilds: [guildId] });
-         return response?.data[0]?.id;
+      switch (type) {
+         case 'YOUTUBE':
+         case 'RSS':
+            const initial = await this.testFeed(topic).catch(() => undefined);
+            if (!initial) return false;
+            const connection = await this.createFeedConnection(topic, auxdibot);
+            if (!connection) return false;
+            this.subscriptions.push({ topic, type, guilds: [guildId] });
+            return true;
+         case 'TWITCH':
+            const twitchConnection = await this.createTwitchConnection(topic).catch(() => undefined);
+            if (!twitchConnection) return false;
+            this.subscriptions.push({ topic: twitchConnection, type, guilds: [guildId] });
+            return true;
       }
    }
 }

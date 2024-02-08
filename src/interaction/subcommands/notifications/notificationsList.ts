@@ -30,7 +30,7 @@ export const notificationsList = <AuxdibotSubcommand>{
                   `\n\n**#${index + 1}**) ${FeedNames[notification.type]} (<#${notification.channelID}>): ${
                      ['YOUTUBE', 'RSS'].includes(notification.type)
                         ? `[View Output](${notification.topicURL})`
-                        : notification.topicURL
+                        : `[${notification.topicURL}](https://twitch.tv/${notification.topicURL})`
                   }`,
                '',
             ),

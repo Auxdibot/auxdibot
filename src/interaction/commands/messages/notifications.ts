@@ -7,6 +7,7 @@ import { notificationsYoutube } from '@/interaction/subcommands/notifications/no
 import { notificationsDelete } from '@/interaction/subcommands/notifications/notificationsDelete';
 import { notificationsList } from '@/interaction/subcommands/notifications/notificationsList';
 import { notificationsTwitch } from '@/interaction/subcommands/notifications/notificationsTwitch';
+import { notificationsRSS } from '@/interaction/subcommands/notifications/notificationsRSS';
 
 dotenv.config();
 export default <AuxdibotCommand>{
@@ -17,7 +18,7 @@ export default <AuxdibotCommand>{
          createEmbedParameters(
             builder
                .setName('youtube')
-               .setDescription('Create a feed listener using Auxdibot.')
+               .setDescription('Listen for youtube channel uploads using Auxdibot.')
                .addChannelOption((option) =>
                   option
                      .setName('channel')
@@ -33,8 +34,23 @@ export default <AuxdibotCommand>{
       .addSubcommand((builder) =>
          createEmbedParameters(
             builder
+               .setName('rss')
+               .setDescription('Create a RSS feed listener using Auxdibot.')
+               .addChannelOption((option) =>
+                  option
+                     .setName('channel')
+                     .setDescription('The channel to post the feed in.')
+                     .addChannelTypes(ChannelType.GuildText)
+                     .setRequired(true),
+               )
+               .addStringOption((option) => option.setName('url').setDescription('RSS feed url').setRequired(true)),
+         ),
+      )
+      .addSubcommand((builder) =>
+         createEmbedParameters(
+            builder
                .setName('twitch')
-               .setDescription('Create a feed listener using Auxdibot.')
+               .setDescription('Listen for streams on Twitch using Auxdibot.')
                .addChannelOption((option) =>
                   option
                      .setName('channel')
@@ -59,10 +75,10 @@ export default <AuxdibotCommand>{
    info: {
       module: Modules['Messages'],
       description: 'Create notifications for your favorite social media/RSS feeds.',
-      usageExample: '/notifications (youtube|twitch|delete|list)',
+      usageExample: '/notifications (youtube|twitch|rss|delete|list)',
       permission: 'notifications',
    },
-   subcommands: [notificationsYoutube, notificationsDelete, notificationsList, notificationsTwitch],
+   subcommands: [notificationsYoutube, notificationsDelete, notificationsList, notificationsTwitch, notificationsRSS],
    async execute() {
       return;
    },

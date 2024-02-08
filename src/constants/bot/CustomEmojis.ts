@@ -17,4 +17,5 @@ export const CustomEmojis = {
    GREETINGS: '<:greetings:1181292264631320678>',
    YOUTUBE: '<:youtube:1204087920911196252>',
    TWITCH: '<:twitch:1204446883821396018>',
+   RSS: '<:rss:1204958428984770590>',
 };
