@@ -5,6 +5,8 @@ import Modules from './Modules';
 import { servercards, servers } from '@prisma/client';
 import { PunishmentValues } from '../punishments/PunishmentValues';
 import durationToTimestamp from '@/util/durationToTimestamp';
+import timestampToDuration from '@/util/timestampToDuration';
+import { FeedNames } from '../notifications/FeedNames';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const SettingsEmbeds: { [k: string]: (auxdibot: Auxdibot, servers: servers, ...args: any[]) => APIEmbed } = {
@@ -245,6 +247,44 @@ export const SettingsEmbeds: { [k: string]: (auxdibot: Auxdibot, servers: server
             }\`\n⭐ **Starboard Reaction**: \`${server.starboard_reaction}\`\n✨ **Starboard Required Stars**: \`${
                server.starboard_reaction_count
             }\``,
+         )
+         .setColor(auxdibot.colors.info)
+         .toJSON(),
+   messages: (auxdibot, server) =>
+      new EmbedBuilder()
+         .setTitle(`${CustomEmojis.MESSAGES} Message Settings`)
+         .setDescription(
+            `You can edit and view these settings more in-depth on [Auxdibot's Dashboard](https://bot.auxdible.me)`,
+         )
+         .setFields(
+            {
+               name: '🕰️ Scheduled Messages',
+               value:
+                  server.scheduled_messages.reduce(
+                     (accumulator: string, value, index) =>
+                        `${accumulator}\r\n\r\n**${index + 1})** Channel: <#${value.channelID}> \`${
+                           value.interval_timestamp
+                        }\` (next run <t:${Math.round(
+                           (value.last_run.valueOf() + (Number(timestampToDuration(value.interval_timestamp)) || 0)) /
+                              1000,
+                        )}:R>)`,
+                     '',
+                  ) || 'None',
+            },
+            {
+               name: '📬 Notification Feeds',
+               value:
+                  server.notifications.reduce(
+                     (accumulator, notification, index) =>
+                        accumulator +
+                        `\n\n**#${index + 1}**) ${FeedNames[notification.type]} (<#${notification.channelID}>): ${
+                           ['YOUTUBE', 'RSS'].includes(notification.type)
+                              ? `[View Output](${notification.topicURL})`
+                              : `[${notification.topicURL}](https://twitch.tv/${notification.topicURL})`
+                        }`,
+                     '',
+                  ) || 'None',
+            },
          )
          .setColor(auxdibot.colors.info)
          .toJSON(),
