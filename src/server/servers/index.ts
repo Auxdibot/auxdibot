@@ -23,6 +23,7 @@ import updateCard from './routes/updateCard';
 import joinRoles from './routes/join_roles';
 import stickyRoles from './routes/sticky_roles';
 import emojis from './routes/emojis';
+import notifications from './routes/notifications';
 
 const router = express.Router();
 
@@ -76,5 +77,6 @@ export const serversRoute = (auxdibot: Auxdibot) => {
    joinRoles(auxdibot, router);
    stickyRoles(auxdibot, router);
    emojis(auxdibot, router);
+   notifications(auxdibot, router);
    return router;
 };

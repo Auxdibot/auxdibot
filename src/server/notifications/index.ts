@@ -20,9 +20,12 @@ export const notificationsRoute = (auxdibot: Auxdibot) => {
       const notification = JSON.parse(req.body);
       const message = getTwitchHmacMessage(req);
       const hmac = `sha256=${getTwitchHmac(process.env.HMAC_SECRET, message)}`;
+      console.log('verify');
       if (!verifyTwitchMessage(hmac, req.headers[TWITCH_MESSAGE_SIGNATURE])) return res.status(403);
+      console.log('Challenge');
       if (req.headers[TWITCH_MESSAGE_TYPE] == MESSAGE_TYPE_VERIFICATION)
          return res.status(200).send(notification.challenge);
+      console.log('it sumtin');
       if (req.headers[TWITCH_MESSAGE_TYPE] === 'revocation') return res.status(204);
       if (req.headers[TWITCH_MESSAGE_TYPE] !== 'notification') return res.status(400);
       // Handle notification
@@ -36,6 +39,7 @@ export const notificationsRoute = (auxdibot: Auxdibot) => {
          date: new Date(event['started_at']).valueOf(),
          title: event['id'],
       };
+      console.log('EVENT');
       const servers = await auxdibot.database.servers.findMany({}).catch(() => []);
       for (const server of servers) {
          for (const i of server.notifications) {
