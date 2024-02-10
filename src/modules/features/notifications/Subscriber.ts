@@ -94,7 +94,12 @@ export default class Subscriber {
          const response = await axios.get('https://api.twitch.tv/helix/eventsub/subscriptions', { headers: headers });
 
          for (const subscription of response.data.data) {
-            if (subscription.status !== 'enabled')
+            if (
+               subscription.status !== 'enabled' ||
+               response.data.data.filter(
+                  (i) => i.condition?.broadcaster_user_id == subscription.condition?.broadcaster_user_id,
+               ).length > 1
+            )
                await axios.delete(`https://api.twitch.tv/helix/eventsub/subscriptions?id=${subscription.id}`, {
                   headers: headers,
                });
@@ -109,7 +114,6 @@ export default class Subscriber {
          return undefined;
       });
 
-      if (!data) return;
       for (const guild of auxdibot.guilds.cache.values()) {
          const server = await findOrCreateServer(auxdibot, guild.id);
          for (const i of server.notifications) {
@@ -140,11 +144,6 @@ export default class Subscriber {
       }
    }
    private async createFeedConnection(topic: string, auxdibot: Auxdibot) {
-      const data = await this.fetchFeed(topic).catch(() => {
-         return undefined;
-      });
-
-      if (!data) return;
       this.fetchFeedData(auxdibot, topic, true).catch(() => undefined);
       const task = new AsyncTask(
          `subscriptions ${topic}`,
@@ -154,7 +153,7 @@ export default class Subscriber {
             console.log(err);
          },
       );
-      auxdibot.scheduler.addIntervalJob(new SimpleIntervalJob({ minutes: 2, runImmediately: true }, task));
+      auxdibot.scheduler.addIntervalJob(new SimpleIntervalJob({ minutes: 2, runImmediately: false }, task));
       return task;
    }
    private async createTwitchConnection(topic: string) {
@@ -167,6 +166,7 @@ export default class Subscriber {
          .get(`https://api.twitch.tv/helix/users?login=${topic}`, { headers: headers })
          .then((data) => data.data?.data[0])
          .catch(() => undefined);
+      console.log(user);
       if (!user || !user['id']) return;
 
       const data = {
@@ -188,16 +188,23 @@ export default class Subscriber {
          })
          .then((data) => data.data)
          .catch(async (error) => {
-            if (error?.response?.status == 409) {
+            if (error?.response?.status == 429) {
+               await this.clearInactiveTwitchSubscriptions().catch(() => undefined);
+            }
+            if (error?.response?.status == 409 || error?.response?.status == 429) {
                return await axios
                   .get(`https://api.twitch.tv/helix/eventsub/subscriptions?broadcaster_id=${user['id']}`, {
                      headers: headers,
                   })
                   .then((data) => data.data)
-                  .catch(() => undefined);
+                  .catch((x) => {
+                     console.log(x);
+                     return undefined;
+                  });
             }
             return undefined;
          });
+      console.log(response);
       if (!response?.data?.length) return;
       return response.data[0].id;
    }
@@ -218,7 +225,10 @@ export default class Subscriber {
             this.subscriptions.push({ topic, type, guilds: [guildId] });
             return true;
          case 'TWITCH':
-            const twitchConnection = await this.createTwitchConnection(topic).catch(() => undefined);
+            const twitchConnection = await this.createTwitchConnection(topic).catch((x) => {
+               console.log(x);
+               return undefined;
+            });
             if (!twitchConnection) return false;
             this.subscriptions.push({ topic: twitchConnection, type, guilds: [guildId] });
             return true;

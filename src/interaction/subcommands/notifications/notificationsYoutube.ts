@@ -4,29 +4,13 @@ import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandD
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 import createNotification from '@/modules/features/notifications/createNotification';
+import { getChannelId } from '@/modules/features/notifications/getChannelId';
 import argumentsToEmbedParameters from '@/util/argumentsToEmbedParameters';
 import handleError from '@/util/handleError';
 import handleLog from '@/util/handleLog';
 import { toAPIEmbed } from '@/util/toAPIEmbed';
 import { LogAction } from '@prisma/client';
-import axios from 'axios';
 import { ChannelType, EmbedBuilder } from 'discord.js';
-async function getChannelId(username) {
-   try {
-      const response = await axios.get('https://www.googleapis.com/youtube/v3/channels', {
-         params: {
-            part: 'id,brandingSettings',
-            forHandle: username,
-            key: process.env.YOUTUBE_API_KEY,
-         },
-      });
-      if (response.data.items.length < 0) return undefined;
-      return response.data.items[0];
-   } catch (error) {
-      return undefined;
-   }
-}
-
 export const notificationsYoutube = <AuxdibotSubcommand>{
    name: 'youtube',
    info: {
