@@ -42,6 +42,11 @@ export const settingsView = <AuxdibotSubcommand>{
                .setCustomId('settings-roles')
                .setLabel('Roles')
                .setEmoji(CustomEmojis.ROLES),
+            new ButtonBuilder()
+               .setStyle(1)
+               .setCustomId('settings-messages')
+               .setLabel('Messages')
+               .setEmoji(CustomEmojis.MESSAGES),
          ),
          modulesRow2 = new ActionRowBuilder<ButtonBuilder>().addComponents(
             new ButtonBuilder()
