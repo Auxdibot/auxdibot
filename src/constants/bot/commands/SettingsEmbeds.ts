@@ -69,13 +69,15 @@ export const SettingsEmbeds: { [k: string]: (auxdibot: Auxdibot, servers: server
                name: '⚠️ Warns Threshold',
                value:
                   `**Warns**: \`⚠️ ${server.automod_punish_threshold_warns} Warns\`\n` +
-                  `**Punishment**: \`${PunishmentValues[server.automod_threshold_punishment].name}\``,
+                  `**Punishment**: \`${PunishmentValues[server.automod_threshold_punishment]?.name ?? 'Unset'}\``,
                inline: true,
             },
             {
                name: '🗯️ Blacklisted Phrases',
                value:
-                  `**Punishment**: \`${PunishmentValues[server.automod_banned_phrases_punishment].name}\`\n` +
+                  `**Punishment**: \`${
+                     PunishmentValues[server.automod_banned_phrases_punishment]?.name ?? 'Unset'
+                  }\`\n` +
                      server.automod_banned_phrases
                         .slice(0, 10)
                         .reduce((accumulator: string, val: string) => `${accumulator}\r\n* *${val}*`, '') +
