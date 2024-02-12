@@ -166,7 +166,6 @@ export default class Subscriber {
          .get(`https://api.twitch.tv/helix/users?login=${topic}`, { headers: headers })
          .then((data) => data.data?.data[0])
          .catch(() => undefined);
-      console.log(user);
       if (!user || !user['id']) return;
 
       const data = {
@@ -197,14 +196,12 @@ export default class Subscriber {
                      headers: headers,
                   })
                   .then((data) => data.data)
-                  .catch((x) => {
-                     console.log(x);
+                  .catch(() => {
                      return undefined;
                   });
             }
             return undefined;
          });
-      console.log(response);
       if (!response?.data?.length) return;
       return response.data[0].id;
    }
@@ -225,8 +222,7 @@ export default class Subscriber {
             this.subscriptions.push({ topic, type, guilds: [guildId] });
             return true;
          case 'TWITCH':
-            const twitchConnection = await this.createTwitchConnection(topic).catch((x) => {
-               console.log(x);
+            const twitchConnection = await this.createTwitchConnection(topic).catch(() => {
                return undefined;
             });
             if (!twitchConnection) return false;
