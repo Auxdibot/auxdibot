@@ -24,6 +24,7 @@ import joinRoles from './routes/join_roles';
 import stickyRoles from './routes/sticky_roles';
 import emojis from './routes/emojis';
 import notifications from './routes/notifications';
+import { Guild } from 'discord.js';
 
 const router = express.Router();
 
@@ -35,19 +36,20 @@ export const serversRoute = (auxdibot: Auxdibot) => {
    router.get(
       '/:serverID',
       (req, res, next) => checkAuthenticated(req, res, next),
-      (req, res) => {
-         if (!req.user?.guilds) return res.status(400).json({ error: 'no servers' });
+      async (req, res) => {
+         if (!req.user?.guilds) return res.status(400).json(null);
          const serverID = req.params.serverID,
             check = req.query['check'];
-         const guildData = req.user.guilds.find((i) => i.id == serverID);
-         if (!guildData) return res.status(404).json({ error: "couldn't find that server" });
-         if (!guildData.owner && !(guildData.permissions & 0x8))
+         const guild: Guild = await auxdibot.guilds.fetch(serverID).catch(() => undefined);
+         if (!guild) return res.status(404).json(null);
+         const user = req.user.guilds.find((i) => i.id == req.user.id);
+         if (guild.ownerId != req.user.id && !user && !(user.permissions & 0x8))
             return res.status(403).json({ error: 'you are not authorized to edit that server' });
+         const guildData: any = guild.toJSON();
+         if (typeof guildData != 'object') return res.status(404).json(null);
          return auxdibot.database.servers
             .findFirst({ where: { serverID }, ...(check ? { select: { serverID: true } } : {}) })
-            .then((i) =>
-               i ? res.json({ ...guildData, data: i }) : res.status(404).json({ error: "couldn't find that server" }),
-            )
+            .then((i) => (i ? res.json({ ...guildData, data: i }) : res.status(404).json(null)))
             .catch((x) => {
                console.error(x);
                return res.status(500).json({ error: 'an error occurred' });

@@ -36,9 +36,7 @@ export default async function server(auxdibot: Auxdibot) {
    passport.serializeUser((user: Strategy.Profile, cb) => {
       return cb(null, {
          ...user,
-         guilds: user.guilds
-            ?.filter((i) => i.owner || i.permissions & 0x8)
-            .map((guild) => ({ ...guild, inServer: auxdibot.guilds.cache.get(guild.id) ? true : false })),
+         guilds: user.guilds?.filter((i) => i.owner || i.permissions & 0x8).map((guild) => guild),
       });
    });
    passport.deserializeUser((user: Strategy.Profile, cb) => {

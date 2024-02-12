@@ -3,8 +3,12 @@ import { Auxdibot } from '@/interfaces/Auxdibot';
 export default async function deleteServer(
    auxdibot: Auxdibot,
    serverID: string,
-): Promise<{ serverDeleted: boolean; membersDeleted: boolean; totalsDeleted: boolean }> {
+): Promise<{ serverDeleted: boolean; membersDeleted: boolean; totalsDeleted: boolean; cardDeleted: boolean }> {
    const serverDeleted = await auxdibot.database.servers
+      .deleteMany({ where: { serverID } })
+      .then(() => true)
+      .catch(() => false);
+   const cardDeleted = await auxdibot.database.servercards
       .deleteMany({ where: { serverID } })
       .then(() => true)
       .catch(() => false);
@@ -16,5 +20,5 @@ export default async function deleteServer(
       .deleteMany({ where: { serverID } })
       .then(() => true)
       .catch(() => false);
-   return { serverDeleted, membersDeleted, totalsDeleted };
+   return { serverDeleted, membersDeleted, totalsDeleted, cardDeleted };
 }
