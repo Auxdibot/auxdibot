@@ -3,7 +3,7 @@ import Modules from '@/constants/bot/commands/Modules';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import AuxdibotModal from '@/interfaces/modals/AuxdibotModal';
 import handleError from '@/util/handleError';
-import { resetServer } from '@/modules/features/resetServer';
+import { resetServer } from '@/modules/server/resetServer';
 
 export default <AuxdibotModal>{
    module: Modules['Settings'],
