@@ -1,5 +1,5 @@
 import { Auxdibot } from '@/interfaces/Auxdibot';
-import { resetServer } from '@/modules/features/resetServer';
+import { resetServer } from '@/modules/server/resetServer';
 import checkAuthenticated from '@/server/checkAuthenticated';
 import checkGuildOwnership from '@/server/checkGuildOwnership';
 import { Router } from 'express';
