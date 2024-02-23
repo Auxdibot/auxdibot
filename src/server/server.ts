@@ -15,6 +15,7 @@ import bodyParser from 'body-parser';
 import checkAuthenticated from './checkAuthenticated';
 import cards from './servers/routes/cards';
 import { notificationsRoute } from './notifications';
+import rateLimiter from './rateLimiter';
 export default async function server(auxdibot: Auxdibot) {
    const app = express();
 
@@ -29,8 +30,10 @@ export default async function server(auxdibot: Auxdibot) {
          resave: false,
       }),
    );
+   app.set('trust proxy', 1);
    app.use(passport.initialize());
    app.use(passport.session());
+   app.use(rateLimiter);
    initDiscord(auxdibot);
 
    passport.serializeUser((user: Strategy.Profile, cb) => {

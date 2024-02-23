@@ -45,7 +45,7 @@ export const serversRoute = (auxdibot: Auxdibot) => {
          const user = req.user.guilds.find((i) => i.id == req.user.id);
          if (guild.ownerId != req.user.id && !user && !(user.permissions & 0x8))
             return res.status(403).json({ error: 'you are not authorized to edit that server' });
-         const guildData: any = guild.toJSON();
+         const guildData = guild.toJSON();
          if (typeof guildData != 'object') return res.status(404).json(null);
          return auxdibot.database.servers
             .findFirst({ where: { serverID }, ...(check ? { select: { serverID: true } } : {}) })
