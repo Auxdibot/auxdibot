@@ -28,6 +28,29 @@ const log = (auxdibot: Auxdibot, router: Router) => {
             });
       },
    );
+   router.get(
+      '/:serverID/log/actions',
+      (req, res, next) => checkAuthenticated(req, res, next),
+      (req, res, next) => checkGuildOwnership(auxdibot, req, res, next),
+      (req, res) => {
+         return auxdibot.database.servers
+            .findFirst({
+               where: { serverID: req.guild.id },
+               select: { filtered_logs: true },
+            })
+            .then((data) => {
+               if (!data) return res.status(404).json({ error: "couldn't find that server" });
+               return res.json({
+                  data: {
+                     log_actions: Object.keys(LogAction).filter(
+                        (i: string) => !(data.filtered_logs as string[]).includes(i),
+                     ),
+                  },
+               });
+            })
+            .catch(() => res.status(500).json({ error: 'an error occurred' }));
+      },
+   );
    router.post(
       '/:serverID/log/filter',
       (req, res, next) => checkAuthenticated(req, res, next),

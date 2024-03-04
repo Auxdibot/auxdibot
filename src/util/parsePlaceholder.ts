@@ -5,6 +5,7 @@ import { Suggestion } from '@prisma/client';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import { GenericFeed } from '@/interfaces/notifications/GenericFeed';
+import Placeholders from '@/constants/bot/placeholders/Placeholders';
 
 export default async function parsePlaceholders(
    auxdibot: Auxdibot,
@@ -24,74 +25,82 @@ export default async function parsePlaceholders(
    const memberData = member
       ? await auxdibot.database.servermembers.findFirst({ where: { serverID: guild.id, userID: member.id } })
       : undefined;
-   if (starred_message) member = starred_message.member;
-   const PLACEHOLDERS = {
+   const PLACEHOLDERS: Partial<Record<Placeholders, unknown>> = {
       ...(guild
          ? {
-              server_members: guild.memberCount,
-              server_name: guild.name,
-              server_id: guild.id,
-              server_icon_512: guild.iconURL({ size: 512 }),
-              server_icon_128: guild.iconURL({ size: 128 }),
-              server_acronym: guild.nameAcronym,
-              server_created_date: guild.createdAt.toDateString(),
-              server_created_date_formatted: `<t:${Math.round(guild.createdAt.valueOf() / 1000)}>`,
-              server_created_date_utc: guild.createdAt.toUTCString(),
-              server_created_date_iso: guild.createdAt.toISOString(),
+              [Placeholders.SERVER_MEMBERS]: guild.memberCount,
+              [Placeholders.SERVER_NAME]: guild.name,
+              [Placeholders.SERVER_ID]: guild.id,
+              [Placeholders.SERVER_ICON_512]: guild.iconURL({ size: 512 }),
+              [Placeholders.SERVER_ICON_128]: guild.iconURL({ size: 128 }),
+              [Placeholders.SERVER_ACRONYM]: guild.nameAcronym,
+              [Placeholders.SERVER_CREATED_DATE]: guild.createdAt.toDateString(),
+              [Placeholders.SERVER_CREATED_DATE_FORMATTED]: `<t:${Math.round(guild.createdAt.valueOf() / 1000)}>`,
+
+              [Placeholders.SERVER_CREATED_DATE_UTC]: guild.createdAt.toUTCString(),
+              [Placeholders.SERVER_CREATED_DATE_ISO]: guild.createdAt.toISOString(),
            }
          : {}),
       ...(server
          ? {
-              server_total_punishments: server.punishments.length,
-              server_total_permission_overrides: server.permission_overrides.length,
+              [Placeholders.SERVER_TOTAL_PUNISHMENTS]: server.punishments.length,
+              [Placeholders.SERVER_TOTAL_PERMISSION_OVERRIDES]: server.permission_overrides.length,
            }
          : undefined),
       ...(member
          ? {
-              member_id: member.id,
-              member_tag: member.user.username,
-              member_mention: member.user,
-              member_created_date: member.user.createdAt.toDateString(),
-              member_created_date_formatted: `<t:${Math.round(member.user.createdAt.valueOf() / 1000)}>`,
-              member_created_date_utc: member.user.createdAt.toUTCString(),
-              member_created_date_iso: member.user.createdAt.toISOString(),
+              [Placeholders.MEMBER_ID]: member.id,
+              [Placeholders.MEMBER_TAG]: member.user.username,
+              [Placeholders.MEMBER_MENTION]: member.user,
+              [Placeholders.MEMBER_CREATED_DATE]: member.user.createdAt.toDateString(),
+              [Placeholders.MEMBER_CREATED_DATE_FORMATTED]: `<t:${Math.round(member.user.createdAt.valueOf() / 1000)}>`,
+
+              [Placeholders.MEMBER_CREATED_DATE_UTC]: member.user.createdAt.toUTCString(),
+              [Placeholders.MEMBER_CREATED_DATE_ISO]: member.user.createdAt.toISOString(),
               ...(member.joinedAt
                  ? {
-                      member_join_date: member.joinedAt.toDateString(),
-                      member_join_date_formatted: `<t:${Math.round(member.joinedAt.valueOf() / 1000)}>`,
-                      member_join_date_utc: member.joinedAt.toUTCString(),
-                      member_join_date_iso: member.joinedAt.toISOString(),
+                      [Placeholders.MEMBER_JOIN_DATE]: member.joinedAt.toDateString(),
+                      [Placeholders.MEMBER_JOIN_DATE_FORMATTED]: `<t:${Math.round(member.joinedAt.valueOf() / 1000)}>`,
+
+                      [Placeholders.MEMBER_JOIN_DATE_UTC]: member.joinedAt.toUTCString(),
+                      [Placeholders.MEMBER_JOIN_DATE_ISO]: member.joinedAt.toISOString(),
                    }
                  : {}),
-              member_highest_role: `<@&${member.roles.highest.id}>`,
-              member_is_owner: member.id == member.guild.ownerId ? 'Yes' : 'No',
-              member_is_admin: member.permissions.has(PermissionsBitField.Flags.Administrator) ? 'Yes' : 'No',
-              member_avatar_512: member.user.avatarURL({ size: 512 }) || '',
-              member_avatar_128: member.user.avatarURL({ size: 128 }) || '',
+              [Placeholders.MEMBER_HIGHEST_ROLE]: `<@&${member.roles.highest.id}>`,
+              [Placeholders.MEMBER_IS_OWNER]: member.id == member.guild.ownerId ? 'Yes' : 'No',
+              [Placeholders.MEMBER_IS_ADMIN]: member.permissions.has(PermissionsBitField.Flags.Administrator)
+                 ? 'Yes'
+                 : 'No',
+              [Placeholders.MEMBER_AVATAR_512]: member.user.avatarURL({ size: 512 }) || '',
+              [Placeholders.MEMBER_AVATAR_128]: member.user.avatarURL({ size: 128 }) || '',
               ...(memberData
                  ? {
-                      member_experience: memberData.xp.toLocaleString(),
-                      member_level: memberData.level.toLocaleString(),
-                      member_xp_till: memberData.xpTill.toLocaleString(),
+                      [Placeholders.MEMBER_EXPERIENCE]: memberData.xp.toLocaleString(),
+                      [Placeholders.MEMBER_LEVEL]: memberData.level.toLocaleString(),
+                      [Placeholders.MEMBER_XP_TILL]: memberData.xpTill.toLocaleString(),
                    }
                  : {}),
               ...(server
                  ? {
-                      member_total_punishments: server.punishments.filter((p) => p.userID == member.user.id).length,
-                      member_latest_punishment: latest_punishment
+                      [Placeholders.MEMBER_TOTAL_PUNISHMENTS]: server.punishments.filter(
+                         (p) => p.userID == member.user.id,
+                      ).length,
+                      [Placeholders.MEMBER_LATEST_PUNISHMENT]: latest_punishment
                          ? PunishmentValues[latest_punishment.type as 'warn' | 'kick' | 'mute' | 'ban'].name
                          : 'None',
-                      member_latest_punishment_id: latest_punishment ? latest_punishment.punishmentID : 'None',
-                      member_latest_punishment_date: latest_punishment
+                      [Placeholders.MEMBER_LATEST_PUNISHMENT_ID]: latest_punishment
+                         ? latest_punishment.punishmentID
+                         : 'None',
+                      [Placeholders.MEMBER_LATEST_PUNISHMENT_DATE]: latest_punishment
                          ? new Date(latest_punishment.date_unix).toDateString()
                          : 'None',
-                      member_latest_punishment_date_formatted: latest_punishment
+                      [Placeholders.MEMBER_LATEST_PUNISHMENT_DATE_FORMATTED]: latest_punishment
                          ? `<t:${Math.round(latest_punishment.date_unix / 1000)}>`
                          : 'None',
-                      member_latest_punishment_date_utc: latest_punishment
+                      [Placeholders.MEMBER_LATEST_PUNISHMENT_DATE_UTC]: latest_punishment
                          ? new Date(latest_punishment.date_unix).toUTCString()
                          : 'None',
-                      member_latest_punishment_date_iso: latest_punishment
+                      [Placeholders.MEMBER_LATEST_PUNISHMENT_DATE_ISO]: latest_punishment
                          ? new Date(latest_punishment.date_unix).toISOString()
                          : 'None',
                    }
@@ -100,48 +109,55 @@ export default async function parsePlaceholders(
          : {}),
       ...(suggestion
          ? {
-              suggestion_id: suggestion.suggestionID,
-              suggestion_state: SuggestionStateName[suggestion.status],
-              suggestion_handler_mention: suggestion.handlerID ? `<@${suggestion.handlerID}>` : 'None',
-              suggestion_handled_reason: suggestion.handled_reason || 'No reason given.',
-              suggestion_content: suggestion.content.replaceAll(/"/g, '\\"'),
-              suggestion_date: new Date(suggestion.date_unix).toDateString(),
-              suggestion_date_formatted: `<t:${Math.round(suggestion.date_unix / 1000)}>`,
-              suggestion_date_utc: new Date(suggestion.date_unix).toUTCString(),
-              suggestion_date_iso: new Date(suggestion.date_unix).toISOString(),
+              [Placeholders.SUGGESTION_ID]: suggestion.suggestionID,
+              [Placeholders.SUGGESTION_STATE]: SuggestionStateName[suggestion.status],
+              [Placeholders.SUGGESTION_HANDLER_MENTION]: suggestion.handlerID ? `<@${suggestion.handlerID}>` : 'None',
+              [Placeholders.SUGGESTION_HANDLED_REASON]: suggestion.handled_reason || 'No reason given.',
+              [Placeholders.SUGGESTION_CONTENT]: suggestion.content.replaceAll(/"/g, '\\"'),
+              [Placeholders.SUGGESTION_DATE]: new Date(suggestion.date_unix).toDateString(),
+              [Placeholders.SUGGESTION_DATE_FORMATTED]: `<t:${Math.round(suggestion.date_unix / 1000)}>`,
+
+              [Placeholders.SUGGESTION_DATE_UTC]: new Date(suggestion.date_unix).toUTCString(),
+              [Placeholders.SUGGESTION_DATE_ISO]: new Date(suggestion.date_unix).toISOString(),
            }
          : undefined),
       ...(starred_message && server
          ? {
-              starboard_message_id: starred_message.id,
-              starboard_message_content: starred_message.content.replaceAll(/"/g, '\\"'),
-              starboard_message_stars: starred_message.reactions.cache.get(server.starboard_reaction).count,
-              starboard_message_date: new Date(starred_message.createdTimestamp).toDateString(),
-              starboard_message_date_formatted: `<t:${Math.round(starred_message.createdTimestamp / 1000)}>`,
-              starboard_message_date_utc: new Date(starred_message.createdTimestamp).toUTCString(),
-              starboard_message_date_iso: new Date(starred_message.createdTimestamp).toISOString(),
+              [Placeholders.STARBOARD_MESSAGE_ID]: starred_message.id,
+              [Placeholders.STARBOARD_MESSAGE_CONTENT]: starred_message.content.replaceAll(/"/g, '\\"'),
+              [Placeholders.STARBOARD_MESSAGE_STARS]: starred_message.reactions.cache.get(server.starboard_reaction)
+                 .count,
+              [Placeholders.STARBOARD_MESSAGE_DATE]: new Date(starred_message.createdTimestamp).toDateString(),
+              [Placeholders.STARBOARD_MESSAGE_DATE_FORMATTED]: `<t:${Math.round(
+                 starred_message.createdTimestamp / 1000,
+              )}>`,
+
+              [Placeholders.STARBOARD_MESSAGE_DATE_UTC]: new Date(starred_message.createdTimestamp).toUTCString(),
+              [Placeholders.STARBOARD_MESSAGE_DATE_ISO]: new Date(starred_message.createdTimestamp).toISOString(),
            }
          : undefined),
       ...(feed_data
          ? {
-              feed_title: feed_data.title ?? '',
-              feed_content: feed_data.content ?? '',
-              feed_link: feed_data.link ?? '',
-              feed_author: feed_data.author ?? '',
-              feed_date: new Date(feed_data.date).toDateString(),
-              feed_date_formatted: `<t:${Math.round(feed_data.date / 1000)}>`,
-              feed_date_utc: new Date(feed_data.date).toUTCString(),
-              feed_date_iso: new Date(feed_data.date).toISOString(),
+              [Placeholders.FEED_TITLE]: feed_data.title ?? '',
+              [Placeholders.FEED_CONTENT]: feed_data.content ?? '',
+              [Placeholders.FEED_LINK]: feed_data.link ?? '',
+              [Placeholders.FEED_AUTHOR]: feed_data.author ?? '',
+              [Placeholders.FEED_DATE]: new Date(feed_data.date).toDateString(),
+              [Placeholders.FEED_DATE_FORMATTED]: `<t:${Math.round(feed_data.date / 1000)}>`,
+
+              [Placeholders.FEED_DATE_UTC]: new Date(feed_data.date).toUTCString(),
+              [Placeholders.FEED_DATE_ISO]: new Date(feed_data.date).toISOString(),
            }
          : undefined),
-      message_date: new Date().toDateString(),
-      message_date_formatted: `<t:${Math.round(Date.now() / 1000)}>`,
-      message_date_utc: new Date().toUTCString(),
-      message_date_iso: new Date().toISOString(),
+      [Placeholders.MESSAGE_DATE]: new Date().toDateString(),
+      [Placeholders.MESSAGE_DATE_FORMATTED]: `<t:${Math.round(Date.now() / 1000)}>`,
+
+      [Placeholders.MESSAGE_DATE_UTC]: new Date().toUTCString(),
+      [Placeholders.MESSAGE_DATE_ISO]: new Date().toISOString(),
    };
    let string = msg;
    for (const placeholder in PLACEHOLDERS) {
-      string = string.replaceAll(`%${placeholder}%`, PLACEHOLDERS[placeholder]);
+      string = string.replaceAll(`{%${placeholder}%}`, PLACEHOLDERS[placeholder]);
    }
    return string;
 }

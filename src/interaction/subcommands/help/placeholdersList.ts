@@ -1,5 +1,6 @@
 import Modules from '@/constants/bot/commands/Modules';
-import Placeholders from '@/constants/bot/placeholders/Placeholders';
+
+import { PlaceholdersData } from '@/constants/bot/placeholders/PlaceholdersData';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import { DMAuxdibotCommandData, GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
@@ -24,26 +25,25 @@ export const placeholdersList = <AuxdibotSubcommand>{
       placeholdersEmbed.title = '🔁 Placeholders';
       placeholdersEmbed.description =
          'Placeholders can be used in **ANY** Auxdibot command that sends a message! Try out /embed /join or /leave!';
-      placeholdersEmbed.fields = [
-         {
-            name: 'Server',
-            value: Object.keys(Placeholders)
-               .filter((key) => /^server_/.test(key))
-               .reduce((accumulator, key) => `${accumulator}\r\n\`%${key}%\``, ''),
-         },
-         {
-            name: 'Member',
-            value: Object.keys(Placeholders)
-               .filter((key) => /^member_/.test(key))
-               .reduce((accumulator, key) => `${accumulator}\r\n\`%${key}%\``, ''),
-         },
-         {
-            name: 'Message',
-            value: Object.keys(Placeholders)
-               .filter((key) => /^message_/.test(key))
-               .reduce((accumulator, key) => `${accumulator}\r\n\`%${key}%\``, ''),
-         },
-      ];
+      const placeholders = Object.keys(PlaceholdersData).reduce((accumulator, key) => {
+         const data = PlaceholdersData[key];
+         if (!accumulator[data.context]) accumulator[data.context] = [];
+         accumulator[data.context].push(`\`{%${key}%}\``);
+         return accumulator;
+      }, {});
+      placeholdersEmbed.fields = Object.keys(placeholders).map((placeholder) => {
+         return {
+            name:
+               placeholder === 'null'
+                  ? 'No Context'
+                  : placeholder
+                       ?.split('_')
+                       .map((i) => i[0].toUpperCase() + i.slice(1).toLowerCase())
+                       .join(' ') || 'No Context',
+
+            value: placeholders[placeholder].join('\r\n'),
+         };
+      });
       return await interaction.reply({
          embeds: [placeholdersEmbed],
       });
