@@ -1,3 +1,4 @@
+import parsePlaceholders from '@/util/parsePlaceholder';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import sendEmbed from '@/modules/features/embeds/sendEmbed';
 import checkAuthenticated from '@/server/checkAuthenticated';
@@ -18,9 +19,11 @@ const embeds = (auxdibot: Auxdibot, router: Router) => {
 
          try {
             const channel = req.guild.channels.cache.get(req.body['channel']);
-            const embed = req.body['embed'] ? (JSON.parse(req.body['embed']) satisfies APIEmbed) : undefined;
+            const embed = req.body['embed']
+               ? (JSON.parse(await parsePlaceholders(auxdibot, req.body['embed'], req.guild)) satisfies APIEmbed)
+               : undefined;
             if (!channel || !channel.isTextBased()) return res.status(400).json({ error: 'invalid channel' });
-            return sendEmbed(channel, req.body['message'], embed)
+            return sendEmbed(channel, await parsePlaceholders(auxdibot, req.body['message'], req.guild), embed)
                .then(() => res.json({ success: 'successfully sent embed to ' + channel.name }))
                .catch((x) => {
                   res.status(500).json({ error: x.message });

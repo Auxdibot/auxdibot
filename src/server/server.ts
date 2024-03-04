@@ -16,6 +16,7 @@ import checkAuthenticated from './checkAuthenticated';
 import cards from './servers/routes/cards';
 import { notificationsRoute } from './notifications';
 import rateLimiter from './rateLimiter';
+import placeholders from './placeholders/placeholders';
 export default async function server(auxdibot: Auxdibot) {
    const app = express();
 
@@ -58,6 +59,7 @@ export default async function server(auxdibot: Auxdibot) {
    app.use('/auth', authRoute());
    app.use('/servers', serversRoute(auxdibot));
    app.use('/notifications', notificationsRoute(auxdibot));
+   app.use('/placeholders', placeholders());
    app.get(
       '/user',
       (req, res, next) => checkAuthenticated(req, res, next),
