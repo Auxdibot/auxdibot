@@ -46,7 +46,7 @@ export const notificationsYoutube = <AuxdibotSubcommand>{
                     embed: apiEmbed,
                  }
                : {
-                    content: '> ▶️ New YouTube Upload\n\n%feed_link%',
+                    content: '> ▶️ New YouTube Upload\n\n{%FEED_LINK%}',
                     embed: null,
                  },
             'YOUTUBE',

@@ -244,9 +244,9 @@ export const SettingsEmbeds: { [k: string]: (auxdibot: Auxdibot, servers: server
       new EmbedBuilder()
          .setTitle(`${CustomEmojis.STARBOARD} Starboard Settings`)
          .setDescription(
-            `You can edit and view these settings more in-depth on [Auxdibot's Dashboard](https://bot.auxdible.me)\n\n🌟 **Starboard Channel**: \`${
-               server.starboard_channel ? `<#${server.starboard_channel}>` : 'None'
-            }\`\n⭐ **Starboard Reaction**: \`${server.starboard_reaction}\`\n✨ **Starboard Required Stars**: \`${
+            `You can edit and view these settings more in-depth on [Auxdibot's Dashboard](https://bot.auxdible.me)\n\n🌟 **Starboard Channel**: ${
+               server.starboard_channel ? `<#${server.starboard_channel}>` : '`None`'
+            }\n⭐ **Starboard Reaction**: \`${server.starboard_reaction}\`\n✨ **Starboard Required Stars**: \`${
                server.starboard_reaction_count
             }\``,
          )

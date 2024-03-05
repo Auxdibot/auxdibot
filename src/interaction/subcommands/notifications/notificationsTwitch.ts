@@ -41,7 +41,7 @@ export const notificationsTwitch = <AuxdibotSubcommand>{
                     embed: apiEmbed,
                  }
                : {
-                    content: '> 🎦 Twitch Stream Online\n\n%feed_link%',
+                    content: '> 🎦 Twitch Stream Online\n\n{%FEED_LINK%}',
                     embed: null,
                  },
             'TWITCH',
