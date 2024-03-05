@@ -113,7 +113,7 @@ export default async function parsePlaceholders(
               [Placeholders.SUGGESTION_STATE]: SuggestionStateName[suggestion.status],
               [Placeholders.SUGGESTION_HANDLER_MENTION]: suggestion.handlerID ? `<@${suggestion.handlerID}>` : 'None',
               [Placeholders.SUGGESTION_HANDLED_REASON]: suggestion.handled_reason || 'No reason given.',
-              [Placeholders.SUGGESTION_CONTENT]: suggestion.content.replaceAll(/"/g, '\\"'),
+              [Placeholders.SUGGESTION_CONTENT]: suggestion.content.replaceAll(/"/g, '\\"').replaceAll(/\\/g, '\\\\'),
               [Placeholders.SUGGESTION_DATE]: new Date(suggestion.date_unix).toDateString(),
               [Placeholders.SUGGESTION_DATE_FORMATTED]: `<t:${Math.round(suggestion.date_unix / 1000)}>`,
 
@@ -124,7 +124,9 @@ export default async function parsePlaceholders(
       ...(starred_message && server
          ? {
               [Placeholders.STARBOARD_MESSAGE_ID]: starred_message.id,
-              [Placeholders.STARBOARD_MESSAGE_CONTENT]: starred_message.content.replaceAll(/"/g, '\\"'),
+              [Placeholders.STARBOARD_MESSAGE_CONTENT]: starred_message.content
+                 .replaceAll(/"/g, '\\"')
+                 .replaceAll(/\\/g, '\\\\'),
               [Placeholders.STARBOARD_MESSAGE_STARS]: starred_message.reactions.cache.get(server.starboard_reaction)
                  .count,
               [Placeholders.STARBOARD_MESSAGE_DATE]: new Date(starred_message.createdTimestamp).toDateString(),

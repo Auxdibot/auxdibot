@@ -24,12 +24,13 @@ export default async function createStarredMessage(
    if (!starboard_channel.isTextBased()) return;
    try {
       if (server.starred_messages.find((i) => i.starred_message_id == messageReaction.message.id)) return;
+      const defaultStr = JSON.stringify(DEFAULT_STARBOARD_MESSAGE_EMBED);
       const embed = JSON.parse(
          await parsePlaceholders(
             auxdibot,
-            JSON.stringify(DEFAULT_STARBOARD_MESSAGE_EMBED),
+            defaultStr,
             messageReaction.message.guild,
-            undefined,
+            messageReaction.message.member,
             undefined,
             messageReaction.message,
          ),

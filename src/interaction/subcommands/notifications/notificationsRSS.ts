@@ -41,7 +41,7 @@ export const notificationsRSS = <AuxdibotSubcommand>{
                     embed: apiEmbed,
                  }
                : {
-                    content: '> 🔔 Feed Update\n\n%feed_link%',
+                    content: '> 🔔 Feed Update\n\n{%FEED_LINK%}',
                     embed: null,
                  },
             'RSS',

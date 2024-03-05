@@ -54,7 +54,7 @@ export default async function messageCreate(auxdibot: Auxdibot, message: Message
                         message.member,
                      )
                   ).replaceAll(
-                     '%levelup%',
+                     '{%LEVELUP%}',
                      ` \`Level ${level.toLocaleString()}\` -> \`Level ${newLevel.toLocaleString()}\` `,
                   ),
                );
