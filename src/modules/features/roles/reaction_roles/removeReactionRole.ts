@@ -22,7 +22,7 @@ export default async function removeReactionRole(
             channel && channel.isTextBased()
                ? await channel.messages.fetch(reactionRole.messageID).catch(() => undefined)
                : undefined;
-         if (message) message.delete().catch(() => undefined);
+
          data.reaction_roles.splice(Number(index), 1);
          await handleLog(auxdibot, guild, {
             userID: user?.id ?? auxdibot.user.id,
@@ -32,10 +32,12 @@ export default async function removeReactionRole(
             type: LogAction.REACTION_ROLE_REMOVED,
             date_unix: Date.now(),
          });
-         return await auxdibot.database.servers.update({
+         const result = await auxdibot.database.servers.update({
             where: { serverID: guild.id },
             data: { reaction_roles: data.reaction_roles },
          });
+         if (message) message.delete().catch(() => undefined);
+         return result;
       })
       .catch((x) => {
          throw new Error(x.message ?? 'an error occurred');
