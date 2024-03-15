@@ -37,8 +37,13 @@ export const createEmbed = <AuxdibotSubcommand>{
                ),
             ),
          );
-         await sendEmbed(channel, content, apiEmbed);
+         await sendEmbed(
+            channel,
+            await parsePlaceholders(auxdibot, content, interaction.data.guild, interaction.data.member),
+            apiEmbed,
+         );
       } catch (x) {
+         console.error(x);
          return await handleError(auxdibot, 'EMBED_SEND_ERROR', 'There was an error sending that embed!', interaction);
       }
 

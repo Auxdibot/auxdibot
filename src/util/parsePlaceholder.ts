@@ -159,7 +159,11 @@ export default async function parsePlaceholders(
    };
    let string = msg;
    for (const placeholder in PLACEHOLDERS) {
-      string = string.replaceAll(`{%${placeholder}%}`, PLACEHOLDERS[placeholder]);
+      string = string.replace(
+         new RegExp(`\\{%${placeholder.replaceAll('_', '\\_')}%\\}`, 'gi'),
+         PLACEHOLDERS[placeholder],
+      );
+      string = string.replace(new RegExp(`%${placeholder.replaceAll('_', '\\_')}%`, 'gi'), PLACEHOLDERS[placeholder]);
    }
    return string;
 }
