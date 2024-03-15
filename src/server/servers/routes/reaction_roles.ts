@@ -1,3 +1,5 @@
+import { getMessage } from '@/util/getMessage';
+import parsePlaceholders from '@/util/parsePlaceholder';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import addReactionRole from '@/modules/features/roles/reaction_roles/addReactionRole';
 import removeReactionRole from '@/modules/features/roles/reaction_roles/removeReactionRole';
@@ -5,6 +7,7 @@ import checkAuthenticated from '@/server/checkAuthenticated';
 import checkGuildOwnership from '@/server/checkGuildOwnership';
 import { APIEmbed, ReactionRoleType } from '@prisma/client';
 import { Router } from 'express';
+import { applyReactionsToMessages } from '@/modules/features/roles/reaction_roles/applyReactionsToMessage';
 /*
    Reaction Roles
    Reaction role endpoints.
@@ -42,18 +45,30 @@ const reactionRoles = (auxdibot: Auxdibot, router: Router) => {
          (req, res, next) => checkAuthenticated(req, res, next),
          (req, res, next) => checkGuildOwnership(auxdibot, req, res, next),
          async (req, res) => {
-            if (!req.body['reactions'] || !req.body['channel'])
-               return res.status(400).json({ error: 'missing parameters' });
+            if (!req.body['reactions']) return res.status(400).json({ error: 'missing parameters' });
             const title = req.body['title'] || 'React to receive roles!';
             try {
                const reactionsParsed: Array<ReactionRoleRequest> = JSON.parse(
                   req.body['reactions'],
                ) satisfies Array<ReactionRoleRequest>;
-               const channel = req.guild.channels.cache.get(req.body['channel']);
-               const embed = req.body['embed'] ? (JSON.parse(req.body['embed']) satisfies APIEmbed) : undefined;
+
+               const embed = req.body['embed']
+                  ? (JSON.parse(await parsePlaceholders(auxdibot, req.body['embed'], req.guild)) satisfies APIEmbed)
+                  : undefined;
                const type = ReactionRoleType[req.body['type'] ?? 'DEFAULT'] ?? ReactionRoleType.DEFAULT;
                if (reactionsParsed.length > 10)
                   return res.status(400).json({ error: 'You have provided too many reactions and roles!' });
+               if (req.body['messageID']) {
+                  const message = await getMessage(req.guild, req.body['messageID']);
+                  if (!message) return res.status(400).json({ error: 'Invalid message ID' });
+                  return applyReactionsToMessages(auxdibot, req.guild, message, reactionsParsed, type)
+                     .then((i) => res.json({ created: i }))
+                     .catch((x) =>
+                        res.status(500).json({ error: typeof x.message == 'string' ? x.message : 'an error occurred' }),
+                     );
+               }
+               if (!req.body['channel']) return res.status(400).json({ error: 'missing parameters' });
+               const channel = req.guild.channels.cache.get(req.body['channel']);
                return addReactionRole(
                   auxdibot,
                   req.guild,
@@ -61,7 +76,7 @@ const reactionRoles = (auxdibot: Auxdibot, router: Router) => {
                   title,
                   reactionsParsed,
                   embed,
-                  req.body['message'],
+                  await parsePlaceholders(auxdibot, req.body['message'], req.guild),
                   type,
                )
                   .then((i) => res.json({ created: i }))
