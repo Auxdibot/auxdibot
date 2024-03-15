@@ -66,13 +66,13 @@ export const reactionRolesAddCustom = <AuxdibotSubcommand>{
             JSON.parse(
                await parsePlaceholders(
                   auxdibot,
-                  JSON.stringify(parameters),
+                  JSON.stringify(content),
                   interaction.data.guild,
                   interaction.data.member,
                ),
             ),
          ),
-         content,
+         await parsePlaceholders(auxdibot, JSON.stringify(parameters), interaction.data.guild, interaction.data.member),
          ReactionRoleType[type],
       )
          .then(async () => {
