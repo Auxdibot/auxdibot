@@ -255,13 +255,15 @@ type CardBackground {
 }
 
 type CommandPermission {
-  command            String
-  subcommand         String?
-  blacklist_channels Boolean  @default(true)
-  channels           String[]
-  blacklist_roles    Boolean  @default(true)
-  roles              String[]
-  adminOnly          Boolean
+  command                 String
+  subcommand              String?
+  blacklist_channels      String[]
+  blacklist_roles         String[]
+  roles                   String[]
+  channels                String[]
+  permission_bypass_roles String[]
+  channel_output          String?
+  adminOnly               Boolean
 }
 
 enum Fonts {
