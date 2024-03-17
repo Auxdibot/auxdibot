@@ -254,6 +254,16 @@ type CardBackground {
   gradient GradientTypes @default(BACKGROUND)
 }
 
+type CommandPermission {
+  command            String
+  subcommand         String?
+  blacklist_channels Boolean  @default(true)
+  channels           String[]
+  blacklist_roles    Boolean  @default(true)
+  roles              String[]
+  adminOnly          Boolean
+}
+
 enum Fonts {
   MONTSERRAT
   RALEWAY
@@ -329,6 +339,9 @@ model servers {
   total_stars                       Int                  @default(0)
   logs                              Log[]
   filtered_logs                     LogAction[]
+  commands_channel                  String?
+  command_permissions               CommandPermission[]
+  // Deprecated. Using "command_permissions" instead.
   permission_overrides              PermissionOverride[]
   punishments                       Punishment[]
   suggestions                       Suggestion[]
