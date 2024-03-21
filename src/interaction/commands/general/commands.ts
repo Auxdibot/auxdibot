@@ -1,7 +1,8 @@
 import Modules from '@/constants/bot/commands/Modules';
 import commandsAdminSet from '@/interaction/subcommands/commands/commandsAdminSet';
+import commandsOutputSet from '@/interaction/subcommands/commands/commandsOutputSet';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
-import { SlashCommandBuilder } from 'discord.js';
+import { ChannelType, SlashCommandBuilder } from 'discord.js';
 
 export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -186,14 +187,17 @@ export default <AuxdibotCommand>{
                builder
                   .setName('set')
                   .setDescription("Set the channel that a command's output is broadcast to.")
-                  .addChannelOption((option) =>
-                     option.setName('channel').setDescription('The channel to broadcast to.').setRequired(true),
-                  )
                   .addStringOption((option) =>
                      option
                         .setName('command')
                         .setDescription('The command to set the broadcast channel for.')
                         .setRequired(true),
+                  )
+                  .addChannelOption((option) =>
+                     option
+                        .setName('channel')
+                        .setDescription('The channel to broadcast to.')
+                        .addChannelTypes(ChannelType.GuildText, ChannelType.GuildAnnouncement),
                   ),
             ),
       ),
@@ -203,7 +207,7 @@ export default <AuxdibotCommand>{
       usageExample: '/commands',
       permission: 'commands.commands',
    },
-   subcommands: [commandsAdminSet],
+   subcommands: [commandsAdminSet, commandsOutputSet],
    async execute() {
       return;
    },
