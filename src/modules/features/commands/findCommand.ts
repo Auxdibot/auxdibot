@@ -8,7 +8,7 @@ export function findCommand(
    subcommand?: string[],
 ): { commandData: AuxdibotCommand; subcommandData?: AuxdibotSubcommand } | undefined {
    const commandData = auxdibot.commands.get(command),
-      subcommandData = commandData?.subcommands.find((i) =>
+      subcommandData = commandData?.subcommands?.find((i) =>
          subcommand.length > 1 ? i.name == subcommand[0] && i.group == subcommand[1] : i.name == subcommand[0],
       );
    if (!commandData || (subcommand.length && !subcommandData)) {
