@@ -1,4 +1,5 @@
 import Modules from '@/constants/bot/commands/Modules';
+import commandsAdminSet from '@/interaction/subcommands/commands/commandsAdminSet';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import { SlashCommandBuilder } from 'discord.js';
 
@@ -9,6 +10,7 @@ export default <AuxdibotCommand>{
       .addSubcommandGroup((builder) =>
          builder
             .setName('role')
+            .setDescription('Blacklist/require roles to use commands.')
             .addSubcommand((builder) =>
                builder
                   .setName('blacklist')
@@ -69,6 +71,7 @@ export default <AuxdibotCommand>{
       .addSubcommandGroup((builder) =>
          builder
             .setName('channel')
+            .setDescription('Blacklist/require channel usage for commands.')
             .addSubcommand((builder) =>
                builder
                   .setName('blacklist')
@@ -157,14 +160,23 @@ export default <AuxdibotCommand>{
             ),
       )
       .addSubcommandGroup((builder) =>
-         builder.setName('admin').addSubcommand((builder) =>
-            builder
-               .setName('toggle')
-               .setDescription('Toggle whether a command is allowed only to Discord Administrators.')
-               .addStringOption((option) =>
-                  option.setName('command').setDescription('The command to toggle.').setRequired(true),
-               ),
-         ),
+         builder
+            .setName('admin')
+            .setDescription('Set whether a command is allowed exclusively for Discord Administrators.')
+            .addSubcommand((builder) =>
+               builder
+                  .setName('set')
+                  .setDescription('Set whether a command is allowed exclusively for Discord Administrators.')
+                  .addStringOption((option) =>
+                     option.setName('command').setDescription('The command to toggle.').setRequired(true),
+                  )
+                  .addBooleanOption((option) =>
+                     option
+                        .setName('allowed')
+                        .setDescription('Whether the command is allowed for exclusively Discord Administrators.')
+                        .setRequired(true),
+                  ),
+            ),
       )
       .addSubcommandGroup((builder) =>
          builder
@@ -189,10 +201,9 @@ export default <AuxdibotCommand>{
       module: Modules['General'],
       description: "View all of Auxdibot's commands.",
       usageExample: '/commands',
-      allowedDefault: true,
       permission: 'commands.commands',
-      dmableCommand: true,
    },
+   subcommands: [commandsAdminSet],
    async execute() {
       return;
    },
