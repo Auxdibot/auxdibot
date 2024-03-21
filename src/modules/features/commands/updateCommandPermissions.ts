@@ -9,6 +9,7 @@ export async function updateCommandPermissions(
    command: string,
    subcommand: string[],
    permissions: Partial<Omit<CommandPermission, 'command' | 'subcommand' | 'group'>>,
+   remove?: boolean,
 ): Promise<CommandPermission | undefined> {
    const server = await findOrCreateServer(auxdibot, guildId);
    const cmd = findCommand(auxdibot, command, subcommand);
@@ -25,18 +26,26 @@ export async function updateCommandPermissions(
          blacklist_channels: [],
          roles: [],
          blacklist_roles: [],
-         permission_bypass_roles: [],
+         permission_bypass_roles: permissions.permission_bypass_roles || [],
          channels: [],
          channel_output: undefined,
          admin_only:
             subcommandData?.info?.allowedDefault != undefined
-               ? subcommandData.info.allowedDefault
-               : commandData.info.allowedDefault,
+               ? !subcommandData.info.allowedDefault
+               : !commandData.info.allowedDefault,
          ...permissions,
       };
       server?.command_permissions.push(commandPermissions);
    } else {
-      Object.assign(commandPermissions, permissions);
+      Object.assign(commandPermissions, {
+         ...permissions,
+         permission_bypass_roles:
+            (remove
+               ? commandPermissions.permission_bypass_roles.filter((i) =>
+                    permissions.permission_bypass_roles.includes(i),
+                 )
+               : commandPermissions.permission_bypass_roles.concat(permissions.permission_bypass_roles ?? [])) ?? [],
+      });
    }
    return await auxdibot.database.servers
       .update({

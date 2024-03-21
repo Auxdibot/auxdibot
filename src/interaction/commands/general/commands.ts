@@ -1,6 +1,9 @@
 import Modules from '@/constants/bot/commands/Modules';
+import bypassRolesAdd from '@/interaction/subcommands/commands/bypass_roles/bypassRolesAdd';
+import bypassRolesRemove from '@/interaction/subcommands/commands/bypass_roles/bypassRolesRemove';
 import commandsAdminSet from '@/interaction/subcommands/commands/commandsAdminSet';
 import commandsOutputSet from '@/interaction/subcommands/commands/commandsOutputSet';
+import commandsRulesView from '@/interaction/subcommands/commands/commandsRulesView';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import { ChannelType, SlashCommandBuilder } from 'discord.js';
 
@@ -200,6 +203,14 @@ export default <AuxdibotCommand>{
                         .addChannelTypes(ChannelType.GuildText, ChannelType.GuildAnnouncement),
                   ),
             ),
+      )
+      .addSubcommandGroup((builder) =>
+         builder
+            .setName('rules')
+            .setDescription('View the rules you have configured for permissions.')
+            .addSubcommand((builder) =>
+               builder.setName('view').setDescription('View the rules you have configured for permissions.'),
+            ),
       ),
    info: {
       module: Modules['General'],
@@ -207,7 +218,7 @@ export default <AuxdibotCommand>{
       usageExample: '/commands',
       permission: 'commands.commands',
    },
-   subcommands: [commandsAdminSet, commandsOutputSet],
+   subcommands: [commandsAdminSet, commandsOutputSet, bypassRolesAdd, bypassRolesRemove, commandsRulesView],
    async execute() {
       return;
    },
