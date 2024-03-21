@@ -9,16 +9,16 @@ import { EmbedBuilder } from 'discord.js';
 
 export default <AuxdibotSubcommand>{
    name: 'set',
-   group: 'admin',
+   group: 'output',
    info: {
       module: Modules['General'],
-      description: 'Set whether a command is allowed only for Discord Administrators.',
-      usageExample: '/commands admin set (command) (allowed)',
+      description: "Set the channel that a command's output is broadcast to.",
+      usageExample: '/commands output set (command) [channel]',
    },
    async execute(auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.guild) return;
       const commandStr = interaction.options.getString('command', true),
-         allowed = interaction.options.getBoolean('allowed', true);
+         channel = interaction.options.getChannel('channel');
       if (!commandStr)
          return handleError(auxdibot, 'INVALID_COMMAND', 'Please provide a valid command name.', interaction);
 
@@ -28,7 +28,7 @@ export default <AuxdibotSubcommand>{
          return handleError(auxdibot, 'INVALID_COMMAND', 'This is not an Auxdibot command!', interaction);
 
       await updateCommandPermissions(auxdibot, interaction.guildId, commandName, subcommand, {
-         admin_only: allowed,
+         channel_output: channel?.id ?? null,
       })
          .then(async (data) => {
             if (!data) {
@@ -42,12 +42,9 @@ export default <AuxdibotSubcommand>{
             }
             const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.title = 'Command Permissions Updated';
-            embed.description = allowed
-               ? `The command \`/${commandStr.replace(/^\//g, '')}\` is now only allowed for Discord Administrators.`
-               : `The command \`${commandStr.replace(
-                    /\//g,
-                    '',
-                 )}\` is now allowed for everyone. (This will not include members/roles that are blacklisted from using the command.)`;
+            embed.description = channel
+               ? `The command \`/${commandStr.replace(/^\//g, '')}\` will now output to <#${channel?.id}>.`
+               : `The command \`${commandStr.replace(/\//g, '')}\` will now output to the channel it was called in.`;
             return await interaction.reply({ embeds: [embed] });
          })
          .catch((x) => {
