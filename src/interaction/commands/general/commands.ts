@@ -1,6 +1,10 @@
 import Modules from '@/constants/bot/commands/Modules';
 import bypassRolesAdd from '@/interaction/subcommands/commands/bypass_roles/bypassRolesAdd';
 import bypassRolesRemove from '@/interaction/subcommands/commands/bypass_roles/bypassRolesRemove';
+import channelsBlacklistAdd from '@/interaction/subcommands/commands/channels/channelBlacklistAdd';
+import channelsBlacklistRemove from '@/interaction/subcommands/commands/channels/channelBlacklistRemove';
+import channelsRequireAdd from '@/interaction/subcommands/commands/channels/channelRequireAdd';
+import channelsRequireRemove from '@/interaction/subcommands/commands/channels/channelRequireRemove';
 import commandsAdminSet from '@/interaction/subcommands/commands/commandsAdminSet';
 import commandsOutputSet from '@/interaction/subcommands/commands/commandsOutputSet';
 import commandsRulesView from '@/interaction/subcommands/commands/commandsRulesView';
@@ -79,9 +83,13 @@ export default <AuxdibotCommand>{
             .addSubcommand((builder) =>
                builder
                   .setName('blacklist')
-                  .setDescription('Blacklist a channel from using commands.')
+                  .setDescription('Blacklist a channel, no longer allowing the command to be run in that channel.')
                   .addChannelOption((option) =>
-                     option.setName('channel').setDescription('The channel to blacklist.').setRequired(true),
+                     option
+                        .setName('channel')
+                        .setDescription('The channel to blacklist.')
+                        .addChannelTypes(ChannelType.GuildText, ChannelType.GuildAnnouncement)
+                        .setRequired(true),
                   )
                   .addStringOption((option) =>
                      option
@@ -95,7 +103,11 @@ export default <AuxdibotCommand>{
                   .setName('require')
                   .setDescription('Require a channel to use commands.')
                   .addChannelOption((option) =>
-                     option.setName('channel').setDescription('The channel to require.').setRequired(true),
+                     option
+                        .setName('channel')
+                        .setDescription('The channel to require.')
+                        .addChannelTypes(ChannelType.GuildText, ChannelType.GuildAnnouncement)
+                        .setRequired(true),
                   )
                   .addStringOption((option) =>
                      option
@@ -107,9 +119,13 @@ export default <AuxdibotCommand>{
             .addSubcommand((builder) =>
                builder
                   .setName('unblacklist')
-                  .setDescription('Unblacklist a channel from using commands.')
+                  .setDescription('Unblacklist a channel where a command cannot be run.')
                   .addChannelOption((option) =>
-                     option.setName('channel').setDescription('The channel to unblacklist.').setRequired(true),
+                     option
+                        .setName('channel')
+                        .setDescription('The channel to unblacklist.')
+                        .addChannelTypes(ChannelType.GuildText, ChannelType.GuildAnnouncement)
+                        .setRequired(true),
                   )
                   .addStringOption((option) =>
                      option
@@ -121,9 +137,13 @@ export default <AuxdibotCommand>{
             .addSubcommand((builder) =>
                builder
                   .setName('unrequire')
-                  .setDescription('Unrequire a channel to use commands.')
+                  .setDescription('Unrequire a channel where a command is limited to.')
                   .addChannelOption((option) =>
-                     option.setName('channel').setDescription('The channel to unrequire.').setRequired(true),
+                     option
+                        .setName('channel')
+                        .setDescription('The channel to unrequire.')
+                        .addChannelTypes(ChannelType.GuildText, ChannelType.GuildAnnouncement)
+                        .setRequired(true),
                   )
                   .addStringOption((option) =>
                      option
@@ -218,7 +238,17 @@ export default <AuxdibotCommand>{
       usageExample: '/commands',
       permission: 'commands.commands',
    },
-   subcommands: [commandsAdminSet, commandsOutputSet, bypassRolesAdd, bypassRolesRemove, commandsRulesView],
+   subcommands: [
+      commandsAdminSet,
+      commandsOutputSet,
+      bypassRolesAdd,
+      bypassRolesRemove,
+      commandsRulesView,
+      channelsBlacklistAdd,
+      channelsBlacklistRemove,
+      channelsRequireAdd,
+      channelsRequireRemove,
+   ],
    async execute() {
       return;
    },
