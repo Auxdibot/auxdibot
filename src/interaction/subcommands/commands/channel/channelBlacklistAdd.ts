@@ -46,8 +46,7 @@ export default <AuxdibotSubcommand>{
             )}\` has been blacklisted from being used in the channel <#${channel.id}>.`;
             return await interaction.reply({ embeds: [embed] });
          })
-         .catch((x) => {
-            console.log(x);
+         .catch(() => {
             handleError(
                auxdibot,
                'COMMAND_PERMISSIONS_ERROR',

@@ -25,13 +25,17 @@ export default <AuxdibotSubcommand>{
       const commandData = findCommand(auxdibot, commandName, subcommand);
       if (!commandData)
          return handleError(auxdibot, 'INVALID_COMMAND', 'This is not an Auxdibot command!', interaction);
-
+      if (
+         !commandData.commandData.info.module.disableable ||
+         commandData.subcommandData?.info.module.disableable === false
+      ) {
+         return handleError(auxdibot, 'COMMAND_PERMISSIONS_ERROR', 'This command cannot be disabled.', interaction);
+      }
       await updateCommandPermissions(auxdibot, interaction.guildId, commandName, subcommand, {
          disabled: true,
       })
          .then(async (data) => {
             if (!data) {
-               console.log('none');
                return handleError(
                   auxdibot,
                   'COMMAND_PERMISSIONS_ERROR',
@@ -44,8 +48,7 @@ export default <AuxdibotSubcommand>{
             embed.description = `The command \`/${commandStr.replace(/^\//g, '')}\` has been disabled.`;
             return await interaction.reply({ embeds: [embed] });
          })
-         .catch((x) => {
-            console.log(x);
+         .catch(() => {
             handleError(
                auxdibot,
                'COMMAND_PERMISSIONS_ERROR',

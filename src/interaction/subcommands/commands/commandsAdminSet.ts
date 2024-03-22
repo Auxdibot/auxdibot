@@ -32,7 +32,6 @@ export default <AuxdibotSubcommand>{
       })
          .then(async (data) => {
             if (!data) {
-               console.log('none');
                return handleError(
                   auxdibot,
                   'COMMAND_PERMISSIONS_ERROR',
@@ -50,8 +49,7 @@ export default <AuxdibotSubcommand>{
                  )}\` is now allowed for everyone. (This will not include members/roles that are blacklisted from using the command.)`;
             return await interaction.reply({ embeds: [embed] });
          })
-         .catch((x) => {
-            console.log(x);
+         .catch(() => {
             handleError(
                auxdibot,
                'COMMAND_PERMISSIONS_ERROR',
