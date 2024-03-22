@@ -45,8 +45,7 @@ export default <AuxdibotSubcommand>{
             }> can now bypass Discord permission limitations for the command \`/${commandStr.replace(/^\//g, '')}\`.`;
             return await interaction.reply({ embeds: [embed] });
          })
-         .catch((x) => {
-            console.log(x);
+         .catch(() => {
             handleError(
                auxdibot,
                'COMMAND_PERMISSIONS_ERROR',

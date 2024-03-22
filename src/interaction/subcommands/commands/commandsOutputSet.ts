@@ -32,7 +32,6 @@ export default <AuxdibotSubcommand>{
       })
          .then(async (data) => {
             if (!data) {
-               console.log('none');
                return handleError(
                   auxdibot,
                   'COMMAND_PERMISSIONS_ERROR',
@@ -47,8 +46,7 @@ export default <AuxdibotSubcommand>{
                : `The command \`${commandStr.replace(/\//g, '')}\` will now output to the channel it was called in.`;
             return await interaction.reply({ embeds: [embed] });
          })
-         .catch((x) => {
-            console.log(x);
+         .catch(() => {
             handleError(
                auxdibot,
                'COMMAND_PERMISSIONS_ERROR',

@@ -45,8 +45,7 @@ export default <AuxdibotSubcommand>{
             }>. (This does not include other channels added as requirements.)`;
             return await interaction.reply({ embeds: [embed] });
          })
-         .catch((x) => {
-            console.log(x);
+         .catch(() => {
             handleError(
                auxdibot,
                'COMMAND_PERMISSIONS_ERROR',
