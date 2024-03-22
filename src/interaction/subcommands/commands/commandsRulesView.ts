@@ -18,6 +18,20 @@ export default <AuxdibotSubcommand>{
       embed.description = interaction.data.guildData.command_permissions
          .map((command) => {
             return `**/${command.command}**\n${command.admin_only ? '🛡️ Admin Only' : '👥 Everyone'}${
+               command.blacklist_channels.length
+                  ? `\nBlacklisted Channels: ${command.blacklist_channels.map((channel) => `<#${channel}>`).join(', ')}`
+                  : ''
+            }${
+               command.channels.length
+                  ? `\nRequired Channels: ${command.channels.map((channel) => `<#${channel}>`).join(', ')}`
+                  : ''
+            }${
+               command.blacklist_roles.length
+                  ? `\nBlacklisted Roles: ${command.blacklist_roles.map((role) => `<@&${role}>`).join(', ')}`
+                  : ''
+            }${
+               command.roles.length ? `\nRequired Roles: ${command.roles.map((role) => `<@&${role}>`).join(', ')}` : ''
+            }${
                command.permission_bypass_roles.length
                   ? `\nBypass Roles: ${command.permission_bypass_roles.map((role) => `<@&${role}>`).join(', ')}`
                   : ''
