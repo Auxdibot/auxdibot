@@ -11,7 +11,7 @@ export default <AuxdibotSubcommand>{
    name: 'remove',
    group: 'bypass_roles',
    info: {
-      module: Modules['General'],
+      module: Modules['Settings'],
       description: 'Remove a role that can bypasses Discord permissions.',
       usageExample: '/commands bypass_roles remove (command) (role)',
    },

@@ -11,7 +11,7 @@ export default <AuxdibotSubcommand>{
    name: 'blacklist',
    group: 'channel',
    info: {
-      module: Modules['General'],
+      module: Modules['Settings'],
       description: '',
       usageExample: '/commands channel blacklist (command) (channel)',
    },

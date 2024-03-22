@@ -7,7 +7,7 @@ export default <AuxdibotSubcommand>{
    name: 'view',
    group: 'rules',
    info: {
-      module: Modules['General'],
+      module: Modules['Settings'],
       description: 'View the rules for a command.',
       usageExample: '/commands rules view',
    },

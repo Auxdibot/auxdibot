@@ -1,13 +1,17 @@
 import Modules from '@/constants/bot/commands/Modules';
 import bypassRolesAdd from '@/interaction/subcommands/commands/bypass_roles/bypassRolesAdd';
 import bypassRolesRemove from '@/interaction/subcommands/commands/bypass_roles/bypassRolesRemove';
-import channelsBlacklistAdd from '@/interaction/subcommands/commands/channels/channelBlacklistAdd';
-import channelsBlacklistRemove from '@/interaction/subcommands/commands/channels/channelBlacklistRemove';
-import channelsRequireAdd from '@/interaction/subcommands/commands/channels/channelRequireAdd';
-import channelsRequireRemove from '@/interaction/subcommands/commands/channels/channelRequireRemove';
+import channelBlacklistAdd from '@/interaction/subcommands/commands/channel/channelBlacklistAdd';
+import channelBlacklistRemove from '@/interaction/subcommands/commands/channel/channelBlacklistRemove';
+import channelRequireAdd from '@/interaction/subcommands/commands/channel/channelRequireAdd';
+import channelRequireRemove from '@/interaction/subcommands/commands/channel/channelRequireRemove';
 import commandsAdminSet from '@/interaction/subcommands/commands/commandsAdminSet';
 import commandsOutputSet from '@/interaction/subcommands/commands/commandsOutputSet';
 import commandsRulesView from '@/interaction/subcommands/commands/commandsRulesView';
+import roleBlacklistAdd from '@/interaction/subcommands/commands/role/roleBlacklistAdd';
+import roleBlacklistRemove from '@/interaction/subcommands/commands/role/roleBlacklistRemove';
+import roleRequireAdd from '@/interaction/subcommands/commands/role/roleRequireAdd';
+import roleRequireRemove from '@/interaction/subcommands/commands/role/roleRequireRemove';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import { ChannelType, SlashCommandBuilder } from 'discord.js';
 
@@ -233,7 +237,7 @@ export default <AuxdibotCommand>{
             ),
       ),
    info: {
-      module: Modules['General'],
+      module: Modules['Settings'],
       description: "View all of Auxdibot's commands.",
       usageExample: '/commands',
       permission: 'commands.commands',
@@ -244,10 +248,14 @@ export default <AuxdibotCommand>{
       bypassRolesAdd,
       bypassRolesRemove,
       commandsRulesView,
-      channelsBlacklistAdd,
-      channelsBlacklistRemove,
-      channelsRequireAdd,
-      channelsRequireRemove,
+      channelBlacklistAdd,
+      channelBlacklistRemove,
+      channelRequireAdd,
+      channelRequireRemove,
+      roleBlacklistAdd,
+      roleBlacklistRemove,
+      roleRequireAdd,
+      roleRequireRemove,
    ],
    async execute() {
       return;
