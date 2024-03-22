@@ -11,7 +11,7 @@ export default <AuxdibotSubcommand>{
    name: 'set',
    group: 'admin',
    info: {
-      module: Modules['General'],
+      module: Modules['Settings'],
       description: 'Set whether a command is allowed only for Discord Administrators.',
       usageExample: '/commands admin set (command) (allowed)',
    },

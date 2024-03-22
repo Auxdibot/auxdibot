@@ -8,17 +8,17 @@ import handleError from '@/util/handleError';
 import { EmbedBuilder } from 'discord.js';
 
 export default <AuxdibotSubcommand>{
-   name: 'set',
-   group: 'output',
+   name: 'require',
+   group: 'role',
    info: {
       module: Modules['Settings'],
-      description: "Set the channel that a command's output is broadcast to.",
-      usageExample: '/commands output set (command) [channel]',
+      description: 'Require a role to use a command.',
+      usageExample: '/commands role require (command) (role)',
    },
    async execute(auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.guild) return;
       const commandStr = interaction.options.getString('command', true),
-         channel = interaction.options.getChannel('channel');
+         role = interaction.options.getRole('role', true);
       if (!commandStr)
          return handleError(auxdibot, 'INVALID_COMMAND', 'Please provide a valid command name.', interaction);
 
@@ -26,13 +26,11 @@ export default <AuxdibotSubcommand>{
       const commandData = findCommand(auxdibot, commandName, subcommand);
       if (!commandData)
          return handleError(auxdibot, 'INVALID_COMMAND', 'This is not an Auxdibot command!', interaction);
-
       await updateCommandPermissions(auxdibot, interaction.guildId, commandName, subcommand, {
-         channel_output: channel?.id ?? null,
+         roles: [role.id],
       })
          .then(async (data) => {
             if (!data) {
-               console.log('none');
                return handleError(
                   auxdibot,
                   'COMMAND_PERMISSIONS_ERROR',
@@ -42,13 +40,12 @@ export default <AuxdibotSubcommand>{
             }
             const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.title = 'Command Permissions Updated';
-            embed.description = channel
-               ? `The command \`/${commandStr.replace(/^\//g, '')}\` will now output to <#${channel?.id}>.`
-               : `The command \`${commandStr.replace(/\//g, '')}\` will now output to the channel it was called in.`;
+            embed.description = `The command \`/${commandStr.replace(/^\//g, '')}\` can exclusively be utilized by <@&${
+               role.id
+            }> and additional role requirements that you have specified.`;
             return await interaction.reply({ embeds: [embed] });
          })
-         .catch((x) => {
-            console.log(x);
+         .catch(() => {
             handleError(
                auxdibot,
                'COMMAND_PERMISSIONS_ERROR',

@@ -8,17 +8,17 @@ import handleError from '@/util/handleError';
 import { EmbedBuilder } from 'discord.js';
 
 export default <AuxdibotSubcommand>{
-   name: 'unblacklist',
-   group: 'channel',
+   name: 'blacklist',
+   group: 'role',
    info: {
-      module: Modules['General'],
-      description: 'Unblacklist a channel where a command cannot be run.',
-      usageExample: '/commands channel unblacklist (command) (channel)',
+      module: Modules['Settings'],
+      description: 'Blacklist a role from using a command.',
+      usageExample: '/commands role blacklist (command) (role)',
    },
    async execute(auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.guild) return;
       const commandStr = interaction.options.getString('command', true),
-         channel = interaction.options.getChannel('channel', true);
+         role = interaction.options.getRole('role', true);
       if (!commandStr)
          return handleError(auxdibot, 'INVALID_COMMAND', 'Please provide a valid command name.', interaction);
 
@@ -26,16 +26,9 @@ export default <AuxdibotSubcommand>{
       const commandData = findCommand(auxdibot, commandName, subcommand);
       if (!commandData)
          return handleError(auxdibot, 'INVALID_COMMAND', 'This is not an Auxdibot command!', interaction);
-      await updateCommandPermissions(
-         auxdibot,
-         interaction.guildId,
-         commandName,
-         subcommand,
-         {
-            blacklist_channels: [channel.id],
-         },
-         true,
-      )
+      await updateCommandPermissions(auxdibot, interaction.guildId, commandName, subcommand, {
+         blacklist_roles: [role.id],
+      })
          .then(async (data) => {
             if (!data) {
                return handleError(
@@ -47,10 +40,9 @@ export default <AuxdibotSubcommand>{
             }
             const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.title = 'Command Permissions Updated';
-            embed.description = `The command \`/${commandStr.replace(
-               /^\//g,
-               '',
-            )}\` has been unblacklisted from being used in the channel <#${channel.id}>.`;
+            embed.description = `The role <@&${
+               role.id
+            }> has been blacklisted from using the command \`/${commandStr.replace(/^\//g, '')}\`.`;
             return await interaction.reply({ embeds: [embed] });
          })
          .catch(() => {

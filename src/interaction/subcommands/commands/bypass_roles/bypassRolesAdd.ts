@@ -11,7 +11,7 @@ export default <AuxdibotSubcommand>{
    name: 'add',
    group: 'bypass_roles',
    info: {
-      module: Modules['General'],
+      module: Modules['Settings'],
       description: 'Add a role that can bypasses Discord permissions.',
       usageExample: '/commands bypass_roles add (command) (role)',
    },

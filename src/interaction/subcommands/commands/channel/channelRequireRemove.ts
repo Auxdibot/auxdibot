@@ -8,12 +8,12 @@ import handleError from '@/util/handleError';
 import { EmbedBuilder } from 'discord.js';
 
 export default <AuxdibotSubcommand>{
-   name: 'require',
+   name: 'unrequire',
    group: 'channel',
    info: {
-      module: Modules['General'],
-      description: '',
-      usageExample: '/commands channel require (command) (channel)',
+      module: Modules['Settings'],
+      description: 'Unblacklist a channel where a command cannot be run.',
+      usageExample: '/commands channel unrequire (command) (channel)',
    },
    async execute(auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.guild) return;
@@ -26,9 +26,16 @@ export default <AuxdibotSubcommand>{
       const commandData = findCommand(auxdibot, commandName, subcommand);
       if (!commandData)
          return handleError(auxdibot, 'INVALID_COMMAND', 'This is not an Auxdibot command!', interaction);
-      await updateCommandPermissions(auxdibot, interaction.guildId, commandName, subcommand, {
-         channels: [channel.id],
-      })
+      await updateCommandPermissions(
+         auxdibot,
+         interaction.guildId,
+         commandName,
+         subcommand,
+         {
+            channels: [channel.id],
+         },
+         true,
+      )
          .then(async (data) => {
             if (!data) {
                return handleError(
@@ -40,13 +47,13 @@ export default <AuxdibotSubcommand>{
             }
             const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.title = 'Command Permissions Updated';
-            embed.description = `The command \`/${commandStr.replace(/^\//g, '')}\`'s usage has been limited to <#${
-               channel.id
-            }>. (This does not include other channels added as requirements.)`;
+            embed.description = `The command \`/${commandStr.replace(
+               /^\//g,
+               '',
+            )}\`'s is no longer required to be used in the channel <#${channel.id}>.`;
             return await interaction.reply({ embeds: [embed] });
          })
-         .catch((x) => {
-            console.log(x);
+         .catch(() => {
             handleError(
                auxdibot,
                'COMMAND_PERMISSIONS_ERROR',
