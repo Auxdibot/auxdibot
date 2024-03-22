@@ -29,6 +29,7 @@ export async function updateCommandPermissions(
          permission_bypass_roles: permissions.permission_bypass_roles || [],
          channels: [],
          channel_output: undefined,
+         disabled: false,
          admin_only:
             subcommandData?.info?.allowedDefault != undefined
                ? !subcommandData.info.allowedDefault

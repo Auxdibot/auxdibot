@@ -257,6 +257,7 @@ type CardBackground {
 type CommandPermission {
   command                 String
   group                   String?
+  disabled                Boolean? @default(false)
   subcommand              String?
   blacklist_channels      String[]
   blacklist_roles         String[]

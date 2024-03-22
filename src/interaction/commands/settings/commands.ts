@@ -12,13 +12,15 @@ import roleBlacklistAdd from '@/interaction/subcommands/commands/role/roleBlackl
 import roleBlacklistRemove from '@/interaction/subcommands/commands/role/roleBlacklistRemove';
 import roleRequireAdd from '@/interaction/subcommands/commands/role/roleRequireAdd';
 import roleRequireRemove from '@/interaction/subcommands/commands/role/roleRequireRemove';
+import commandsUsageDisable from '@/interaction/subcommands/commands/usage/commandsUsageDisable';
+import commandsUsageEnable from '@/interaction/subcommands/commands/usage/commandsUsageEnable';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import { ChannelType, SlashCommandBuilder } from 'discord.js';
 
 export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
       .setName('commands')
-      .setDescription("View all of Auxdibot's commands.")
+      .setDescription("Manage access for all of Auxdibot's commands.")
       .addSubcommandGroup((builder) =>
          builder
             .setName('role')
@@ -235,10 +237,31 @@ export default <AuxdibotCommand>{
             .addSubcommand((builder) =>
                builder.setName('view').setDescription('View the rules you have configured for permissions.'),
             ),
+      )
+      .addSubcommandGroup((builder) =>
+         builder
+            .setName('usage')
+            .setDescription('Enable or disable the usage of a command.')
+            .addSubcommand((builder) =>
+               builder
+                  .setName('enable')
+                  .setDescription('Enable the usage of a command.')
+                  .addStringOption((option) =>
+                     option.setName('command').setDescription('The command to enable.').setRequired(true),
+                  ),
+            )
+            .addSubcommand((builder) =>
+               builder
+                  .setName('disable')
+                  .setDescription('Disable the usage of a command.')
+                  .addStringOption((option) =>
+                     option.setName('command').setDescription('The command to disable.').setRequired(true),
+                  ),
+            ),
       ),
    info: {
       module: Modules['Settings'],
-      description: "View all of Auxdibot's commands.",
+      description: "Manage access for all of Auxdibot's commands.",
       usageExample: '/commands',
       permission: 'commands.commands',
    },
@@ -256,6 +279,8 @@ export default <AuxdibotCommand>{
       roleBlacklistRemove,
       roleRequireAdd,
       roleRequireRemove,
+      commandsUsageEnable,
+      commandsUsageDisable,
    ],
    async execute() {
       return;
