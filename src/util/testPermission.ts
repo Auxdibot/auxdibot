@@ -1,8 +1,11 @@
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import { GuildMember, PermissionsBitField } from 'discord.js';
+import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
+import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
+import { findCommand } from '@/modules/features/commands/findCommand';
 
-export default async function testPermission(
+export async function testLegacyPermission(
    auxdibot: Auxdibot,
    serverID: string,
    permission: string | undefined,
@@ -43,4 +46,31 @@ export default async function testPermission(
       return accumulator;
    }, undefined);
    return accessible != undefined ? accessible : defaultAllowed;
+}
+export async function testPermission(
+   auxdibot: Auxdibot,
+   interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>,
+   command: string,
+   subcommand?: string[],
+) {
+   const server = interaction.data?.guildData,
+      member = interaction.data?.member;
+   if (!server) return false;
+   const permission = server.command_permissions.find((cp) =>
+         cp.command == command && subcommand.length > 1
+            ? cp.group == subcommand[0] && cp.subcommand == subcommand[1]
+            : !cp.group && cp.subcommand == subcommand[0],
+      ),
+      { commandData, subcommandData } = findCommand(auxdibot, command, subcommand);
+   if (!commandData) return 'notfound';
+   const allowedDefault = subcommandData ? subcommandData.info.allowedDefault : commandData.info.allowedDefault;
+   if (!permission && allowedDefault) return true;
+   if (permission.admin_only && !member.permissions.has(PermissionsBitField.Flags.Administrator)) return 'noperm';
+   if (permission.blacklist_channels.includes(interaction.channel.id)) return 'noperm';
+   if (permission.channels.length > 0 && !permission.channels.includes(interaction.channel.id)) return 'noperm';
+   if (member.roles.cache.find((i) => permission.blacklist_roles.includes(i.id))) return 'noperm';
+   if (permission.roles.length > 0 && !member.roles.cache.find((i) => permission.roles.includes(i.id))) return 'noperm';
+   if (permission.disabled) return 'disabled';
+
+   return true;
 }

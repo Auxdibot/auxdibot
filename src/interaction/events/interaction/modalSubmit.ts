@@ -1,6 +1,6 @@
 import { EmbedBuilder, GuildMember, ModalSubmitInteraction } from 'discord.js';
 import { Auxdibot } from '@/interfaces/Auxdibot';
-import testPermission from '@/util/testPermission';
+import { testLegacyPermission } from '@/util/testPermission';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 
 export default async function modalSubmit(auxdibot: Auxdibot, interaction: ModalSubmitInteraction) {
@@ -15,7 +15,7 @@ export default async function modalSubmit(auxdibot: Auxdibot, interaction: Modal
             modal.permission &&
             interaction.guild &&
             interaction.member &&
-            !(await testPermission(
+            !(await testLegacyPermission(
                auxdibot,
                interaction.guild.id,
                modal.permission,
