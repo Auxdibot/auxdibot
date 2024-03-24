@@ -1,6 +1,6 @@
 import { AnySelectMenuInteraction, EmbedBuilder, GuildMember } from 'discord.js';
 import { Auxdibot } from '@/interfaces/Auxdibot';
-import testPermission from '@/util/testPermission';
+import { testLegacyPermission } from '@/util/testPermission';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 
 export default async function selectMenuCreate(auxdibot: Auxdibot, interaction: AnySelectMenuInteraction) {
@@ -15,7 +15,7 @@ export default async function selectMenuCreate(auxdibot: Auxdibot, interaction: 
             select_menu.permission &&
             interaction.guild &&
             interaction.member &&
-            !(await testPermission(
+            !(await testLegacyPermission(
                auxdibot,
                interaction.guild.id,
                select_menu.permission,
