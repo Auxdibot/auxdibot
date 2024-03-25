@@ -44,7 +44,7 @@ export const placeholdersList = <AuxdibotSubcommand>{
             value: placeholders[placeholder].join('\r\n'),
          };
       });
-      return await interaction.reply({
+      return await auxdibot.createReply(interaction, {
          embeds: [placeholdersEmbed],
       });
    },

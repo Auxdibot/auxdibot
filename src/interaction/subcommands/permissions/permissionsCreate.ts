@@ -60,7 +60,7 @@ export const permissionsCreate = <AuxdibotSubcommand>{
                },
             ];
 
-            return await interaction.reply({ embeds: [embed] });
+            return await auxdibot.createReply(interaction, { embeds: [embed] });
          })
          .catch((x) =>
             handleError(

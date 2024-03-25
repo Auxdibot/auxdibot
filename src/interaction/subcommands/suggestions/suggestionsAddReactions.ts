@@ -38,7 +38,7 @@ export const suggestionsAddReactions = <AuxdibotSubcommand>{
          .then(async () => {
             const successEmbed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             successEmbed.description = `Added ${reaction} as a suggestion reaction.`;
-            return await interaction.reply({ embeds: [successEmbed] });
+            return await auxdibot.createReply(interaction, { embeds: [successEmbed] });
          })
          .catch((x) => {
             handleError(

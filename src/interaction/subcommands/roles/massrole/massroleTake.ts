@@ -30,7 +30,7 @@ export const massroleTake = <AuxdibotSubcommand>{
             const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.title = 'Success!';
             embed.description = `Successfully took the role ${role} from ${i.toLocaleString()} members!`;
-            await interaction.reply({ embeds: [embed] });
+            await auxdibot.createReply(interaction, { embeds: [embed] });
          })
          .catch(() => {
             handleError(

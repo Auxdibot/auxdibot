@@ -45,7 +45,7 @@ export const reactionRolesRemove = <AuxdibotSubcommand>{
             const successEmbed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             successEmbed.title = '👈 Deleted Reaction Role';
             successEmbed.description = `Deleted a reaction role${message ? ` in ${message.channel}` : ''}.`;
-            return await interaction.reply({ embeds: [successEmbed] });
+            return await auxdibot.createReply(interaction, { embeds: [successEmbed] });
          })
          .catch((x) =>
             handleError(

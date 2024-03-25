@@ -27,7 +27,7 @@ export const levelsSetMessageXP = <AuxdibotSubcommand>{
             const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.description = `Members will now get ${xp.toLocaleString()} XP from chatting.`;
             embed.title = 'Success!';
-            return await interaction.reply({ embeds: [embed] });
+            return await auxdibot.createReply(interaction, { embeds: [embed] });
          })
          .catch((x) => {
             handleError(

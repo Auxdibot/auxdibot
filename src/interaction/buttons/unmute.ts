@@ -38,7 +38,7 @@ export default <AuxdibotButton>{
             const noPermissionEmbed = new EmbedBuilder().setColor(auxdibot.colors.denied).toJSON();
             noPermissionEmbed.title = '⛔ No Permission!';
             noPermissionEmbed.description = `This user has a higher role than you or owns this server!`;
-            return await interaction.reply({ embeds: [noPermissionEmbed] });
+            return await auxdibot.createReply(interaction, { embeds: [noPermissionEmbed] });
          }
          member.roles.remove(interaction.guild.roles.resolve(server.mute_role) || '').catch(() => undefined);
          const dmEmbed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
@@ -68,6 +68,6 @@ export default <AuxdibotButton>{
          [punishmentInfoField(muted, true, true)],
          true,
       );
-      return await interaction.reply({ embeds: [embed] });
+      return await auxdibot.createReply(interaction, { embeds: [embed] });
    },
 };

@@ -28,6 +28,6 @@ export const scheduleList = <AuxdibotSubcommand>{
             )}:R>)`,
          'Use `/schedule preview (index)` to preview any schedule!',
       );
-      return await interaction.reply({ embeds: [successEmbed] });
+      return await auxdibot.createReply(interaction, { embeds: [successEmbed] });
    },
 };

@@ -26,6 +26,6 @@ export const levelsAwardXP = <AuxdibotSubcommand>{
       const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
       embed.description = `Successfully awarded ${member} ${xp.toLocaleString()} XP.`;
       embed.title = 'Success!';
-      return await interaction.reply({ embeds: [embed] });
+      return await auxdibot.createReply(interaction, { embeds: [embed] });
    },
 };

@@ -9,7 +9,7 @@ export default async function modalSubmit(auxdibot: Auxdibot, interaction: Modal
       const modal = auxdibot.modals.get(interaction.customId.split('-')[0]);
       if (modal) {
          if (server?.disabled_modules.find((item) => item == modal.module.name))
-            return await interaction.reply({ embeds: [auxdibot.embeds.disabled.toJSON()] });
+            return await auxdibot.createReply(interaction, { embeds: [auxdibot.embeds.disabled.toJSON()] });
 
          if (
             modal.permission &&
@@ -26,7 +26,7 @@ export default async function modalSubmit(auxdibot: Auxdibot, interaction: Modal
             const noPermissionEmbed = new EmbedBuilder().setColor(auxdibot.colors.denied).toJSON();
             noPermissionEmbed.title = '⛔ No Permission!';
             noPermissionEmbed.description = `You do not have permission to use this button. (Missing permission: \`${modal.permission}\`)`;
-            return await interaction.reply({
+            return await auxdibot.createReply(interaction, {
                embeds: [noPermissionEmbed],
             });
          }

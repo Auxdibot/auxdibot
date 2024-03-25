@@ -70,7 +70,7 @@ export const reactionRolesAddJSON = <AuxdibotSubcommand>{
             const resEmbed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             resEmbed.title = '👈 Created Reaction Role';
             resEmbed.description = `Created a reaction role in ${channel}`;
-            return await interaction.reply({ embeds: [resEmbed] });
+            return await auxdibot.createReply(interaction, { embeds: [resEmbed] });
          })
          .catch(async (x) => {
             handleError(

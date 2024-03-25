@@ -23,6 +23,6 @@ export const exceptionsList = <AuxdibotSubcommand>{
          (accumulator: string, value: string, index: number) => `${accumulator}\n**${index + 1})** <@&${value}>`,
          '',
       );
-      return await interaction.reply({ embeds: [successEmbed] });
+      return await auxdibot.createReply(interaction, { embeds: [successEmbed] });
    },
 };

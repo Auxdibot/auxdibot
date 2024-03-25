@@ -24,7 +24,7 @@ export default <AuxdibotButton>{
          const noPermissionEmbed = new EmbedBuilder().setColor(auxdibot.colors.denied).toJSON();
          noPermissionEmbed.title = '⛔ No Permission!';
          noPermissionEmbed.description = `This user has a higher role than you or owns this server!`;
-         return await interaction.reply({ embeds: [noPermissionEmbed] });
+         return await auxdibot.createReply(interaction, { embeds: [noPermissionEmbed] });
       }
       const server = await findOrCreateServer(auxdibot, interaction.guild.id);
       if (!server.mute_role || !interaction.guild.roles.resolve(server.mute_role)) {

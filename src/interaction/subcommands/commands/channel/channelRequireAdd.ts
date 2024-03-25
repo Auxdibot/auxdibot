@@ -43,7 +43,7 @@ export default <AuxdibotSubcommand>{
             embed.description = `The command \`/${commandStr.replace(/^\//g, '')}\`'s usage has been limited to <#${
                channel.id
             }>. (This does not include other channels added as requirements.)`;
-            return await interaction.reply({ embeds: [embed] });
+            return await auxdibot.createReply(interaction, { embeds: [embed] });
          })
          .catch(() => {
             handleError(

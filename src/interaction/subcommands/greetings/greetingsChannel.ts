@@ -25,7 +25,7 @@ export const greetingsChannel = <AuxdibotSubcommand>{
       const formerChannel = interaction.data.guild.channels.resolve(server.join_leave_channel || '');
       if (channel && channel.id == server.join_leave_channel) {
          embed.description = `Nothing changed. Channel is the same as one specified in settings.`;
-         return await interaction.reply({
+         return await auxdibot.createReply(interaction, {
             embeds: [embed],
          });
       }
@@ -37,7 +37,7 @@ export const greetingsChannel = <AuxdibotSubcommand>{
       await setJoinLeaveChannel(auxdibot, interaction.guild, interaction.user, channel)
          .then(
             async () =>
-               await interaction.reply({
+               await auxdibot.createReply(interaction, {
                   embeds: [embed],
                }),
          )

@@ -63,7 +63,7 @@ export const commandInfo = <AuxdibotSubcommand>{
             value: subcommands[i].reduce((acc, b) => acc + subcommandToBrief(command, i, b), ''),
             inline: true,
          }));
-      return await interaction.reply({
+      return await auxdibot.createReply(interaction, {
          embeds: [helpCommandEmbed],
          components: [promoRow.toJSON()],
       });

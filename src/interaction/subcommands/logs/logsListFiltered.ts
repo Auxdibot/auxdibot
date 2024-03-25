@@ -20,6 +20,6 @@ export const logsListFiltered = <AuxdibotSubcommand>{
       const embed = new EmbedBuilder().setColor(auxdibot.colors.default).toJSON();
       embed.title = '❌ Filtered Logs';
       embed.description = server.filtered_logs.reverse().reduce((str, log) => `${str}\n**${LogNames[log]}**`, '\u2800');
-      return await interaction.reply({ embeds: [embed] });
+      return await auxdibot.createReply(interaction, { embeds: [embed] });
    },
 };

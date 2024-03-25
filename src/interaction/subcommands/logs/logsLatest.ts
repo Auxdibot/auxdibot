@@ -28,6 +28,6 @@ export const logsLatest = <AuxdibotSubcommand>{
             }>\n`
          );
       }, '\u2800');
-      return await interaction.reply({ embeds: [embed] });
+      return await auxdibot.createReply(interaction, { embeds: [embed] });
    },
 };

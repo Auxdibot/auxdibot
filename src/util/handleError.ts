@@ -15,6 +15,6 @@ export default async function handleError(
    interaction.isRepliable() && interaction.deferred
       ? interaction.editReply({ embeds: [errorEmbed] })
       : interaction.isRepliable() && !interaction.replied
-      ? interaction.reply({ embeds: [errorEmbed], ephemeral: !!ephemeral })
+      ? auxdibot.createReply(interaction, { embeds: [errorEmbed], ephemeral: !!ephemeral })
       : interaction.channel.send({ embeds: [errorEmbed] });
 }

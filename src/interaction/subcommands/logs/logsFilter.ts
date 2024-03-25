@@ -32,7 +32,7 @@ export const logsFilter = <AuxdibotSubcommand>{
                   ? 'It will no longer be logged to your server logs.'
                   : 'It will now be logged to your server logs.'
             }`;
-            return await interaction.reply({ embeds: [embed] });
+            return await auxdibot.createReply(interaction, { embeds: [embed] });
          })
          .catch(() => {
             return handleError(

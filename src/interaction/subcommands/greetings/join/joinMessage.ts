@@ -46,7 +46,7 @@ export const joinMessage = <AuxdibotSubcommand>{
          const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
          embed.title = 'Success!';
          embed.description = `Set the join embed.`;
-         await interaction.reply({ embeds: [embed] });
+         await auxdibot.createReply(interaction, { embeds: [embed] });
       } catch (x) {
          return await handleError(auxdibot, 'EMBED_SEND_ERROR', 'There was an error sending that embed!', interaction);
       }

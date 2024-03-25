@@ -18,7 +18,7 @@ export const joinDMPreview = <AuxdibotSubcommand>{
       if (!interaction.data) return;
       const settings = interaction.data.guildData;
       try {
-         return await interaction.reply({
+         return await auxdibot.createReply(interaction, {
             content: `**EMBED PREVIEW**\r\n${settings.join_dm_text || ''}`,
             ...(Object.entries(settings.join_dm_embed || {}).length != 0
                ? {

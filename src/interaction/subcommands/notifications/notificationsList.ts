@@ -36,6 +36,6 @@ export const notificationsList = <AuxdibotSubcommand>{
             ),
          },
       ];
-      return await interaction.reply({ embeds: [embed] });
+      return await auxdibot.createReply(interaction, { embeds: [embed] });
    },
 };

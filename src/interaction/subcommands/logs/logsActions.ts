@@ -20,6 +20,6 @@ export const logsActions = <AuxdibotSubcommand>{
       const embed = new EmbedBuilder().setColor(auxdibot.colors.default).toJSON();
       embed.title = '📜 All Log Actions';
       embed.description = Object.values(LogAction).reduce((acc, i) => (acc += `\n**${LogNames[i]}** - \`${i}\``), '');
-      return await interaction.reply({ embeds: [embed] });
+      return await auxdibot.createReply(interaction, { embeds: [embed] });
    },
 };

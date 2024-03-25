@@ -28,7 +28,7 @@ export const moderationSendReason = <AuxdibotSubcommand>{
                ? 'The reason will continue to be sent with the punishment.'
                : 'The reason will continue to not be sent with the punishment.'
          }`;
-         return await interaction.reply({
+         return await auxdibot.createReply(interaction, {
             embeds: [embed],
          });
       }
@@ -39,7 +39,7 @@ export const moderationSendReason = <AuxdibotSubcommand>{
                   ? 'The reason will be sent with the punishment.'
                   : 'The reason will not be sent with the punishment.'
             }`;
-            return await interaction.reply({
+            return await auxdibot.createReply(interaction, {
                embeds: [embed],
             });
          })

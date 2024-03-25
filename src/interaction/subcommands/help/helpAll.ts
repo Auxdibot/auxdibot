@@ -94,7 +94,7 @@ export const helpAll = <AuxdibotSubcommand>{
                .setLabel('Starboard')
                .setEmoji(CustomEmojis.STARBOARD),
          );
-      return await interaction.reply({
+      return await auxdibot.createReply(interaction, {
          embeds: [embed],
          components: [modulesRow1, modulesRow2, promoRow.toJSON()],
       });

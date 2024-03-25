@@ -36,6 +36,6 @@ export const levelsLeaderboard = <AuxdibotSubcommand>{
             }> - \`Level ${member.level}\` (\`${member.xp} XP\`)\n`
          );
       }, '');
-      return await interaction.reply({ embeds: [embed] });
+      return await auxdibot.createReply(interaction, { embeds: [embed] });
    },
 };

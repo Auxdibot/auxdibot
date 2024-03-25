@@ -22,7 +22,7 @@ export const starboardReaction = <AuxdibotSubcommand>{
          .then(async () => {
             const successEmbed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             successEmbed.description = `Set ${reaction} as the starboard reaction.`;
-            return await interaction.reply({ embeds: [successEmbed] });
+            return await auxdibot.createReply(interaction, { embeds: [successEmbed] });
          })
          .catch((x) => {
             handleError(

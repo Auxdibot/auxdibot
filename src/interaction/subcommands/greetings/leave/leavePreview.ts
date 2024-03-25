@@ -18,7 +18,7 @@ export const leavePreview = <AuxdibotSubcommand>{
       if (!interaction.data) return;
       const settings = interaction.data.guildData;
       try {
-         return await interaction.reply({
+         return await auxdibot.createReply(interaction, {
             content: `**EMBED PREVIEW**\r\n${settings.leave_text || ''}`,
             ...(Object.entries(settings.leave_embed || {}).length != 0
                ? {

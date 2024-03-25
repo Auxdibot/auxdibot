@@ -44,7 +44,7 @@ export default <AuxdibotSubcommand>{
             embed.description = channel
                ? `The command \`/${commandStr.replace(/^\//g, '')}\` will now output to <#${channel?.id}>.`
                : `The command \`${commandStr.replace(/\//g, '')}\` will now output to the channel it was called in.`;
-            return await interaction.reply({ embeds: [embed] });
+            return await auxdibot.createReply(interaction, { embeds: [embed] });
          })
          .catch(() => {
             handleError(

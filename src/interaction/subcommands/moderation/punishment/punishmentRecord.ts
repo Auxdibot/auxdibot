@@ -26,6 +26,6 @@ export const punishmentRecord = <AuxdibotSubcommand>{
             interaction,
          );
 
-      await interaction.reply({ embeds: [embed] });
+      await auxdibot.createReply(interaction, { embeds: [embed] });
    },
 };

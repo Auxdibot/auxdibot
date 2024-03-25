@@ -21,8 +21,8 @@ export async function updateCommandPermissions(
    if (!commandPermissions) {
       commandPermissions = {
          command,
-         subcommand: subcommand[0],
-         group: subcommand[1],
+         subcommand: subcommand.length > 1 ? subcommand[1] : subcommand[0],
+         group: subcommand.length > 1 ? subcommand[0] : undefined,
          blacklist_channels: [],
          roles: [],
          blacklist_roles: [],

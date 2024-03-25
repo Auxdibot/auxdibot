@@ -1,4 +1,12 @@
-import { Client, ClientPresence, Collection, EmbedBuilder } from 'discord.js';
+import {
+   BaseInteraction,
+   Client,
+   ClientPresence,
+   Collection,
+   EmbedBuilder,
+   Message,
+   InteractionReplyOptions,
+} from 'discord.js';
 import AuxdibotCommand from './commands/AuxdibotCommand';
 import AuxdibotButton from './buttons/AuxdibotButton';
 import { PrismaClient } from '@prisma/client';
@@ -7,6 +15,7 @@ import { CachedMessage } from './messages/CachedMessage';
 import AuxdibotSelectMenu from './menus/AuxdibotSelectMenu';
 import AuxdibotModal from './modals/AuxdibotModal';
 import Subscriber from '@/modules/features/notifications/Subscriber';
+import { AuxdibotReplyOptions } from './AuxdibotReplyOptions';
 export interface Auxdibot extends Client {
    commands: Collection<string, AuxdibotCommand>;
    buttons: Collection<string, AuxdibotButton>;
@@ -43,4 +52,9 @@ export interface Auxdibot extends Client {
    };
    getMembers?(): Promise<number>;
    updateDiscordStatus?(guilds: number, message: string): Promise<ClientPresence | undefined>;
+   createReply?(
+      interaction: BaseInteraction,
+      data: InteractionReplyOptions,
+      options?: AuxdibotReplyOptions,
+   ): Promise<Message<boolean>> | Promise<void>;
 }

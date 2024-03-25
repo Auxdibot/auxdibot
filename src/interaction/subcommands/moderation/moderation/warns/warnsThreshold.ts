@@ -40,7 +40,7 @@ export const warnsThreshold = <AuxdibotSubcommand>{
             embed.title = 'Success!';
             embed.description = `Successfully set \`${PunishmentValues[punishment].name}\` as the server warn threshold punishment. Once a user hits ${warns} warns, they will be ${PunishmentValues[punishment].action}.`;
 
-            return await interaction.reply({ embeds: [embed] });
+            return await auxdibot.createReply(interaction, { embeds: [embed] });
          })
          .catch(() => {
             handleError(

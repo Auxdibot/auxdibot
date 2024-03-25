@@ -29,6 +29,6 @@ export const punishmentView = <AuxdibotSubcommand>{
       embed.title = `${type} Information (PID: ${punishment.punishmentID})`;
       embed.description = `This is the punishment information for <@${punishment.userID}>`;
       embed.fields = [punishmentInfoField(punishment, true, true)];
-      return await interaction.reply({ embeds: [embed] });
+      return await auxdibot.createReply(interaction, { embeds: [embed] });
    },
 };

@@ -57,7 +57,7 @@ export const notificationsTwitch = <AuxdibotSubcommand>{
                date_unix: Date.now(),
                description: description,
             });
-            return await interaction.reply({ embeds: [embed] });
+            return await auxdibot.createReply(interaction, { embeds: [embed] });
          });
       } catch (x) {
          return await handleError(

@@ -32,7 +32,7 @@ export const getEmbedJSON = <AuxdibotSubcommand>{
             inline: false,
          }));
          embed.title = 'Embed JSON Data';
-         return await interaction.reply({ embeds: [embed] });
+         return await auxdibot.createReply(interaction, { embeds: [embed] });
       } catch (x) {
          return await handleError(
             auxdibot,

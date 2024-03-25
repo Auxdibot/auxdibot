@@ -48,6 +48,6 @@ export const moduleInfo = <AuxdibotSubcommand>{
             value: commands.reduce((acc, i) => acc + ` **/${i.data.name}**\n> ${i.info.description}\n\n`, ''),
          },
       ];
-      return await interaction.reply({ embeds: [embed], components: [promoRow.toJSON()] });
+      return await auxdibot.createReply(interaction, { embeds: [embed], components: [promoRow.toJSON()] });
    },
 };

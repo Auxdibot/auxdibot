@@ -76,7 +76,7 @@ export default <AuxdibotCommand>{
             const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.title = '📩 Report Submitted';
             embed.description = `Your report has been submitted to the moderators of ${interaction.guild.name}.`;
-            return await interaction.reply({
+            return await auxdibot.createReply(interaction, {
                embeds: [embed],
                ephemeral: true,
             });

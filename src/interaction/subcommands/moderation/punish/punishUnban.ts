@@ -47,6 +47,6 @@ export const punishUnban = <AuxdibotSubcommand>{
          [punishmentInfoField(banned, true, true)],
          true,
       );
-      await interaction.reply({ embeds: [embed] });
+      await auxdibot.createReply(interaction, { embeds: [embed] });
    },
 };

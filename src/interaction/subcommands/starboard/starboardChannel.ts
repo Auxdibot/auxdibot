@@ -26,7 +26,7 @@ export const starboardChannel = <AuxdibotSubcommand>{
       const formerChannel = interaction.data.guild.channels.resolve(server.starboard_channel || '');
       if ((channel && channel.id == server.starboard_channel) || (!channel && !server.starboard_channel)) {
          embed.description = `Nothing changed. Starboard channel is the same as one specified in settings.`;
-         return await interaction.reply({
+         return await auxdibot.createReply(interaction, {
             embeds: [embed],
          });
       }
@@ -36,7 +36,7 @@ export const starboardChannel = <AuxdibotSubcommand>{
                formerChannel ? `<#${formerChannel.id}>` : 'None'
             }\r\n\r\nNow: ${channel || 'None (Disabled)'}`;
 
-            return await interaction.reply({
+            return await auxdibot.createReply(interaction, {
                embeds: [embed],
             });
          })

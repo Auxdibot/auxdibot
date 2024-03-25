@@ -53,7 +53,7 @@ export const attachmentsSet = <AuxdibotSubcommand>{
             if (attachments == 0) embed.description = 'Disabled attachments filter.';
             else
                embed.description = `📁 Attachments: \`${attachments} attachments\`\n🕰️ Spam Duration: \`${duration}s\``;
-            return await interaction.reply({ embeds: [embed] });
+            return await auxdibot.createReply(interaction, { embeds: [embed] });
          })
          .catch(() => {
             handleError(auxdibot, 'ERROR_SET_ATTACHMENTS_LIMIT', "Couldn't set the attachments limit!", interaction);

@@ -49,7 +49,7 @@ export const joinRoleRemove = <AuxdibotSubcommand>{
             const successEmbed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             successEmbed.title = '👋 Removed Join Role';
             successEmbed.description = `Removed <@&${joinRoleID}> from the join roles.`;
-            return await interaction.reply({ embeds: [successEmbed] });
+            return await auxdibot.createReply(interaction, { embeds: [successEmbed] });
          })
          .catch(async (x) => {
             await handleError(auxdibot, 'FAILED_JOIN_ROLE_REMOVE', x.message, interaction);

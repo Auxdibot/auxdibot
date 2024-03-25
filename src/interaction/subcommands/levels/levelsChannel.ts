@@ -25,7 +25,7 @@ export const levelsChannel = <AuxdibotSubcommand>{
       const formerChannel = interaction.data.guild.channels.resolve(server.level_channel || '');
       if ((channel && channel.id == server.level_channel) || (!channel && !server.level_channel)) {
          embed.description = `Nothing changed. Level channel is the same as one specified in settings.`;
-         return await interaction.reply({
+         return await auxdibot.createReply(interaction, {
             embeds: [embed],
          });
       }
@@ -34,7 +34,7 @@ export const levelsChannel = <AuxdibotSubcommand>{
             embed.description = `The level channel for this server has been changed.\r\n\r\nFormerly: ${
                formerChannel ? `<#${formerChannel.id}>` : 'None'
             }\r\n\r\nNow: ${channel || 'None (Reply)'}`;
-            return await interaction.reply({
+            return await auxdibot.createReply(interaction, {
                embeds: [embed],
             });
          })

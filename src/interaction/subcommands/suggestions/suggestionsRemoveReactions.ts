@@ -45,7 +45,7 @@ export const suggestionsRemoveReactions = <AuxdibotSubcommand>{
             .then(async () => {
                const successEmbed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
                successEmbed.description = `Removed ${suggestionReaction} from the reactions.`;
-               return await interaction.reply({ embeds: [successEmbed] });
+               return await auxdibot.createReply(interaction, { embeds: [successEmbed] });
             })
             .catch((x) => {
                handleError(

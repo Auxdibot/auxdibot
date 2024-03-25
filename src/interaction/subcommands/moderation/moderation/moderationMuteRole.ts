@@ -28,7 +28,7 @@ export const moderationMuteRole = <AuxdibotSubcommand>{
          const noPermissionEmbed = new EmbedBuilder().setColor(auxdibot.colors.denied).toJSON();
          noPermissionEmbed.title = '⛔ No Permission!';
          noPermissionEmbed.description = `This role is higher than yours!`;
-         return await interaction.reply({
+         return await auxdibot.createReply(interaction, {
             embeds: [noPermissionEmbed],
             ephemeral: true,
          });
@@ -53,7 +53,7 @@ export const moderationMuteRole = <AuxdibotSubcommand>{
       embed.title = '⚙️ Mute Role Change';
       if (role && role.id == server.mute_role) {
          embed.description = `Nothing changed. Mute role is the same as one specified in settings.`;
-         return await interaction.reply({
+         return await auxdibot.createReply(interaction, {
             embeds: [embed],
          });
       }
@@ -64,7 +64,7 @@ export const moderationMuteRole = <AuxdibotSubcommand>{
             embed.description = `The mute role for this server has been changed.\r\n\r\nFormerly: ${
                formerRole ? `<@&${formerRole.id}>` : 'None (Timeout)'
             }\r\n\r\nNow: ${role ? `<@&${role.id}>` : 'None (Timeout)'}`;
-            return await interaction.reply({
+            return await auxdibot.createReply(interaction, {
                embeds: [embed],
             });
          })

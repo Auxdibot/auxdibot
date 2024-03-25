@@ -49,7 +49,7 @@ export const stickyRoleRemove = <AuxdibotSubcommand>{
             const successEmbed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             successEmbed.title = '📝 Removed Sticky Role';
             successEmbed.description = `Removed role <@&${stickyRoleID}> from the sticky roles.`;
-            return await interaction.reply({ embeds: [successEmbed] });
+            return await auxdibot.createReply(interaction, { embeds: [successEmbed] });
          })
          .catch(async (x) => {
             await handleError(auxdibot, 'FAILED_STICKY_ROLE_REMOVE', x.message, interaction);
