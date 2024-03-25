@@ -71,7 +71,7 @@ export const exceptionsAdd = <AuxdibotSubcommand>{
             const successEmbed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             successEmbed.title = '🛡️ Added AutoMod Exception Role';
             successEmbed.description = `Added <@&${role.id}> to the AutoMod exception roles.`;
-            return await interaction.reply({ embeds: [successEmbed] });
+            return await auxdibot.createReply(interaction, { embeds: [successEmbed] });
          })
          .catch(() => {
             handleError(

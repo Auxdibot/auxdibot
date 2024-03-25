@@ -20,6 +20,6 @@ export default <AuxdibotButton>{
             "Couldn't generate the record embed for that user!",
             interaction,
          );
-      return await interaction.reply({ embeds: [embed] });
+      return await auxdibot.createReply(interaction, { embeds: [embed] });
    },
 };

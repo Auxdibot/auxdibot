@@ -43,7 +43,7 @@ export default <AuxdibotSubcommand>{
             embed.description = `The role <@&${
                role.id
             }> can now bypass Discord permission limitations for the command \`/${commandStr.replace(/^\//g, '')}\`.`;
-            return await interaction.reply({ embeds: [embed] });
+            return await auxdibot.createReply(interaction, { embeds: [embed] });
          })
          .catch(() => {
             handleError(

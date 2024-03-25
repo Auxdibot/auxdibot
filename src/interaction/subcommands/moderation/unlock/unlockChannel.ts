@@ -32,7 +32,7 @@ export const unlockChannel = <AuxdibotSubcommand>{
          const noPermissionEmbed = new EmbedBuilder().setColor(auxdibot.colors.denied).toJSON();
          noPermissionEmbed.title = '⛔ No Permission!';
          noPermissionEmbed.description = 'You are missing the `Manage Channels` permission on this server!';
-         return await interaction.reply({ embeds: [noPermissionEmbed] });
+         return await auxdibot.createReply(interaction, { embeds: [noPermissionEmbed] });
       }
       if (!channel.manageable) {
          return handleError(
@@ -60,7 +60,7 @@ export const unlockChannel = <AuxdibotSubcommand>{
             .then(async () => {
                return await deleteLock(auxdibot, interaction.data.guildData, channel.id).then(() => {
                   handleLog(auxdibot, interaction.guild, log);
-                  return interaction.reply({ embeds: [embed] });
+                  auxdibot.createReply(interaction, { embeds: [embed] });
                });
             })
             .catch(async () => {
@@ -85,7 +85,7 @@ export const unlockChannel = <AuxdibotSubcommand>{
          .then(async () => {
             return await deleteLock(auxdibot, interaction.data.guildData, channel.id).then(() => {
                handleLog(auxdibot, interaction.guild, log);
-               return interaction.reply({ embeds: [embed] });
+               auxdibot.createReply(interaction, { embeds: [embed] });
             });
          })
          .catch(async () => {

@@ -53,7 +53,7 @@ export default <AuxdibotSubcommand>{
                /^\//g,
                '',
             )}\`.`;
-            return await interaction.reply({ embeds: [embed] });
+            return await auxdibot.createReply(interaction, { embeds: [embed] });
          })
          .catch(() => {
             handleError(

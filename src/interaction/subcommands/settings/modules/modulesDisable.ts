@@ -37,7 +37,7 @@ export const moduleDisable = <AuxdibotSubcommand>{
             const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.title = 'Success!';
             embed.description = `Successfully disabled the ${module.name} module. Its functionality & commands will no longer work until re-enabled.`;
-            return await interaction.reply({ embeds: [embed] });
+            return await auxdibot.createReply(interaction, { embeds: [embed] });
          })
          .catch(() => {
             handleError(

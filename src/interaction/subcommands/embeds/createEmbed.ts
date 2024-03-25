@@ -50,6 +50,6 @@ export const createEmbed = <AuxdibotSubcommand>{
       const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
       embed.title = 'Success!';
       embed.description = `Sent embed to ${channel}.`;
-      return await interaction.reply({ embeds: [embed] });
+      return await auxdibot.createReply(interaction, { embeds: [embed] });
    },
 };

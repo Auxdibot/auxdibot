@@ -24,7 +24,7 @@ export const suggestionsAutoDelete = <AuxdibotSubcommand>{
       const deleteSuggestions = server.suggestions_auto_delete;
       if (deleteBool == deleteSuggestions) {
          embed.description = `Nothing changed. Auto delete is the same as settings.`;
-         return await interaction.reply({
+         return await auxdibot.createReply(interaction, {
             embeds: [embed],
          });
       }
@@ -33,7 +33,7 @@ export const suggestionsAutoDelete = <AuxdibotSubcommand>{
             embed.description = `The suggestions auto deletion for this server has been changed.\r\n\r\nFormerly: ${
                deleteSuggestions ? 'Delete' : 'Do not Delete'
             }\r\n\r\nNow: ${deleteBool ? 'Delete' : 'Do not Delete'}`;
-            return await interaction.reply({
+            return await auxdibot.createReply(interaction, {
                embeds: [embed],
             });
          })

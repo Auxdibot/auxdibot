@@ -18,6 +18,7 @@ import scheduleClearMessageCache from './modules/features/scheduleClearMessageCa
 import { CustomEmojis } from './constants/bot/CustomEmojis';
 import Subscriber from './modules/features/notifications/Subscriber';
 import createSubscribers from './modules/features/notifications/createSubscribers';
+import { createReply } from './util/createReply';
 
 const TOKEN = process.env.DISCORD_BOT_TOKEN;
 const CLIENT_ID = process.env.DISCORD_BOT_CLIENT_ID;
@@ -128,7 +129,7 @@ const CLIENT_ID = process.env.DISCORD_BOT_CLIENT_ID;
          });
       return undefined;
    };
-
+   auxdibot.createReply = createReply;
    const rest = new REST({
       version: '10',
    }).setToken(TOKEN);

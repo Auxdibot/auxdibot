@@ -53,6 +53,6 @@ export const suggestionsDelete = <AuxdibotSubcommand>{
       const successEmbed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
       successEmbed.title = 'Success';
       successEmbed.description = `Successfully deleted Suggestion #${suggestion.suggestionID}.`;
-      return await interaction.reply({ embeds: [successEmbed] });
+      return await auxdibot.createReply(interaction, { embeds: [successEmbed] });
    },
 };

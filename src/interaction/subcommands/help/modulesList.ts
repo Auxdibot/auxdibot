@@ -45,7 +45,7 @@ export const modulesList = <AuxdibotSubcommand>{
             value: "Look at the `/disable` and `/enable` commands to disable or enable a specific module's functionality.",
          },
       ];
-      return await interaction.reply({
+      return await auxdibot.createReply(interaction, {
          embeds: [embed],
          components: [promoRow.toJSON()],
       });

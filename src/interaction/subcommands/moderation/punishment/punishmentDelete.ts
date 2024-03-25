@@ -33,6 +33,6 @@ export const punishmentDelete = <AuxdibotSubcommand>{
       embed.title = `${type} deleted. (PID: ${punishment.punishmentID})`;
       embed.description = `${interaction.user} deleted a punishment assigned to <@${punishment.userID}>.`;
       embed.fields = [punishmentInfoField(punishment, true, true)];
-      await interaction.reply({ embeds: [embed] });
+      await auxdibot.createReply(interaction, { embeds: [embed] });
    },
 };

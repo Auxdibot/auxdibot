@@ -9,7 +9,7 @@ export default async function selectMenuCreate(auxdibot: Auxdibot, interaction: 
       const select_menu = auxdibot.select_menus.get(interaction.customId.split('-')[0]);
       if (select_menu) {
          if (server?.disabled_modules.find((item) => item == select_menu.module.name))
-            return await interaction.reply({ embeds: [auxdibot.embeds.disabled.toJSON()] });
+            return await auxdibot.createReply(interaction, { embeds: [auxdibot.embeds.disabled.toJSON()] });
 
          if (
             select_menu.permission &&
@@ -26,7 +26,7 @@ export default async function selectMenuCreate(auxdibot: Auxdibot, interaction: 
             const noPermissionEmbed = new EmbedBuilder().setColor(auxdibot.colors.denied).toJSON();
             noPermissionEmbed.title = '⛔ No Permission!';
             noPermissionEmbed.description = `You do not have permission to use this select menu. (Missing permission: \`${select_menu.permission}\`)`;
-            return await interaction.reply({
+            return await auxdibot.createReply(interaction, {
                embeds: [noPermissionEmbed],
             });
          }

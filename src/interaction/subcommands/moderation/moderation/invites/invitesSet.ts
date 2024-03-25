@@ -52,7 +52,7 @@ export const invitesSet = <AuxdibotSubcommand>{
             embed.title = '⚙️ Automod Invites Limit Set';
             if (invites == 0) embed.description = 'Disabled invites filter.';
             else embed.description = `📩 Invites: \`${invites} invites\`\n🕰️ Spam Duration: \`${duration}s\``;
-            return await interaction.reply({ embeds: [embed] });
+            return await auxdibot.createReply(interaction, { embeds: [embed] });
          })
          .catch(() => {
             handleError(auxdibot, 'ERROR_SET_INVITES_LIMIT', "Couldn't set the invites limit!", interaction);

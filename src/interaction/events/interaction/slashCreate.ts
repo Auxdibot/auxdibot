@@ -4,7 +4,7 @@ import { DMAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
-import { testPermission } from '@/util/testPermission';
+import { testCommandPermission } from '@/util/testPermission';
 import handleError from '@/util/handleError';
 
 export default async function slashCreate(auxdibot: Auxdibot, interaction: ChatInputCommandInteraction) {
@@ -19,7 +19,7 @@ export default async function slashCreate(auxdibot: Auxdibot, interaction: ChatI
          const discordServerOnlyEmbed = new EmbedBuilder().setColor(auxdibot.colors.denied).toJSON();
          discordServerOnlyEmbed.title = '⛔ Nope!';
          discordServerOnlyEmbed.description = `This command can only be used in Discord Servers!`;
-         return await interaction.reply({
+         return await auxdibot.createReply(interaction, {
             embeds: [discordServerOnlyEmbed],
          });
       }
@@ -37,7 +37,7 @@ export default async function slashCreate(auxdibot: Auxdibot, interaction: ChatI
             subcommand.group == interaction.options.getSubcommandGroup(),
       ) || command;
    if (server && server.disabled_modules.find((item) => item == commandData.info.module.name))
-      return await interaction.reply({ embeds: [auxdibot.embeds.disabled.toJSON()] });
+      return await auxdibot.createReply(interaction, { embeds: [auxdibot.embeds.disabled.toJSON()] });
    if (interaction.guild) {
       interactionData.data = <GuildAuxdibotCommandData>{
          dmCommand: false,
@@ -46,16 +46,32 @@ export default async function slashCreate(auxdibot: Auxdibot, interaction: ChatI
          member: await interaction.guild.members.fetch(interaction.member.user.id).catch(() => undefined),
          guildData: server,
       };
-      if (
-         !(await testPermission(auxdibot, interaction, interaction.commandName, [
-            interaction.options.getSubcommandGroup(),
-            interaction.options.getSubcommand(),
-         ]))
-      ) {
+      const permissionTest = await testCommandPermission(
+         auxdibot,
+         interaction,
+         interaction.commandName,
+         [interaction.options.getSubcommandGroup(), interaction.options.getSubcommand()].filter((i) => i),
+      );
+      console.log(permissionTest);
+      if (permissionTest !== true) {
          const noPermissionEmbed = new EmbedBuilder().setColor(auxdibot.colors.denied).toJSON();
-         noPermissionEmbed.title = '⛔ No Permission!';
-         noPermissionEmbed.description = `You do not have permission to use this. (Missing permission: \`${commandData.info.permission}\`)`;
-         return await interaction.reply({
+         noPermissionEmbed.title =
+            permissionTest == 'noperm'
+               ? '⛔ No Permission!'
+               : permissionTest == 'notfound'
+               ? '❓ Command Not Found!'
+               : permissionTest == 'disabled'
+               ? '🚫 Disabled'
+               : '⛔ Nope!';
+         noPermissionEmbed.description =
+            permissionTest == 'noperm'
+               ? `You do not have permission to use this command.`
+               : permissionTest == 'notfound'
+               ? `This command is not found.`
+               : permissionTest == 'disabled'
+               ? `This command is disabled.`
+               : `This command is not available in this server.`;
+         return await auxdibot.createReply(interaction, {
             ephemeral: true,
             embeds: [noPermissionEmbed],
          });

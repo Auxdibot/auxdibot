@@ -24,7 +24,7 @@ export const permissionsView = <AuxdibotSubcommand>{
          embed.description = `${permission.allowed ? '✅' : '❎'} \`${permission.permission}\` - ${
             permission.roleID ? `<@&${permission.roleID}>` : permission.userID ? `<@${permission.userID}>` : ''
          }`;
-         return await interaction.reply({ embeds: [embed] });
+         return await auxdibot.createReply(interaction, { embeds: [embed] });
       }
    },
 };

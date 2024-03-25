@@ -41,7 +41,7 @@ export default <AuxdibotSubcommand>{
             const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.title = 'Command Permissions Updated';
             embed.description = `The command \`/${commandStr.replace(/^\//g, '')}\` has been enabled.`;
-            return await interaction.reply({ embeds: [embed] });
+            return await auxdibot.createReply(interaction, { embeds: [embed] });
          })
          .catch(() => {
             handleError(

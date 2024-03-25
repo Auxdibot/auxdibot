@@ -28,7 +28,7 @@ export const moderationSendModerator = <AuxdibotSubcommand>{
                ? 'The name of the moderator will continue to be sent with the punishment.'
                : 'The name of the moderator will continue to not be sent with the punishment.'
          }`;
-         return await interaction.reply({
+         return await auxdibot.createReply(interaction, {
             embeds: [embed],
          });
       }
@@ -39,7 +39,7 @@ export const moderationSendModerator = <AuxdibotSubcommand>{
                   ? 'The name of the moderator will be sent with the punishment.'
                   : 'The name of the moderator will not be sent with the punishment.'
             }`;
-            return await interaction.reply({
+            return await auxdibot.createReply(interaction, {
                embeds: [embed],
             });
          })

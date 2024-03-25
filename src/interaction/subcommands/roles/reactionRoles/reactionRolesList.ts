@@ -26,6 +26,6 @@ export const reactionRolesList = <AuxdibotSubcommand>{
             )})`,
          '',
       );
-      return await interaction.reply({ embeds: [successEmbed] });
+      return await auxdibot.createReply(interaction, { embeds: [successEmbed] });
    },
 };

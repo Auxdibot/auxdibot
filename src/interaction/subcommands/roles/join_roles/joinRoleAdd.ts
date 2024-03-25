@@ -38,7 +38,7 @@ export const joinRoleAdd = <AuxdibotSubcommand>{
             const successEmbed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             successEmbed.title = '👋 Added Join Role';
             successEmbed.description = `Added <@&${role.id}> to the join roles.`;
-            return await interaction.reply({ embeds: [successEmbed] });
+            return await auxdibot.createReply(interaction, { embeds: [successEmbed] });
          })
          .catch(async (x) => {
             await handleError(auxdibot, 'FAILED_JOIN_ROLE_ADD', x.message, interaction);

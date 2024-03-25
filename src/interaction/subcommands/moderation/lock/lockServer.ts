@@ -27,7 +27,7 @@ export const lockServer = <AuxdibotSubcommand>{
          const noPermissionEmbed = new EmbedBuilder().setColor(auxdibot.colors.denied).toJSON();
          noPermissionEmbed.title = '⛔ No Permission!';
          noPermissionEmbed.description = 'You are missing the `Manage Channels` permission on this server!';
-         return await interaction.reply({ embeds: [noPermissionEmbed] });
+         return await auxdibot.createReply(interaction, { embeds: [noPermissionEmbed] });
       }
       const time = duration ? timestampToDuration(duration) : undefined;
       if (Number(time) < 60000) {
@@ -58,7 +58,7 @@ export const lockServer = <AuxdibotSubcommand>{
          date_unix: Date.now(),
          description: `The server was locked.`,
       });
-      await interaction.reply({ embeds: [embed] });
+      await auxdibot.createReply(interaction, { embeds: [embed] });
       const channels = await interaction.guild.channels.fetch();
       for (const channel of channels.values()) {
          if (!channel.isDMBased() && channel.isTextBased()) {

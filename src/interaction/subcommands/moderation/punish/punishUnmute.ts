@@ -32,7 +32,7 @@ export const punishUnmute = <AuxdibotSubcommand>{
             const noPermissionEmbed = new EmbedBuilder().setColor(auxdibot.colors.denied).toJSON();
             noPermissionEmbed.title = '⛔ No Permission!';
             noPermissionEmbed.description = `This user has a higher role than you or owns this server!`;
-            return await interaction.reply({ embeds: [noPermissionEmbed] });
+            return await auxdibot.createReply(interaction, { embeds: [noPermissionEmbed] });
          }
          if (server.mute_role) {
             member.roles.remove(interaction.data.guild.roles.resolve(server.mute_role) || '').catch(() => undefined);
@@ -66,6 +66,6 @@ export const punishUnmute = <AuxdibotSubcommand>{
          [punishmentInfoField(muted, true, true)],
          true,
       );
-      await interaction.reply({ embeds: [embed] });
+      await auxdibot.createReply(interaction, { embeds: [embed] });
    },
 };

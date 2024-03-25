@@ -23,6 +23,6 @@ export const levelRewards = <AuxdibotSubcommand>{
             `${accumulator}\n**${index + 1})** <@&${value.roleID}> (\`Level ${value.level}\`)`,
          '',
       );
-      return await interaction.reply({ embeds: [successEmbed] });
+      return await auxdibot.createReply(interaction, { embeds: [successEmbed] });
    },
 };

@@ -25,7 +25,7 @@ export const schedulePreview = <AuxdibotSubcommand>{
       if (!schedule) {
          return await handleError(auxdibot, 'SCHEDULE_NOT_FOUND', "Couldn't find that schedule!", interaction);
       }
-      return await interaction.reply({
+      return await auxdibot.createReply(interaction, {
          content: `${schedule.message || ''}`,
          ...(Object.entries(schedule.embed || {}).length != 0
             ? {

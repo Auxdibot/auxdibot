@@ -25,6 +25,6 @@ export const resetLevels = <AuxdibotSubcommand>{
       const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
       embed.description = `Successfully reset ${member}'s Level and XP.`;
       embed.title = 'Success!';
-      return await interaction.reply({ embeds: [embed] });
+      return await auxdibot.createReply(interaction, { embeds: [embed] });
    },
 };

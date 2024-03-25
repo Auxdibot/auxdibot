@@ -44,7 +44,7 @@ export default <AuxdibotSubcommand>{
                /^\//g,
                '',
             )}\` has been blacklisted from being used in the channel <#${channel.id}>.`;
-            return await interaction.reply({ embeds: [embed] });
+            return await auxdibot.createReply(interaction, { embeds: [embed] });
          })
          .catch(() => {
             handleError(

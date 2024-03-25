@@ -35,7 +35,7 @@ export default <AuxdibotModal>{
                .setColor(auxdibot.colors.punishment)
                .setTitle('🗑️ Server Reset')
                .setDescription('Your server data has been reset.');
-            return interaction.reply({ embeds: [embed] });
+            return auxdibot.createReply(interaction, { embeds: [embed] });
          })
          .catch(() => {
             return handleError(auxdibot, 'FAILED_TO_RESET', 'Failed to reset server.', interaction, true);

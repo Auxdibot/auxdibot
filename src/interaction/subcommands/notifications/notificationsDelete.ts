@@ -47,7 +47,7 @@ export const notificationsDelete = <AuxdibotSubcommand>{
                date_unix: Date.now(),
                description: `Deleted notification feed #${index}`,
             });
-            return await interaction.reply({ embeds: [embed] });
+            return await auxdibot.createReply(interaction, { embeds: [embed] });
          })
          .catch(() =>
             handleError(auxdibot, 'NOTIFICATION_DELETE_ERROR', "Couldn't delete that notification!", interaction),

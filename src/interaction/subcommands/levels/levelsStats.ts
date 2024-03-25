@@ -45,6 +45,6 @@ export const levelsStats = <AuxdibotSubcommand>{
          },
       ];
 
-      return await interaction.reply({ embeds: [embed] });
+      return await auxdibot.createReply(interaction, { embeds: [embed] });
    },
 };

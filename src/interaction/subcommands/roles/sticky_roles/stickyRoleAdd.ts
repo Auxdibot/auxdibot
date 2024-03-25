@@ -37,7 +37,7 @@ export const stickyRoleAdd = <AuxdibotSubcommand>{
             const successEmbed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             successEmbed.title = '📝 Added Sticky Role';
             successEmbed.description = `Added <@&${role.id}> to the sticky roles.`;
-            return await interaction.reply({ embeds: [successEmbed] });
+            return await auxdibot.createReply(interaction, { embeds: [successEmbed] });
          })
          .catch(async (x) => {
             await handleError(auxdibot, 'FAILED_STICKY_ROLE_ADD', x.message, interaction);

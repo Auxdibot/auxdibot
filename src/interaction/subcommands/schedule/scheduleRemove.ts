@@ -41,6 +41,6 @@ export const scheduleRemove = <AuxdibotSubcommand>{
          type: LogAction.SCHEDULED_MESSAGE_REMOVED,
          date_unix: Date.now(),
       });
-      return await interaction.reply({ embeds: [successEmbed] });
+      return await auxdibot.createReply(interaction, { embeds: [successEmbed] });
    },
 };

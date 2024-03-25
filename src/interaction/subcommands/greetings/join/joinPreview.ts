@@ -18,7 +18,7 @@ export const joinPreview = <AuxdibotSubcommand>{
       if (!interaction.data) return;
       const server = interaction.data.guildData;
       try {
-         return await interaction.reply({
+         return await auxdibot.createReply(interaction, {
             content: `**EMBED PREVIEW**\r\n${server.join_text || ''}`,
             ...(Object.entries(server.join_embed || {}).length != 0
                ? {

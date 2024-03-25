@@ -70,7 +70,7 @@ export const exceptionsRemove = <AuxdibotSubcommand>{
             successEmbed.title = '🛡️ Removed AutoMod Exception';
             successEmbed.description = `Removed <@&${exceptionID}> from the AutoMod role exceptions.`;
 
-            return await interaction.reply({ embeds: [successEmbed] });
+            return await auxdibot.createReply(interaction, { embeds: [successEmbed] });
          })
          .catch(() => {
             handleError(

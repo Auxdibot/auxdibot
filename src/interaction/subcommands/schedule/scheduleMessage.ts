@@ -76,7 +76,7 @@ export const scheduleMessage = <AuxdibotSubcommand>{
             const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.title = 'Success!';
             embed.description = `Scheduled a message for ${channel}.`;
-            return await interaction.reply({ embeds: [embed] });
+            return await auxdibot.createReply(interaction, { embeds: [embed] });
          });
       } catch (x) {
          console.log(x);

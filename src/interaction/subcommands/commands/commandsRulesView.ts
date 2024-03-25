@@ -17,7 +17,11 @@ export default <AuxdibotSubcommand>{
       embed.title = 'Command Rules';
       embed.description = interaction.data.guildData.command_permissions
          .map((command) => {
-            return `**/${command.command}**\n${
+            return `**/${
+               command.command +
+               (command.group ? ` ${command.group}` : '') +
+               (command.subcommand ? ` ${command.subcommand}` : '')
+            }**\n${
                command.disabled
                   ? '❌ *Disabled*'
                   : `${command.admin_only ? '🛡️ Admin Only' : '👥 Everyone'}${
@@ -46,6 +50,6 @@ export default <AuxdibotSubcommand>{
             }`;
          })
          .join('\n\n');
-      return interaction.reply({ embeds: [embed] });
+      return auxdibot.createReply(interaction, { embeds: [embed] });
    },
 };

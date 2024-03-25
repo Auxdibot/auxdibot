@@ -89,7 +89,7 @@ export const reactionRolesEdit = <AuxdibotSubcommand>{
             type: LogAction.REACTION_ROLE_EDITED,
             date_unix: Date.now(),
          });
-         return await interaction.reply({ embeds: [embed] });
+         return await auxdibot.createReply(interaction, { embeds: [embed] });
       }
 
       try {
@@ -130,7 +130,7 @@ export const reactionRolesEdit = <AuxdibotSubcommand>{
             type: LogAction.REACTION_ROLE_EDITED,
             date_unix: Date.now(),
          });
-         return await interaction.reply({ embeds: [embed] });
+         return await auxdibot.createReply(interaction, { embeds: [embed] });
       } catch (x) {
          return await handleError(auxdibot, 'EMBED_SEND_ERROR', 'There was an error sending that embed!', interaction);
       }

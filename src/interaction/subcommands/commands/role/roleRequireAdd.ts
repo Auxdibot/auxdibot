@@ -43,7 +43,7 @@ export default <AuxdibotSubcommand>{
             embed.description = `The command \`/${commandStr.replace(/^\//g, '')}\` can exclusively be utilized by <@&${
                role.id
             }> and additional role requirements that you have specified.`;
-            return await interaction.reply({ embeds: [embed] });
+            return await auxdibot.createReply(interaction, { embeds: [embed] });
          })
          .catch(() => {
             handleError(

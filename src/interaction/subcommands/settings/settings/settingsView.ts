@@ -70,7 +70,7 @@ export const settingsView = <AuxdibotSubcommand>{
                .setLabel('Starboard')
                .setEmoji(CustomEmojis.STARBOARD),
          );
-      return await interaction.reply({
+      return await auxdibot.createReply(interaction, {
          embeds: [SettingsEmbeds['general'](auxdibot, server, card)],
          components: [modulesRow1, modulesRow2, promoRow],
       });

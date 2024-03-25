@@ -63,7 +63,7 @@ export const addLevelReward = <AuxdibotSubcommand>{
          .then(async () => {
             const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.description = `Successfully added <@&${role.id}> as a role reward!`;
-            return await interaction.reply({ embeds: [embed] });
+            return await auxdibot.createReply(interaction, { embeds: [embed] });
          })
          .catch((x) => {
             handleError(

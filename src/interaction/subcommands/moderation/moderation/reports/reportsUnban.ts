@@ -26,7 +26,7 @@ export const reportsUnban = <AuxdibotSubcommand>{
          const noPermissionEmbed = new EmbedBuilder().setColor(auxdibot.colors.denied).toJSON();
          noPermissionEmbed.title = '⛔ No Permission!';
          noPermissionEmbed.description = `This user has a higher role than you or owns this server!`;
-         return await interaction.reply({ embeds: [noPermissionEmbed] });
+         return await auxdibot.createReply(interaction, { embeds: [noPermissionEmbed] });
       }
       await auxdibot.database.servermembers.upsert({
          where: { serverID_userID: { serverID: interaction.data.guild.id, userID: user.id } },
@@ -36,6 +36,6 @@ export const reportsUnban = <AuxdibotSubcommand>{
       const successEmbed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
       successEmbed.title = 'Success!';
       successEmbed.description = `<@${user.id}> has been unbanned from reports.`;
-      return await interaction.reply({ embeds: [successEmbed] });
+      return await auxdibot.createReply(interaction, { embeds: [successEmbed] });
    },
 };

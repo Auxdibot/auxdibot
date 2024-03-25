@@ -51,7 +51,7 @@ export default <AuxdibotSubcommand>{
                /^\//g,
                '',
             )}\`'s is no longer required to be used in the channel <#${channel.id}>.`;
-            return await interaction.reply({ embeds: [embed] });
+            return await auxdibot.createReply(interaction, { embeds: [embed] });
          })
          .catch(() => {
             handleError(

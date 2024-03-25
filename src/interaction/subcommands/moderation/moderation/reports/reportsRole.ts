@@ -27,7 +27,7 @@ export const reportsRole = <AuxdibotSubcommand>{
          const noPermissionEmbed = new EmbedBuilder().setColor(auxdibot.colors.denied).toJSON();
          noPermissionEmbed.title = '⛔ No Permission!';
          noPermissionEmbed.description = `This role is higher than yours!`;
-         return await interaction.reply({
+         return await auxdibot.createReply(interaction, {
             embeds: [noPermissionEmbed],
             ephemeral: true,
          });
@@ -36,7 +36,7 @@ export const reportsRole = <AuxdibotSubcommand>{
       embed.title = '⚙️ Reports Role Change';
       if (role && role.id == server.report_role) {
          embed.description = `Nothing changed. Reports role is the same as one specified in settings.`;
-         return await interaction.reply({
+         return await auxdibot.createReply(interaction, {
             embeds: [embed],
          });
       }
@@ -46,7 +46,7 @@ export const reportsRole = <AuxdibotSubcommand>{
             embed.description = `The report role for this server has been changed.\r\n\r\nFormerly: ${
                formerRole ? `<@&${formerRole.id}>` : 'None'
             }\r\n\r\nNow: ${role ? `<@&${role.id}>` : 'None'}`;
-            return await interaction.reply({
+            return await auxdibot.createReply(interaction, {
                embeds: [embed],
             });
          })

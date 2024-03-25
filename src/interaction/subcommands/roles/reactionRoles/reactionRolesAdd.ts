@@ -71,7 +71,7 @@ export const reactionRolesAdd = <AuxdibotSubcommand>{
                type: LogAction.REACTION_ROLE_ADDED,
                date_unix: Date.now(),
             });
-            return await interaction.reply({ embeds: [resEmbed] });
+            return await auxdibot.createReply(interaction, { embeds: [resEmbed] });
          })
          .catch((x) =>
             handleError(

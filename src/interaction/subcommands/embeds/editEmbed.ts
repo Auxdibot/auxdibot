@@ -79,6 +79,6 @@ export const editEmbed = <AuxdibotSubcommand>{
       const success_embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
       success_embed.title = 'Success!';
       success_embed.description = `Edited embed in ${message.channel}.`;
-      return await interaction.reply({ embeds: [success_embed] });
+      return await auxdibot.createReply(interaction, { embeds: [success_embed] });
    },
 };

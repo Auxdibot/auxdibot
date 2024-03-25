@@ -38,14 +38,14 @@ export const purgeAll = <AuxdibotSubcommand>{
             interaction,
          );
       }
-      await interaction.reply({ ephemeral: true, content: 'Currently purging messages...' });
+      await auxdibot.createReply(interaction, { ephemeral: true, content: 'Currently purging messages...' });
       return await purgeMessages(interaction.channel, amount)
          .then(async (i) => {
             const embed = new EmbedBuilder().setColor(auxdibot.colors.default).toJSON();
             embed.title = `💥 Message Purge Results (All Purge)`;
             if (i.totalDeleted == 0) {
                embed.description = `No messages were purged.`;
-               return await interaction.reply({ embeds: [embed] });
+               return await auxdibot.createReply(interaction, { embeds: [embed] });
             }
             embed.color = auxdibot.colors.punishment;
             embed.description = `🗑️ Messages Purged: ${i.totalDeleted}\n🚫 Failed Deletions: ${i.failedDeletions}`;

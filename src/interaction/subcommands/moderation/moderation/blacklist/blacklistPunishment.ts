@@ -53,7 +53,7 @@ export const blacklistPunishment = <AuxdibotSubcommand>{
                type: LogAction.AUTOMOD_SETTINGS_CHANGE,
                date_unix: Date.now(),
             });
-            return await interaction.reply({ embeds: [embed] });
+            return await auxdibot.createReply(interaction, { embeds: [embed] });
          })
          .catch(() => {
             handleError(

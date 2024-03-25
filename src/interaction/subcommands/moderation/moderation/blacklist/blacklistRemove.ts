@@ -46,7 +46,7 @@ export const blacklistRemove = <AuxdibotSubcommand>{
             const successEmbed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             successEmbed.title = '✅ Removed Blacklisted Phrase';
             successEmbed.description = `Removed "${bannedPhrase}" from the blacklisted phrases.`;
-            return await interaction.reply({ embeds: [successEmbed] });
+            return await auxdibot.createReply(interaction, { embeds: [successEmbed] });
          })
          .catch((x) => {
             return handleError(

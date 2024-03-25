@@ -64,7 +64,7 @@ export const suggestionsCreate = <AuxdibotSubcommand>{
       const successEmbed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
       successEmbed.description = `Created a new suggestion (#${suggestion.suggestionID}).`;
 
-      await interaction.reply({ ephemeral: true, embeds: [successEmbed] });
+      await auxdibot.createReply(interaction, { ephemeral: true, embeds: [successEmbed] });
       return await suggestions_channel
          .send({
             embeds: [

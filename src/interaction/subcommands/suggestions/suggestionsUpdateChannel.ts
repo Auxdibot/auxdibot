@@ -26,7 +26,7 @@ export const suggestionsUpdateChannel = <AuxdibotSubcommand>{
       const formerChannel = interaction.data.guild.channels.resolve(server.suggestions_updates_channel || '');
       if (channel && channel.id == server.suggestions_updates_channel) {
          embed.description = `Nothing changed. Suggestions updates channel is the same as one specified in settings.`;
-         return await interaction.reply({
+         return await auxdibot.createReply(interaction, {
             embeds: [embed],
          });
       }
@@ -35,7 +35,7 @@ export const suggestionsUpdateChannel = <AuxdibotSubcommand>{
             embed.description = `The suggestions updates channel for this server has been changed.\r\n\r\nFormerly: ${
                formerChannel ? `<#${formerChannel.id}>` : 'None'
             }\r\n\r\nNow: ${channel || 'None (Disabled)'}`;
-            return await interaction.reply({
+            return await auxdibot.createReply(interaction, {
                embeds: [embed],
             });
          })

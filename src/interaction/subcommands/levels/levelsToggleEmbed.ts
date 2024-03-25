@@ -23,7 +23,7 @@ export const levelsToggleEmbed = <AuxdibotSubcommand>{
             embed.description = data.level_embed
                ? 'A levelup embed will now be sent when a user levels up in your server.'
                : 'A levelup embed will no longer be sent when a user levels up in your server.';
-            return await interaction.reply({ embeds: [embed] });
+            return await auxdibot.createReply(interaction, { embeds: [embed] });
          })
          .catch((x) =>
             handleError(

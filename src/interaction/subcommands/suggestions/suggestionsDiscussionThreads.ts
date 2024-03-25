@@ -24,7 +24,7 @@ export const suggestionsDiscussionThreads = <AuxdibotSubcommand>{
       const discussionThreads = server.suggestions_discussion_threads;
       if (create_thread == discussionThreads) {
          embed.description = `Nothing changed. Auto delete is the same as settings.`;
-         return await interaction.reply({
+         return await auxdibot.createReply(interaction, {
             embeds: [embed],
          });
       }
@@ -34,7 +34,7 @@ export const suggestionsDiscussionThreads = <AuxdibotSubcommand>{
             embed.description = `The suggestions auto deletion for this server has been changed.\r\n\r\nFormerly: ${
                discussionThreads ? 'Create Thread.' : 'Do not create a Thread.'
             }\r\n\r\nNow: ${create_thread ? 'Create Thread.' : 'Do not create a Thread.'}`;
-            return await interaction.reply({
+            return await auxdibot.createReply(interaction, {
                embeds: [embed],
             });
          })

@@ -47,7 +47,7 @@ export default <AuxdibotSubcommand>{
                     /\//g,
                     '',
                  )}\` is now allowed for everyone. (This will not include members/roles that are blacklisted from using the command.)`;
-            return await interaction.reply({ embeds: [embed] });
+            return await auxdibot.createReply(interaction, { embeds: [embed] });
          })
          .catch(() => {
             handleError(

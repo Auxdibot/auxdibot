@@ -49,7 +49,7 @@ export const spamSet = <AuxdibotSubcommand>{
             embed.title = '⚙️ Automod Spam Limit Set';
             if (messages == 0) embed.description = 'Disabled spam filter.';
             else embed.description = `💬 Spam Messages: \`${messages} messages\`\n🕰️ Spam Duration: \`${duration}s\``;
-            return await interaction.reply({ embeds: [embed] });
+            return await auxdibot.createReply(interaction, { embeds: [embed] });
          })
          .catch(() => {
             handleError(auxdibot, 'ERROR_SET_SPAM_LIMIT', "Couldn't set the spam limit!", interaction);

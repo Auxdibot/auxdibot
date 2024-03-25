@@ -145,6 +145,6 @@ export default <AuxdibotCommand>{
          )
          .toJSON();
 
-      return await interaction.reply({ embeds: [embed], components: [row_info, row_punishments] });
+      return await auxdibot.createReply(interaction, { embeds: [embed], components: [row_info, row_punishments] });
    },
 };

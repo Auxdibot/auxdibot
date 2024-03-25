@@ -9,7 +9,7 @@ export default async function buttonCreate(auxdibot: Auxdibot, interaction: Butt
       const button = auxdibot.buttons.get(interaction.customId.split('-')[0]);
       if (button) {
          if (server?.disabled_modules.find((item) => item == button.module.name))
-            return await interaction.reply({ embeds: [auxdibot.embeds.disabled.toJSON()] });
+            return await auxdibot.createReply(interaction, { embeds: [auxdibot.embeds.disabled.toJSON()] });
 
          if (
             button.permission &&
@@ -26,7 +26,7 @@ export default async function buttonCreate(auxdibot: Auxdibot, interaction: Butt
             const noPermissionEmbed = new EmbedBuilder().setColor(auxdibot.colors.denied).toJSON();
             noPermissionEmbed.title = '⛔ No Permission!';
             noPermissionEmbed.description = `You do not have permission to use this button. (Missing permission: \`${button.permission}\`)`;
-            return await interaction.reply({
+            return await auxdibot.createReply(interaction, {
                embeds: [noPermissionEmbed],
             });
          }

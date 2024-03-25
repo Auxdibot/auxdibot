@@ -50,7 +50,7 @@ export default <AuxdibotSubcommand>{
             embed.description = `The role <@&${
                role.id
             }> is no longer required to use the command \`/${commandStr.replace(/^\//g, '')}\`.`;
-            return await interaction.reply({ embeds: [embed] });
+            return await auxdibot.createReply(interaction, { embeds: [embed] });
          })
          .catch(() => {
             handleError(

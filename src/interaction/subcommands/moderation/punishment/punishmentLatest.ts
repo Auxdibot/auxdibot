@@ -34,6 +34,6 @@ export const punishmentLatest = <AuxdibotSubcommand>{
             }, '\u2800'),
          },
       ];
-      return await interaction.reply({ embeds: [embed] });
+      return await auxdibot.createReply(interaction, { embeds: [embed] });
    },
 };

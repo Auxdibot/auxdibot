@@ -26,6 +26,6 @@ export const blacklistList = <AuxdibotSubcommand>{
             PunishmentValues[server.automod_banned_phrases_punishment]?.name || 'None'
          }\``,
       );
-      return await interaction.reply({ embeds: [successEmbed] });
+      return await auxdibot.createReply(interaction, { embeds: [successEmbed] });
    },
 };

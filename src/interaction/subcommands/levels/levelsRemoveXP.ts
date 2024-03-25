@@ -26,6 +26,6 @@ export const levelsRemoveXP = <AuxdibotSubcommand>{
       const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
       embed.description = `Successfully took ${xp.toLocaleString()} XP from ${member}.`;
       embed.title = 'Success!';
-      return await interaction.reply({ embeds: [embed] });
+      return await auxdibot.createReply(interaction, { embeds: [embed] });
    },
 };

@@ -27,7 +27,7 @@ export const removeLevelReward = <AuxdibotSubcommand>{
          .then(async () => {
             const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.description = `Successfully removed <@&${reward.roleID}> from the role rewards!`;
-            return await interaction.reply({ embeds: [embed] });
+            return await auxdibot.createReply(interaction, { embeds: [embed] });
          })
          .catch((x) => {
             handleError(
