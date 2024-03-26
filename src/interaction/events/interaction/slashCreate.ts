@@ -29,14 +29,19 @@ export default async function slashCreate(auxdibot: Auxdibot, interaction: ChatI
          user: interaction.user,
       };
    }
-   const subcommand = [];
+   // Hack because commands throw an exception if they lack subcommands
+   let subcommandArgs = [];
    try {
-      subcommand.push(interaction.options.getSubcommandGroup());
-      subcommand.push(interaction.options.getSubcommand());
+      subcommandArgs.push(interaction.options.getSubcommandGroup());
+      subcommandArgs.push(interaction.options.getSubcommand());
    } catch (e) {}
+   subcommandArgs = subcommandArgs.filter((i) => i);
+
    const commandData =
-      command.subcommands?.find(
-         (subcommand) => subcommand.name == subcommand[1] && subcommand.group == subcommand[0],
+      command.subcommands?.find((subcommand) =>
+         subcommandArgs.length > 1
+            ? subcommand.name == subcommandArgs[1] && subcommand.group == subcommandArgs[0]
+            : subcommand.name == subcommandArgs[0],
       ) || command;
    if (server && server.disabled_modules.find((item) => item == commandData.info.module.name))
       return await auxdibot.createReply(interaction, { embeds: [auxdibot.embeds.disabled.toJSON()] });
@@ -53,7 +58,7 @@ export default async function slashCreate(auxdibot: Auxdibot, interaction: ChatI
          interaction,
          interaction.guildId,
          interaction.commandName,
-         subcommand.filter((i) => i),
+         subcommandArgs.filter((i) => i),
       );
       if (permissionTest !== true) {
          const noPermissionEmbed = new EmbedBuilder().setColor(auxdibot.colors.denied).toJSON();
