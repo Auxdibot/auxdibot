@@ -18,7 +18,7 @@ export default <AuxdibotSubcommand>{
    async execute(auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.guild) return;
       const commandStr = interaction.options.getString('command', true),
-         allowed = interaction.options.getBoolean('allowed', true);
+         allowed = interaction.options.getBoolean('admin_only', true);
       if (!commandStr)
          return handleError(auxdibot, 'INVALID_COMMAND', 'Please provide a valid command name.', interaction);
 

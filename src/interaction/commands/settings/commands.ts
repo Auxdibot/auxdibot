@@ -202,7 +202,7 @@ export default <AuxdibotCommand>{
                   )
                   .addBooleanOption((option) =>
                      option
-                        .setName('allowed')
+                        .setName('admin_only')
                         .setDescription('Whether the command is allowed for exclusively Discord Administrators.')
                         .setRequired(true),
                   ),
