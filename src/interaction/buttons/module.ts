@@ -7,7 +7,8 @@ import { HelpEmbeds } from '@/constants/bot/commands/HelpEmbeds';
 export default <AuxdibotButton>{
    module: Modules['General'],
    name: 'module',
-   permission: 'commands.help.buttons',
+   permission: 'commands.help.all',
+   command: 'help all',
    allowedDefault: true,
    async execute(auxdibot: Auxdibot, interaction: MessageComponentInteraction) {
       const [, module] = interaction.customId.split('-');

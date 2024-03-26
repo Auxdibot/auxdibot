@@ -1,11 +1,11 @@
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import { Auxdibot } from '@/interfaces/Auxdibot';
-import { GuildMember, PermissionsBitField } from 'discord.js';
-import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
-import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
+import { BaseInteraction, GuildMember, PermissionsBitField } from 'discord.js';
 import { findCommand } from '@/modules/features/commands/findCommand';
 import { CommandPermission } from '@prisma/client';
-
+/**
+ * @deprecated Permissions are now deprecated. Use the new testCommandPermission function to test the command for command permissions on the server.
+ */
 export async function testLegacyPermission(
    auxdibot: Auxdibot,
    serverID: string,
@@ -48,13 +48,7 @@ export async function testLegacyPermission(
    }, undefined);
    return accessible != undefined ? accessible : defaultAllowed;
 }
-export function testPermission(
-   permission: CommandPermission,
-   interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>,
-) {
-   const server = interaction.data?.guildData,
-      member = interaction.data?.member;
-   if (!server || !member) return 'disabled';
+export function testPermission(permission: CommandPermission, interaction: BaseInteraction, member: GuildMember) {
    if (permission.admin_only && !member.permissions.has(PermissionsBitField.Flags.Administrator)) return 'noperm';
    if (permission.blacklist_channels.includes(interaction.channel.id)) return 'noperm';
    if (permission.channels.length > 0 && !permission.channels.includes(interaction.channel.id)) return 'noperm';
@@ -65,12 +59,13 @@ export function testPermission(
 }
 export async function testCommandPermission(
    auxdibot: Auxdibot,
-   interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>,
+   interaction: BaseInteraction,
+   guildID: string,
    command: string,
    subcommand?: string[],
 ) {
-   const server = interaction.data?.guildData,
-      member = interaction.data?.member;
+   const server = await findOrCreateServer(auxdibot, guildID),
+      member = interaction.guild ? interaction.guild.members.resolve(interaction.user.id) : null;
    if (!server || !member) return false;
    if (member.id == member.guild.ownerId || member.permissions.has(PermissionsBitField.Flags.Administrator))
       return true;
@@ -78,9 +73,7 @@ export async function testCommandPermission(
 
    if (!data) return 'notfound';
    const { commandData, subcommandData } = data;
-   console.log(subcommand);
-   console.log(subcommand.length);
-   // TODO: make it accept permissions from the command, group and subcommand. prioritize subcommand first.
+
    const permission = server.command_permissions.filter((cp) => cp.command == command),
       commandPermission = permission.find((i) => !i.subcommand && !i.group),
       groupPermission = permission.find(
@@ -94,10 +87,10 @@ export async function testCommandPermission(
 
    const allowedDefault = subcommandData ? subcommandData.info.allowedDefault : commandData.info.allowedDefault;
    if (!commandPermission && !groupPermission && !subcommandPermission) return allowedDefault ? true : 'noperm';
-   let result: string | boolean = true;
-   const commandTest = commandPermission ? testPermission(commandPermission, interaction) : null,
-      groupTest = groupPermission ? testPermission(groupPermission, interaction) : null,
-      subcommandTest = subcommandPermission ? testPermission(subcommandPermission, interaction) : null;
+   let result: 'noperm' | 'disabled' | boolean = true;
+   const commandTest = commandPermission ? testPermission(commandPermission, interaction, member) : null,
+      groupTest = groupPermission ? testPermission(groupPermission, interaction, member) : null,
+      subcommandTest = subcommandPermission ? testPermission(subcommandPermission, interaction, member) : null;
    if (subcommandTest !== true && subcommandTest !== null) {
       result = subcommandTest;
    }
