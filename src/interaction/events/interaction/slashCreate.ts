@@ -29,12 +29,14 @@ export default async function slashCreate(auxdibot: Auxdibot, interaction: ChatI
          user: interaction.user,
       };
    }
-
+   const subcommand = [];
+   try {
+      subcommand.push(interaction.options.getSubcommandGroup());
+      subcommand.push(interaction.options.getSubcommand());
+   } catch (e) {}
    const commandData =
       command.subcommands?.find(
-         (subcommand) =>
-            subcommand.name == interaction.options.getSubcommand() &&
-            subcommand.group == interaction.options.getSubcommandGroup(),
+         (subcommand) => subcommand.name == subcommand[1] && subcommand.group == subcommand[0],
       ) || command;
    if (server && server.disabled_modules.find((item) => item == commandData.info.module.name))
       return await auxdibot.createReply(interaction, { embeds: [auxdibot.embeds.disabled.toJSON()] });
@@ -49,20 +51,13 @@ export default async function slashCreate(auxdibot: Auxdibot, interaction: ChatI
       const permissionTest = await testCommandPermission(
          auxdibot,
          interaction,
+         interaction.guildId,
          interaction.commandName,
-         [interaction.options.getSubcommandGroup(), interaction.options.getSubcommand()].filter((i) => i),
+         subcommand.filter((i) => i),
       );
-      console.log(permissionTest);
       if (permissionTest !== true) {
          const noPermissionEmbed = new EmbedBuilder().setColor(auxdibot.colors.denied).toJSON();
-         noPermissionEmbed.title =
-            permissionTest == 'noperm'
-               ? '⛔ No Permission!'
-               : permissionTest == 'notfound'
-               ? '❓ Command Not Found!'
-               : permissionTest == 'disabled'
-               ? '🚫 Disabled'
-               : '⛔ Nope!';
+         noPermissionEmbed.title = '⛔ Permission Denied';
          noPermissionEmbed.description =
             permissionTest == 'noperm'
                ? `You do not have permission to use this command.`

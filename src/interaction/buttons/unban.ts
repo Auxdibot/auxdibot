@@ -12,6 +12,7 @@ export default <AuxdibotButton>{
    module: Modules['Moderation'],
    name: 'unban',
    permission: 'moderation.punish.ban.remove',
+   command: 'punish unban',
    async execute(auxdibot: Auxdibot, interaction: MessageComponentInteraction) {
       if (!interaction.guild || !interaction.user || !interaction.channel) return;
       const [, user_id] = interaction.customId.split('-');

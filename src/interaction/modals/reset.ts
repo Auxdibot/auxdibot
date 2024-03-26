@@ -9,6 +9,7 @@ export default <AuxdibotModal>{
    module: Modules['Settings'],
    name: 'reset',
    permission: 'settings.reset',
+   command: 'settings reset',
    async execute(auxdibot: Auxdibot, interaction: ModalSubmitInteraction) {
       const serverName = interaction.fields.getTextInputValue('server_name');
       if (interaction.user.id != interaction.guild.ownerId) {

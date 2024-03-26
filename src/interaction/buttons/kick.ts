@@ -12,6 +12,7 @@ export default <AuxdibotButton>{
    module: Modules['Moderation'],
    name: 'kick',
    permission: 'moderation.punish.kick',
+   command: 'punish kick',
    async execute(auxdibot: Auxdibot, interaction: MessageComponentInteraction) {
       if (!interaction.guild || !interaction.user || !interaction.channel) return;
       const [, user_id] = interaction.customId.split('-');
