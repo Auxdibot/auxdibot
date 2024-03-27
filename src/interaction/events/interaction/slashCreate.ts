@@ -29,13 +29,10 @@ export default async function slashCreate(auxdibot: Auxdibot, interaction: ChatI
          user: interaction.user,
       };
    }
-   // Hack because commands throw an exception if they lack subcommands
-   let subcommandArgs = [];
-   try {
-      subcommandArgs.push(interaction.options.getSubcommandGroup());
-      subcommandArgs.push(interaction.options.getSubcommand());
-   } catch (e) {}
-   subcommandArgs = subcommandArgs.filter((i) => i);
+   const subcommandArgs = [
+      interaction.options.getSubcommandGroup(false),
+      interaction.options.getSubcommand(false),
+   ].filter((i) => i);
 
    const commandData =
       command.subcommands?.find((subcommand) =>
@@ -58,7 +55,7 @@ export default async function slashCreate(auxdibot: Auxdibot, interaction: ChatI
          interaction,
          interaction.guildId,
          interaction.commandName,
-         subcommandArgs.filter((i) => i),
+         subcommandArgs,
       );
       if (permissionTest !== true) {
          const noPermissionEmbed = new EmbedBuilder().setColor(auxdibot.colors.denied).toJSON();

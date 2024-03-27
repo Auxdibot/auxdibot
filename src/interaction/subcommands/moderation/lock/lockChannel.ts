@@ -3,12 +3,13 @@ import { Auxdibot } from '@/interfaces/Auxdibot';
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import Modules from '@/constants/bot/commands/Modules';
-import { Channel, ChannelType, EmbedBuilder, PermissionsBitField } from 'discord.js';
+import { ChannelType, EmbedBuilder, PermissionsBitField } from 'discord.js';
 import handleError from '@/util/handleError';
 import { createLock } from '@/modules/features/moderation/lock/createLock';
 import { ChannelLock, Log, LogAction } from '@prisma/client';
 import timestampToDuration from '@/util/timestampToDuration';
 import handleLog from '@/util/handleLog';
+import testDiscordPermission from '@/util/testDiscordPermission';
 
 export const lockChannel = <AuxdibotSubcommand>{
    name: 'channel',
@@ -20,7 +21,7 @@ export const lockChannel = <AuxdibotSubcommand>{
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data || !interaction.channel) return;
-      const channel: Channel =
+      const channel =
          interaction.options.getChannel('channel', false, [
             ChannelType.GuildText,
             ChannelType.GuildAnnouncement,
@@ -32,7 +33,7 @@ export const lockChannel = <AuxdibotSubcommand>{
       const reason = interaction.options.getString('reason'),
          duration = interaction.options.getString('duration');
       if (channel.isDMBased()) return;
-      if (!channel.permissionsFor(interaction.user).has(PermissionsBitField.Flags.ManageChannels)) {
+      if (!(await testDiscordPermission(auxdibot, interaction, PermissionsBitField.Flags.ManageChannels, channel))) {
          const noPermissionEmbed = new EmbedBuilder().setColor(auxdibot.colors.denied).toJSON();
          noPermissionEmbed.title = '⛔ No Permission!';
          noPermissionEmbed.description = 'You are missing the `Manage Channels` permission on this server!';

@@ -8,6 +8,7 @@ import handleError from '@/util/handleError';
 import { deleteLock } from '@/modules/features/moderation/lock/deleteLock';
 import handleLog from '@/util/handleLog';
 import { Log, LogAction } from '@prisma/client';
+import testDiscordPermission from '@/util/testDiscordPermission';
 
 export const unlockChannel = <AuxdibotSubcommand>{
    name: 'channel',
@@ -28,7 +29,7 @@ export const unlockChannel = <AuxdibotSubcommand>{
             ChannelType.GuildVoice,
          ]) || interaction.channel;
       if (channel.isDMBased()) return;
-      if (!channel.permissionsFor(interaction.user).has(PermissionsBitField.Flags.ManageChannels)) {
+      if (!(await testDiscordPermission(auxdibot, interaction, PermissionsBitField.Flags.ManageChannels))) {
          const noPermissionEmbed = new EmbedBuilder().setColor(auxdibot.colors.denied).toJSON();
          noPermissionEmbed.title = '⛔ No Permission!';
          noPermissionEmbed.description = 'You are missing the `Manage Channels` permission on this server!';

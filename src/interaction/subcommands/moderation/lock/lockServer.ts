@@ -9,6 +9,7 @@ import { ChannelLock, LogAction } from '@prisma/client';
 import timestampToDuration from '@/util/timestampToDuration';
 import handleLog from '@/util/handleLog';
 import handleError from '@/util/handleError';
+import testDiscordPermission from '@/util/testDiscordPermission';
 
 export const lockServer = <AuxdibotSubcommand>{
    name: 'server',
@@ -22,8 +23,8 @@ export const lockServer = <AuxdibotSubcommand>{
       if (!interaction.data || !interaction.channel) return;
       const reason = interaction.options.getString('reason'),
          duration = interaction.options.getString('duration');
-      const member = await interaction.guild.members.fetch(interaction.user.id);
-      if (!member.permissions.has(PermissionsBitField.Flags.ManageChannels)) {
+
+      if (!(await testDiscordPermission(auxdibot, interaction, PermissionsBitField.Flags.ManageChannels))) {
          const noPermissionEmbed = new EmbedBuilder().setColor(auxdibot.colors.denied).toJSON();
          noPermissionEmbed.title = '⛔ No Permission!';
          noPermissionEmbed.description = 'You are missing the `Manage Channels` permission on this server!';
