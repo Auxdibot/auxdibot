@@ -7,6 +7,7 @@ import { EmbedBuilder, PermissionsBitField } from 'discord.js';
 import { deleteLock } from '@/modules/features/moderation/lock/deleteLock';
 import handleLog from '@/util/handleLog';
 import { Log, LogAction } from '@prisma/client';
+import testDiscordPermission from '@/util/testDiscordPermission';
 
 export const unlockServer = <AuxdibotSubcommand>{
    name: 'server',
@@ -19,8 +20,8 @@ export const unlockServer = <AuxdibotSubcommand>{
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data || !interaction.channel) return;
       const server = interaction.data.guildData;
-      const member = await interaction.guild.members.fetch(interaction.user.id);
-      if (!member.permissions.has(PermissionsBitField.Flags.ManageChannels)) {
+
+      if (!(await testDiscordPermission(auxdibot, interaction, PermissionsBitField.Flags.ManageChannels))) {
          const noPermissionEmbed = new EmbedBuilder().setColor(auxdibot.colors.denied).toJSON();
          noPermissionEmbed.title = '⛔ No Permission!';
          noPermissionEmbed.description = 'You are missing the `Manage Channels` permission on this server!';

@@ -26,7 +26,13 @@ export default <AuxdibotSubcommand>{
       const commandData = findCommand(auxdibot, commandName, subcommand);
       if (!commandData)
          return handleError(auxdibot, 'INVALID_COMMAND', 'This is not an Auxdibot command!', interaction);
-
+      if (interaction.user.id != interaction.guild.ownerId)
+         return handleError(
+            auxdibot,
+            'NO_PERMISSION',
+            'You must be the server owner to set permissions for Discord Administrators.',
+            interaction,
+         );
       await updateCommandPermissions(auxdibot, interaction.guildId, commandName, subcommand, {
          admin_only: allowed,
       })
