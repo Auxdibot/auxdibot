@@ -53,11 +53,11 @@ export default <AuxdibotSubcommand>{
             )}\`'s is no longer required to be used in the channel <#${channel.id}>.`;
             return await auxdibot.createReply(interaction, { embeds: [embed] });
          })
-         .catch(() => {
+         .catch((x) => {
             handleError(
                auxdibot,
                'COMMAND_PERMISSIONS_ERROR',
-               'There was an error updating the command permissions.',
+               x.message ?? 'There was an error updating the command permissions.',
                interaction,
             );
          });

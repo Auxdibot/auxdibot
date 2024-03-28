@@ -4,7 +4,7 @@ import { DMAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
-import { testCommandPermission } from '@/util/testPermission';
+import { testCommandPermission } from '@/util/testCommandPermission';
 import handleError from '@/util/handleError';
 
 export default async function slashCreate(auxdibot: Auxdibot, interaction: ChatInputCommandInteraction) {

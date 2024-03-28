@@ -20,14 +20,26 @@ export default async function testDiscordPermission(
          [interaction.options.getSubcommandGroup(false), interaction.options.getSubcommand(false)].filter((i) => i),
       );
       if (!commandData) return false;
-      const commandPermission = data.command_permissions.find(
-         (cp) =>
-            cp.command == interaction.commandName &&
-            (commandData.subcommandData
-               ? cp.subcommand == commandData.subcommandData.name && cp.group == commandData.subcommandData.group
-               : !cp.subcommand && !cp.group),
-      );
-      if (member.roles.cache.find((i) => commandPermission?.permission_bypass_roles.includes(i.id))) return true;
+      console.log('T');
+      const permission = data.command_permissions.filter((cp) => cp.command == interaction.commandName),
+         commandPermission = permission.find((i) => !i.subcommand && !i.group),
+         groupPermission = permission.find(
+            (i) => i.group == interaction.options.getSubcommandGroup(false) && !i.subcommand,
+         ),
+         subcommandPermission = permission.find(
+            (i) =>
+               i.group == interaction.options.getSubcommandGroup(false) &&
+               i.group == interaction.options.getSubcommand(false),
+         );
+      if (
+         member.roles.cache.find(
+            (i) =>
+               commandPermission?.permission_bypass_roles.includes(i.id) ||
+               groupPermission?.permission_bypass_roles.includes(i.id) ||
+               subcommandPermission?.permission_bypass_roles.includes(i.id),
+         )
+      )
+         return true;
    }
    return channel ? channel.permissionsFor(member).has(permission) : member.permissions.has(permission);
 }

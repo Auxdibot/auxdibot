@@ -1,7 +1,7 @@
 import { EmbedBuilder, ModalSubmitInteraction } from 'discord.js';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
-import { testCommandPermission } from '@/util/testPermission';
+import { testCommandPermission } from '@/util/testCommandPermission';
 
 export default async function modalSubmit(auxdibot: Auxdibot, interaction: ModalSubmitInteraction) {
    const server = interaction.guild ? await findOrCreateServer(auxdibot, interaction.guild.id) : undefined;

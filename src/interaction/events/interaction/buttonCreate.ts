@@ -1,6 +1,6 @@
 import { ButtonInteraction, EmbedBuilder } from 'discord.js';
 import { Auxdibot } from '@/interfaces/Auxdibot';
-import { testCommandPermission } from '@/util/testPermission';
+import { testCommandPermission } from '@/util/testCommandPermission';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 
 export default async function buttonCreate(auxdibot: Auxdibot, interaction: ButtonInteraction) {
