@@ -19,6 +19,7 @@ export async function updateCommandPermissions(
       (i) => i.command == command && i.subcommand == subcommand[0] && i.group == subcommand[1],
    );
    if (!commandPermissions) {
+      if (remove) throw new Error('Command permission rule not found.');
       commandPermissions = {
          command,
          subcommand: subcommand.length > 1 ? subcommand[1] : subcommand[0],
@@ -42,10 +43,26 @@ export async function updateCommandPermissions(
          ...permissions,
          permission_bypass_roles:
             (remove
-               ? commandPermissions.permission_bypass_roles.filter((i) =>
-                    permissions.permission_bypass_roles.includes(i),
+               ? commandPermissions.permission_bypass_roles.filter(
+                    (i) => !permissions.permission_bypass_roles.includes(i),
                  )
                : commandPermissions.permission_bypass_roles.concat(permissions.permission_bypass_roles ?? [])) ?? [],
+         roles:
+            (remove
+               ? commandPermissions.roles.filter((i) => !permissions.roles.includes(i))
+               : commandPermissions.roles.concat(permissions.roles ?? [])) ?? [],
+         channels:
+            (remove
+               ? commandPermissions.channels.filter((i) => !permissions.channels.includes(i))
+               : commandPermissions.channels.concat(permissions.channels ?? [])) ?? [],
+         blacklist_channels:
+            (remove
+               ? commandPermissions.blacklist_channels.filter((i) => !permissions.blacklist_channels.includes(i))
+               : commandPermissions.blacklist_channels.concat(permissions.blacklist_channels ?? [])) ?? [],
+         blacklist_roles:
+            (remove
+               ? commandPermissions.blacklist_roles.filter((i) => !permissions.blacklist_roles.includes(i))
+               : commandPermissions.blacklist_roles.concat(permissions.blacklist_roles ?? [])) ?? [],
       });
    }
    return await auxdibot.database.servers

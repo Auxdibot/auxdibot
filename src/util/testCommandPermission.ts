@@ -3,51 +3,7 @@ import { Auxdibot } from '@/interfaces/Auxdibot';
 import { BaseInteraction, GuildMember, PermissionsBitField } from 'discord.js';
 import { findCommand } from '@/modules/features/commands/findCommand';
 import { CommandPermission } from '@prisma/client';
-/**
- * @deprecated Permissions are now deprecated. Use the new testCommandPermission function to test the command for command permissions on the server.
- */
-export async function testLegacyPermission(
-   auxdibot: Auxdibot,
-   serverID: string,
-   permission: string | undefined,
-   executor: GuildMember,
-   defaultAllowed: boolean,
-) {
-   if (!permission) return true;
-   const data = await findOrCreateServer(auxdibot, serverID);
-   if (executor.id == executor.guild.ownerId || executor.permissions.has(PermissionsBitField.Flags.Administrator))
-      return true;
-   const permissionSplit = permission.split('.');
-   let permissionToTest = '';
-   const accessible = permissionSplit.reduce((accumulator: boolean | undefined, currentValue) => {
-      if (accumulator == false) return false;
-      permissionToTest = permissionToTest.length == 0 ? currentValue : permissionToTest + '.' + currentValue;
-      const roles = executor.roles.cache.values();
-      const userOverrides = data.permission_overrides.filter(
-         (po) => po.permission == permissionToTest && po.userID == executor.id,
-      );
 
-      if (userOverrides.length > 0) {
-         for (const override of userOverrides) {
-            if (!override.allowed) return false;
-         }
-         return true;
-      }
-      for (const role of roles) {
-         const overrideRoles = data.permission_overrides.filter(
-            (po) => po.permission == permissionToTest && po.roleID == role.id,
-         );
-         if (overrideRoles.length > 0) {
-            for (const override of overrideRoles) {
-               if (!override.allowed) return false;
-            }
-            return true;
-         }
-      }
-      return accumulator;
-   }, undefined);
-   return accessible != undefined ? accessible : defaultAllowed;
-}
 export function testPermission(permission: CommandPermission, interaction: BaseInteraction, member: GuildMember) {
    if (permission.admin_only && !member.permissions.has(PermissionsBitField.Flags.Administrator)) return 'noperm';
    if (permission.blacklist_channels.includes(interaction.channel.id)) return 'noperm';

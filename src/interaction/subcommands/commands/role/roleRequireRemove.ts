@@ -52,11 +52,11 @@ export default <AuxdibotSubcommand>{
             }> is no longer required to use the command \`/${commandStr.replace(/^\//g, '')}\`.`;
             return await auxdibot.createReply(interaction, { embeds: [embed] });
          })
-         .catch(() => {
+         .catch((x) => {
             handleError(
                auxdibot,
                'COMMAND_PERMISSIONS_ERROR',
-               'There was an error updating the command permissions.',
+               x.message ?? 'There was an error updating the command permissions.',
                interaction,
             );
          });
