@@ -25,7 +25,7 @@ export default <AuxdibotSubcommand>{
       );
       return auxdibot.createReply(interaction, {
          embeds: [createCommandListEmbed(auxdibot, interaction.data.guildData.command_permissions.slice(0, 5))],
-         components: [row.toJSON()],
+         components: interaction.data.guildData.command_permissions.length > 0 ? [row.toJSON()] : undefined,
       });
    },
 };

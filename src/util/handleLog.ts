@@ -28,6 +28,9 @@ export default async function handleLog(
          if (fields) {
             logEmbed.setFields(...fields);
          }
+         if (log.type == 'ERROR') {
+            logEmbed.setColor(auxdibot.colors.denied);
+         }
          if (use_user_avatar && log.userID) {
             const user = guild.client.users.cache.get(log.userID);
             if (user) {
@@ -42,5 +45,5 @@ export default async function handleLog(
          await logChannel.send({ embeds: [logEmbed] });
          return log;
       })
-      .catch((x) => console.log(x));
+      .catch(() => undefined);
 }
