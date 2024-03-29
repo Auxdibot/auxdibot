@@ -2,6 +2,7 @@ import { Auxdibot } from '@/interfaces/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import { BaseInteraction, InteractionReplyOptions, MessagePayload } from 'discord.js';
 import { AuxdibotReplyOptions } from '../interfaces/AuxdibotReplyOptions';
+import handleLog from './handleLog';
 
 export async function createReply(
    this: Auxdibot,
@@ -12,14 +13,28 @@ export async function createReply(
    if (interaction.guildId && interaction.isChatInputCommand() && !options?.noOutputChannel) {
       const server = await findOrCreateServer(this, interaction.guildId);
       if (!server) return;
-      const permission = server.command_permissions.find(
-         (item) =>
-            item.command == interaction.commandName &&
-            item.subcommand == interaction.options.getSubcommand() &&
-            item.group == interaction.options.getSubcommandGroup(),
-      );
-      if (permission?.channel_output) {
-         const channel = interaction.guild?.channels.cache.get(permission.channel_output);
+      const permission = server.command_permissions.filter((cp) => cp.command == interaction.commandName),
+         commandPermission = permission.find((i) => !i.subcommand && !i.group),
+         groupPermission = permission.find(
+            (i) => i.group == interaction.options.getSubcommandGroup(false) && !i.subcommand,
+         ),
+         subcommandPermission = permission.find(
+            (i) =>
+               i.group == interaction.options.getSubcommandGroup(false) &&
+               i.group == interaction.options.getSubcommand(false),
+         );
+      if (
+         commandPermission?.channel_output ||
+         groupPermission?.channel_output ||
+         subcommandPermission?.channel_output
+      ) {
+         const channel = await interaction.guild?.channels
+            .fetch(
+               subcommandPermission?.channel_output ||
+                  groupPermission?.channel_output ||
+                  commandPermission?.channel_output,
+            )
+            .catch(() => undefined);
          if (channel && channel.isTextBased()) {
             return channel
                .send(new MessagePayload(channel, data))
@@ -34,6 +49,23 @@ export async function createReply(
                   );
                })
                .catch(() => {
+                  handleLog(
+                     this,
+                     interaction.guild,
+                     {
+                        type: 'ERROR',
+                        description: `An error occurred when attempting to run a command.`,
+                        userID: interaction.user.id,
+                        date_unix: Date.now(),
+                     },
+                     [
+                        {
+                           name: 'Error Message',
+                           value: `Failed to redirect command output to <#${channel.id}>`,
+                           inline: false,
+                        },
+                     ],
+                  );
                   this.createReply(interaction, data, { noOutputChannel: true });
                });
          }

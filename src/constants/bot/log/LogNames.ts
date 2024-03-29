@@ -1,6 +1,7 @@
 import { LogAction } from '@prisma/client';
 
 export const LogNames: { [k in LogAction]: string } = {
+   ERROR: '⛔ Error',
    LOG_CHANNEL_CHANGED: '🗒️ Log Channel Changed',
    MUTE_ROLE_CHANGED: '🎤 Mute Role Changed',
    WARN: '⚠ Warn',

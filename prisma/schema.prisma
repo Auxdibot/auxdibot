@@ -55,6 +55,7 @@ enum PunishmentType {
 }
 
 enum LogAction {
+  ERROR
   LOG_CHANNEL_CHANGED
   MUTE_ROLE_CHANGED
   WARN
