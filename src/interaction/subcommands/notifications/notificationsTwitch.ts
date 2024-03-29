@@ -44,6 +44,7 @@ export const notificationsTwitch = <AuxdibotSubcommand>{
                     embed: null,
                  },
             'TWITCH',
+            interaction.user.id,
          ).then(async () => {
             const description = `Created a new notification feed for the Twitch channel \`${username}\`.`;
 

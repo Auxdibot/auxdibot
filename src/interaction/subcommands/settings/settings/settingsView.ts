@@ -33,11 +33,6 @@ export const settingsView = <AuxdibotSubcommand>{
                .setEmoji(CustomEmojis.MODERATION),
             new ButtonBuilder()
                .setStyle(1)
-               .setCustomId('settings-permissions')
-               .setLabel('Permissions')
-               .setEmoji(CustomEmojis.PERMISSIONS),
-            new ButtonBuilder()
-               .setStyle(1)
                .setCustomId('settings-roles')
                .setLabel('Roles')
                .setEmoji(CustomEmojis.ROLES),
@@ -46,13 +41,13 @@ export const settingsView = <AuxdibotSubcommand>{
                .setCustomId('settings-messages')
                .setLabel('Messages')
                .setEmoji(CustomEmojis.MESSAGES),
-         ),
-         modulesRow2 = new ActionRowBuilder<ButtonBuilder>().addComponents(
             new ButtonBuilder()
                .setStyle(1)
                .setCustomId('settings-greetings')
                .setLabel('Greetings')
                .setEmoji(CustomEmojis.GREETINGS),
+         ),
+         modulesRow2 = new ActionRowBuilder<ButtonBuilder>().addComponents(
             new ButtonBuilder()
                .setStyle(1)
                .setCustomId('settings-levels')

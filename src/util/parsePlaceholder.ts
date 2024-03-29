@@ -44,7 +44,6 @@ export default async function parsePlaceholders(
       ...(server
          ? {
               [Placeholders.SERVER_TOTAL_PUNISHMENTS]: server.punishments.length,
-              [Placeholders.SERVER_TOTAL_PERMISSION_OVERRIDES]: server.permission_overrides.length,
            }
          : undefined),
       ...(member

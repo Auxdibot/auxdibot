@@ -140,25 +140,6 @@ export const SettingsEmbeds: { [k: string]: (auxdibot: Auxdibot, servers: server
             },
          )
          .toJSON(),
-   permissions: (auxdibot, server) =>
-      new EmbedBuilder()
-         .setTitle(`${CustomEmojis.PERMISSIONS} Permissions Help`)
-         .setDescription(
-            "You can edit and view these settings more in-depth on [Auxdibot's Dashboard](https://bot.auxdible.me)",
-         )
-         .addFields({
-            name: '🛡️ Permission Overrides',
-            value:
-               server.permission_overrides.reduce(
-                  (accumulator: string, val) =>
-                     `${accumulator}\r\n* ${val.allowed ? '✅' : '❌'} \`${val.permission}\` - ${
-                        val.roleID ? `<@&${val.roleID}>` : val.userID ? `<@${val.userID}>` : 'Unknown'
-                     }`,
-                  '',
-               ) || 'No Permission Overrides',
-         })
-         .setColor(auxdibot.colors.info)
-         .toJSON(),
    roles: (auxdibot, server) =>
       new EmbedBuilder()
          .setTitle(`${CustomEmojis.ROLES} Roles Settings`)

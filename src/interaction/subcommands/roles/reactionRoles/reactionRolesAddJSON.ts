@@ -75,7 +75,7 @@ export const reactionRolesAddJSON = <AuxdibotSubcommand>{
             handleError(
                auxdibot,
                'REACTION_ROLE_CREATE_ERROR',
-               typeof x.message == 'string' ? x.message : "Couldn't delete that permission override!",
+               typeof x.message == 'string' ? x.message : "Couldn't create that reaction role!",
                interaction,
             );
          });

@@ -11,6 +11,7 @@ export default <AuxdibotButton>{
    allowedDefault: true,
    async execute(auxdibot: Auxdibot, interaction: MessageComponentInteraction) {
       const [, module] = interaction.customId.split('-');
+      if (!(module in HelpEmbeds)) return;
       interaction.message
          .edit({
             embeds: [HelpEmbeds[module](auxdibot)],

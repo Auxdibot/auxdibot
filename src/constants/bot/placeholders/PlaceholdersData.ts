@@ -50,10 +50,6 @@ export const PlaceholdersData: {
       context: null,
       description: 'Get the total amount of punishments on this server.',
    },
-   SERVER_TOTAL_PERMISSION_OVERRIDES: {
-      context: null,
-      description: 'Get the total amount of permission overrides on this server.',
-   },
    MEMBER_ID: {
       context: 'member',
       description: 'Get the ID of the member being interacted with.',
