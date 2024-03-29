@@ -23,8 +23,6 @@ export const LogNames: { [k in LogAction]: string } = {
    PUNISHMENT_EDITED: '📝 Punishment Edited',
    AUTOMOD_SETTINGS_CHANGE: '⚙️ Automod Settings Changed',
    MESSAGES_PURGED: '💥 Messages Purged',
-   PERMISSION_CREATED: '✋ Permission Override Created',
-   PERMISSION_DELETED: '🗑️ Permission Override Deleted',
    MESSAGE_EDITED: '🖊️ Message Edited',
    MESSAGE_DELETED: '🗙 Message Deleted',
    MESSAGE_DELETED_AUTOMOD: '🤖 Message Deleted (Automod)',
@@ -62,4 +60,5 @@ export const LogNames: { [k in LogAction]: string } = {
    REPORTS_ROLE_CHANGED: '📩 Reports Role Changed',
    NOTIFICATION_CREATED: '📬 Notification Created',
    NOTIFICATION_DELETED: '📬 Notification Deleted',
+   COMMAND_RULES_CHANGED: '📜 Command Rules Changed',
 };

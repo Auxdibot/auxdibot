@@ -11,11 +11,11 @@ import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import { CustomEmojis } from '@/constants/bot/CustomEmojis';
 
 const subcommandToBrief = (command: AuxdibotCommand, group: string, sub: AuxdibotSubcommand) =>
-   `\n\n> **/${command.data.name}${group != 'undefined' ? ` ${group}` : ''}${
-      sub ? ` ${sub.name}` : ''
-   }**\nPermission: **${sub.info.permission}** ${sub.info.dmableCommand ? '💬 DMs' : ''} ${
-      command.info.allowedDefault ? '✅ Allowed' : ''
-   }\n*${sub.info.description}*\n\`Usage: ${sub.info.usageExample}\``;
+   `\n\n> **/${command.data.name}${group != 'undefined' ? ` ${group}` : ''}${sub ? ` ${sub.name}` : ''}\n${
+      sub.info.dmableCommand ? '💬 DMs' : ''
+   } ${command.info.allowedDefault ? '✅ Allowed by default' : ''}\n*${sub.info.description}*\n\`Usage: ${
+      sub.info.usageExample
+   }\``;
 
 export const commandInfo = <AuxdibotSubcommand>{
    name: 'command',
@@ -41,9 +41,6 @@ export const commandInfo = <AuxdibotSubcommand>{
 
       const helpCommandEmbed = new EmbedBuilder().setColor(auxdibot.colors.info).toJSON();
       helpCommandEmbed.title = `❔ /${command.data.name} Info`;
-      helpCommandEmbed.author = {
-         name: `Permission: ${command.info.permission}`,
-      };
       helpCommandEmbed.description = `${command.info.description}\n\n\**Usage**: \`${command.info.usageExample}\`\n${
          command.info.dmableCommand ? '\n💬 This command can be used in DMs' : ''
       }${command.info.allowedDefault ? '\n✅ This command is allowed by default.' : ''}${

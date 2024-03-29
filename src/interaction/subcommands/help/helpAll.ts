@@ -61,21 +61,16 @@ export const helpAll = <AuxdibotSubcommand>{
                .setEmoji(CustomEmojis.MODERATION),
             new ButtonBuilder()
                .setStyle(1)
-               .setCustomId('module-permissions')
-               .setLabel('Permissions')
-               .setEmoji(CustomEmojis.PERMISSIONS),
-            new ButtonBuilder()
-               .setStyle(1)
                .setCustomId('module-messages')
                .setLabel('Messages')
                .setEmoji(CustomEmojis.MESSAGES),
-         ),
-         modulesRow2 = new ActionRowBuilder<ButtonBuilder>().addComponents(
             new ButtonBuilder()
                .setStyle(1)
                .setCustomId('module-greetings')
                .setLabel('Greetings')
                .setEmoji(CustomEmojis.GREETINGS),
+         ),
+         modulesRow2 = new ActionRowBuilder<ButtonBuilder>().addComponents(
             new ButtonBuilder().setStyle(1).setCustomId('module-roles').setLabel('Roles').setEmoji(CustomEmojis.ROLES),
             new ButtonBuilder()
                .setStyle(1)

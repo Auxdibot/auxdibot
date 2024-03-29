@@ -75,8 +75,6 @@ enum LogAction {
   PUNISHMENT_EDITED
   MESSAGES_PURGED
   AUTOMOD_SETTINGS_CHANGE
-  PERMISSION_CREATED
-  PERMISSION_DELETED
   MESSAGE_EDITED
   MESSAGE_DELETED
   MESSAGE_DELETED_AUTOMOD
@@ -116,6 +114,7 @@ enum LogAction {
   REPORTS_ROLE_CHANGED
   NOTIFICATION_CREATED
   NOTIFICATION_DELETED
+  COMMAND_RULES_CHANGED
 }
 
 type Punishment {
@@ -128,13 +127,6 @@ type Punishment {
   userID            String
   moderatorID       String?
   punishmentID      Int
-}
-
-type PermissionOverride {
-  roleID     String?
-  userID     String?
-  permission String
-  allowed    Boolean @default(true)
 }
 
 type LevelReward {
@@ -311,8 +303,8 @@ model servermembers {
 }
 
 model servers {
-  id                                String               @id @default(auto()) @map("_id") @db.ObjectId
-  v                                 Int?                 @map("__v")
+  id                                String              @id @default(auto()) @map("_id") @db.ObjectId
+  v                                 Int?                @map("__v")
   serverID                          String
   disabled_modules                  String[]
   join_dm_embed                     APIEmbed?
@@ -327,36 +319,34 @@ model servers {
   join_roles                        String[]
   sticky_roles                      String[]
   reaction_roles                    ReactionRole[]
-  suggestions_reactions             String[]             @default([])
+  suggestions_reactions             String[]            @default([])
   suggestions_channel               String?
   suggestions_updates_channel       String?
-  suggestions_auto_delete           Boolean              @default(true)
-  suggestions_discussion_threads    Boolean              @default(true)
-  message_xp                        Int                  @default(20)
+  suggestions_auto_delete           Boolean             @default(true)
+  suggestions_discussion_threads    Boolean             @default(true)
+  message_xp                        Int                 @default(20)
   level_rewards                     LevelReward[]
   level_channel                     String?
-  level_embed                       Boolean              @default(true)
+  level_embed                       Boolean             @default(true)
   starred_messages                  StarredMessage[]
   starboard_channel                 String?
-  starboard_reaction                String?              @default("⭐")
-  starboard_reaction_count          Int?                 @default(5)
-  total_starred_messages            Int                  @default(0)
-  total_stars                       Int                  @default(0)
+  starboard_reaction                String?             @default("⭐")
+  starboard_reaction_count          Int?                @default(5)
+  total_starred_messages            Int                 @default(0)
+  total_stars                       Int                 @default(0)
   logs                              Log[]
   filtered_logs                     LogAction[]
   commands_channel                  String?
   command_permissions               CommandPermission[]
-  // Deprecated. Using "command_permissions" instead.
-  permission_overrides              PermissionOverride[]
   punishments                       Punishment[]
   suggestions                       Suggestion[]
   scheduled_messages                ScheduledMessage[]
-  punishment_send_reason            Boolean              @default(true)
-  punishment_send_moderator         Boolean              @default(false)
-  automod_banned_phrases            String[]             @default([])
-  automod_banned_phrases_punishment PunishmentType?      @default(WARN)
-  automod_punish_threshold_warns    Int?                 @default(3)
-  automod_threshold_punishment      PunishmentType?      @default(MUTE)
+  punishment_send_reason            Boolean             @default(true)
+  punishment_send_moderator         Boolean             @default(false)
+  automod_banned_phrases            String[]            @default([])
+  automod_banned_phrases_punishment PunishmentType?     @default(WARN)
+  automod_punish_threshold_warns    Int?                @default(3)
+  automod_threshold_punishment      PunishmentType?     @default(MUTE)
   automod_attachments_limit         AutomodLimit?
   automod_invites_limit             AutomodLimit?
   automod_spam_limit                AutomodLimit?
@@ -366,7 +356,7 @@ model servers {
   reports_channel                   String?
   notifications                     Notification[]
   report_role                       String?
-  automod_role_exceptions           String[]             @default([])
+  automod_role_exceptions           String[]            @default([])
   locked_channels                   ChannelLock[]
 
   @@unique([serverID])

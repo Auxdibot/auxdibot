@@ -49,6 +49,7 @@ export const notificationsYoutube = <AuxdibotSubcommand>{
                     embed: null,
                  },
             'YOUTUBE',
+            interaction.user.id,
          ).then(async () => {
             const description = `Created a new notification feed for ${
                youtubeChannel?.brandingSettings?.channel?.title

@@ -45,20 +45,6 @@ export const HelpEmbeds: { [k: string]: (auxdibot: Auxdibot) => APIEmbed } = {
                .reduce((acc, i) => acc + ` **/${i.data.name}**\n> ${i.info.description}\n\n`, ''),
          })
          .toJSON(),
-   permissions: (auxdibot) =>
-      new EmbedBuilder()
-         .setTitle(`${CustomEmojis.PERMISSIONS} Permissions Help`)
-         .setDescription(
-            'Auxdibot features many commands, most of which require permission to use! Auxdibot provides the `/permissions` command to allow Administrators to allow/deny users and roles access to certain Auxdibot features. To find out the permission for a command, lookup the information for the command using `/help command (command_name)` and look for the permission at the bottom of the embed/subcommand.\n\nOnce you know the permission you are going to provide to a user, you can allow/deny them access to that command by running `/permissions create (role or user) (allow/deny) (permission)`.\n\nAdministrators can view a list of all permission overrides by running the command `/permissions list`, and delete permission overrides by running the command `/permissions delete (override_id)`.',
-         )
-         .addFields({
-            name: 'Commands',
-            value: auxdibot.commands
-               .filter((i) => i.info.module == Modules.Permissions)
-               .reduce((acc, i) => acc + ` **/${i.data.name}**\n> ${i.info.description}\n\n`, ''),
-         })
-         .setColor(auxdibot.colors.default)
-         .toJSON(),
    messages: (auxdibot) =>
       new EmbedBuilder()
          .setTitle(`${CustomEmojis.MESSAGES} Messages Help`)

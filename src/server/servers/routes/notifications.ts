@@ -64,6 +64,7 @@ const notifications = (auxdibot: Auxdibot, router: Router) => {
                   embed: embed,
                },
                FeedType[req.body['type']],
+               req.user.id,
             )
                .then((data) => res.json({ data: data }))
                .catch((x) =>

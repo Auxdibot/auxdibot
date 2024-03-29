@@ -26,12 +26,6 @@ const Modules = {
       disableable: true,
       emoji: CustomEmojis.MODERATION,
    },
-   Permissions: <AuxdibotFeatureModule>{
-      name: 'Permissions',
-      description: 'Module for handling custom permission overrides for specific roles or users.',
-      disableable: true,
-      emoji: CustomEmojis.PERMISSIONS,
-   },
    Roles: <AuxdibotFeatureModule>{
       name: 'Roles',
       description: 'Module for handling role-related features, including massroles, and reaction roles.',

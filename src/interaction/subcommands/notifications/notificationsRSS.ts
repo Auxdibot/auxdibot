@@ -44,6 +44,7 @@ export const notificationsRSS = <AuxdibotSubcommand>{
                     embed: null,
                  },
             'RSS',
+            interaction.user.id,
          ).then(async () => {
             const description = `Created a new notification feed for \`${url}\`.`;
 

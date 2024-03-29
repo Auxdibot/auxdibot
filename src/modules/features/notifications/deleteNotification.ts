@@ -24,7 +24,7 @@ export default async function deleteNotification(
          await handleLog(auxdibot, guild, {
             userID: user.id,
             description: `${user.username} deleted notification #${id + 1}.`,
-            type: LogAction.PERMISSION_DELETED,
+            type: LogAction.NOTIFICATION_DELETED,
             date_unix: Date.now(),
          });
          auxdibot.subscriber.removeGuild(notif[0].topicURL, guild.id, auxdibot);

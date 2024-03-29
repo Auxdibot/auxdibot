@@ -30,13 +30,8 @@ export default <AuxdibotCommand>{
       const record = server.punishments.filter((p) => p.userID == user.id),
          banned = server.punishments.find((p) => p.userID == user.id && p.type == PunishmentType.BAN && !p.expired),
          muted = server.punishments.find((p) => p.userID == user.id && p.type == PunishmentType.MUTE && !p.expired);
-      let overrides = server.permission_overrides.filter((i) => i.roleID == user.id);
+
       const embed = new EmbedBuilder().setColor(auxdibot.colors.info).toJSON();
-      if (member) {
-         for (const role of member.roles.cache.values()) {
-            overrides = overrides.concat(server.permission_overrides.filter((i) => i.roleID == role.id));
-         }
-      }
       embed.title = `🧍 @${user.username}`;
       embed.thumbnail = {
          url: user.avatarURL({ size: 128 }) || '',
@@ -86,22 +81,6 @@ export default <AuxdibotCommand>{
                      )}>`
                   );
                }, '\u2800'),
-         },
-         {
-            name: 'Permission Overrides',
-            value:
-               overrides.reduce(
-                  (accumulator, permissionOverride) =>
-                     accumulator +
-                     `\n${permissionOverride.allowed ? '✅' : '❎'} \`${permissionOverride.permission}\` - ${
-                        permissionOverride.roleID
-                           ? `<@&${permissionOverride.roleID}>`
-                           : permissionOverride.userID
-                           ? `<@${permissionOverride.userID}>`
-                           : ''
-                     }`,
-                  '\u2800',
-               ) + '\n\u2800',
          },
       ];
       const row_info = new ActionRowBuilder<ButtonBuilder>()
