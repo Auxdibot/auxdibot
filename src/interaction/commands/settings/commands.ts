@@ -7,6 +7,7 @@ import channelRequireAdd from '@/interaction/subcommands/commands/channel/channe
 import channelRequireRemove from '@/interaction/subcommands/commands/channel/channelRequireRemove';
 import commandsAdminSet from '@/interaction/subcommands/commands/commandsAdminSet';
 import commandsOutputSet from '@/interaction/subcommands/commands/commandsOutputSet';
+import commandsRulesDelete from '@/interaction/subcommands/commands/commandsRulesDelete';
 import commandsRulesView from '@/interaction/subcommands/commands/commandsRulesView';
 import roleBlacklistAdd from '@/interaction/subcommands/commands/role/roleBlacklistAdd';
 import roleBlacklistRemove from '@/interaction/subcommands/commands/role/roleBlacklistRemove';
@@ -236,6 +237,14 @@ export default <AuxdibotCommand>{
             .setDescription('View the rules you have configured for permissions.')
             .addSubcommand((builder) =>
                builder.setName('view').setDescription('View the rules you have configured for permissions.'),
+            )
+            .addSubcommand((builder) =>
+               builder
+                  .setName('delete')
+                  .setDescription('Clear the rules set for a command.')
+                  .addStringOption((option) =>
+                     option.setName('command').setDescription('The command to clear the rules for.').setRequired(true),
+                  ),
             ),
       )
       .addSubcommandGroup((builder) =>
@@ -281,6 +290,7 @@ export default <AuxdibotCommand>{
       roleRequireRemove,
       commandsUsageEnable,
       commandsUsageDisable,
+      commandsRulesDelete,
    ],
    async execute() {
       return;
