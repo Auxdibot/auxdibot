@@ -20,7 +20,6 @@ export default <AuxdibotCommand>{
       module: Modules['Moderation'],
       description: 'Create a detailed report that will be sent to the moderators of the server.',
       usageExample: '/report (message) [user]',
-      permission: 'report',
       allowedDefault: true,
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {

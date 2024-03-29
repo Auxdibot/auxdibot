@@ -16,7 +16,6 @@ export const leaveEmbedJSON = <AuxdibotSubcommand>{
       description:
          'Add an embed to the join message using custom JSON. (Placeholders are supported. Do /help placeholders for a list of placeholders.)',
       usageExample: '/leave embed_json (json)',
-      permission: 'greetings.leave.embed_json',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

@@ -12,7 +12,6 @@ export const joinPreview = <AuxdibotSubcommand>{
       module: Modules['Greetings'],
       description: 'Preview the join message.',
       usageExample: '/join preview',
-      permission: 'greetings.join.preview',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

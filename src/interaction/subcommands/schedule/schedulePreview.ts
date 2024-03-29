@@ -13,7 +13,6 @@ export const schedulePreview = <AuxdibotSubcommand>{
       module: Modules['Messages'],
       description: 'Preview a scheduled message.',
       usageExample: '/schedule preview [index]',
-      permission: 'schedule.preview',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

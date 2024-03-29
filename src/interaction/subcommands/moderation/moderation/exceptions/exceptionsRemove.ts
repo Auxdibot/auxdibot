@@ -16,7 +16,6 @@ export const exceptionsRemove = <AuxdibotSubcommand>{
       description:
          "Remove an AutoMod role exception. If you've deleted the role, use the index parameter, which is the placement of the item on /moderation exceptions list.",
       usageExample: '/moderation exceptions remove [role] [index]',
-      permission: 'moderation.exceptions.remove',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data || !interaction.memberPermissions) return;

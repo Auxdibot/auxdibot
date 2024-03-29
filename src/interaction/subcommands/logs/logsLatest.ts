@@ -12,7 +12,6 @@ export const logsLatest = <AuxdibotSubcommand>{
       module: Modules['Settings'],
       description: 'Get the latest logs on your server.',
       usageExample: '/logs latest',
-      permission: 'logs.latest',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

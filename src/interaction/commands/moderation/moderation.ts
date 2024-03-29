@@ -348,7 +348,6 @@ export default <AuxdibotCommand>{
       module: Modules['Moderation'],
       description: "Command for managing Auxdibot's moderation settings.",
       usageExample: '/moderation (settings|blacklist|attachments|invites|warns|spam|exceptions)',
-      permission: 'moderation',
    },
    subcommands: [
       moderationMuteRole,

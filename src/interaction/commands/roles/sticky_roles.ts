@@ -42,7 +42,6 @@ export default <AuxdibotCommand>{
       module: Modules['Roles'],
       description: 'Change the roles that are kept when a member rejoins the server.',
       usageExample: '/sticky_roles (add|remove|list)',
-      permission: 'roles.sticky_roles',
    },
    subcommands: [stickyRoleAdd, stickyRoleRemove, stickyRoleList],
    async execute() {

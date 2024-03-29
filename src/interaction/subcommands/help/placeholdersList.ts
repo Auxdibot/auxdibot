@@ -14,7 +14,6 @@ export const placeholdersList = <AuxdibotSubcommand>{
       description: "View Auxdibot's placeholders.",
       usageExample: '/help placeholders',
       allowedDefault: true,
-      permission: 'commands.help.placeholders',
       dmableCommand: true,
    },
    async execute(

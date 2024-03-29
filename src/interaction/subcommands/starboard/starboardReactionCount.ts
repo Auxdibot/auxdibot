@@ -13,7 +13,6 @@ export const starboardReactionCount = <AuxdibotSubcommand>{
       module: Modules['Starboard'],
       description: 'Set the starboard reaction count for this server.',
       usageExample: '/starboard reaction_count (reaction_count)',
-      permission: 'starboard.settings.reaction_count',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

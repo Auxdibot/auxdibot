@@ -12,7 +12,6 @@ export const settingsReset = <AuxdibotSubcommand>{
       module: Modules['Settings'],
       description: 'Reset all data for this server. (Owner Only)',
       usageExample: '/settings reset',
-      permission: 'settings.reset',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

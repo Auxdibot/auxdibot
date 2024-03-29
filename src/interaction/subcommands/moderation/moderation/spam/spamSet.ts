@@ -14,7 +14,6 @@ export const spamSet = <AuxdibotSubcommand>{
       module: Modules['Moderation'],
       description: 'Set the spam limit for this server.',
       usageExample: '/moderation spam set (messages) (duration)',
-      permission: 'moderation.spam.set',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

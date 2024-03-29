@@ -12,7 +12,6 @@ export const exceptionsList = <AuxdibotSubcommand>{
       module: Modules['Moderation'],
       description: 'List the roles that are excempt from AutoMod punishments and limits.',
       usageExample: '/moderation exceptions list',
-      permission: 'moderation.exceptions.list',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

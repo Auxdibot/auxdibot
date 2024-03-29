@@ -16,7 +16,6 @@ export const punishKick = <AuxdibotSubcommand>{
       module: Modules['Moderation'],
       description: 'Kicks a user, removing them from the server and adding a kick to their record on the server.',
       usageExample: '/punish kick (user) [reason]',
-      permission: 'moderation.punish.kick',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

@@ -24,7 +24,6 @@ export const commandInfo = <AuxdibotSubcommand>{
       description: "View a command or subcommand's usage and description.",
       usageExample: '/help command (command) [subcommand]',
       allowedDefault: true,
-      permission: 'commands.help.command',
       dmableCommand: true,
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<BaseAuxdibotCommandData>) {

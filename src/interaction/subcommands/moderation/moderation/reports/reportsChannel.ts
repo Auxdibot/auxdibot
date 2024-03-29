@@ -14,7 +14,6 @@ export const reportsChannel = <AuxdibotSubcommand>{
       module: Modules['Moderation'],
       description: 'Change the reports channel for this server.',
       usageExample: '/moderation reports channel (channel)',
-      permission: 'moderation.reports.channel',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

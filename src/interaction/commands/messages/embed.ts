@@ -91,7 +91,6 @@ export default <AuxdibotCommand>{
       module: Modules['Messages'],
       description: 'Create or edit a Discord Embed with Auxdibot, as well as obtain the JSON data of any Embed.',
       usageExample: '/embed (create|custom|edit|edit_custom|json)',
-      permission: 'embed',
    },
    subcommands: [createEmbed, createEmbedJSON, editEmbed, editEmbedJSON, getEmbedJSON],
    async execute() {

@@ -14,7 +14,6 @@ export const reactionRolesRemove = <AuxdibotSubcommand>{
       module: Modules['Roles'],
       description: 'Remove a role that is assigned when a member joins the server.',
       usageExample: '/reaction_roles remove [message_id] [index]',
-      permission: 'rr.remove',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

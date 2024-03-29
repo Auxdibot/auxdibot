@@ -76,7 +76,6 @@ export default <AuxdibotCommand>{
       module: Modules['Messages'],
       description: 'Create notifications for your favorite social media/RSS feeds.',
       usageExample: '/notifications (youtube|twitch|rss|delete|list)',
-      permission: 'notifications',
    },
    subcommands: [notificationsYoutube, notificationsDelete, notificationsList, notificationsTwitch, notificationsRSS],
    async execute() {

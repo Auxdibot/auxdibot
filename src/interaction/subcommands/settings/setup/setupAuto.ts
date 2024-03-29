@@ -13,7 +13,6 @@ export const setupAuto = <AuxdibotSubcommand>{
       module: Modules['Settings'],
       description: 'Auxdibot will be automatically configured, creating channels & roles for all enabled features.',
       usageExample: '/setup auto',
-      permission: 'settings.setup.auto',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

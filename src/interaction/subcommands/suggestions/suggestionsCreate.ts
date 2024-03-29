@@ -20,7 +20,6 @@ export const suggestionsCreate = <AuxdibotSubcommand>{
       module: Modules['Suggestions'],
       description: 'Create a suggestion.',
       usageExample: '/suggestions create (suggestion)',
-      permission: 'suggestions.create',
       allowedDefault: true,
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {

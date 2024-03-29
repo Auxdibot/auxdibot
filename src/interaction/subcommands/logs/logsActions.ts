@@ -13,7 +13,6 @@ export const logsActions = <AuxdibotSubcommand>{
       module: Modules['Settings'],
       description: 'Get a list of every action Auxdibot can log.',
       usageExample: '/logs actions',
-      permission: 'logs.actions',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

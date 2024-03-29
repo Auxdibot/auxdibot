@@ -14,7 +14,6 @@ export const moderationSendReason = <AuxdibotSubcommand>{
       module: Modules['Moderation'],
       description: 'Change whether users are sent the reason for their punishment.',
       usageExample: '/moderation settings send_reason (send)',
-      permission: 'moderation.settings.send_reason',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

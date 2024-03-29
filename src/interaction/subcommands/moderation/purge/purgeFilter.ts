@@ -15,7 +15,6 @@ export const purgeFilter = <AuxdibotSubcommand>{
       module: Modules['Moderation'],
       description: 'Purge messages in a channel by a filter (Uses RegEx!)',
       usageExample: '/purge filter (amount) (filter)',
-      permission: 'moderation.purge.filter',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

@@ -18,7 +18,6 @@ export const punishMute = <AuxdibotSubcommand>{
       description:
          'Mutes a user, making them unable to talk in the server and adding a mute to their record on the server. Default duration is permanent.',
       usageExample: '/punish mute (user) [reason] [duration]',
-      permission: 'moderation.punish.mute',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

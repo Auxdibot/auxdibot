@@ -14,7 +14,6 @@ export const logsFilter = <AuxdibotSubcommand>{
       module: Modules['Settings'],
       description: 'Toggle a log action from being logged on your server.',
       usageExample: '/logs filter (log action, use /logs actions to see all)',
-      permission: 'logs.filter',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

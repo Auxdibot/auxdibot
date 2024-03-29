@@ -18,7 +18,6 @@ export const reactionRolesAddJSON = <AuxdibotSubcommand>{
       module: Modules['Roles'],
       description: 'Add a reaction role to the server with custom Discord Embed JSON.',
       usageExample: '/reaction_roles add_json (channel) (roles) [type] (json)',
-      permission: 'rr.add.json',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

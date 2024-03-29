@@ -13,7 +13,6 @@ export const suggestionsBan = <AuxdibotSubcommand>{
       module: Modules['Suggestions'],
       description: 'Ban a user from using suggestions.',
       usageExample: '/suggestions ban (user)',
-      permission: 'suggestions.ban',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

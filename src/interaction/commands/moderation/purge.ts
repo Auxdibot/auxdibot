@@ -73,7 +73,6 @@ export default <AuxdibotCommand>{
       module: Modules['Moderation'],
       description: 'Purge messages in a channel.',
       usageExample: '/purge (user|filter|all|invites|attachments)',
-      permission: 'moderation.purge',
    },
    subcommands: [purgeAll, purgeUser, purgeFilter, purgeAttachments, purgeInvites, purgeEmbeds],
    async execute() {

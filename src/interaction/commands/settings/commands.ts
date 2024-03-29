@@ -272,7 +272,6 @@ export default <AuxdibotCommand>{
       module: Modules['Settings'],
       description: "Manage access for all of Auxdibot's commands.",
       usageExample: '/commands',
-      permission: 'commands.commands',
    },
    subcommands: [
       commandsAdminSet,

@@ -15,7 +15,6 @@ export const purgeInvites = <AuxdibotSubcommand>{
       module: Modules['Moderation'],
       description: 'Purge messages based on whether they have attachments.',
       usageExample: '/purge invites (amount)',
-      permission: 'moderation.purge.invites',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

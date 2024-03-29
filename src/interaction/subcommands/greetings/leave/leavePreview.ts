@@ -12,7 +12,6 @@ export const leavePreview = <AuxdibotSubcommand>{
       module: Modules['Greetings'],
       description: 'Preview the leave message.',
       usageExample: '/leave preview',
-      permission: 'greetings.leave.preview',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

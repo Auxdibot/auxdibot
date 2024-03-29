@@ -14,7 +14,6 @@ export const levelsStats = <AuxdibotSubcommand>{
       description: "View a user's level stats. Leave empty to view your own.",
       usageExample: '/levels stats',
       allowedDefault: true,
-      permission: 'levels.stats',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

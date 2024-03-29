@@ -14,7 +14,6 @@ export const editEmbedJSON = <AuxdibotSubcommand>{
       module: Modules['Messages'],
       usageExample: '/embed edit_json (message_id) (json)',
       description: 'Edit an existing Embed by Auxdibot using valid Discord Embed JSON data.',
-      permission: 'embed.edit.json',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

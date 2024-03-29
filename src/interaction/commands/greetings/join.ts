@@ -30,7 +30,6 @@ export default <AuxdibotCommand>{
       description:
          'Change settings for join messages on the server. (Placeholders are supported. Do /help placeholders for a list of placeholders.)',
       usageExample: '/join (message|embed_json|preview)',
-      permission: 'greetings.join',
    },
    subcommands: [joinMessage, joinEmbedJSON, joinPreview],
    async execute() {

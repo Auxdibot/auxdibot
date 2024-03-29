@@ -13,7 +13,6 @@ export const massroleGive = <AuxdibotSubcommand>{
       module: Modules['Roles'],
       description: 'Give everybody a role.',
       usageExample: '/massrole give (role)',
-      permission: 'massrole.give',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

@@ -16,7 +16,6 @@ export const unlockChannel = <AuxdibotSubcommand>{
       module: Modules['Moderation'],
       description: 'Lock a channel. Run /lock channel to lock it again.',
       usageExample: '/unlock channel [channel]',
-      permission: 'moderation.lock.channel.remove',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data || !interaction.channel) return;

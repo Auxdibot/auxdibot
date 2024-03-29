@@ -14,7 +14,6 @@ export const addLevelReward = <AuxdibotSubcommand>{
       module: Modules['Levels'],
       description: 'Add a reward to the Level Rewards.',
       usageExample: '/levels add_reward (level) (role)',
-      permission: 'levels.rewards.add',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

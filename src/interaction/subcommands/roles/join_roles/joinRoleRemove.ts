@@ -15,7 +15,6 @@ export const joinRoleRemove = <AuxdibotSubcommand>{
       description:
          "Remove a role that is assigned when a member joins the server. If you've deleted the role, use the index parameter, which is the placement of the item on /join_roles list.",
       usageExample: '/join_roles remove [role] [index]',
-      permission: 'roles.join_roles.remove',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data || !interaction.memberPermissions) return;

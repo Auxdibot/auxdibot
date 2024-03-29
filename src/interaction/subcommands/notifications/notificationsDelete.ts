@@ -16,7 +16,6 @@ export const notificationsDelete = <AuxdibotSubcommand>{
       module: Modules['Messages'],
       description: 'Delete an Auxdibot feed.',
       usageExample: '/notifications delete (index)',
-      permission: 'notifications.delete',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

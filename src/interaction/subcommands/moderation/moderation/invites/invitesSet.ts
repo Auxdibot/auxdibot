@@ -14,7 +14,6 @@ export const invitesSet = <AuxdibotSubcommand>{
       module: Modules['Moderation'],
       description: 'Set the invites spam limit for this server.',
       usageExample: '/moderation invites set (attachments) (duration)',
-      permission: 'moderation.invites.set',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

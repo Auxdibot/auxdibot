@@ -22,7 +22,6 @@ export default <AuxdibotCommand>{
       module: Modules['Greetings'],
       description: 'Change settings for greetings on the server.',
       usageExample: '/greetings (channel)',
-      permission: 'greetings',
    },
    subcommands: [greetingsChannel],
    async execute() {

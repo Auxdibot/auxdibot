@@ -12,7 +12,6 @@ export const punishmentRecord = <AuxdibotSubcommand>{
       module: Modules['Moderation'],
       description: "View a user's punishment record.",
       usageExample: '/punishment record (user)',
-      permission: 'moderation.punishments.record',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

@@ -13,7 +13,6 @@ export const logsLogChannel = <AuxdibotSubcommand>{
       module: Modules['Settings'],
       description: 'Change the log channel for the server, where all actions are logged to.',
       usageExample: '/logs channel (channel)',
-      permission: 'logs.channel',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

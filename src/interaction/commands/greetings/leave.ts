@@ -30,7 +30,6 @@ export default <AuxdibotCommand>{
       description:
          'Change settings for leave messages on the server. (Placeholders are supported. Do /help placeholders for a list of placeholders.)',
       usageExample: '/leave (message|embed_json|preview)',
-      permission: 'greetings.leave',
    },
    subcommands: [leaveMessage, leaveEmbedJSON, leavePreview],
    async execute() {

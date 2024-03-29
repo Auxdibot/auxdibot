@@ -113,7 +113,6 @@ export default <AuxdibotCommand>{
       description: 'Change settings for leveling on this server.',
       usageExample:
          '/levels (leaderboard|add_reward|rewards|remove_reward|award_xp|reset|reset_all|remove_xp|message_xp|toggle_embed|channel)',
-      permission: 'levels',
    },
    subcommands: [
       addLevelReward,

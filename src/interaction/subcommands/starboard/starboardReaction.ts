@@ -13,7 +13,6 @@ export const starboardReaction = <AuxdibotSubcommand>{
       module: Modules['Starboard'],
       description: 'Set the starboard reaction for this server.',
       usageExample: '/starboard reaction (reaction)',
-      permission: 'starboard.settings.reaction',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

@@ -15,7 +15,6 @@ export const stickyRoleRemove = <AuxdibotSubcommand>{
       description:
          "Remove a role that is kept when a member rejoins the server. If you've deleted the role, use the index parameter, which is the placement of the item on /sticky_roles list.",
       usageExample: '/sticky_roles remove [role] [index]',
-      permission: 'roles.sticky_roles.remove',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data || !interaction.memberPermissions) return;

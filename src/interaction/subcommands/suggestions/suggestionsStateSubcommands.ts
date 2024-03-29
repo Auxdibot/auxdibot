@@ -100,7 +100,6 @@ export const approveSuggestion = <AuxdibotSubcommand>{
       module: Modules['Suggestions'],
       description: 'Mark a suggestion as approved.',
       usageExample: '/suggestions approve (id)',
-      permission: 'suggestions.state.approve',
    },
    execute: (auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) =>
       stateCommand(auxdibot, interaction, SuggestionState.APPROVED),
@@ -111,7 +110,6 @@ export const denySuggestion = <AuxdibotSubcommand>{
       module: Modules['Suggestions'],
       description: 'Mark a suggestion as denied.',
       usageExample: '/suggestions deny (id)',
-      permission: 'suggestions.state.deny',
    },
    execute: (auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) =>
       stateCommand(auxdibot, interaction, SuggestionState.DENIED),
@@ -122,7 +120,6 @@ export const considerSuggestion = <AuxdibotSubcommand>{
       module: Modules['Suggestions'],
       description: 'Mark a suggestion as considered.',
       usageExample: '/suggestions consider (id)',
-      permission: 'suggestions.state.consider',
    },
    execute: (auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) =>
       stateCommand(auxdibot, interaction, SuggestionState.CONSIDERED),
@@ -133,7 +130,6 @@ export const addSuggestion = <AuxdibotSubcommand>{
       module: Modules['Suggestions'],
       description: 'Mark a suggestion as added.',
       usageExample: '/suggestions add (id)',
-      permission: 'suggestions.state.add',
    },
    execute: (auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) =>
       stateCommand(auxdibot, interaction, SuggestionState.ADDED),

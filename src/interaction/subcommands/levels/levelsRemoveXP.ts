@@ -13,7 +13,6 @@ export const levelsRemoveXP = <AuxdibotSubcommand>{
       module: Modules['Levels'],
       description: 'Remove XP points from a user.',
       usageExample: '/levels remove_exp (xp) (user)',
-      permission: 'levels.xp.remove',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

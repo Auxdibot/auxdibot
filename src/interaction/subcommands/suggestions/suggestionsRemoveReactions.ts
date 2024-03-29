@@ -13,7 +13,6 @@ export const suggestionsRemoveReactions = <AuxdibotSubcommand>{
       module: Modules['Suggestions'],
       description: 'Remove a reaction from the reactions on suggestions.',
       usageExample: '/suggestions remove_reaction (reaction|index)',
-      permission: 'suggestions.reactions.remove',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

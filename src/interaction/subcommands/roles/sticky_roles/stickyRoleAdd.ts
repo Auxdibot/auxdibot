@@ -14,7 +14,6 @@ export const stickyRoleAdd = <AuxdibotSubcommand>{
       module: Modules['Roles'],
       description: 'Add a role to be kept when a member rejoins the server.',
       usageExample: '/sticky_roles add (role)',
-      permission: 'roles.sticky_roles.add',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data || !interaction.memberPermissions) return;

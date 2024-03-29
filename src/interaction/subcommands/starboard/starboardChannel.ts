@@ -14,7 +14,6 @@ export const starboardChannel = <AuxdibotSubcommand>{
       module: Modules['Starboard'],
       description: 'Set the channel where starred messages are sent.',
       usageExample: '/starboard channel (channel)',
-      permission: 'starboard.settings.channel',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

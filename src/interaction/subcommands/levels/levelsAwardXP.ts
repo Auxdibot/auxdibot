@@ -13,7 +13,6 @@ export const levelsAwardXP = <AuxdibotSubcommand>{
       module: Modules['Levels'],
       description: 'Award a user XP points.',
       usageExample: '/levels award_xp (xp) (user)',
-      permission: 'levels.xp.award',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

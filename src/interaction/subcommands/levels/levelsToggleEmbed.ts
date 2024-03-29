@@ -13,7 +13,6 @@ export const levelsToggleEmbed = <AuxdibotSubcommand>{
       module: Modules['Levels'],
       description: 'Toggle whether the Level embed is sent upon a user leveling up.',
       usageExample: '/levels toggle_embed',
-      permission: 'levels.embed',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

@@ -14,7 +14,6 @@ export const settingsView = <AuxdibotSubcommand>{
       module: Modules['Settings'],
       description: 'View all settings for the server.',
       usageExample: '/settings view',
-      permission: 'settings.view',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

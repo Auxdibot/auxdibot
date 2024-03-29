@@ -8,7 +8,6 @@ import findOrCreateServer from '@/modules/server/findOrCreateServer';
 export default <AuxdibotButton>{
    module: Modules['Settings'],
    name: 'settings',
-   permission: 'settings.view',
    command: 'settings view',
    async execute(auxdibot: Auxdibot, interaction: MessageComponentInteraction) {
       const [, settings] = interaction.customId.split('-');

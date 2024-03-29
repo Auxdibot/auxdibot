@@ -12,7 +12,6 @@ export const scheduleList = <AuxdibotSubcommand>{
       module: Modules['Messages'],
       description: 'List the schedules running on your server.',
       usageExample: '/schedule list',
-      permission: 'schedule.list',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

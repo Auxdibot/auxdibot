@@ -8,7 +8,6 @@ import findOrCreateServer from '@/modules/server/findOrCreateServer';
 export default <AuxdibotButton>{
    module: Modules['Roles'],
    name: 'rr',
-   permission: 'roles.button.use',
    allowedDefault: true,
    async execute(auxdibot: Auxdibot, interaction: MessageComponentInteraction) {
       if (!interaction.guild || !interaction.member || !interaction.channel) return;

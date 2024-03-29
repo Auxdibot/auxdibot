@@ -13,7 +13,6 @@ export const getEmbedJSON = <AuxdibotSubcommand>{
       module: Modules['Messages'],
       usageExample: '/embed json (message_id)',
       description: 'Get the Discord Embed JSON data of any Embed on your server.',
-      permission: 'embed.json',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

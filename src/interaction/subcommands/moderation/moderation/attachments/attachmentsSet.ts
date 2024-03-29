@@ -14,7 +14,6 @@ export const attachmentsSet = <AuxdibotSubcommand>{
       module: Modules['Moderation'],
       description: 'Set the attachments spam limit for this server.',
       usageExample: '/moderation attachments set (attachments) (duration)',
-      permission: 'moderation.attachments.set',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

@@ -13,7 +13,6 @@ export const notificationsList = <AuxdibotSubcommand>{
       module: Modules['Messages'],
       description: 'List all Auxdibot notification feeds.',
       usageExample: '/notifications list',
-      permission: 'notifications.list',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

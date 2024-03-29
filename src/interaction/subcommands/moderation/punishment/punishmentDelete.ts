@@ -15,7 +15,6 @@ export const punishmentDelete = <AuxdibotSubcommand>{
       module: Modules['Moderation'],
       description: 'Delete a punishment.',
       usageExample: '/punishment delete (punishment_id)',
-      permission: 'moderation.punishments.delete',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

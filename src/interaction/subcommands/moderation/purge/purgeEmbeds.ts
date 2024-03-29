@@ -15,7 +15,6 @@ export const purgeEmbeds = <AuxdibotSubcommand>{
       module: Modules['Moderation'],
       description: 'Purge messages based on whether they have embeds.',
       usageExample: '/purge embeds (amount)',
-      permission: 'moderation.purge.embeds',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

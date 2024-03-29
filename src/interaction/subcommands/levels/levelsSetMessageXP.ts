@@ -13,7 +13,6 @@ export const levelsSetMessageXP = <AuxdibotSubcommand>{
       module: Modules['Levels'],
       description: 'Set the amount of XP given for sending a message.',
       usageExample: '/levels message_xp (xp)',
-      permission: 'levels.message_xp',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

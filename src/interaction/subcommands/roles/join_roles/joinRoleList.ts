@@ -11,7 +11,6 @@ export const joinRoleList = <AuxdibotSubcommand>{
       module: Modules['Roles'],
       description: 'List the roles that are assigned when a member joins the server.',
       usageExample: '/join_roles list',
-      permission: 'roles.join_roles.list',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

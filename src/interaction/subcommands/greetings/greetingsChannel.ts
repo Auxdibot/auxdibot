@@ -14,7 +14,6 @@ export const greetingsChannel = <AuxdibotSubcommand>{
       module: Modules['Greetings'],
       description: 'Set the greetings channel for this server, where join and leave messages are broadcast.',
       usageExample: '/greetings channel (channel)',
-      permission: 'greetings.channel',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

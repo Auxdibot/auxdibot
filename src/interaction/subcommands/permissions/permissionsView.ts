@@ -11,7 +11,6 @@ export const permissionsView = <AuxdibotSubcommand>{
       module: Modules['Permissions'],
       description: 'View a permission override.',
       usageExample: '/permissions view (override_id)',
-      permission: 'permissions.view',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

@@ -12,7 +12,6 @@ import handleError from '@/util/handleError';
 export default <AuxdibotButton>{
    module: Modules['Moderation'],
    name: 'unmute',
-   permission: 'moderation.punish.mute.remove',
    command: 'punish unmute',
    async execute(auxdibot: Auxdibot, interaction: MessageComponentInteraction) {
       if (!interaction.guild || !interaction.user || !interaction.channel) return;

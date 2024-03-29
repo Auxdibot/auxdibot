@@ -19,7 +19,6 @@ export default <AuxdibotCommand>{
       module: Modules['Settings'],
       description: "Setup one or all of Auxdibot's features.",
       usageExample: '/setup (auto)',
-      permission: 'settings.setup',
    },
    subcommands: [setupAuto],
    async execute() {

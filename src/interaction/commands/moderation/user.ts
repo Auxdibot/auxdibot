@@ -18,7 +18,6 @@ export default <AuxdibotCommand>{
       description:
          "Displays an easy to use embed where you can view and edit a user's data, including punishments on their record.",
       usageExample: '/user [user]',
-      permission: 'moderation.user',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data || !interaction.channel) return;

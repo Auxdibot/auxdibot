@@ -19,7 +19,6 @@ export const scheduleEdit = <AuxdibotSubcommand>{
       usageExample:
          '/schedule edit (index) [channel] [timestamp] [times_to_run] [content] [color] [title] [title url] [author] [author icon url] [author url] [description] [fields (split title and description with `"|d|"``, and seperate fields with `"|s|"`)] [footer] [footer icon url] [image url] [thumbnail url]',
       description: 'Edit an existing Schedule by Auxdibot.',
-      permission: 'schedule.edit',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

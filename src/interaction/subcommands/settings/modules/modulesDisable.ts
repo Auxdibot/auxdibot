@@ -14,7 +14,6 @@ export const moduleDisable = <AuxdibotSubcommand>{
       module: Modules['Settings'],
       description: "Disable Auxdibot's modules. (/help modules)",
       usageExample: '/modules disable (module)',
-      permission: 'settings.modules.disable',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;
