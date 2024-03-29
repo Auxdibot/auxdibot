@@ -17,7 +17,6 @@ export const suggestionsDelete = <AuxdibotSubcommand>{
       module: Modules['Suggestions'],
       description: 'Delete a suggestion.',
       usageExample: '/suggestions delete (id)',
-      permission: 'suggestions.delete',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

@@ -14,7 +14,6 @@ export const reportsRole = <AuxdibotSubcommand>{
       module: Modules['Moderation'],
       description: 'Change the reports role for this server.',
       usageExample: '/moderation reports role (role)',
-      permission: 'moderation.reports.role',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

@@ -14,7 +14,6 @@ export const suggestionsChannel = <AuxdibotSubcommand>{
       module: Modules['Suggestions'],
       description: 'Change the channel where suggestions are posted. (None to disable.)',
       usageExample: '/suggestions channel [channel]',
-      permission: 'suggestions.channel',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

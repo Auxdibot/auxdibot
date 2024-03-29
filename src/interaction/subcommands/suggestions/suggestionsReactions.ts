@@ -11,7 +11,6 @@ export const suggestionsReactions = <AuxdibotSubcommand>{
       module: Modules['Suggestions'],
       description: 'List the reactions for suggestions.',
       usageExample: '/suggestions reactions',
-      permission: 'suggestions.reactions',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

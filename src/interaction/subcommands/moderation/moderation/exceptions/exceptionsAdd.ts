@@ -18,7 +18,6 @@ export const exceptionsAdd = <AuxdibotSubcommand>{
       description:
          'Add a role exception to automod. The role added will not be affected by limits or blackisted words.',
       usageExample: '/moderation exceptions add (role)',
-      permission: 'moderation.exceptions.add',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data || !interaction.memberPermissions) return;

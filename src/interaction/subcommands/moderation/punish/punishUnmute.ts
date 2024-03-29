@@ -16,7 +16,6 @@ export const punishUnmute = <AuxdibotSubcommand>{
       module: Modules['Moderation'],
       description: 'Unmutes a user if they are currently muted.',
       usageExample: '/unmute (user)',
-      permission: 'moderation.punish.mute.remove',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

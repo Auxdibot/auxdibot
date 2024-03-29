@@ -16,7 +16,6 @@ export const levelsLeaderboard = <AuxdibotSubcommand>{
       description: 'View the top leveled members on this server.',
       usageExample: '/levels leaderboard',
       allowedDefault: true,
-      permission: 'levels.leaderboard',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

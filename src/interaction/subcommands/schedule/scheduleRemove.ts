@@ -14,7 +14,6 @@ export const scheduleRemove = <AuxdibotSubcommand>{
       module: Modules['Messages'],
       description: 'Remove a schedule from your server. It will never run again after deletion.',
       usageExample: '/schedule remove [index]',
-      permission: 'schedule.remove',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

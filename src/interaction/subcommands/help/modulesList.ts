@@ -14,7 +14,6 @@ export const modulesList = <AuxdibotSubcommand>{
       description: "View Auxdibot's modules.",
       usageExample: '/help modules',
       allowedDefault: true,
-      permission: 'commands.help.modules',
       dmableCommand: true,
    },
    async execute(

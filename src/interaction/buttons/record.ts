@@ -8,7 +8,6 @@ import handleError from '@/util/handleError';
 export default <AuxdibotButton>{
    module: Modules['Moderation'],
    name: 'record',
-   permission: 'punishment.record',
    command: 'punishment record',
    async execute(auxdibot: Auxdibot, interaction: MessageComponentInteraction) {
       if (!interaction.guild || !interaction.user || !interaction.channel) return;

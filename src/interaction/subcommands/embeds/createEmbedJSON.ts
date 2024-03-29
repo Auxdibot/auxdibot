@@ -15,7 +15,6 @@ export const createEmbedJSON = <AuxdibotSubcommand>{
       module: Modules['Messages'],
       usageExample: '/embed create_json (channel) (json)',
       description: 'Create an embed with Auxdibot using valid Discord Embed JSON data.',
-      permission: 'embed.create.json',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

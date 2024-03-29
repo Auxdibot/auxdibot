@@ -12,7 +12,6 @@ export const logsListFiltered = <AuxdibotSubcommand>{
       module: Modules['Settings'],
       description: 'List every filtered log action.',
       usageExample: '/logs list_filtered',
-      permission: 'logs.list_filtered',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

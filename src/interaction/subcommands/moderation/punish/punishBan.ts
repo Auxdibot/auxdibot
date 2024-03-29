@@ -18,7 +18,6 @@ export const punishBan = <AuxdibotSubcommand>{
       description:
          'Bans a user, removing them from the server and adding a ban to their record on the server. Default duration is permanent.',
       usageExample: '/punish ban (user) [reason] [duration]',
-      permission: 'moderation.punish.ban',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

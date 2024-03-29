@@ -28,7 +28,6 @@ export default <AuxdibotCommand>{
       module: Modules['Roles'],
       description: 'Give everybody a role, or take a role away from anyone that has it.',
       usageExample: '/massrole (give|take)',
-      permission: 'massrole',
    },
    subcommands: [massroleGive, massroleTake],
    async execute() {

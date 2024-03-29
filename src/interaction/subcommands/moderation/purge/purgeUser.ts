@@ -15,7 +15,6 @@ export const purgeUser = <AuxdibotSubcommand>{
       module: Modules['Moderation'],
       description: 'Purge messages in a channel by user.',
       usageExample: '/purge user (amount) (user)',
-      permission: 'moderation.purge.user',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

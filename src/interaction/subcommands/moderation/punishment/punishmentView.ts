@@ -14,7 +14,6 @@ export const punishmentView = <AuxdibotSubcommand>{
       module: Modules['Moderation'],
       description: 'View a punishment.',
       usageExample: '/punishment view (punishment_id)',
-      permission: 'moderation.punishments.view',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

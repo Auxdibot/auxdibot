@@ -14,7 +14,6 @@ export const reportsUnban = <AuxdibotSubcommand>{
       module: Modules['Moderation'],
       description: 'Unban a user from making reports.',
       usageExample: '/moderation reports unban (user)',
-      permission: 'moderation.reports.ban.remove',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

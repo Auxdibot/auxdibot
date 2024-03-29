@@ -39,7 +39,6 @@ export default <AuxdibotCommand>{
       module: Modules['Moderation'],
       description: 'View or delete a punishment.',
       usageExample: '/punishment (view|delete|latest)',
-      permission: 'moderation.punishments',
    },
    subcommands: [punishmentView, punishmentDelete, punishmentLatest, punishmentRecord],
    async execute() {

@@ -12,7 +12,6 @@ export const massroleTake = <AuxdibotSubcommand>{
       module: Modules['Roles'],
       description: 'Take away a role from every user.',
       usageExample: '/massrole take (role)',
-      permission: 'massrole.take',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

@@ -179,7 +179,6 @@ export default <AuxdibotCommand>{
       description: 'The main command for handling suggestions on this server.',
       usageExample:
          '/suggestions (create|channel|updates_channel|auto_delete|discussion_threads|reactions|remove_reaction|add_reaction|approve|deny|consider|add|ban|unban|delete)',
-      permission: 'suggestions',
    },
    subcommands: [
       suggestionsCreate,

@@ -14,7 +14,6 @@ export const blacklistAdd = <AuxdibotSubcommand>{
       module: Modules['Moderation'],
       description: 'Add a blacklisted word to this server.',
       usageExample: '/moderation blacklist add (phrase)',
-      permission: 'moderation.blacklist.add',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

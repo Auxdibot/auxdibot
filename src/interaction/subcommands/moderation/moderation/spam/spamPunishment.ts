@@ -16,7 +16,6 @@ export const spamPunishment = <AuxdibotSubcommand>{
       module: Modules['Moderation'],
       description: 'Set the punishment for spam on this server.',
       usageExample: '/moderation spam punishment (punishment) [reason]',
-      permission: 'moderation.spam.punishment',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

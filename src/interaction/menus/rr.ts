@@ -8,7 +8,6 @@ import AuxdibotSelectMenu from '@/interfaces/menus/AuxdibotSelectMenu';
 export default <AuxdibotSelectMenu>{
    module: Modules['Roles'],
    name: 'rr',
-   permission: 'roles.menu.use',
    allowedDefault: true,
    async execute(auxdibot: Auxdibot, interaction: AnySelectMenuInteraction) {
       if (!interaction.guild || !interaction.member || !interaction.channel) return;

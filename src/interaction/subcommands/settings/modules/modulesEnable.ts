@@ -14,7 +14,6 @@ export const moduleEnable = <AuxdibotSubcommand>{
       module: Modules['Settings'],
       description: "Enable Auxdibot's modules. (/help modules)",
       usageExample: '/modules enable (module)',
-      permission: 'settings.modules.enable',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

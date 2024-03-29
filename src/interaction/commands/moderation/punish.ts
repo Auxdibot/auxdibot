@@ -90,7 +90,6 @@ export default <AuxdibotCommand>{
       description:
          'Warns a user, giving them a DM warning (if they have DMs enabled) and adding a warn to their record on the server.',
       usageExample: '/punish (warn|mute|kick|ban|unban|unmute) (user) [reason] {additional arguments}',
-      permission: 'moderation.punish',
    },
    subcommands: [punishWarn, punishMute, punishKick, punishBan, punishUnban, punishUnmute],
    async execute() {

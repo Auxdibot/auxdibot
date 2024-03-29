@@ -47,7 +47,6 @@ export default <AuxdibotCommand>{
       module: Modules['Permissions'],
       description: 'Edit, view, delete or list permission overrides.',
       usageExample: '/permissions (view|create|delete|list)',
-      permission: 'permissions',
    },
    subcommands: [permissionsView, permissionsCreate, permissionsDelete, permissionsList],
    async execute() {

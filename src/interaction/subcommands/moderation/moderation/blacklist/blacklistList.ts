@@ -13,7 +13,6 @@ export const blacklistList = <AuxdibotSubcommand>{
       module: Modules['Moderation'],
       description: 'See a list of every blacklisted word on this server.',
       usageExample: '/moderation blacklist list',
-      permission: 'moderation.blacklist.list',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

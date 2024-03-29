@@ -47,7 +47,6 @@ export default <AuxdibotCommand>{
       module: Modules['Moderation'],
       description: 'Command for locking channels and server.',
       usageExample: '/lock (channel|server)',
-      permission: 'moderation.lock',
    },
    subcommands: [lockChannel, lockServer],
    async execute() {

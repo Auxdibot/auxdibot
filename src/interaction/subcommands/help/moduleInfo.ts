@@ -15,7 +15,6 @@ export const moduleInfo = <AuxdibotSubcommand>{
       description: "View a module's information, including commands and usage.",
       usageExample: '/help module (module)',
       allowedDefault: true,
-      permission: 'commands.help.module',
       dmableCommand: true,
    },
    async execute(

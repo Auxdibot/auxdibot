@@ -18,7 +18,6 @@ export const reactionRolesAdd = <AuxdibotSubcommand>{
       module: Modules['Roles'],
       description: 'Add a reaction role to the server.',
       usageExample: '/reaction_roles add (channel) (roles) [type]',
-      permission: 'rr.add',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

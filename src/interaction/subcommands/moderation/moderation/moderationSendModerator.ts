@@ -14,7 +14,6 @@ export const moderationSendModerator = <AuxdibotSubcommand>{
       module: Modules['Moderation'],
       description: 'Change whether users are sent the name of the moderator that punished them.',
       usageExample: '/moderation settings send_moderator (send)',
-      permission: 'moderation.settings.send_moderator',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

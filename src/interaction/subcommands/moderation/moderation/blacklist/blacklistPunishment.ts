@@ -16,7 +16,6 @@ export const blacklistPunishment = <AuxdibotSubcommand>{
       module: Modules['Moderation'],
       description: 'Set the punishment given when a blacklisted word is used.',
       usageExample: '/moderation blacklist punishment (punishment)',
-      permission: 'moderation.blacklist.punishment',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

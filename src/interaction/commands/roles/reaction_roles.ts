@@ -161,7 +161,6 @@ export default <AuxdibotCommand>{
       module: Modules['Roles'],
       description: 'Create, edit, remove, or list the currently active reaction roles.',
       usageExample: '/reaction_roles (add|add_custom|add_json|add_message|remove|edit|list)',
-      permission: 'rr',
    },
    subcommands: [
       reactionRolesAdd,

@@ -13,7 +13,6 @@ export const resetLevels = <AuxdibotSubcommand>{
       module: Modules['Levels'],
       description: "Reset a user's level and XP.",
       usageExample: '/levels reset (user)',
-      permission: 'levels.xp.reset',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

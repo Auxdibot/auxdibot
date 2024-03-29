@@ -17,7 +17,6 @@ export const notificationsTwitch = <AuxdibotSubcommand>{
       module: Modules['Messages'],
       description: 'Listen for streams on Twitch using Auxdibot.',
       usageExample: '/notifications twitch (channel) (username) [embed settings]',
-      permission: 'notifications.youtube',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

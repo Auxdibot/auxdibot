@@ -15,7 +15,6 @@ export const joinRoleAdd = <AuxdibotSubcommand>{
       module: Modules['Roles'],
       description: 'Add a role to be assigned when a member joins the server.',
       usageExample: '/join_roles add (role)',
-      permission: 'roles.join_roles.add',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data || !interaction.memberPermissions) return;

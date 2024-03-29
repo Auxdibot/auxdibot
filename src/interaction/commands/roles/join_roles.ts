@@ -42,7 +42,6 @@ export default <AuxdibotCommand>{
       module: Modules['Roles'],
       description: 'Change the roles given when a member joins the server.',
       usageExample: '/join_roles (add|remove|list)',
-      permission: 'roles.join_roles',
    },
    subcommands: [joinRoleAdd, joinRoleRemove, joinRoleList],
    async execute() {

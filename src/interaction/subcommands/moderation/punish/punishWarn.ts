@@ -17,7 +17,6 @@ export const punishWarn = <AuxdibotSubcommand>{
       description:
          'Warns a user, giving them a DM warning (if they have DMs enabled) and adding a warn to their record on the server.',
       usageExample: '/punish warn (user) [reason]',
-      permission: 'moderation.punish.warn',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

@@ -12,7 +12,6 @@ export const punishmentLatest = <AuxdibotSubcommand>{
       module: Modules['Moderation'],
       description: 'View the last 10 punishments.',
       usageExample: '/punishment latest',
-      permission: 'moderation.punishments.latest',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

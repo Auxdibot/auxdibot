@@ -46,7 +46,6 @@ export default <AuxdibotCommand>{
       module: Modules['Starboard'],
       description: 'Change the starboard settings for this server.',
       usageExample: '/starboard (stats|channel|reaction|reaction_count)',
-      permission: 'starboard',
    },
    subcommands: [starboardChannel, starboardReaction, starboardReactionCount],
    async execute() {

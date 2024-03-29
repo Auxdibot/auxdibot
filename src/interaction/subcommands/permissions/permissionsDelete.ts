@@ -13,7 +13,6 @@ export const permissionsDelete = <AuxdibotSubcommand>{
       module: Modules['Permissions'],
       description: 'Delete a permission override.',
       usageExample: '/permissions delete (override_id)',
-      permission: 'permissions.delete',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

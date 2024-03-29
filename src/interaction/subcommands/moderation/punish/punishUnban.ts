@@ -15,7 +15,6 @@ export const punishUnban = <AuxdibotSubcommand>{
       module: Modules['Moderation'],
       description: 'Unbans a user if they are currently banned. For banned members, use their user ID.',
       usageExample: '/punish unban (user)',
-      permission: 'moderation.punish.ban.remove',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

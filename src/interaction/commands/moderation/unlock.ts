@@ -34,7 +34,6 @@ export default <AuxdibotCommand>{
       module: Modules['Moderation'],
       description: 'Command for unlocking channels and server.',
       usageExample: '/unlock (channel|server)',
-      permission: 'moderation.lock.remove',
    },
    subcommands: [unlockChannel, unlockServer],
    async execute() {

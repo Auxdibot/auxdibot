@@ -15,7 +15,6 @@ export const purgeAll = <AuxdibotSubcommand>{
       module: Modules['Moderation'],
       description: 'Purge messages regardless of content or user.',
       usageExample: '/purge all (amount)',
-      permission: 'moderation.purge.all',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

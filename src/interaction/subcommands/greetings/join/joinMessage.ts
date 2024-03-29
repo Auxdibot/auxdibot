@@ -19,7 +19,6 @@ export const joinMessage = <AuxdibotSubcommand>{
          'Set the join message. (Placeholders are supported. Do /help placeholders for a list of placeholders.)',
       usageExample:
          '/join message [content] [color] [title] [title url] [author] [author icon url] [author url] [description] [fields (split title and description with "|d|", and seperate fields with "|s|")] [footer] [footer icon url] [image url] [thumbnail url]',
-      permission: 'greetings.join.message',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

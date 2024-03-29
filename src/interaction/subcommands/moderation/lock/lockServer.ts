@@ -17,7 +17,6 @@ export const lockServer = <AuxdibotSubcommand>{
       module: Modules['Moderation'],
       description: 'Lock the entire server. Run /unlock server to unlock it again.',
       usageExample: '/lock server [reason] [duration]',
-      permission: 'moderation.lock.server',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data || !interaction.channel) return;

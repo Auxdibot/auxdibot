@@ -89,7 +89,6 @@ export default <AuxdibotCommand>{
       module: Modules['Messages'],
       description: 'Schedule embeds, cancel schedules, and list schedules with Auxdibot.',
       usageExample: '/schedule (message|remove|list|preview|edit)',
-      permission: 'schedule',
    },
    subcommands: [scheduleMessage, scheduleList, scheduleRemove, schedulePreview, scheduleEdit],
    async execute() {

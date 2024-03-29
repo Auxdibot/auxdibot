@@ -21,7 +21,6 @@ export const reactionRolesAddCustom = <AuxdibotSubcommand>{
       description: 'Add a reaction role to the server with custom Embed parameters.',
       usageExample:
          '/reaction_roles add_custom (channel) (roles) [type] [content] [color] [title] [title url] [author] [author icon url] [author url] [description] [fields (split title and description with `"|d|"`, and seperate fields with `"|s|"`)] [footer] [footer icon url] [image url] [thumbnail url]',
-      permission: 'rr.add.custom',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

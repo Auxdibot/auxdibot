@@ -11,7 +11,6 @@ export const reactionRolesList = <AuxdibotSubcommand>{
       module: Modules['Roles'],
       description: 'List the reaction roles on this server.',
       usageExample: '/reaction_roles list',
-      permission: 'rr.list',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

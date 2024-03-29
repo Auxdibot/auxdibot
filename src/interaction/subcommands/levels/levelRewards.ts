@@ -11,7 +11,6 @@ export const levelRewards = <AuxdibotSubcommand>{
       module: Modules['Levels'],
       description: 'View the Level Rewards for this server.',
       usageExample: '/levels rewards',
-      permission: 'levels.rewards',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

@@ -13,7 +13,6 @@ export const permissionsCreate = <AuxdibotSubcommand>{
       module: Modules['Permissions'],
       description: 'Create a permission override.',
       usageExample: '/permissions create (permission) (role|user) (allowed)',
-      permission: 'permissions.create',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

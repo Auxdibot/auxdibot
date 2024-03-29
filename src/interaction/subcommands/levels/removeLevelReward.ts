@@ -13,7 +13,6 @@ export const removeLevelReward = <AuxdibotSubcommand>{
       module: Modules['Levels'],
       description: 'Remove a reward from the Level Rewards.',
       usageExample: '/levels remove_reward (level)',
-      permission: 'levels.rewards.remove',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

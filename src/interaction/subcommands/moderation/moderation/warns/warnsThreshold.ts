@@ -15,7 +15,6 @@ export const warnsThreshold = <AuxdibotSubcommand>{
       module: Modules['Moderation'],
       description: 'Set the punishment to give for receiving warns on your server. (set warns to 0 to disable)',
       usageExample: '/moderation warns threshold (punishment) (warns)',
-      permission: 'moderation.warns.threshold',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

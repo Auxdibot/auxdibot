@@ -56,7 +56,6 @@ export default <AuxdibotCommand>{
       description: "View Auxdibot's modules, view information about a module or view information about a command.",
       usageExample: '/help (all|placeholders|modules|module|command)',
       allowedDefault: true,
-      permission: 'commands.help',
       dmableCommand: true,
    },
    subcommands: [helpAll, modulesList, placeholdersList, moduleInfo, commandInfo],
