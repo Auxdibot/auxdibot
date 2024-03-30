@@ -24,6 +24,7 @@ import stickyRoles from './routes/sticky_roles';
 import emojis from './routes/emojis';
 import notifications from './routes/notifications';
 import { Guild } from 'discord.js';
+import commands from './routes/commands';
 
 const router = express.Router();
 
@@ -78,5 +79,6 @@ export const serversRoute = (auxdibot: Auxdibot) => {
    stickyRoles(auxdibot, router);
    emojis(auxdibot, router);
    notifications(auxdibot, router);
+   commands(auxdibot, router);
    return router;
 };

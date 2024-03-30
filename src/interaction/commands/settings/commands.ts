@@ -13,6 +13,7 @@ import roleBlacklistAdd from '@/interaction/subcommands/commands/role/roleBlackl
 import roleBlacklistRemove from '@/interaction/subcommands/commands/role/roleBlacklistRemove';
 import roleRequireAdd from '@/interaction/subcommands/commands/role/roleRequireAdd';
 import roleRequireRemove from '@/interaction/subcommands/commands/role/roleRequireRemove';
+import commandsUsageChannel from '@/interaction/subcommands/commands/usage/commandsUsageChannel';
 import commandsUsageDisable from '@/interaction/subcommands/commands/usage/commandsUsageDisable';
 import commandsUsageEnable from '@/interaction/subcommands/commands/usage/commandsUsageEnable';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
@@ -266,6 +267,20 @@ export default <AuxdibotCommand>{
                   .addStringOption((option) =>
                      option.setName('command').setDescription('The command to disable.').setRequired(true),
                   ),
+            )
+            .addSubcommand((builder) =>
+               builder
+                  .setName('channel')
+                  .setDescription('Set the channel where Auxdibot commands can be executed.')
+                  .addStringOption((option) =>
+                     option.setName('command').setDescription('The command to set the channel for.').setRequired(true),
+                  )
+                  .addChannelOption((option) =>
+                     option
+                        .setName('channel')
+                        .setDescription('The channel to restrict the command to.')
+                        .addChannelTypes(ChannelType.GuildText, ChannelType.GuildAnnouncement),
+                  ),
             ),
       ),
    info: {
@@ -290,6 +305,7 @@ export default <AuxdibotCommand>{
       commandsUsageEnable,
       commandsUsageDisable,
       commandsRulesDelete,
+      commandsUsageChannel,
    ],
    async execute() {
       return;
