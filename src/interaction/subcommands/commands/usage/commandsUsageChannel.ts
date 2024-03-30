@@ -2,7 +2,6 @@ import Modules from '@/constants/bot/commands/Modules';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
-import { findCommand } from '@/modules/features/commands/findCommand';
 import handleError from '@/util/handleError';
 import { ChannelType, EmbedBuilder } from 'discord.js';
 
@@ -16,18 +15,10 @@ export default <AuxdibotSubcommand>{
    },
    async execute(auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.guild) return;
-      const commandStr = interaction.options.getString('command', true),
-         channel = interaction.options.getChannel('channel', false, [
-            ChannelType.GuildText,
-            ChannelType.GuildAnnouncement,
-         ]);
-      if (!commandStr)
-         return handleError(auxdibot, 'INVALID_COMMAND', 'Please provide a valid command name.', interaction);
-
-      const [commandName, ...subcommand] = commandStr.replace(/^\//g, '').split(' ');
-      const commandData = findCommand(auxdibot, commandName, subcommand);
-      if (!commandData)
-         return handleError(auxdibot, 'INVALID_COMMAND', 'This is not an Auxdibot command!', interaction);
+      const channel = interaction.options.getChannel('channel', false, [
+         ChannelType.GuildText,
+         ChannelType.GuildAnnouncement,
+      ]);
 
       await auxdibot.database.servers
          .update({ where: { serverID: interaction.guildId }, data: { commands_channel: channel?.id ?? null } })

@@ -62,11 +62,6 @@ Auxdibot uses Discord's slash command system. If you want to run any command you
 
 A moderation suite containing a fleshed out AutoMod system, extensive punishment history, and an ability to manage users on the fly with the /users command.
 
-`✋` *Permissions*
-
-An expansive permissions system, capable of creating complex rules allowing certain roles to utilize certain Auxdibot features.
-
-
 `🗒️` *Logging*
 
 An in-depth logging system, auditing every action taken on your Discord server through Auxdibot.

@@ -272,9 +272,6 @@ export default <AuxdibotCommand>{
                builder
                   .setName('channel')
                   .setDescription('Set the channel where Auxdibot commands can be executed.')
-                  .addStringOption((option) =>
-                     option.setName('command').setDescription('The command to set the channel for.').setRequired(true),
-                  )
                   .addChannelOption((option) =>
                      option
                         .setName('channel')

@@ -1,4 +1,4 @@
-import { EmbedBuilder, ChatInputCommandInteraction } from 'discord.js';
+import { EmbedBuilder, ChatInputCommandInteraction, GuildMember, PermissionsBitField } from 'discord.js';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import { DMAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
@@ -43,7 +43,14 @@ export default async function slashCreate(auxdibot: Auxdibot, interaction: ChatI
    if (server && server.disabled_modules.find((item) => item == commandData.info.module.name))
       return await auxdibot.createReply(interaction, { embeds: [auxdibot.embeds.disabled.toJSON()] });
    if (interaction.guild) {
-      if (server.commands_channel && server.commands_channel != interaction.channelId) {
+      const member: GuildMember | undefined = await interaction.guild.members
+         .fetch(interaction.member.user.id)
+         .catch(() => undefined);
+      if (
+         (!member.permissions.has(PermissionsBitField.Flags.Administrator) || member.id != member.guild.ownerId) &&
+         server.commands_channel &&
+         server.commands_channel != interaction.channelId
+      ) {
          const channelOnlyEmbed = new EmbedBuilder().setColor(auxdibot.colors.denied).toJSON();
          channelOnlyEmbed.title = '⛔ Nope!';
          channelOnlyEmbed.description = `Auxdibot commands are restricted to the channel: <#${server.commands_channel}>`;
@@ -56,7 +63,7 @@ export default async function slashCreate(auxdibot: Auxdibot, interaction: ChatI
          dmCommand: false,
          date: new Date(),
          guild: interaction.guild,
-         member: await interaction.guild.members.fetch(interaction.member.user.id).catch(() => undefined),
+         member,
          guildData: server,
       };
       const permissionTest = await testCommandPermission(
