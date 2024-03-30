@@ -43,6 +43,15 @@ export default async function slashCreate(auxdibot: Auxdibot, interaction: ChatI
    if (server && server.disabled_modules.find((item) => item == commandData.info.module.name))
       return await auxdibot.createReply(interaction, { embeds: [auxdibot.embeds.disabled.toJSON()] });
    if (interaction.guild) {
+      if (server.commands_channel && server.commands_channel != interaction.channelId) {
+         const channelOnlyEmbed = new EmbedBuilder().setColor(auxdibot.colors.denied).toJSON();
+         channelOnlyEmbed.title = '⛔ Nope!';
+         channelOnlyEmbed.description = `Auxdibot commands are restricted to the channel: <#${server.commands_channel}>`;
+         return await auxdibot.createReply(interaction, {
+            embeds: [channelOnlyEmbed],
+            ephemeral: true,
+         });
+      }
       interactionData.data = <GuildAuxdibotCommandData>{
          dmCommand: false,
          date: new Date(),
