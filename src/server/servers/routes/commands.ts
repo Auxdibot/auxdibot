@@ -19,8 +19,11 @@ declare module 'express-serve-static-core' {
 function checkCommand(auxdibot: Auxdibot, req: Request, res: Response, next: NextFunction) {
    const cmdBody = req.body['command'];
    if (typeof cmdBody != 'string') return res.status(400).json({ error: 'This is not a valid command!' });
-   const [command, ...subcommand] = cmdBody.replace(/^\//g, '').split(' ');
-   const commandData = findCommand(auxdibot, command, subcommand);
+   const [command, ...subcommand] = cmdBody
+      .replace(/^\//g, '')
+      .split(' ')
+      .filter((i) => i);
+   const commandData = findCommand(auxdibot, command, subcommand ?? []);
    if (!commandData) return res.status(404).json({ error: 'Invalid command!' });
 
    req.command = command;
@@ -44,11 +47,7 @@ const commands = (auxdibot: Auxdibot, router: Router) => {
                },
             })
             .then(async (data) =>
-               data
-                  ? res.json({
-                       data,
-                    })
-                  : res.status(404).json({ error: "couldn't find that server" }),
+               data ? res.json({ data }) : res.status(404).json({ error: "couldn't find that server" }),
             )
             .catch(() => {
                return res.status(500).json({ error: 'an error occurred' });

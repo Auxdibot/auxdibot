@@ -17,6 +17,7 @@ import cards from './servers/routes/cards';
 import { notificationsRoute } from './notifications';
 import rateLimiter from './rateLimiter';
 import placeholders from './placeholders/placeholders';
+import commandsList from './servers/routes/commands_list';
 export default async function server(auxdibot: Auxdibot) {
    const app = express();
 
@@ -55,6 +56,7 @@ export default async function server(auxdibot: Auxdibot) {
       },
    );
    cards(auxdibot, app);
+   commandsList(auxdibot, app);
    app.use('/analytics', analyticsRoute(auxdibot));
    app.use('/auth', authRoute());
    app.use('/servers', serversRoute(auxdibot));
