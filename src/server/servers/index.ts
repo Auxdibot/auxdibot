@@ -80,5 +80,6 @@ export const serversRoute = (auxdibot: Auxdibot) => {
    emojis(auxdibot, router);
    notifications(auxdibot, router);
    commands(auxdibot, router);
+
    return router;
 };

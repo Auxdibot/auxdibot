@@ -41,7 +41,7 @@ export const modulesList = <AuxdibotSubcommand>{
       embed.fields = [
          {
             name: "Don't like a module?",
-            value: "Look at the `/disable` and `/enable` commands to disable or enable a specific module's functionality.",
+            value: "Look at the `/modules disable` and `/modules enable` commands to disable or enable a specific module's functionality.",
          },
       ];
       return await auxdibot.createReply(interaction, {

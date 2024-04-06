@@ -38,7 +38,7 @@ export async function testCommandPermission(
       subcommandPermission = permission.find(
          (i) =>
             i.group == (subcommand.length > 1 ? subcommand[0] : undefined) &&
-            i.group == (subcommand.length > 1 ? subcommand[1] : subcommand[0]),
+            i.subcommand == (subcommand.length > 1 ? subcommand[1] : subcommand[0]),
       );
 
    const allowedDefault = subcommandData ? subcommandData.info.allowedDefault : commandData.info.allowedDefault;

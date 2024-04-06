@@ -2,6 +2,8 @@ import { Auxdibot } from '@/interfaces/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import { CommandPermission } from '@prisma/client';
 import { findCommand } from './findCommand';
+import { testLimit } from '@/util/testLimit';
+import Limits from '@/constants/database/Limits';
 
 export async function updateCommandPermissions(
    auxdibot: Auxdibot,
@@ -12,11 +14,17 @@ export async function updateCommandPermissions(
    remove?: boolean,
 ): Promise<CommandPermission | undefined> {
    const server = await findOrCreateServer(auxdibot, guildId);
+
    const cmd = findCommand(auxdibot, command, subcommand);
    if (!cmd) return undefined;
+
    const { commandData, subcommandData } = cmd;
    let commandPermissions = server?.command_permissions.find(
-      (i) => i.command == command && i.subcommand == subcommand[0] && i.group == subcommand[1],
+      (i) =>
+         i.command == command &&
+         (subcommand.length > 1
+            ? i.subcommand == subcommand[1] && i.group == subcommand[0]
+            : i.subcommand == subcommand[0]),
    );
    if (!commandPermissions) {
       if (remove) throw new Error('Command permission rule not found.');
@@ -39,6 +47,14 @@ export async function updateCommandPermissions(
       };
       server?.command_permissions.push(commandPermissions);
    } else {
+      for (const i in permissions) {
+         if (
+            !remove &&
+            Array.isArray(permissions[i]) &&
+            permissions[i].every((b) => commandPermissions[i]?.includes(b))
+         )
+            throw new Error(`You have already added these ${i.toLowerCase().replace('_', ' ')}.`);
+      }
       Object.assign(commandPermissions, {
          ...permissions,
          permission_bypass_roles:
@@ -65,6 +81,17 @@ export async function updateCommandPermissions(
                : commandPermissions.blacklist_roles.concat(permissions.blacklist_roles ?? [])) ?? [],
       });
    }
+   if (!testLimit(commandPermissions.blacklist_channels, Limits.COMMAND_PERMISSIONS_ITEM_LIMIT))
+      throw new Error('Blacklist channels limit reached.');
+   if (!testLimit(commandPermissions.roles, Limits.COMMAND_PERMISSIONS_ITEM_LIMIT))
+      throw new Error('Roles limit reached.');
+   if (!testLimit(commandPermissions.blacklist_roles, Limits.COMMAND_PERMISSIONS_ITEM_LIMIT))
+      throw new Error('Blacklist roles limit reached.');
+   if (!testLimit(commandPermissions.permission_bypass_roles, Limits.COMMAND_PERMISSIONS_ITEM_LIMIT))
+      throw new Error('Permission bypass roles limit reached.');
+   if (!testLimit(commandPermissions.channels, Limits.COMMAND_PERMISSIONS_ITEM_LIMIT))
+      throw new Error('Channels limit reached.');
+
    return await auxdibot.database.servers
       .update({
          where: { id: server.id },

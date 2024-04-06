@@ -11,7 +11,7 @@ export function findCommand(
       subcommandData = commandData?.subcommands?.find((i) =>
          subcommand.length > 1 ? i.name == subcommand[1] && i.group == subcommand[0] : i.name == subcommand[0],
       );
-   if (!commandData || (subcommand.length && !subcommandData)) {
+   if (!commandData || (subcommand.length >= 1 && !subcommandData)) {
       return undefined;
    }
    return { commandData, subcommandData };
