@@ -5,6 +5,7 @@ import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInt
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 import setReportRole from '@/modules/features/moderation/reports/setReportsRole';
 import handleError from '@/util/handleError';
+import { testDiscordRolePermission } from '@/util/testDiscordRolePermission';
 import { EmbedBuilder } from '@discordjs/builders';
 
 export const reportsRole = <AuxdibotSubcommand>{
@@ -21,7 +22,7 @@ export const reportsRole = <AuxdibotSubcommand>{
       const server = interaction.data.guildData;
       if (
          interaction.data.member.id != interaction.data.guild.ownerId &&
-         interaction.data.guild.roles.comparePositions(interaction.data.member.roles.highest, role.id) <= 0
+         (await testDiscordRolePermission(auxdibot, interaction, role)) == false
       ) {
          const noPermissionEmbed = new EmbedBuilder().setColor(auxdibot.colors.denied).toJSON();
          noPermissionEmbed.title = '⛔ No Permission!';

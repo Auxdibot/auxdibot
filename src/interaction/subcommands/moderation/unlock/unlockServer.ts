@@ -7,7 +7,7 @@ import { EmbedBuilder, PermissionsBitField } from 'discord.js';
 import { deleteLock } from '@/modules/features/moderation/lock/deleteLock';
 import handleLog from '@/util/handleLog';
 import { Log, LogAction } from '@prisma/client';
-import testDiscordPermission from '@/util/testDiscordPermission';
+import { testDiscordPermission } from '@/util/testDiscordPermission';
 
 export const unlockServer = <AuxdibotSubcommand>{
    name: 'server',
