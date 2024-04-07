@@ -8,7 +8,7 @@ import handleError from '@/util/handleError';
 import { deleteLock } from '@/modules/features/moderation/lock/deleteLock';
 import handleLog from '@/util/handleLog';
 import { Log, LogAction } from '@prisma/client';
-import testDiscordPermission from '@/util/testDiscordPermission';
+import { testDiscordPermission } from '@/util/testDiscordPermission';
 
 export const unlockChannel = <AuxdibotSubcommand>{
    name: 'channel',

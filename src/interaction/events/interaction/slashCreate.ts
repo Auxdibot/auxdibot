@@ -83,6 +83,8 @@ export default async function slashCreate(auxdibot: Auxdibot, interaction: ChatI
                ? `This command is not found.`
                : permissionTest == 'disabled'
                ? `This command is disabled.`
+               : permissionTest == 'noperm-channel'
+               ? `You do not have permission to use this command in this channel.`
                : `This command is not available in this server.`;
          return await auxdibot.createReply(interaction, {
             ephemeral: true,

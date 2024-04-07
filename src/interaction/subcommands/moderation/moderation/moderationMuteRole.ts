@@ -5,6 +5,7 @@ import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInt
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 import setMuteRole from '@/modules/features/moderation/setMuteRole';
 import handleError from '@/util/handleError';
+import { testDiscordRolePermission } from '@/util/testDiscordRolePermission';
 import { EmbedBuilder } from '@discordjs/builders';
 import { PermissionFlagsBits } from 'discord.js';
 
@@ -22,7 +23,7 @@ export const moderationMuteRole = <AuxdibotSubcommand>{
       const server = interaction.data.guildData;
       if (
          interaction.data.member.id != interaction.data.guild.ownerId &&
-         interaction.data.guild.roles.comparePositions(interaction.data.member.roles.highest, role.id) <= 0
+         !(await testDiscordRolePermission(auxdibot, interaction, role))
       ) {
          const noPermissionEmbed = new EmbedBuilder().setColor(auxdibot.colors.denied).toJSON();
          noPermissionEmbed.title = '⛔ No Permission!';
@@ -40,7 +41,10 @@ export const moderationMuteRole = <AuxdibotSubcommand>{
             interaction,
          );
       }
-      if (role && interaction.data.guild.roles.comparePositions(interaction.data.member.roles.highest, role.id) <= 0) {
+      if (
+         role &&
+         interaction.data.guild.roles.comparePositions(interaction.guild.members.me.roles.highest, role.id) <= 0
+      ) {
          return await handleError(
             auxdibot,
             'AUXDIBOT_MISSING_PERMISSION',

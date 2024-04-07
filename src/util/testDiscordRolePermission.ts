@@ -1,13 +1,12 @@
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import { findCommand } from '@/modules/features/commands/findCommand';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
-import { BaseInteraction, ForumChannel, GuildTextBasedChannel } from 'discord.js';
+import { APIRole, BaseInteraction, Role } from 'discord.js';
 
-export async function testDiscordPermission(
+export async function testDiscordRolePermission(
    auxdibot: Auxdibot,
    interaction: BaseInteraction,
-   permission: bigint,
-   channel?: ForumChannel | GuildTextBasedChannel,
+   role?: Role | APIRole,
 ): Promise<boolean> {
    if (!interaction.guild) return false;
    const member = await interaction.guild.members.fetch(interaction.user.id).catch(() => undefined);
@@ -40,5 +39,5 @@ export async function testDiscordPermission(
       )
          return true;
    }
-   return channel ? channel.permissionsFor(member).has(permission) : member.permissions.has(permission);
+   return role ? interaction.guild.roles.comparePositions(role?.id, member.roles.highest) <= 0 : true;
 }

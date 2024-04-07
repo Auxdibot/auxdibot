@@ -9,7 +9,7 @@ import { ChannelLock, LogAction } from '@prisma/client';
 import timestampToDuration from '@/util/timestampToDuration';
 import handleLog from '@/util/handleLog';
 import handleError from '@/util/handleError';
-import testDiscordPermission from '@/util/testDiscordPermission';
+import { testDiscordPermission } from '@/util/testDiscordPermission';
 
 export const lockServer = <AuxdibotSubcommand>{
    name: 'server',

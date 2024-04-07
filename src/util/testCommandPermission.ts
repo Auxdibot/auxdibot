@@ -6,8 +6,8 @@ import { CommandPermission } from '@prisma/client';
 
 export function testPermission(permission: CommandPermission, interaction: BaseInteraction, member: GuildMember) {
    if (permission.admin_only && !member.permissions.has(PermissionsBitField.Flags.Administrator)) return 'noperm';
-   if (permission.blacklist_channels.includes(interaction.channel.id)) return 'noperm';
-   if (permission.channels.length > 0 && !permission.channels.includes(interaction.channel.id)) return 'noperm';
+   if (permission.blacklist_channels.includes(interaction.channel.id)) return 'noperm-channel';
+   if (permission.channels.length > 0 && !permission.channels.includes(interaction.channel.id)) return 'noperm-channel';
    if (member.roles.cache.find((i) => permission.blacklist_roles.includes(i.id))) return 'noperm';
    if (permission.roles.length > 0 && !member.roles.cache.find((i) => permission.roles.includes(i.id))) return 'noperm';
    if (permission.disabled) return 'disabled';
@@ -43,7 +43,7 @@ export async function testCommandPermission(
 
    const allowedDefault = subcommandData ? subcommandData.info.allowedDefault : commandData.info.allowedDefault;
    if (!commandPermission && !groupPermission && !subcommandPermission) return allowedDefault ? true : 'noperm';
-   let result: 'noperm' | 'disabled' | boolean = true;
+   let result: 'noperm' | 'disabled' | 'noperm-channel' | boolean = true;
    const commandTest = commandPermission ? testPermission(commandPermission, interaction, member) : null,
       groupTest = groupPermission ? testPermission(groupPermission, interaction, member) : null,
       subcommandTest = subcommandPermission ? testPermission(subcommandPermission, interaction, member) : null;

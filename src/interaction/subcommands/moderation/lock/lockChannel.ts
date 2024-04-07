@@ -9,7 +9,7 @@ import { createLock } from '@/modules/features/moderation/lock/createLock';
 import { ChannelLock, Log, LogAction } from '@prisma/client';
 import timestampToDuration from '@/util/timestampToDuration';
 import handleLog from '@/util/handleLog';
-import testDiscordPermission from '@/util/testDiscordPermission';
+import { testDiscordPermission } from '@/util/testDiscordPermission';
 
 export const lockChannel = <AuxdibotSubcommand>{
    name: 'channel',

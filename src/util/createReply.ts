@@ -21,7 +21,7 @@ export async function createReply(
          subcommandPermission = permission.find(
             (i) =>
                i.group == interaction.options.getSubcommandGroup(false) &&
-               i.group == interaction.options.getSubcommand(false),
+               i.subcommand == interaction.options.getSubcommand(false),
          );
       if (
          commandPermission?.channel_output ||

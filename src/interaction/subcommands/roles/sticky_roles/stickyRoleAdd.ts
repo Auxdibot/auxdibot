@@ -5,6 +5,7 @@ import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInt
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 import addStickyRole from '@/modules/features/roles/sticky_roles/addStickyRole';
 import handleError from '@/util/handleError';
+import { testDiscordRolePermission } from '@/util/testDiscordRolePermission';
 import { EmbedBuilder } from '@discordjs/builders';
 import { PermissionsBitField } from 'discord.js';
 
@@ -22,7 +23,7 @@ export const stickyRoleAdd = <AuxdibotSubcommand>{
          role &&
          interaction.data.member.id != interaction.data.guild.ownerId &&
          !interaction.memberPermissions.has(PermissionsBitField.Flags.Administrator) &&
-         interaction.data.guild.roles.comparePositions(role.id, interaction.data.member.roles.highest) <= 0
+         (await testDiscordRolePermission(auxdibot, interaction, role)) == false
       ) {
          return await handleError(
             auxdibot,
