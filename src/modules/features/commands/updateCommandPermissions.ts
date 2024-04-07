@@ -4,6 +4,7 @@ import { CommandPermission } from '@prisma/client';
 import { findCommand } from './findCommand';
 import { testLimit } from '@/util/testLimit';
 import Limits from '@/constants/database/Limits';
+import { removeCommandPermission } from './removeCommandPermission';
 
 export async function updateCommandPermissions(
    auxdibot: Auxdibot,
@@ -58,29 +59,43 @@ export async function updateCommandPermissions(
       Object.assign(commandPermissions, {
          ...permissions,
          permission_bypass_roles:
-            (remove
+            (remove && permissions.permission_bypass_roles
                ? commandPermissions.permission_bypass_roles.filter(
                     (i) => !permissions.permission_bypass_roles.includes(i),
                  )
                : commandPermissions.permission_bypass_roles.concat(permissions.permission_bypass_roles ?? [])) ?? [],
          roles:
-            (remove
+            (remove && permissions.roles
                ? commandPermissions.roles.filter((i) => !permissions.roles.includes(i))
                : commandPermissions.roles.concat(permissions.roles ?? [])) ?? [],
          channels:
-            (remove
+            (remove && permissions.channels
                ? commandPermissions.channels.filter((i) => !permissions.channels.includes(i))
                : commandPermissions.channels.concat(permissions.channels ?? [])) ?? [],
          blacklist_channels:
-            (remove
+            (remove && permissions.blacklist_channels
                ? commandPermissions.blacklist_channels.filter((i) => !permissions.blacklist_channels.includes(i))
                : commandPermissions.blacklist_channels.concat(permissions.blacklist_channels ?? [])) ?? [],
          blacklist_roles:
-            (remove
+            (remove && permissions.blacklist_roles
                ? commandPermissions.blacklist_roles.filter((i) => !permissions.blacklist_roles.includes(i))
                : commandPermissions.blacklist_roles.concat(permissions.blacklist_roles ?? [])) ?? [],
       });
+      if (
+         Object.keys(commandPermissions).filter(
+            (i) =>
+               ['command', 'subcommand', 'group'].indexOf(i) == -1 &&
+               commandPermissions[i] &&
+               (Array.isArray(commandPermissions[i]) ? commandPermissions[i].length > 0 : true),
+         ).length <= 0 &&
+         commandPermissions.admin_only == !(subcommandData?.info?.allowedDefault ?? commandData.info.allowedDefault) &&
+         !commandPermissions.disabled
+      ) {
+         await removeCommandPermission(auxdibot, guildId, command, subcommand).catch(() => undefined);
+         return commandPermissions;
+      }
    }
+
    if (!testLimit(commandPermissions.blacklist_channels, Limits.COMMAND_PERMISSIONS_ITEM_LIMIT))
       throw new Error('Blacklist channels limit reached.');
    if (!testLimit(commandPermissions.roles, Limits.COMMAND_PERMISSIONS_ITEM_LIMIT))
