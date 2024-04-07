@@ -58,12 +58,13 @@ const commands = (auxdibot: Auxdibot, router: Router) => {
       '/:serverID/commands/channel',
       (req, res, next) => checkAuthenticated(req, res, next),
       (req, res, next) => checkGuildOwnership(auxdibot, req, res, next),
-      (req, res, next) => checkCommand(auxdibot, req, res, next),
+
       async (req, res) => {
          const channel = req.body['channel'];
-         if (!channel) return res.status(400).json({ error: 'Please provide a channel ID!' });
-         if (typeof channel != 'string') return res.status(400).json({ error: 'This is not a valid channel ID!' });
-         const channelData = channel ? await req.guild.channels.fetch(channel).catch(() => undefined) : null;
+
+         const channelData = channel
+            ? await req.guild.channels.fetch(channel?.toString()).catch(() => undefined)
+            : null;
 
          return auxdibot.database.servers
             .update({
