@@ -4,6 +4,8 @@ import { Auxdibot } from '@/interfaces/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import createStarredMessage from '@/modules/features/starboard/createStarredMessage';
 import updateStarredMessage from '@/modules/features/starboard/updateStarredMessage';
+import handleLog from '@/util/handleLog';
+import { LogAction } from '@prisma/client';
 
 export default async function messageReactionAdd(
    auxdibot: Auxdibot,
@@ -46,9 +48,18 @@ export default async function messageReactionAdd(
                }
             }
             if (member.roles.resolve(rr.role)) {
-               await member.roles.remove(rr.role).catch(() => undefined);
+               await member.roles.remove(rr.role);
             } else {
-               await member.roles.add(rr.role).catch((x) => console.log(x));
+               await member.roles.add(rr.role).catch((x) => {
+                  if (x.code == 50013) {
+                     handleLog(auxdibot, messageReaction.message.guild, {
+                        type: LogAction.ERROR,
+                        userID: user.id,
+                        description: `Auxdibot does not have permission to assign the role <@&${rr.role}> to <@${member.id}>.`,
+                        date_unix: Date.now(),
+                     });
+                  }
+               });
             }
          }
       }

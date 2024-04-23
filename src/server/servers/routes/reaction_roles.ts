@@ -69,15 +69,18 @@ const reactionRoles = (auxdibot: Auxdibot, router: Router) => {
                }
                if (!req.body['channel']) return res.status(400).json({ error: 'missing parameters' });
                const channel = req.guild.channels.cache.get(req.body['channel']);
+               const webhook_url = req.body['webhook_url'];
+               console.log(embed);
                return addReactionRole(
                   auxdibot,
                   req.guild,
                   channel,
                   title,
                   reactionsParsed,
-                  embed,
+                  embed ?? undefined,
                   await parsePlaceholders(auxdibot, req.body['message'], req.guild),
                   type,
+                  webhook_url ?? undefined,
                )
                   .then((i) => res.json({ created: i }))
                   .catch((x) =>
