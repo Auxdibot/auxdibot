@@ -38,7 +38,8 @@ export default async function addReactionRole(
          .send({
             embeds: embed
                ? [embed]
-               : !content && [
+               : !content
+               ? [
                     new EmbedBuilder()
                        .setColor(auxdibot.colors.reaction_role)
                        .setTitle(title)
@@ -52,7 +53,8 @@ export default async function addReactionRole(
                           ),
                        )
                        .toJSON(),
-                 ],
+                 ]
+               : [],
             content: content || '',
          })
          .then(async (msg) => {
@@ -64,7 +66,8 @@ export default async function addReactionRole(
          .send({
             embeds: embed
                ? [embed]
-               : !content && [
+               : !content
+               ? [
                     new EmbedBuilder()
                        .setColor(auxdibot.colors.reaction_role)
                        .setTitle(title)
@@ -78,7 +81,8 @@ export default async function addReactionRole(
                           ),
                        )
                        .toJSON(),
-                 ],
+                 ]
+               : [],
             content: content || '',
          })
          .then(async (msg) => {

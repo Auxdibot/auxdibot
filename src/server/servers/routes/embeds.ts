@@ -23,7 +23,13 @@ const embeds = (auxdibot: Auxdibot, router: Router) => {
                ? (JSON.parse(await parsePlaceholders(auxdibot, req.body['embed'], req.guild)) satisfies APIEmbed)
                : undefined;
             if (!channel || !channel.isTextBased()) return res.status(400).json({ error: 'invalid channel' });
-            return sendEmbed(channel, await parsePlaceholders(auxdibot, req.body['message'], req.guild), embed)
+            const webhook_url = req.body['webhook_url'];
+            return sendEmbed(
+               channel,
+               await parsePlaceholders(auxdibot, req.body['message'], req.guild),
+               embed,
+               webhook_url,
+            )
                .then(() => res.json({ success: 'successfully sent embed to ' + channel.name }))
                .catch((x) => {
                   res.status(500).json({ error: x.message });
