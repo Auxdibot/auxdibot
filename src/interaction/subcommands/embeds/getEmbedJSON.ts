@@ -5,7 +5,7 @@ import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInt
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 import { getMessage } from '@/util/getMessage';
 import handleError from '@/util/handleError';
-import { EmbedBuilder } from '@discordjs/builders';
+import { AttachmentBuilder } from 'discord.js';
 
 export const getEmbedJSON = <AuxdibotSubcommand>{
    name: 'json',
@@ -23,22 +23,26 @@ export const getEmbedJSON = <AuxdibotSubcommand>{
       if (message.embeds.length <= 0)
          return await handleError(auxdibot, 'NO_EMBEDS_FOUND', 'No embeds exist on this message!', interaction);
 
-      const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
-      try {
-         embed.fields = message.embeds.map((embed, index: number) => ({
-            name: `Embed #${index + 1}`,
-            value: `\`\`\`${JSON.stringify(embed.toJSON())}\`\`\``,
-            inline: false,
-         }));
-         embed.title = 'Embed JSON Data';
-         return await auxdibot.createReply(interaction, { embeds: [embed] });
-      } catch (x) {
-         return await handleError(
-            auxdibot,
-            'EMBED_JSON_TOO_LARGE',
-            "The embed given exceeds Auxdibot's embed message limit!",
-            interaction,
-         );
-      }
+      const attachment = new AttachmentBuilder(
+         Buffer.from(
+            message.embeds
+               .map((embed) => {
+                  return JSON.stringify(embed.toJSON(), null, 2);
+               })
+               .join('\n\n'),
+            'utf-8',
+         ),
+         { name: 'embeds.json' },
+      );
+      return await auxdibot
+         .createReply(interaction, { content: 'Embed JSON as a File:', files: [attachment] })
+         .catch(() => {
+            return handleError(
+               auxdibot,
+               'EMBED_JSON_ERROR',
+               "There was an error fetching that embed's JSON!",
+               interaction,
+            );
+         });
    },
 };

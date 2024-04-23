@@ -16,13 +16,14 @@ export const createEmbed = <AuxdibotSubcommand>{
    info: {
       module: Modules['Messages'],
       usageExample:
-         '/embed create (channel) [content] [color] [title] [title url] [author] [author icon url] [author url] [description] [fields (split title and description with `"|d|"``, and seperate fields with `"|s|"`)] [footer] [footer icon url] [image url] [thumbnail url]',
+         '/embed create (channel) [webhook_url] [content] [color] [title] [title url] [author] [author icon url] [author url] [description] [fields (split title and description with `"|d|"``, and seperate fields with `"|s|"`)] [footer] [footer icon url] [image url] [thumbnail url]',
       description: 'Create an embed with Auxdibot.',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;
       const channel = interaction.options.getChannel('channel', true, [ChannelType.GuildText]);
       const content = interaction.options.getString('content')?.replace(/\\n/g, '\n') || '';
+      const webhook_url = interaction.options.getString('webhook_url');
       const parameters = argumentsToEmbedParameters(interaction);
 
       try {
@@ -40,10 +41,17 @@ export const createEmbed = <AuxdibotSubcommand>{
             channel,
             await parsePlaceholders(auxdibot, content, interaction.data.guild, interaction.data.member),
             apiEmbed,
+            webhook_url,
          );
       } catch (x) {
-         console.error(x);
-         return await handleError(auxdibot, 'EMBED_SEND_ERROR', 'There was an error sending that embed!', interaction);
+         return await handleError(
+            auxdibot,
+            'EMBED_SEND_ERROR',
+            typeof x === 'object' && 'message' in x
+               ? (x as { message: string }).message
+               : 'There was an error sending that embed!',
+            interaction,
+         );
       }
 
       const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();

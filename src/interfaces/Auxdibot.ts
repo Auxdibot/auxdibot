@@ -6,6 +6,7 @@ import {
    EmbedBuilder,
    Message,
    InteractionReplyOptions,
+   InteractionResponse,
 } from 'discord.js';
 import AuxdibotCommand from './commands/AuxdibotCommand';
 import AuxdibotButton from './buttons/AuxdibotButton';
@@ -56,5 +57,5 @@ export interface Auxdibot extends Client {
       interaction: BaseInteraction,
       data: InteractionReplyOptions,
       options?: AuxdibotReplyOptions,
-   ): Promise<Message<boolean>> | Promise<void>;
+   ): Promise<Message<boolean> | InteractionResponse<boolean>>;
 }

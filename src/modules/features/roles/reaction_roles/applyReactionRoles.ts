@@ -4,16 +4,20 @@ import {
    ActionRowBuilder,
    ButtonBuilder,
    ButtonStyle,
-   Message,
+   Channel,
    StringSelectMenuBuilder,
    StringSelectMenuOptionBuilder,
 } from 'discord.js';
 
 export default async function applyReactionRoles(
-   msg: Message,
+   msgID: string,
+   channel: Channel,
    reactionsAndRoles: ReactionsAndRolesBuilder[],
    type: ReactionRoleType,
 ) {
+   if (!channel.isTextBased()) return;
+   const message = msgID ? await channel.messages.fetch(msgID) : null;
+   if (!message) return;
    let rows: ActionRowBuilder<ButtonBuilder | StringSelectMenuBuilder>[] = [
       new ActionRowBuilder<StringSelectMenuBuilder>(),
    ];
@@ -22,7 +26,7 @@ export default async function applyReactionRoles(
       case ReactionRoleType.STICKY_SELECT_ONE:
       case ReactionRoleType.STICKY:
       case ReactionRoleType.SELECT_ONE:
-         reactionsAndRoles.forEach((i) => msg.react(i.emoji).catch(() => undefined));
+         reactionsAndRoles.forEach((i) => message.react(i.emoji).catch(() => undefined));
          break;
       case ReactionRoleType.BUTTON:
       case ReactionRoleType.BUTTON_SELECT_ONE:
@@ -61,8 +65,10 @@ export default async function applyReactionRoles(
          );
    }
    if (rows.find((i) => i.components.length > 0)) {
-      await msg.edit({
-         components: rows.map((i) => i.toJSON()),
-      });
+      await message
+         .edit({
+            components: rows.map((i) => i.toJSON()),
+         })
+         .catch(() => undefined);
    }
 }

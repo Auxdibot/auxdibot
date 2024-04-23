@@ -26,6 +26,8 @@ export default <AuxdibotCommand>{
                      .addChannelTypes(ChannelType.GuildText, ChannelType.GuildAnnouncement)
                      .setRequired(true),
                ),
+         ).addStringOption((option) =>
+            option.setName('webhook_url').setDescription('The Webhook URL to use for sending the Embed. (Optional)'),
          ),
       )
       .addSubcommand((builder) =>
@@ -44,6 +46,9 @@ export default <AuxdibotCommand>{
                   .setName('json')
                   .setDescription('The JSON data to use for creating the Discord Embed.')
                   .setRequired(true),
+            )
+            .addStringOption((option) =>
+               option.setName('webhook_url').setDescription('The Webhook URL to use for sending the Embed. (Optional)'),
             ),
       )
       .addSubcommand((builder) =>

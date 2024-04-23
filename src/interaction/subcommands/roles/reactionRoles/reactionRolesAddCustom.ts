@@ -27,7 +27,8 @@ export const reactionRolesAddCustom = <AuxdibotSubcommand>{
       const channel = interaction.options.getChannel('channel', true, [ChannelType.GuildText]),
          roles = interaction.options.getString('roles', true),
          content = interaction.options.getString('content')?.replace(/\\n/g, '\n') || '',
-         type = interaction.options.getString('type', false) || 'DEFAULT';
+         type = interaction.options.getString('type', false) || 'DEFAULT',
+         webhook_url = interaction.options.getString('webhook_url');
       if (!testLimit(interaction.data.guildData.reaction_roles, Limits.REACTION_ROLE_DEFAULT_LIMIT)) {
          return await handleError(
             auxdibot,
@@ -73,6 +74,7 @@ export const reactionRolesAddCustom = <AuxdibotSubcommand>{
          ),
          await parsePlaceholders(auxdibot, JSON.stringify(parameters), interaction.data.guild, interaction.data.member),
          ReactionRoleType[type],
+         webhook_url,
       )
          .then(async () => {
             const resEmbed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();

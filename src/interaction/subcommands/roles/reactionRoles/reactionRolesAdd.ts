@@ -24,7 +24,8 @@ export const reactionRolesAdd = <AuxdibotSubcommand>{
       const channel = interaction.options.getChannel('channel', true, [ChannelType.GuildText]),
          roles = interaction.options.getString('roles', true),
          title = interaction.options.getString('title') || 'React to receive roles!',
-         type = interaction.options.getString('type', false) || 'DEFAULT';
+         type = interaction.options.getString('type', false) || 'DEFAULT',
+         webhook_url = interaction.options.getString('webhook_url');
       const split = roles.split(' ');
       const builder = [];
       if (!testLimit(interaction.data.guildData.reaction_roles, Limits.REACTION_ROLE_DEFAULT_LIMIT)) {
@@ -59,6 +60,7 @@ export const reactionRolesAdd = <AuxdibotSubcommand>{
          undefined,
          undefined,
          ReactionRoleType[type],
+         webhook_url,
       )
          .then(async () => {
             const resEmbed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
@@ -72,13 +74,13 @@ export const reactionRolesAdd = <AuxdibotSubcommand>{
             });
             return await auxdibot.createReply(interaction, { embeds: [resEmbed] });
          })
-         .catch((x) =>
+         .catch((x) => {
             handleError(
                auxdibot,
                'REACTION_ROLE_CREATE_ERROR',
                typeof x.message == 'string' ? x.message : "Couldn't create that reaction role!",
                interaction,
-            ),
-         );
+            );
+         });
    },
 };
