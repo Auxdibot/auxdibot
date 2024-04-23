@@ -13,24 +13,27 @@ export const createEmbedJSON = <AuxdibotSubcommand>{
    name: 'create_json',
    info: {
       module: Modules['Messages'],
-      usageExample: '/embed create_json (channel) (json)',
+      usageExample: '/embed create_json (channel) (json) [webhook_url]',
       description: 'Create an embed with Auxdibot using valid Discord Embed JSON data.',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;
       const channel = interaction.options.getChannel('channel', true, [ChannelType.GuildText]);
       const json = interaction.options.getString('json', true);
+      const webhook_url = interaction.options.getString('webhook_url');
       try {
          const apiEmbed = JSON.parse(
             await parsePlaceholders(auxdibot, json, interaction.data.guild, interaction.data.member),
          ) satisfies APIEmbed;
 
-         await sendEmbed(channel, undefined, apiEmbed);
+         await sendEmbed(channel, undefined, apiEmbed, webhook_url);
       } catch (x) {
          return await handleError(
             auxdibot,
             'EMBED_SEND_ERROR_JSON',
-            'There was an error sending that embed! (Most likely due to malformed JSON.)',
+            typeof x === 'object' && 'message' in x
+               ? (x as { message: string }).message
+               : 'There was an error sending that embed!',
             interaction,
          );
       }

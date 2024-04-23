@@ -1,6 +1,6 @@
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
-import { BaseInteraction, InteractionReplyOptions, MessagePayload } from 'discord.js';
+import { BaseInteraction, InteractionReplyOptions, InteractionResponse, Message, MessagePayload } from 'discord.js';
 import { AuxdibotReplyOptions } from '../interfaces/AuxdibotReplyOptions';
 import handleLog from './handleLog';
 
@@ -9,7 +9,7 @@ export async function createReply(
    interaction: BaseInteraction,
    data: InteractionReplyOptions,
    options?: AuxdibotReplyOptions,
-): Promise<void> {
+): Promise<Message<boolean> | InteractionResponse<boolean>> {
    if (interaction.guildId && interaction.isChatInputCommand() && !options?.noOutputChannel) {
       const server = await findOrCreateServer(this, interaction.guildId);
       if (!server) return;
@@ -72,7 +72,7 @@ export async function createReply(
       }
    }
 
-   interaction.isRepliable() && interaction.deferred
+   return interaction.isRepliable() && interaction.deferred
       ? interaction.editReply(data)
       : interaction.isRepliable() && !interaction.replied
       ? interaction.reply(data)

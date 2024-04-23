@@ -42,6 +42,11 @@ export default <AuxdibotCommand>{
                )
                .addStringOption((argBuilder) =>
                   argBuilder.setName('title').setDescription('Title of the reaction roles.'),
+               )
+               .addStringOption((argBuilder) =>
+                  argBuilder
+                     .setName('webhook_url')
+                     .setDescription('The Webhook URL to use for sending the Embed. (Optional)'),
                ),
          ),
       )
@@ -89,6 +94,10 @@ export default <AuxdibotCommand>{
                         .setRequired(true),
                   ),
             ),
+         ).addStringOption((argBuilder) =>
+            argBuilder
+               .setName('webhook_url')
+               .setDescription('The Webhook URL to use for sending the Embed. (Optional)'),
          ),
       )
       .addSubcommand((builder) =>
@@ -115,6 +124,10 @@ export default <AuxdibotCommand>{
                      .setDescription('The JSON for the Discord Embed attached to the reaction role.')
                      .setRequired(true),
                ),
+         ).addStringOption((argBuilder) =>
+            argBuilder
+               .setName('webhook_url')
+               .setDescription('The Webhook URL to use for sending the Embed. (Optional)'),
          ),
       )
       .addSubcommand((builder) =>
