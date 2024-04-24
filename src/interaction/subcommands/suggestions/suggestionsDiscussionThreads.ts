@@ -12,7 +12,7 @@ export const suggestionsDiscussionThreads = <AuxdibotSubcommand>{
    info: {
       module: Modules['Suggestions'],
       description: 'Set whether a discussion thread is created when a suggestion is created.',
-      usageExample: '/suggestions discussion_threads (true|false)',
+      usageExample: '/suggestions discussion_threads (create_thread)',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

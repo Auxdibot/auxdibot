@@ -18,7 +18,7 @@ export const reactionRolesEdit = <AuxdibotSubcommand>{
       module: Modules['Roles'],
       description: "Edit a reaction role's embed on this server.",
       usageExample:
-         '/reaction_roles edit [message_id] [index] [json, overrides embed parameters] [content] [color] [title] [title url] [author] [author icon url] [author url] [description] [fields (split title and description with `"|d|"``, and seperate fields with `"|s|"`)] [footer] [footer icon url] [image url] [thumbnail url]',
+         '/reaction_roles edit [message_id] [index] [json, overrides embed parameters] [...embed parameters]',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

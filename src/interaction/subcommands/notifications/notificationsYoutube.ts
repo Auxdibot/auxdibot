@@ -16,7 +16,7 @@ export const notificationsYoutube = <AuxdibotSubcommand>{
    info: {
       module: Modules['Messages'],
       description: 'Listen for youtube channel uploads using Auxdibot.',
-      usageExample: '/notifications youtube (channel) (handle) [embed settings]',
+      usageExample: '/notifications youtube (channel) (handle) [...embed parameters]',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

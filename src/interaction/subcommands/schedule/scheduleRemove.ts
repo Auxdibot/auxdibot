@@ -13,13 +13,12 @@ export const scheduleRemove = <AuxdibotSubcommand>{
    info: {
       module: Modules['Messages'],
       description: 'Remove a schedule from your server. It will never run again after deletion.',
-      usageExample: '/schedule remove [index]',
+      usageExample: '/schedule remove (index)',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;
-      const index = interaction.options.getNumber('index');
+      const index = interaction.options.getNumber('index', true);
       const server = interaction.data.guildData;
-      if (!index) return await handleError(auxdibot, 'NO_INDEX', 'Please specify a valid index!', interaction);
 
       const schedule = server.scheduled_messages.find((_val, valIndex) => valIndex == index - 1);
       if (!schedule) {

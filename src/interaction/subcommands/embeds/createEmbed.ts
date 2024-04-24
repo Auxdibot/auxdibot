@@ -15,9 +15,8 @@ export const createEmbed = <AuxdibotSubcommand>{
    name: 'create',
    info: {
       module: Modules['Messages'],
-      usageExample:
-         '/embed create (channel) [webhook_url] [content] [color] [title] [title url] [author] [author icon url] [author url] [description] [fields (split title and description with `"|d|"``, and seperate fields with `"|s|"`)] [footer] [footer icon url] [image url] [thumbnail url]',
-      description: 'Create an embed with Auxdibot.',
+      usageExample: '/embed create (channel) [...embed parameters] [webhook_url]',
+      description: 'Create an embed with Auxdibot. (View `/embed parameters` for a list of embed parameters.)',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

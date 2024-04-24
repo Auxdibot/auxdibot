@@ -15,7 +15,7 @@ export const moderationMuteRole = <AuxdibotSubcommand>{
    info: {
       module: Modules['Moderation'],
       description: 'Change the mute role for the server, which is automatically assigned to muted users.',
-      usageExample: '/moderation mute_role (role)',
+      usageExample: '/moderation mute_role [role]',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

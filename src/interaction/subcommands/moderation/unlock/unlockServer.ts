@@ -13,7 +13,7 @@ export const unlockServer = <AuxdibotSubcommand>{
    name: 'server',
    info: {
       module: Modules['Moderation'],
-      description: 'Lock the server. Run /lock channel to lock it again.',
+      description: 'Unlock the entire server. Run /lock server to lock it again.',
       usageExample: '/unlock server',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {

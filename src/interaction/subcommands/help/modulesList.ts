@@ -47,6 +47,7 @@ export const modulesList = <AuxdibotSubcommand>{
       return await auxdibot.createReply(interaction, {
          embeds: [embed],
          components: [promoRow.toJSON()],
+         ephemeral: true,
       });
    },
 };

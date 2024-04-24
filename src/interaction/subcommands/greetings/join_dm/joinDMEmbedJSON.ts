@@ -13,8 +13,7 @@ export const joinDMEmbedJSON = <AuxdibotSubcommand>{
    name: 'embed_json',
    info: {
       module: Modules['Greetings'],
-      description:
-         'Add an embed to the join DM message using custom JSON. (Placeholders are supported. Do /help placeholders for a list of placeholders.)',
+      description: 'Add an embed to the join DM message using custom JSON.',
       usageExample: '/join_dm embed_json (json)',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {

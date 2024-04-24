@@ -13,7 +13,7 @@ export const blacklistRemove = <AuxdibotSubcommand>{
    info: {
       module: Modules['Moderation'],
       description: 'Remove a blacklisted phrase from the server.',
-      usageExample: '/moderation blacklist remove (phrase or index)',
+      usageExample: '/moderation blacklist remove (phrase|index)',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data || !interaction.memberPermissions) return;
