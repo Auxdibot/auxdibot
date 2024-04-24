@@ -40,15 +40,12 @@ export default <AuxdibotCommand>{
             .setDescription("View a command or subcommand's usage and description.")
             .addStringOption((argBuilder) =>
                argBuilder
-                  .setName('command_name')
+                  .setName('command')
                   .setDescription('The command name you want to learn more about.')
                   .setRequired(true),
             )
             .addStringOption((argBuilder) =>
-               argBuilder
-                  .setName('subcommand_name')
-                  .setDescription('The subcommand you want to learn more about.')
-                  .setRequired(false),
+               argBuilder.setName('subcommand').setDescription('The subcommand you want to learn more about.'),
             ),
       ),
    info: {

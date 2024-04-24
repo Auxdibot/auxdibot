@@ -13,11 +13,14 @@ export const greetingsChannel = <AuxdibotSubcommand>{
    info: {
       module: Modules['Greetings'],
       description: 'Set the greetings channel for this server, where join and leave messages are broadcast.',
-      usageExample: '/greetings channel (channel)',
+      usageExample: '/greetings channel [channel]',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;
-      const channel = interaction.options.getChannel('channel', false, [ChannelType.GuildText]);
+      const channel = interaction.options.getChannel('channel', false, [
+         ChannelType.GuildText,
+         ChannelType.GuildAnnouncement,
+      ]);
       const server = interaction.data.guildData;
       const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
       embed.title = '⚙️ Greetings Channel Change';

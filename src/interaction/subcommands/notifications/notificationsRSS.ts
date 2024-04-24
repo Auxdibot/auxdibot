@@ -16,7 +16,7 @@ export const notificationsRSS = <AuxdibotSubcommand>{
    info: {
       module: Modules['Messages'],
       description: 'Listen for RSS feed updated using Auxdibot.',
-      usageExample: '/notifications rss (channel) (url) [embed settings]',
+      usageExample: '/notifications rss (channel) (url) [...embed parameters]',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

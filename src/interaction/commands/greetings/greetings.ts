@@ -15,7 +15,7 @@ export default <AuxdibotCommand>{
                builder
                   .setName('channel')
                   .setDescription('The channel to broadcast join and leave messages to.')
-                  .addChannelTypes(ChannelType.GuildText),
+                  .addChannelTypes(ChannelType.GuildText, ChannelType.GuildAnnouncement),
             ),
       ),
    info: {

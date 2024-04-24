@@ -13,7 +13,7 @@ export default <AuxdibotSubcommand>{
    info: {
       module: Modules['Settings'],
       description: 'Set whether a command is allowed only for Discord Administrators.',
-      usageExample: '/commands admin set (command) (allowed)',
+      usageExample: '/commands admin set (command) (admin_only)',
    },
    async execute(auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.guild) return;

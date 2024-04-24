@@ -11,7 +11,7 @@ export default <AuxdibotSubcommand>{
    info: {
       module: Modules['Settings'],
       description: 'Set the channel where Auxdibot commands can be executed.',
-      usageExample: '/commands usage channel (command)',
+      usageExample: '/commands usage channel [channel]',
    },
    async execute(auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.guild) return;

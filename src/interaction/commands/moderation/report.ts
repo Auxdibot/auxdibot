@@ -8,7 +8,7 @@ import handleError from '@/util/handleError';
 export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
       .setName('report')
-      .setDescription('Create a detailed report that will be sent to the moderators of the server.')
+      .setDescription('Create a report that will be sent to the moderators of the server.')
       .addStringOption((builder) =>
          builder
             .setName('message')
@@ -18,7 +18,7 @@ export default <AuxdibotCommand>{
       .addUserOption((builder) => builder.setName('user').setDescription('The user that you are reporting.')),
    info: {
       module: Modules['Moderation'],
-      description: 'Create a detailed report that will be sent to the moderators of the server.',
+      description: 'Create a report that will be sent to the moderators of the server.',
       usageExample: '/report (message) [user]',
       allowedDefault: true,
    },

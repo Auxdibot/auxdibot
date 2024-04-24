@@ -13,7 +13,7 @@ export const levelsChannel = <AuxdibotSubcommand>{
    info: {
       module: Modules['Levels'],
       description: 'Levelup messages channel, or leave empty for Auxdibot to reply to the current message.',
-      usageExample: '/levels channel',
+      usageExample: '/levels channel [channel]',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       const channel = interaction.options.getChannel('channel', false, [ChannelType.GuildText]);

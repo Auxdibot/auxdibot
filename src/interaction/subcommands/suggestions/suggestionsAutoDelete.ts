@@ -12,7 +12,7 @@ export const suggestionsAutoDelete = <AuxdibotSubcommand>{
    info: {
       module: Modules['Suggestions'],
       description: 'Set whether suggestions are deleted upon being approved, denied, or marked as added.',
-      usageExample: '/suggestions auto_delete (true|false)',
+      usageExample: '/suggestions auto_delete (delete)',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

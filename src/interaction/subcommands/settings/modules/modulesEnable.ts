@@ -12,7 +12,7 @@ export const moduleEnable = <AuxdibotSubcommand>{
    name: 'enable',
    info: {
       module: Modules['Settings'],
-      description: "Enable Auxdibot's modules. (/help modules)",
+      description: "Enable Auxdibot's modules.",
       usageExample: '/modules enable (module)',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {

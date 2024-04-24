@@ -13,7 +13,7 @@ export const reactionRolesRemove = <AuxdibotSubcommand>{
    info: {
       module: Modules['Roles'],
       description: 'Remove a role that is assigned when a member joins the server.',
-      usageExample: '/reaction_roles remove [message_id] [index]',
+      usageExample: '/reaction_roles remove (message_id|index)',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

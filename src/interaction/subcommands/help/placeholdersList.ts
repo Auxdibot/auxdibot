@@ -45,6 +45,7 @@ export const placeholdersList = <AuxdibotSubcommand>{
       });
       return await auxdibot.createReply(interaction, {
          embeds: [placeholdersEmbed],
+         ephemeral: true,
       });
    },
 };
