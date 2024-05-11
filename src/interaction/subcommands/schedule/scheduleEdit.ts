@@ -16,8 +16,7 @@ export const scheduleEdit = <AuxdibotSubcommand>{
    name: 'edit',
    info: {
       module: Modules['Messages'],
-      usageExample:
-         '/schedule edit (index) [channel] [timestamp] [times_to_run] [...embed parameters]',
+      usageExample: '/schedule edit (index) [channel] [timestamp] [times_to_run] [...embed parameters]',
       description: 'Edit an existing Schedule by Auxdibot.',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {

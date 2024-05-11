@@ -15,10 +15,8 @@ export const joinDMMessage = <AuxdibotSubcommand>{
    name: 'message',
    info: {
       module: Modules['Greetings'],
-      description:
-         'Set the join DM message.',
-      usageExample:
-         '/join_dm message [...embed parameters]',
+      description: 'Set the join DM message.',
+      usageExample: '/join_dm message [...embed parameters]',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

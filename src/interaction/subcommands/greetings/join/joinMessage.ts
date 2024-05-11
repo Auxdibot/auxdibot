@@ -15,10 +15,8 @@ export const joinMessage = <AuxdibotSubcommand>{
    name: 'message',
    info: {
       module: Modules['Greetings'],
-      description:
-         'Set the join message.',
-      usageExample:
-         '/join message [...embed parameters]',
+      description: 'Set the join message.',
+      usageExample: '/join message [...embed parameters]',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;
