@@ -17,8 +17,7 @@ export const scheduleMessage = <AuxdibotSubcommand>{
    name: 'message',
    info: {
       module: Modules['Messages'],
-      usageExample:
-         '/schedule message (channel) (interval) [times_to_run] [start_date] [...embed parameters]',
+      usageExample: '/schedule message (channel) (interval) [times_to_run] [start_date] [...embed parameters]',
       description: 'Schedule a message using Auxdibot.',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {

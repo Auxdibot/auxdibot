@@ -250,6 +250,20 @@ type CardBackground {
   gradient GradientTypes @default(BACKGROUND)
 }
 
+type StarLevel {
+  message_reaction String
+  color            String
+  stars            Int
+}
+
+type StarboardBoardData {
+  channelID   String
+  reaction    String      @default("⭐")
+  count       Int         @default(3)
+  board_name  String      @default("starboard")
+  star_levels StarLevel[]
+}
+
 type CommandPermission {
   command                 String
   group                   String?
@@ -306,8 +320,8 @@ model servermembers {
 }
 
 model servers {
-  id                                String              @id @default(auto()) @map("_id") @db.ObjectId
-  v                                 Int?                @map("__v")
+  id                                String               @id @default(auto()) @map("_id") @db.ObjectId
+  v                                 Int?                 @map("__v")
   serverID                          String
   disabled_modules                  String[]
   join_dm_embed                     APIEmbed?
@@ -322,21 +336,22 @@ model servers {
   join_roles                        String[]
   sticky_roles                      String[]
   reaction_roles                    ReactionRole[]
-  suggestions_reactions             String[]            @default([])
+  suggestions_reactions             String[]             @default([])
   suggestions_channel               String?
   suggestions_updates_channel       String?
-  suggestions_auto_delete           Boolean             @default(true)
-  suggestions_discussion_threads    Boolean             @default(true)
-  message_xp                        Int                 @default(20)
+  suggestions_auto_delete           Boolean              @default(true)
+  suggestions_discussion_threads    Boolean              @default(true)
+  message_xp                        Int                  @default(20)
   level_rewards                     LevelReward[]
   level_channel                     String?
-  level_embed                       Boolean             @default(true)
+  level_embed                       Boolean              @default(true)
+  starboard_boards                  StarboardBoardData[]
   starred_messages                  StarredMessage[]
   starboard_channel                 String?
-  starboard_reaction                String?             @default("⭐")
-  starboard_reaction_count          Int?                @default(5)
-  total_starred_messages            Int                 @default(0)
-  total_stars                       Int                 @default(0)
+  starboard_reaction                String?              @default("⭐")
+  starboard_reaction_count          Int?                 @default(5)
+  total_starred_messages            Int                  @default(0)
+  total_stars                       Int                  @default(0)
   logs                              Log[]
   filtered_logs                     LogAction[]
   commands_channel                  String?
@@ -344,12 +359,12 @@ model servers {
   punishments                       Punishment[]
   suggestions                       Suggestion[]
   scheduled_messages                ScheduledMessage[]
-  punishment_send_reason            Boolean             @default(true)
-  punishment_send_moderator         Boolean             @default(false)
-  automod_banned_phrases            String[]            @default([])
-  automod_banned_phrases_punishment PunishmentType?     @default(WARN)
-  automod_punish_threshold_warns    Int?                @default(3)
-  automod_threshold_punishment      PunishmentType?     @default(MUTE)
+  punishment_send_reason            Boolean              @default(true)
+  punishment_send_moderator         Boolean              @default(false)
+  automod_banned_phrases            String[]             @default([])
+  automod_banned_phrases_punishment PunishmentType?      @default(WARN)
+  automod_punish_threshold_warns    Int?                 @default(3)
+  automod_threshold_punishment      PunishmentType?      @default(MUTE)
   automod_attachments_limit         AutomodLimit?
   automod_invites_limit             AutomodLimit?
   automod_spam_limit                AutomodLimit?
@@ -359,7 +374,7 @@ model servers {
   reports_channel                   String?
   notifications                     Notification[]
   report_role                       String?
-  automod_role_exceptions           String[]            @default([])
+  automod_role_exceptions           String[]             @default([])
   locked_channels                   ChannelLock[]
 
   @@unique([serverID])

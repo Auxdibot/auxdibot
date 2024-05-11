@@ -13,8 +13,7 @@ export const joinEmbedJSON = <AuxdibotSubcommand>{
    name: 'embed_json',
    info: {
       module: Modules['Greetings'],
-      description:
-         'Add an embed to the join message using custom JSON.',
+      description: 'Add an embed to the join message using custom JSON.',
       usageExample: '/join embed_json (json)',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {

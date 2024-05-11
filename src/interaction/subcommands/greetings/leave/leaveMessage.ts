@@ -15,10 +15,8 @@ export const leaveMessage = <AuxdibotSubcommand>{
    name: 'message',
    info: {
       module: Modules['Greetings'],
-      description:
-         'Set the leave message.',
-      usageExample:
-         '/leave message [...embed parameters]',
+      description: 'Set the leave message.',
+      usageExample: '/leave message [...embed parameters]',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;
