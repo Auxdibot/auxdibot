@@ -15,8 +15,8 @@ export const starboardBoardCreate = <AuxdibotSubcommand>{
    group: 'board',
    info: {
       module: Modules['Starboard'],
-      description: 'Set the channel where starred messages are sent.',
-      usageExample: '/starboard board create (name) (channel) (reaction) (reaction_count)i',
+      description: 'Create a new starboard for this server.',
+      usageExample: '/starboard board create (name) (channel) [reaction] [reaction_count]',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;
@@ -25,8 +25,8 @@ export const starboardBoardCreate = <AuxdibotSubcommand>{
             ChannelType.GuildAnnouncement,
          ]),
          boardName = interaction.options.getString('name', true),
-         reaction = interaction.options.getString('reaction', true),
-         reactionCount = interaction.options.getNumber('reaction_count', true);
+         reaction = interaction.options.getString('reaction', false) ?? '⭐',
+         reactionCount = interaction.options.getNumber('reaction_count', false) ?? 5;
 
       const starboard = <StarboardBoardData>{
          board_name: boardName,
