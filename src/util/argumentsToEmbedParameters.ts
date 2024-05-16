@@ -3,6 +3,11 @@ import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInt
 import EmbedParameters from '@/interfaces/embeds/EmbedParameters';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 
+/**
+ * Converts the interaction options for a guild-based command interaction to an object of EmbedParameters.
+ * @param interaction - The command interaction object.
+ * @returns An object of type EmbedParameters.
+ */
 export default function argumentsToEmbedParameters(interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
    const fields = interaction.options.getString('fields')?.replace(/\\n/g, '\n') || null;
    return <EmbedParameters>{

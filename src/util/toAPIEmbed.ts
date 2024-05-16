@@ -1,6 +1,11 @@
 import EmbedParameters from '@/interfaces/embeds/EmbedParameters';
 import { APIEmbed, EmbedBuilder } from 'discord.js';
 
+/**
+ * Converts the given parameters into an APIEmbed object.
+ * @param parameters - The parameters used to construct the APIEmbed.
+ * @returns The APIEmbed object or undefined if no properties are provided.
+ */
 export function toAPIEmbed(parameters: EmbedParameters): APIEmbed | undefined {
    if (
       parameters.title == null &&

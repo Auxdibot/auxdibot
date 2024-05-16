@@ -1,5 +1,10 @@
 import { SlashCommandSubcommandBuilder } from 'discord.js';
 
+/**
+ * Creates embed parameters for a Discord slash command subcommand builder.
+ * @param builder - The slash command subcommand builder to add the parameters to.
+ * @returns The updated slash command subcommand builder.
+ */
 export default function createEmbedParameters(builder: SlashCommandSubcommandBuilder): SlashCommandSubcommandBuilder {
    return builder
       .addStringOption((option) =>

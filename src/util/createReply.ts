@@ -4,6 +4,14 @@ import { BaseInteraction, InteractionReplyOptions, InteractionResponse, Message,
 import { AuxdibotReplyOptions } from '../interfaces/AuxdibotReplyOptions';
 import handleLog from './handleLog';
 
+/**
+ * Creates a reply for an interaction.
+ * @param this - The context of the Auxdibot instance.
+ * @param interaction - The interaction object representing the user's interaction.
+ * @param data - The data for the reply.
+ * @param options - Additional options for creating the reply.
+ * @returns A promise that resolves to the created message or interaction response.
+ */
 export async function createReply(
    this: Auxdibot,
    interaction: BaseInteraction,

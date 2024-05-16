@@ -7,6 +7,17 @@ import { Auxdibot } from '@/interfaces/Auxdibot';
 import { GenericFeed } from '@/interfaces/notifications/GenericFeed';
 import Placeholders from '@/constants/bot/placeholders/Placeholders';
 
+/**
+ * Parses placeholders in a given message and replaces them with corresponding values.
+ * @param auxdibot - The Auxdibot instance.
+ * @param msg - The message containing placeholders.
+ * @param guild - The guild associated with the message.
+ * @param guildMember - The guild member associated with the message.
+ * @param suggestion - The suggestion associated with the message.
+ * @param starred_message - The starred message associated with the message.
+ * @param feed_data - The feed data associated with the message.
+ * @returns The message with placeholders replaced by their corresponding values.
+ */
 export default async function parsePlaceholders(
    auxdibot: Auxdibot,
    msg: string,

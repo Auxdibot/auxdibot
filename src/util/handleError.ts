@@ -1,6 +1,14 @@
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import { BaseInteraction } from 'discord.js';
 
+/**
+ * Handles errors and sends an error embed message.
+ * @param auxdibot - The instance of Auxdibot.
+ * @param error - The error code.
+ * @param error_message - The error message.
+ * @param interaction - The interaction object.
+ * @param ephemeral - Optional. Whether the error message should be ephemeral.
+ */
 export default async function handleError(
    auxdibot: Auxdibot,
    error: string,

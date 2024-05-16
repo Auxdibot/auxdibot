@@ -3,6 +3,14 @@ import { findCommand } from '@/modules/features/commands/findCommand';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import { BaseInteraction, ForumChannel, GuildTextBasedChannel } from 'discord.js';
 
+/**
+ * Tests whether a user has a specific Discord permission in a given channel.
+ * @param auxdibot - The Auxdibot instance.
+ * @param interaction - The interaction object representing the user's interaction with the bot.
+ * @param permission - The permission to check for.
+ * @param channel - Optional. The channel to check the permission in. If not provided, the guild's default channel will be used.
+ * @returns A boolean indicating whether the user has the specified permission.
+ */
 export async function testDiscordPermission(
    auxdibot: Auxdibot,
    interaction: BaseInteraction,
