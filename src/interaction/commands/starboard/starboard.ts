@@ -1,9 +1,8 @@
 import { ChannelType, SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import Modules from '@/constants/bot/commands/Modules';
-import { starboardChannel } from '../../subcommands/starboard/starboardChannel';
-import { starboardReaction } from '../../subcommands/starboard/starboardReaction';
-import { starboardReactionCount } from '../../subcommands/starboard/starboardReactionCount';
+import { starboardBoardCreate } from '@/interaction/subcommands/starboard/board/starboardBoardCreate';
+import { starboardBoardDelete } from '@/interaction/subcommands/starboard/board/starboardBoardDelete';
 
 export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -31,18 +30,14 @@ export default <AuxdibotCommand>{
                         .addChannelTypes(ChannelType.GuildText, ChannelType.GuildAnnouncement),
                   )
                   .addStringOption((builder) =>
-                     builder
-                        .setName('reaction')
-                        .setDescription("The reaction to use for this server's starboard.")
-                        .setRequired(true),
+                     builder.setName('reaction').setDescription("The reaction to use for this server's starboard."),
                   )
                   .addNumberOption((builder) =>
                      builder
                         .setName('reaction_count')
                         .setDescription(
                            'The reaction count for a message to reach before being posted to the starboard.',
-                        )
-                        .setRequired(true),
+                        ),
                   ),
             )
             .addSubcommand((builder) =>
@@ -149,7 +144,7 @@ export default <AuxdibotCommand>{
       description: 'Change the starboard settings for this server.',
       usageExample: '/starboard (board|settings|view)',
    },
-   subcommands: [starboardChannel, starboardReaction, starboardReactionCount],
+   subcommands: [starboardBoardCreate, starboardBoardDelete],
    async execute() {
       return;
    },

@@ -76,6 +76,7 @@ enum LogAction {
   // deprecated, but needed because of old data
   PERMISSION_CREATED
   PERMISSION_DELETED
+  // deprecated, but needed because of old data
   MESSAGES_PURGED
   AUTOMOD_SETTINGS_CHANGE
   MESSAGE_EDITED
@@ -99,6 +100,8 @@ enum LogAction {
   SUGGESTIONS_AUTO_DELETE_CHANGED
   SUGGESTIONS_THREAD_CREATION_CHANGED
   SUGGESTION_DELETED
+  STARBOARD_CREATED
+  STARBOARD_DELETED
   STARBOARD_CHANNEL_CHANGED
   STARBOARD_REACTION_CHANGED
   STARBOARD_REACTION_COUNT_CHANGED
@@ -135,11 +138,6 @@ type Punishment {
 type LevelReward {
   level  Int
   roleID String
-}
-
-type Change {
-  former String?
-  now    String?
 }
 
 type Reaction {
@@ -252,7 +250,7 @@ type CardBackground {
 
 type StarLevel {
   message_reaction String
-  color            String
+  color            Int
   stars            Int
 }
 
