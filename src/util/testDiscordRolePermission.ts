@@ -3,6 +3,13 @@ import { findCommand } from '@/modules/features/commands/findCommand';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import { APIRole, BaseInteraction, Role } from 'discord.js';
 
+/**
+ * Tests the Discord role permission for a given interaction and role by checking the server's command permissions.
+ * @param auxdibot - The Auxdibot instance.
+ * @param interaction - The interaction object.
+ * @param role - The role to test against. Optional.
+ * @returns A promise that resolves to a boolean indicating whether the role has permission or not.
+ */
 export async function testDiscordRolePermission(
    auxdibot: Auxdibot,
    interaction: BaseInteraction,

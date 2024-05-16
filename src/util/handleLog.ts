@@ -5,6 +5,15 @@ import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import { Log } from '@prisma/client';
 import { EmbedBuilder, EmbedField, Guild, TextChannel } from 'discord.js';
 
+/**
+ * Handles a log entry for Auxdibot.
+ * @param auxdibot - The instance of Auxdibot.
+ * @param guild - The guild where the log occurred.
+ * @param log - The log entry to handle.
+ * @param fields - Optional array of additional fields to include in the log embed.
+ * @param use_user_avatar - Optional flag indicating whether to use the user's avatar in the log embed.
+ * @returns The handled log entry.
+ */
 export default async function handleLog(
    auxdibot: Auxdibot,
    guild: Guild,

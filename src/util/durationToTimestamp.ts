@@ -1,3 +1,9 @@
+/**
+ * Converts a duration in milliseconds to a timestamp string.
+ * @param duration - The duration in milliseconds.
+ * @returns The timestamp string representing the duration.
+ * @example durationToTimestamp(1000) => '1s'
+ */
 export default function durationToTimestamp(duration: number): string | undefined {
    const SYMBOLS = {
       s: duration / 1000,

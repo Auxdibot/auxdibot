@@ -4,6 +4,14 @@ import { BaseInteraction, GuildMember, PermissionsBitField } from 'discord.js';
 import { findCommand } from '@/modules/features/commands/findCommand';
 import { CommandPermission } from '@prisma/client';
 
+/**
+ * Tests the permission for a command.
+ * @param permission - The command permission object.
+ * @param interaction - The base interaction object.
+ * @param member - The guild member object.
+ * @returns Returns 'noperm' if the user doesn't have permission, 'noperm-channel' if the channel is blacklisted,
+ * 'disabled' if the command is disabled, or `true` if the user has permission.
+ */
 export function testPermission(permission: CommandPermission, interaction: BaseInteraction, member: GuildMember) {
    if (permission.admin_only && !member.permissions.has(PermissionsBitField.Flags.Administrator)) return 'noperm';
    if (permission.blacklist_channels.includes(interaction.channel.id)) return 'noperm-channel';
@@ -13,6 +21,15 @@ export function testPermission(permission: CommandPermission, interaction: BaseI
    if (permission.disabled) return 'disabled';
    return true;
 }
+/**
+ * Tests the permission of a command for a given user in a guild.
+ * @param auxdibot - The Auxdibot instance.
+ * @param interaction - The interaction object representing the command interaction.
+ * @param guildID - The ID of the guild where the command is being executed.
+ * @param command - The name of the command.
+ * @param subcommand - Optional. An array of subcommand names, if applicable.
+ * @returns A boolean indicating whether the user has permission to execute the command, or a string indicating the reason for lack of permission (notfound, noperm, disabled, noperm-channel).
+ */
 export async function testCommandPermission(
    auxdibot: Auxdibot,
    interaction: BaseInteraction,

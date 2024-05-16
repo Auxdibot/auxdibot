@@ -1,3 +1,9 @@
+/**
+ * Converts a timestamp string to a duration in milliseconds.
+ * @param timestamp - The timestamp string to convert.
+ * @returns The duration in milliseconds, or 'permanent' if the timestamp is 'permanent', or undefined if the timestamp is invalid.
+ * @example timestampToDuration('1s') => 1000
+ */
 export default function timestampToDuration(timestamp: string): number | 'permanent' | undefined {
    if (timestamp == 'permanent') return 'permanent';
    const SYMBOLS = {
