@@ -7,6 +7,8 @@ import { starboardChannel } from '@/interaction/subcommands/starboard/board/star
 import { starboardReaction } from '@/interaction/subcommands/starboard/board/starboardReaction';
 import { starboardReactionCount } from '@/interaction/subcommands/starboard/board/starboardReactionCount';
 import { starboardBoardList } from '@/interaction/subcommands/starboard/board/starboardBoardList';
+import { starboardSelfStar } from '@/interaction/subcommands/starboard/settings/starboardSelfStar';
+import { starboardStarStarboard } from '@/interaction/subcommands/starboard/settings/starboardStarStarboard';
 
 export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -136,6 +138,8 @@ export default <AuxdibotCommand>{
       starboardReaction,
       starboardReactionCount,
       starboardBoardList,
+      starboardSelfStar,
+      starboardStarStarboard,
    ],
    async execute() {
       return;

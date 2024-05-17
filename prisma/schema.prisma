@@ -102,6 +102,7 @@ enum LogAction {
   SUGGESTION_DELETED
   STARBOARD_CREATED
   STARBOARD_DELETED
+  STARBOARD_SETTINGS_CHANGED
   STARBOARD_CHANNEL_CHANGED
   STARBOARD_REACTION_CHANGED
   STARBOARD_REACTION_COUNT_CHANGED
@@ -344,10 +345,14 @@ model servers {
   level_channel                     String?
   level_embed                       Boolean              @default(true)
   starboard_boards                  StarboardBoardData[]
+  self_star                         Boolean              @default(true)
+  starboard_star                    Boolean              @default(true)
+  // deprecated, replaced with StarboardBoardData
   starred_messages                  StarredMessage[]
   starboard_channel                 String?
   starboard_reaction                String?              @default("⭐")
   starboard_reaction_count          Int?                 @default(5)
+  // deprecated, replaced with StarboardBoardData
   total_starred_messages            Int                  @default(0)
   total_stars                       Int                  @default(0)
   logs                              Log[]
