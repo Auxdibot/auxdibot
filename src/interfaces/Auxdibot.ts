@@ -17,18 +17,70 @@ import AuxdibotSelectMenu from './menus/AuxdibotSelectMenu';
 import AuxdibotModal from './modals/AuxdibotModal';
 import Subscriber from '@/modules/features/notifications/Subscriber';
 import { AuxdibotReplyOptions } from './AuxdibotReplyOptions';
+/**
+ * Represents the Auxdibot interface.
+ * @interface Auxdibot
+ * @extends Client
+ */
 export interface Auxdibot extends Client {
+   /**
+    * Collection of commands registered in Auxdibot.
+    */
    commands: Collection<string, AuxdibotCommand>;
+
+   /**
+    * Collection of buttons registered in Auxdibot.
+    */
    buttons: Collection<string, AuxdibotButton>;
+
+   /**
+    * Collection of modals registered in Auxdibot.
+    */
    modals: Collection<string, AuxdibotModal>;
+
+   /**
+    * Collection of select menus registered in Auxdibot.
+    */
    select_menus: Collection<string, AuxdibotSelectMenu>;
+
+   /**
+    * Prisma client for database operations.
+    */
    database: PrismaClient;
+
+   /**
+    * Scheduler for scheduling tasks in Auxdibot.
+    */
    scheduler: ToadScheduler;
+
+   /**
+    * Collection of cached messages in Auxdibot.
+    */
    messages: Collection<bigint, CachedMessage>;
+
+   /**
+    * Collection of spam detections in Auxdibot.
+    */
    spam_detections: Collection<[string, bigint], Collection<bigint, CachedMessage>>;
+
+   /**
+    * Collection of attachments detections in Auxdibot.
+    */
    attachments_detections: Collection<[string, bigint], Collection<bigint, CachedMessage>>;
+
+   /**
+    * Collection of invites detections in Auxdibot.
+    */
    invites_detections: Collection<[string, bigint], Collection<bigint, CachedMessage>>;
+
+   /**
+    * Subscriber for handling notifications in Auxdibot.
+    */
    subscriber: Subscriber;
+
+   /**
+    * Object containing color values used in Auxdibot.
+    */
    colors: {
       accept: number;
       denied: number;
@@ -46,13 +98,37 @@ export interface Auxdibot extends Client {
          ADDED: number;
       };
    };
+
+   /**
+    * Object containing embed builders used in Auxdibot.
+    */
    embeds: {
       welcome: EmbedBuilder;
       disabled: EmbedBuilder;
       error: EmbedBuilder;
    };
+
+   /**
+    * Function to get the total number of members in Auxdibot.
+    * @returns A promise that resolves to the number of members.
+    */
    getMembers?(): Promise<number>;
+
+   /**
+    * Function to update the Discord status of Auxdibot.
+    * @param guilds - The number of guilds Auxdibot is connected to.
+    * @param message - The status message to be displayed.
+    * @returns A promise that resolves to the updated client presence.
+    */
    updateDiscordStatus?(guilds: number, message: string): Promise<ClientPresence | undefined>;
+
+   /**
+    * Function to create a reply to an interaction in Auxdibot.
+    * @param interaction - The base interaction object.
+    * @param data - The reply data to be sent.
+    * @param options - Additional options for the reply.
+    * @returns A promise that resolves to the sent message or interaction response.
+    */
    createReply?(
       interaction: BaseInteraction,
       data: InteractionReplyOptions,

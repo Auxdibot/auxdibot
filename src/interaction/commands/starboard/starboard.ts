@@ -6,6 +6,7 @@ import { starboardBoardDelete } from '@/interaction/subcommands/starboard/board/
 import { starboardChannel } from '@/interaction/subcommands/starboard/board/starboardChannel';
 import { starboardReaction } from '@/interaction/subcommands/starboard/board/starboardReaction';
 import { starboardReactionCount } from '@/interaction/subcommands/starboard/board/starboardReactionCount';
+import { starboardBoardList } from '@/interaction/subcommands/starboard/board/starboardBoardList';
 
 export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -107,7 +108,8 @@ export default <AuxdibotCommand>{
                         )
                         .setRequired(true),
                   ),
-            ),
+            )
+            .addSubcommand((builder) => builder.setName('list').setDescription('List all starboards for this server.')),
       )
       .addSubcommandGroup((builder) =>
          builder
@@ -121,31 +123,11 @@ export default <AuxdibotCommand>{
                   .setName('starboard_star')
                   .setDescription('Toggle whether or not users can star messages in the starboard.'),
             ),
-      )
-      .addSubcommandGroup((builder) =>
-         builder
-            .setName('view')
-            .setDescription('View the starboard settings for this server.')
-            .addSubcommand((builder) =>
-               builder.setName('starboards').setDescription('View the starboards for this server.'),
-            )
-            .addSubcommand((builder) =>
-               builder
-                  .setName('starboard')
-                  .setDescription('View the settings for a starboard on this server.')
-                  .addStringOption((builder) =>
-                     builder
-                        .setName('name')
-                        .setDescription('The unique name of the starboard for this server.')
-                        .setRequired(true),
-                  ),
-            ),
       ),
-
    info: {
       module: Modules['Starboard'],
       description: 'Change the starboard settings for this server.',
-      usageExample: '/starboard (board|settings|view)',
+      usageExample: '/starboard (board|settings)',
    },
    subcommands: [
       starboardBoardCreate,
@@ -153,6 +135,7 @@ export default <AuxdibotCommand>{
       starboardChannel,
       starboardReaction,
       starboardReactionCount,
+      starboardBoardList,
    ],
    async execute() {
       return;

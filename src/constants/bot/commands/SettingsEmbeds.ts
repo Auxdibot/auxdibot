@@ -225,11 +225,13 @@ export const SettingsEmbeds: { [k: string]: (auxdibot: Auxdibot, servers: server
       new EmbedBuilder()
          .setTitle(`${CustomEmojis.STARBOARD} Starboard Settings`)
          .setDescription(
-            `You can edit and view these settings more in-depth on [Auxdibot's Dashboard](https://bot.auxdible.me)\n\n🌟 **Starboard Channel**: ${
-               server.starboard_channel ? `<#${server.starboard_channel}>` : '`None`'
-            }\n⭐ **Starboard Reaction**: \`${server.starboard_reaction}\`\n✨ **Starboard Required Stars**: \`${
-               server.starboard_reaction_count
-            }\``,
+            `You can edit and view these settings more in-depth on [Auxdibot's Dashboard](https://bot.auxdible.me)`,
+         )
+         .setFields(
+            ...server.starboard_boards.map((board) => ({
+               name: `🌟 Starboard: \`${board.board_name}\``,
+               value: `Channel: <#${board.channelID}>\nReaction: ${board.reaction}\nReaction Count: ${board.count}`,
+            })),
          )
          .setColor(auxdibot.colors.info)
          .toJSON(),
