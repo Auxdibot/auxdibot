@@ -3,6 +3,9 @@ import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import Modules from '@/constants/bot/commands/Modules';
 import { starboardBoardCreate } from '@/interaction/subcommands/starboard/board/starboardBoardCreate';
 import { starboardBoardDelete } from '@/interaction/subcommands/starboard/board/starboardBoardDelete';
+import { starboardChannel } from '@/interaction/subcommands/starboard/board/starboardChannel';
+import { starboardReaction } from '@/interaction/subcommands/starboard/board/starboardReaction';
+import { starboardReactionCount } from '@/interaction/subcommands/starboard/board/starboardReactionCount';
 
 export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -144,7 +147,13 @@ export default <AuxdibotCommand>{
       description: 'Change the starboard settings for this server.',
       usageExample: '/starboard (board|settings|view)',
    },
-   subcommands: [starboardBoardCreate, starboardBoardDelete],
+   subcommands: [
+      starboardBoardCreate,
+      starboardBoardDelete,
+      starboardChannel,
+      starboardReaction,
+      starboardReactionCount,
+   ],
    async execute() {
       return;
    },

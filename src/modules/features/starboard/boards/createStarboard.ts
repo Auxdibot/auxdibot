@@ -16,14 +16,14 @@ export default async function createStarboard(
    const server = await findOrCreateServer(auxdibot, guild.id);
    if (!validateEmoji(auxdibot, starboard.reaction)) throw new Error('Invalid emoji provided.');
    if (starboard.count < 1) throw new Error('Invalid star count provided.');
-   if (starboard.count % 1 !== 0) throw new Error('Star count must be a whole number.');
+   if (!Number.isInteger(starboard.count)) throw new Error('Star count must be an integer.');
    if (starboard.star_levels.length < 1) throw new Error('Star levels must have at least one level.');
    if (starboard.star_levels.some((i) => i.stars < 1))
       throw new Error('Star levels must have a minimum of a 1x multiplier.');
    if (starboard.star_levels.some((i) => !validateEmoji(auxdibot, i.message_reaction)))
       throw new Error('Invalid emoji provided in star levels.');
-   if (starboard.star_levels.some((i) => i.stars % 1 !== 0))
-      throw new Error('Star levels must have a whole number multiplier.');
+   if (starboard.star_levels.some((i) => !Number.isInteger(i.stars)))
+      throw new Error('Star levels must have an integer multiplier.');
 
    if (starboard.board_name.length < 1) throw new Error('Board name must have at least one character.');
    if (starboard.board_name.length > 100) throw new Error('Board name must have less than 100 characters.');
@@ -36,7 +36,7 @@ export default async function createStarboard(
    if (!testLimit(server.starboard_boards, Limits.STARBOARD_BOARD_LIMIT))
       throw new Error('You have reached the maximum amount of starboards allowed on this server.');
    if (!starboard.channelID) throw new Error('Invalid channel provided.');
-   console.log(starboard);
+
    return await auxdibot.database.servers
       .update({
          where: { serverID: guild.id },
@@ -48,7 +48,7 @@ export default async function createStarboard(
             type: LogAction.STARBOARD_CREATED,
             userID: user.id,
             date_unix: Date.now(),
-            description: `A starboard has been added to this server for the channel <#${starboard.channelID}>, using the reaction ${starboard.reaction} and ${starboard.count} stars.`,
+            description: `The starboard ${starboard.board_name} has been added to this server for the channel <#${starboard.channelID}>, using the reaction ${starboard.reaction} and ${starboard.count} stars.`,
          });
          if (!i) throw new Error("Couldn't preform that action!");
          return i;
