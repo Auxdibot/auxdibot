@@ -1,7 +1,7 @@
 import { Auxdibot } from '@/interfaces/Auxdibot';
-import setStarboardChannel from '@/modules/features/starboard/setStarboardChannel';
-import setStarboardReaction from '@/modules/features/starboard/setStarboardReaction';
-import setStarboardReactionCount from '@/modules/features/starboard/setStarboardReactionCount';
+import setStarboardChannel from '@/modules/features/starboard/boards/setStarboardChannel';
+import setStarboardReaction from '@/modules/features/starboard/boards/setStarboardReaction';
+import setStarboardReactionCount from '@/modules/features/starboard/boards/setStarboardReactionCount';
 import checkAuthenticated from '@/server/checkAuthenticated';
 import checkGuildOwnership from '@/server/checkGuildOwnership';
 import { Router } from 'express';
@@ -46,11 +46,14 @@ const starboard = (auxdibot: Auxdibot, router: Router) => {
       (req, res, next) => checkGuildOwnership(auxdibot, req, res, next),
       (req, res) => {
          const starboard_channel = req.body['starboard_channel'];
+         const board_name = req.body['board_name'];
+         if (!board_name || typeof board_name != 'string')
+            return res.status(400).json({ error: 'This is not a valid starboard board name!' });
          if (typeof starboard_channel != 'string' && typeof starboard_channel != 'undefined')
             return res.status(400).json({ error: 'This is not a valid starboard channel!' });
          const channel = req.guild.channels.cache.get(starboard_channel);
          if (!channel && starboard_channel) return res.status(404).json({ error: 'invalid channel' });
-         return setStarboardChannel(auxdibot, req.guild, req.user, channel)
+         return setStarboardChannel(auxdibot, req.guild, req.user, board_name, channel)
             .then((i) => res.json({ data: i }))
             .catch((x) => {
                console.error(x);
@@ -64,9 +67,12 @@ const starboard = (auxdibot: Auxdibot, router: Router) => {
       (req, res, next) => checkGuildOwnership(auxdibot, req, res, next),
       (req, res) => {
          const reaction = req.body['starboard_reaction'];
+         const board_name = req.body['board_name'];
+         if (!board_name || typeof board_name != 'string')
+            return res.status(400).json({ error: 'This is not a valid starboard board name!' });
          if (typeof reaction != 'string')
             return res.status(400).json({ error: 'This is not a valid starboard reaction!' });
-         return setStarboardReaction(auxdibot, req.guild, req.user, reaction)
+         return setStarboardReaction(auxdibot, req.guild, req.user, board_name, reaction)
             .then((i) => res.json({ data: i }))
             .catch((x) => {
                console.error(x);
@@ -80,9 +86,12 @@ const starboard = (auxdibot: Auxdibot, router: Router) => {
       (req, res, next) => checkGuildOwnership(auxdibot, req, res, next),
       (req, res) => {
          const reaction_count = req.body['reaction_count'];
+         const board_name = req.body['board_name'];
+         if (!board_name || typeof board_name != 'string')
+            return res.status(400).json({ error: 'This is not a valid starboard board name!' });
          if (typeof reaction_count != 'string' || !Number(reaction_count))
             return res.status(400).json({ error: 'This is not a valid starboard reaction count!' });
-         return setStarboardReactionCount(auxdibot, req.guild, req.user, Number(reaction_count))
+         return setStarboardReactionCount(auxdibot, req.guild, req.user, board_name, Number(reaction_count))
             .then((i) => res.json({ data: i }))
             .catch((x) => {
                console.error(x);

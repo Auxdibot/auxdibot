@@ -48,7 +48,7 @@ export const starboardBoardCreate = <AuxdibotSubcommand>{
             }
             const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.title = '💫 Starboard Created';
-            embed.description = `The starboard board **${boardName}** hdas been created in <#${channel?.id}>, using the reaction ${reaction} and ${reactionCount} stars.`;
+            embed.description = `The starboard board \`${boardName}\` has been created in <#${channel?.id}>, using the reaction ${reaction} and ${reactionCount} stars.`;
             auxdibot.createReply(interaction, { embeds: [embed] });
          })
          .catch((x) => {
