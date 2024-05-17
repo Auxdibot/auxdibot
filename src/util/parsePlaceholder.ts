@@ -1,4 +1,13 @@
-import { Guild, GuildMember, Message, PartialGuildMember, PartialMessage, PermissionsBitField } from 'discord.js';
+import {
+   Guild,
+   GuildMember,
+   Message,
+   PartialGuildMember,
+   PartialMessage,
+   PartialUser,
+   PermissionsBitField,
+   User,
+} from 'discord.js';
 import { PunishmentValues } from '@/constants/bot/punishments/PunishmentValues';
 import { SuggestionStateName } from '@/constants/bot/suggestions/SuggestionStateName';
 import { Suggestion } from '@prisma/client';
@@ -12,7 +21,7 @@ import Placeholders from '@/constants/bot/placeholders/Placeholders';
  * @param auxdibot - The Auxdibot instance.
  * @param msg - The message containing placeholders.
  * @param guild - The guild associated with the message.
- * @param guildMember - The guild member associated with the message.
+ * @param member - The guild member/user associated with the message.
  * @param suggestion - The suggestion associated with the message.
  * @param starred_message - The starred message associated with the message.
  * @param feed_data - The feed data associated with the message.
@@ -22,17 +31,16 @@ export default async function parsePlaceholders(
    auxdibot: Auxdibot,
    msg: string,
    guild?: Guild,
-   guildMember?: GuildMember | PartialGuildMember,
+   member?: GuildMember | PartialGuildMember | User | PartialUser,
    suggestion?: Suggestion,
    starred_message?: Message<boolean> | PartialMessage,
    feed_data?: GenericFeed,
 ) {
    const server = guild ? await findOrCreateServer(auxdibot, guild.id) : undefined;
-   let member = guildMember;
    if (suggestion?.creatorID && guild && guild.members.cache.get(suggestion.creatorID))
       member = guild.members.cache.get(suggestion.creatorID);
    const latest_punishment =
-      server && member ? server.punishments.filter((p) => p.userID == member.user.id).reverse()[0] : undefined;
+      server && member ? server.punishments.filter((p) => p.userID == member.id).reverse()[0] : undefined;
    const memberData = member
       ? await auxdibot.database.servermembers.findFirst({ where: { serverID: guild.id, userID: member.id } })
       : undefined;
@@ -57,7 +65,7 @@ export default async function parsePlaceholders(
               [Placeholders.SERVER_TOTAL_PUNISHMENTS]: server.punishments.length,
            }
          : undefined),
-      ...(member
+      ...(member && member instanceof GuildMember
          ? {
               [Placeholders.MEMBER_ID]: member.id,
               [Placeholders.MEMBER_TAG]: member.user.username,
@@ -92,9 +100,8 @@ export default async function parsePlaceholders(
                  : {}),
               ...(server
                  ? {
-                      [Placeholders.MEMBER_TOTAL_PUNISHMENTS]: server.punishments.filter(
-                         (p) => p.userID == member.user.id,
-                      ).length,
+                      [Placeholders.MEMBER_TOTAL_PUNISHMENTS]: server.punishments.filter((p) => p.userID == member.id)
+                         .length,
                       [Placeholders.MEMBER_LATEST_PUNISHMENT]: latest_punishment
                          ? PunishmentValues[latest_punishment.type as 'warn' | 'kick' | 'mute' | 'ban'].name
                          : 'None',
@@ -115,6 +122,22 @@ export default async function parsePlaceholders(
                          : 'None',
                    }
                  : {}),
+           }
+         : member instanceof User
+         ? {
+              [Placeholders.MEMBER_ID]: member.id,
+              [Placeholders.MEMBER_TAG]: member.username,
+              [Placeholders.MEMBER_MENTION]: member,
+              [Placeholders.MEMBER_CREATED_DATE]: member.createdAt.toDateString(),
+              [Placeholders.MEMBER_CREATED_DATE_FORMATTED]: `<t:${Math.round(member.createdAt.valueOf() / 1000)}>`,
+
+              [Placeholders.MEMBER_CREATED_DATE_UTC]: member.createdAt.toUTCString(),
+              [Placeholders.MEMBER_CREATED_DATE_ISO]: member.createdAt.toISOString(),
+              [Placeholders.MEMBER_HIGHEST_ROLE]: 'N/A',
+              [Placeholders.MEMBER_IS_OWNER]: 'N/A',
+              [Placeholders.MEMBER_IS_ADMIN]: 'N/A',
+              [Placeholders.MEMBER_AVATAR_512]: member.avatarURL({ size: 512 }) || '',
+              [Placeholders.MEMBER_AVATAR_128]: member.avatarURL({ size: 128 }) || '',
            }
          : {}),
       ...(suggestion

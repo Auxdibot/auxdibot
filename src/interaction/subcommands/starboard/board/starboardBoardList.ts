@@ -23,7 +23,13 @@ export const starboardBoardList = <AuxdibotSubcommand>{
       embed.fields = starboards.map((board) => {
          return {
             name: `🌟 Starboard: \`${board.board_name}\``,
-            value: `Channel: <#${board.channelID}>\nReaction: ${board.reaction}\nReaction Count: \`${board.count}\``,
+            value: `Channel: <#${board.channelID}>\nReaction: ${board.reaction}\nReaction Count: \`${
+               board.count
+            }\`\n\n*Star Levels*${board.star_levels.reduce(
+               (accumulator, val) =>
+                  `${accumulator}\r\n* **${board.count * val.stars} ${board.reaction}** - ${val.message_reaction}`,
+               '',
+            )}`,
          };
       });
       return await auxdibot.createReply(interaction, { embeds: [embed] });
