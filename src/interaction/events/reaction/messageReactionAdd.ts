@@ -2,8 +2,8 @@ import { GuildMember, MessageReaction, PartialMessageReaction, PartialUser, User
 import Modules from '@/constants/bot/commands/Modules';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
-import createStarredMessage from '@/modules/features/starboard/createStarredMessage';
-import updateStarredMessage from '@/modules/features/starboard/updateStarredMessage';
+import createStarredMessage from '@/modules/features/starboard/messages/createStarredMessage';
+import updateStarredMessage from '@/modules/features/starboard/messages/updateStarredMessage';
 import handleLog from '@/util/handleLog';
 import { LogAction } from '@prisma/client';
 

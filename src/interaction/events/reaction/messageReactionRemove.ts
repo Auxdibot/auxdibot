@@ -2,8 +2,8 @@ import { GuildMember, MessageReaction, PartialMessageReaction, PartialUser, User
 import Modules from '@/constants/bot/commands/Modules';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
-import updateStarredMessage from '@/modules/features/starboard/updateStarredMessage';
-import deleteStarredMessage from '@/modules/features/starboard/deleteStarredMessage';
+import updateStarredMessage from '@/modules/features/starboard/messages/updateStarredMessage';
+import deleteStarredMessage from '@/modules/features/starboard/messages/deleteStarredMessage';
 
 export default async function messageReactionRemove(
    auxdibot: Auxdibot,
