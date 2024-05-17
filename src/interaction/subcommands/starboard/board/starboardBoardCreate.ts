@@ -33,7 +33,7 @@ export const starboardBoardCreate = <AuxdibotSubcommand>{
          channelID: channel?.id,
          reaction: reaction,
          count: reactionCount,
-         star_levels: defaultStarLevels,
+         star_levels: reaction == '⭐' ? defaultStarLevels : [],
       };
 
       createStarboard(auxdibot, interaction.guild, interaction.user, starboard)

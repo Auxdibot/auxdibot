@@ -2,10 +2,9 @@ import { GuildMember, MessageReaction, PartialMessageReaction, PartialUser, User
 import Modules from '@/constants/bot/commands/Modules';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
-import createStarredMessage from '@/modules/features/starboard/messages/createStarredMessage';
-import updateStarredMessage from '@/modules/features/starboard/messages/updateStarredMessage';
 import handleLog from '@/util/handleLog';
 import { LogAction } from '@prisma/client';
+import { starboardReaction } from '@/modules/features/starboard/starboardReaction';
 
 export default async function messageReactionAdd(
    auxdibot: Auxdibot,
@@ -64,30 +63,6 @@ export default async function messageReactionAdd(
          }
       }
    }
-   if (!server.disabled_modules.find((item) => item == Modules['Starboard'].name)) {
-      const starred = server.starred_messages.find((i) => i.starred_message_id == messageReaction.message.id);
-      const starboard_channel = messageReaction.message.guild.channels.cache.get(server.starboard_channel);
-      const starCount =
-         (await messageReaction.message.reactions.cache.get(server.starboard_reaction)?.fetch())?.count || 0;
-      if (starboard_channel && starboard_channel.isTextBased()) {
-         await auxdibot.database.servers.update({
-            where: { serverID: messageReaction.message.guild.id },
-            data: { total_stars: { increment: 1 } },
-         });
-         if (starred && !starboard_channel.messages.cache.get(starred.starboard_message_id)) {
-            server.starred_messages.splice(server.starred_messages.indexOf(starred), 1);
-            await auxdibot.database.servers
-               .update({
-                  where: { serverID: messageReaction.message.guild.id },
-                  data: { starred_messages: server.starred_messages },
-               })
-               .catch(() => undefined);
-         }
-         if (!starred && starCount >= server.starboard_reaction_count) {
-            await createStarredMessage(auxdibot, messageReaction);
-         } else if (starred) {
-            await updateStarredMessage(auxdibot, messageReaction);
-         }
-      }
-   }
+
+   starboardReaction(auxdibot, messageReaction, user);
 }
