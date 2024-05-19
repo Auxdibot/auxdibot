@@ -3,7 +3,7 @@ import { Auxdibot } from '@/interfaces/Auxdibot';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
-import setSuggestionsDiscussionThreads from '@/modules/features/suggestions/setSuggestionsDiscussionThreads';
+import setStarboardStarring from '@/modules/features/starboard/settings/setStarboardStarring';
 import handleError from '@/util/handleError';
 import { EmbedBuilder } from '@discordjs/builders';
 
@@ -29,7 +29,7 @@ export const starboardStarStarboard = <AuxdibotSubcommand>{
          });
       }
 
-      setSuggestionsDiscussionThreads(auxdibot, interaction.guild, interaction.user, starboardStar)
+      setStarboardStarring(auxdibot, interaction.guild, interaction.user, starboardStar)
          .then(async () => {
             embed.description = `The ability to star messages directly through a starboard has been changed.\r\n\r\nFormerly: ${
                previousStarboardStar ? 'Enabled' : 'Disabled'

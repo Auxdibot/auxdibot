@@ -47,6 +47,7 @@ export const LogNames: { [k in LogAction]?: string } = {
    STARBOARD_CHANNEL_CHANGED: '⭐ Starboard Channel Changed',
    STARBOARD_REACTION_CHANGED: '⭐ Starboard Reaction Changed',
    STARBOARD_REACTION_COUNT_CHANGED: '⭐ Starboard Reaction Count Changed',
+   STARBOARD_SETTINGS_CHANGED: '⭐ Starboard Settings Changed',
    STARBOARD_CREATED: '⭐ Starboard Created',
    STARBOARD_DELETED: '🗑️ Starboard Deleted',
    STARBOARD_MESSAGE_DELETED: '⭐ Starboard Message Deleted',
