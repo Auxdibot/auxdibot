@@ -69,7 +69,8 @@ export async function starboardReaction(
    }
 
    if (!server.self_star) {
-      users_starred = users_starred.filter((i) => i != reaction.message.author.id);
+      const starred = starred_message ? await getMessage(guild, starred_message.starred_message_id) : reaction.message;
+      users_starred = users_starred.filter((i) => i != starred.author.id);
    }
    const count = [...new Set(users_starred)].filter((i) => i).length;
    if (count < board.count) {

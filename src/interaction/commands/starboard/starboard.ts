@@ -118,12 +118,26 @@ export default <AuxdibotCommand>{
             .setName('settings')
             .setDescription('View the starboard settings for this server.')
             .addSubcommand((builder) =>
-               builder.setName('self_star').setDescription('Toggle whether or not users can star their own messages.'),
+               builder
+                  .setName('self_star')
+                  .setDescription('Toggle whether or not users can star their own messages.')
+                  .addBooleanOption((option) =>
+                     option
+                        .setName('self_star')
+                        .setDescription('Whether or not users can star their own messages.')
+                        .setRequired(true),
+                  ),
             )
             .addSubcommand((builder) =>
                builder
                   .setName('starboard_star')
-                  .setDescription('Toggle whether or not users can star messages in the starboard.'),
+                  .setDescription('Toggle whether or not users can star messages in the starboard.')
+                  .addBooleanOption((option) =>
+                     option
+                        .setName('starboard_star')
+                        .setDescription('Whether or not users can star messages in the starboard.')
+                        .setRequired(true),
+                  ),
             ),
       ),
    info: {

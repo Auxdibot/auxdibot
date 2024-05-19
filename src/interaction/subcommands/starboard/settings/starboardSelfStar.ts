@@ -3,7 +3,7 @@ import { Auxdibot } from '@/interfaces/Auxdibot';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
-import setSuggestionsDiscussionThreads from '@/modules/features/suggestions/setSuggestionsDiscussionThreads';
+import setStarboardSelfStar from '@/modules/features/starboard/settings/setStarboardSelfStar';
 import handleError from '@/util/handleError';
 import { EmbedBuilder } from '@discordjs/builders';
 
@@ -29,7 +29,7 @@ export const starboardSelfStar = <AuxdibotSubcommand>{
          });
       }
 
-      setSuggestionsDiscussionThreads(auxdibot, interaction.guild, interaction.user, selfStar)
+      setStarboardSelfStar(auxdibot, interaction.guild, interaction.user, selfStar)
          .then(async () => {
             embed.description = `The ability to self-star messages has been changed.\r\n\r\nFormerly: ${
                previousSelfStar ? 'Enabled' : 'Disabled'
