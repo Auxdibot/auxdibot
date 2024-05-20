@@ -1,20 +1,13 @@
-import {
-   Guild,
-   GuildMember,
-   Message,
-   PartialGuildMember,
-   PartialMessage,
-   PartialUser,
-   PermissionsBitField,
-   User,
-} from 'discord.js';
+import { Guild, GuildMember, Message, PartialGuildMember, PartialUser, PermissionsBitField, User } from 'discord.js';
 import { PunishmentValues } from '@/constants/bot/punishments/PunishmentValues';
 import { SuggestionStateName } from '@/constants/bot/suggestions/SuggestionStateName';
-import { Suggestion } from '@prisma/client';
+import { StarredMessage, Suggestion } from '@prisma/client';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import { GenericFeed } from '@/interfaces/notifications/GenericFeed';
 import Placeholders from '@/constants/bot/placeholders/Placeholders';
+import { getMessage } from './getMessage';
+import { calculateTotalStars } from '@/modules/features/starboard/calculateTotalStars';
 
 /**
  * Parses placeholders in a given message and replaces them with corresponding values.
@@ -33,17 +26,25 @@ export default async function parsePlaceholders(
    guild?: Guild,
    member?: GuildMember | PartialGuildMember | User | PartialUser,
    suggestion?: Suggestion,
-   starred_message?: Message<boolean> | PartialMessage,
+   starred_data?: StarredMessage,
    feed_data?: GenericFeed,
 ) {
    const server = guild ? await findOrCreateServer(auxdibot, guild.id) : undefined;
    if (suggestion?.creatorID && guild && guild.members.cache.get(suggestion.creatorID))
       member = guild.members.cache.get(suggestion.creatorID);
+   const starred_message: Message<boolean> | undefined = starred_data
+      ? await getMessage(guild, starred_data?.starred_message_id).catch(() => undefined)
+      : undefined;
+   if (starred_message && guild) {
+      member = (await guild.members.fetch(starred_message.author.id).catch(() => undefined)) ?? starred_message.author;
+   }
    const latest_punishment =
       server && member ? server.punishments.filter((p) => p.userID == member.id).reverse()[0] : undefined;
    const memberData = member
       ? await auxdibot.database.servermembers.findFirst({ where: { serverID: guild.id, userID: member.id } })
       : undefined;
+
+   const board = server.starboard_boards.find((i) => i.board_name == starred_data.board);
    const PLACEHOLDERS: Partial<Record<Placeholders, unknown>> = {
       ...(guild
          ? {
@@ -154,14 +155,18 @@ export default async function parsePlaceholders(
               [Placeholders.SUGGESTION_DATE_ISO]: new Date(suggestion.date_unix).toISOString(),
            }
          : undefined),
-      ...(starred_message && server
+      ...(starred_data && starred_message && server
          ? {
               [Placeholders.STARBOARD_MESSAGE_ID]: starred_message.id,
               [Placeholders.STARBOARD_MESSAGE_CONTENT]: starred_message.content
                  .replaceAll(/"/g, '\\"')
                  .replaceAll(/\\/g, '\\\\'),
-              [Placeholders.STARBOARD_MESSAGE_STARS]: starred_message.reactions.cache.get(server.starboard_reaction)
-                 .count,
+              [Placeholders.STARBOARD_MESSAGE_STARS]: await calculateTotalStars(
+                 auxdibot,
+                 guild,
+                 board,
+                 starred_data,
+              ).catch(() => -1),
               [Placeholders.STARBOARD_MESSAGE_DATE]: new Date(starred_message.createdTimestamp).toDateString(),
               [Placeholders.STARBOARD_MESSAGE_DATE_FORMATTED]: `<t:${Math.round(
                  starred_message.createdTimestamp / 1000,

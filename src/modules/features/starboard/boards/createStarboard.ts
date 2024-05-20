@@ -17,7 +17,6 @@ export default async function createStarboard(
    if (!validateEmoji(auxdibot, starboard.reaction)) throw new Error('Invalid emoji provided.');
    if (starboard.count < 1) throw new Error('Invalid star count provided.');
    if (!Number.isInteger(starboard.count)) throw new Error('Star count must be an integer.');
-   if (starboard.star_levels.length < 1) throw new Error('Star levels must have at least one level.');
    if (starboard.star_levels.some((i) => i.stars < 1))
       throw new Error('Star levels must have a minimum of a 1x multiplier.');
    if (starboard.star_levels.some((i) => !validateEmoji(auxdibot, i.message_reaction)))
