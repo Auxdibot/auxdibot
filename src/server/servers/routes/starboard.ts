@@ -1,7 +1,12 @@
+import { defaultStarLevels } from '@/constants/database/defaultStarLevels';
 import { Auxdibot } from '@/interfaces/Auxdibot';
+import createStarboard from '@/modules/features/starboard/boards/createStarboard';
+import deleteStarboard from '@/modules/features/starboard/boards/deleteStarboard';
 import setStarboardChannel from '@/modules/features/starboard/boards/setStarboardChannel';
 import setStarboardReaction from '@/modules/features/starboard/boards/setStarboardReaction';
 import setStarboardReactionCount from '@/modules/features/starboard/boards/setStarboardReactionCount';
+import setStarboardSelfStar from '@/modules/features/starboard/settings/setStarboardSelfStar';
+import setStarboardStarring from '@/modules/features/starboard/settings/setStarboardStarring';
 import checkAuthenticated from '@/server/checkAuthenticated';
 import checkGuildOwnership from '@/server/checkGuildOwnership';
 import { Router } from 'express';
@@ -20,11 +25,9 @@ const starboard = (auxdibot: Auxdibot, router: Router) => {
                where: { serverID: req.guild.id },
                select: {
                   serverID: true,
-                  starboard_channel: true,
-                  starboard_reaction: true,
-                  starboard_reaction_count: true,
-                  total_starred_messages: true,
-                  total_stars: true,
+                  starboard_boards: true,
+                  self_star: true,
+                  starboard_star: true,
                },
             })
             .then(async (data) =>
@@ -40,6 +43,42 @@ const starboard = (auxdibot: Auxdibot, router: Router) => {
             });
       },
    );
+
+   router
+      .route('/:serverID/starboard/board')
+      .post(
+         (req, res, next) => checkAuthenticated(req, res, next),
+         (req, res, next) => checkGuildOwnership(auxdibot, req, res, next),
+         (req, res) => {
+            const board_name = req.body['board_name'];
+            const channelID = req.body['channelID'];
+            const reaction = req.body['reaction'];
+            const count = req.body['reaction_count'];
+            if (!board_name || typeof board_name != 'string')
+               return res.status(400).json({ error: 'This is not a valid starboard board name!' });
+            return createStarboard(auxdibot, req.guild, req.user, {
+               board_name,
+               channelID,
+               reaction,
+               count,
+               star_levels: reaction == '⭐' ? defaultStarLevels : [],
+            }).catch((x) => {
+               return res.status(500).json({ error: typeof x.message == 'string' ? x.message : 'an error occurred' });
+            });
+         },
+      )
+      .delete(
+         (req, res, next) => checkAuthenticated(req, res, next),
+         (req, res, next) => checkGuildOwnership(auxdibot, req, res, next),
+         (req, res) => {
+            const board_name = req.body['board_name'];
+            if (!board_name || typeof board_name != 'string')
+               return res.status(400).json({ error: 'This is not a valid starboard board name!' });
+            return deleteStarboard(auxdibot, req.guild, req.user, board_name).catch((x) => {
+               return res.status(500).json({ error: typeof x.message == 'string' ? x.message : 'an error occurred' });
+            });
+         },
+      );
    router.post(
       '/:serverID/starboard/channel',
       (req, res, next) => checkAuthenticated(req, res, next),
@@ -96,6 +135,32 @@ const starboard = (auxdibot: Auxdibot, router: Router) => {
             .catch((x) => {
                console.error(x);
                return res.status(500).json({ error: 'an error occurred' });
+            });
+      },
+   );
+   router.post(
+      '/:serverID/starboard/self_star',
+      (req, res, next) => checkAuthenticated(req, res, next),
+      (req, res, next) => checkGuildOwnership(auxdibot, req, res, next),
+      (req, res) => {
+         return setStarboardSelfStar(auxdibot, req.guild, req.user)
+            .then((i) => res.json({ data: i }))
+            .catch((x) => {
+               console.error(x);
+               return res.status(500).json({ error: typeof x.message == 'string' ? x.message : 'an error occurred' });
+            });
+      },
+   );
+   router.post(
+      '/:serverID/starboard/starboard_star',
+      (req, res, next) => checkAuthenticated(req, res, next),
+      (req, res, next) => checkGuildOwnership(auxdibot, req, res, next),
+      (req, res) => {
+         return setStarboardStarring(auxdibot, req.guild, req.user)
+            .then((i) => res.json({ data: i }))
+            .catch((x) => {
+               console.error(x);
+               return res.status(500).json({ error: typeof x.message == 'string' ? x.message : 'an error occurred' });
             });
       },
    );
