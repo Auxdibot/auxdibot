@@ -5,6 +5,7 @@ import deleteSuggestion from '@/modules/features/suggestions/deleteSuggestion';
 import { Log, LogAction } from '@prisma/client';
 import handleLog from '@/util/handleLog';
 import removeReactionRole from '@/modules/features/roles/reaction_roles/removeReactionRole';
+import deleteStarredMessage from '@/modules/features/starboard/messages/deleteStarredMessage';
 export default async function messageDelete(auxdibot: Auxdibot, message: Message<boolean> | PartialMessage) {
    const sender = message.member;
    // weird bandaid for checking if it's the bot deleting messages
@@ -27,10 +28,7 @@ export default async function messageDelete(auxdibot: Auxdibot, message: Message
    }
 
    const suggestion = server.suggestions.find((suggestion) => suggestion.messageID == message.id);
-   const starboard = server.starred_messages.find(
-      (starred_message) =>
-         starred_message.starboard_message_id == message.id || starred_message.starred_message_id == message.id,
-   );
+
    if (suggestion) {
       await deleteSuggestion(auxdibot, message.guild.id, suggestion.suggestionID);
       await handleLog(auxdibot, message.guild, <Log>{
@@ -41,25 +39,10 @@ export default async function messageDelete(auxdibot: Auxdibot, message: Message
       });
    }
 
-   if (starboard) {
-      server.starred_messages.splice(server.starred_messages.indexOf(starboard), 1);
-      const starboard_channel = message.guild.channels.cache.get(server.starboard_channel);
-      const starboard_message =
-         starboard_channel && starboard_channel.isTextBased()
-            ? starboard_channel.messages.cache.get(starboard.starboard_message_id)
-            : undefined;
-      if (starboard_message && starboard_message.deletable)
-         await starboard_message.delete().catch((x) => console.log(x));
-      await auxdibot.database.servers.update({
-         where: { serverID: message.guild.id },
-         data: { starred_messages: server.starred_messages },
-      });
-      await handleLog(auxdibot, message.guild, <Log>{
-         type: LogAction.STARBOARD_MESSAGE_DELETED,
-         date_unix: Date.now(),
-         description: `Deleted a starred message${message ? ` in ${message.channel?.toString() || 'a channel'}` : ''}.`,
-         userID: message?.member?.id ?? auxdibot.user.id,
-      });
+   for (const starboard of server.starred_messages.filter(
+      (i) => i.starred_message_id == message.id || i.starboard_message_id == message.id,
+   )) {
+      deleteStarredMessage(auxdibot, message.guild, starboard);
    }
    if (!sender || sender?.user.bot || sender?.id == auxdibot.user.id) return;
    await handleLog(

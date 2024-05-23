@@ -54,7 +54,7 @@ export async function starboardReaction(
       : undefined;
 
    if (starred_message && !starboard_message) {
-      await deleteStarredMessage(auxdibot, board, reactionsFetched);
+      await deleteStarredMessage(auxdibot, guild, starred_message);
    }
    const count = await calculateTotalStars(
       auxdibot,
@@ -66,9 +66,10 @@ export async function starboardReaction(
          board: board.board_name,
       },
    );
+
    if (count < board.count) {
-      if (starboard_message) {
-         await deleteStarredMessage(auxdibot, board, reactionsFetched);
+      if (starboard_message && starred_message) {
+         await deleteStarredMessage(auxdibot, guild, starred_message);
       }
       return;
    }

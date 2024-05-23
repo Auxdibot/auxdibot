@@ -1,3 +1,4 @@
+import { defaultStarLevels } from '@/constants/database/defaultStarLevels';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import handleLog from '@/util/handleLog';
@@ -20,6 +21,9 @@ export default async function setStarboardReaction(
    if (!emoji) throw new Error('This is not a valid emoji!');
 
    board.reaction = emoji.valueOf();
+   if (emoji == '⭐') board.star_levels = defaultStarLevels;
+   else board.star_levels = [];
+
    return auxdibot.database.servers
       .update({
          where: { serverID: guild.id },

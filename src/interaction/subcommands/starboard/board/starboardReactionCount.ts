@@ -9,6 +9,7 @@ import { EmbedBuilder } from '@discordjs/builders';
 
 export const starboardReactionCount = <AuxdibotSubcommand>{
    name: 'reaction_count',
+   group: 'board',
    info: {
       module: Modules['Starboard'],
       description: 'Set the starboard reaction count for this server.',
@@ -23,7 +24,7 @@ export const starboardReactionCount = <AuxdibotSubcommand>{
          .then(async () => {
             const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.title = '⚙️ Starboard Reaction Count Changed';
-            embed.description = `Set ${reaction_count} as the reaction count for the \`${boardName}\` board.`;
+            embed.description = `Updated the reaction count for the \`${boardName}\` board to ${reaction_count}.`;
             return await auxdibot.createReply(interaction, { embeds: [embed] });
          })
          .catch((x) => {

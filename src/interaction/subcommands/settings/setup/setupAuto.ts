@@ -1,4 +1,5 @@
 import Modules from '@/constants/bot/commands/Modules';
+import { defaultStarLevels } from '@/constants/database/defaultStarLevels';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
@@ -117,7 +118,19 @@ export const setupAuto = <AuxdibotSubcommand>{
                reports_channel: reportsChannel?.id,
                suggestions_channel: suggestionsChannel?.id,
                suggestions_updates_channel: suggestionsUpdateChannel?.id,
-               starboard_channel: starboardChannel?.id,
+               starboard_boards: !server.disabled_modules.includes('Starboard')
+                  ? {
+                       set: [
+                          {
+                             channelID: starboardChannel?.id,
+                             board_name: 'starboard',
+                             star_levels: defaultStarLevels,
+                             reaction: '⭐',
+                             count: 5,
+                          },
+                       ],
+                    }
+                  : undefined,
                mute_role: muteRole?.id,
                automod_attachments_limit: { messages: 5, duration: 15000 },
                automod_invites_limit: { messages: 3, duration: 15000 },
@@ -144,7 +157,7 @@ export const setupAuto = <AuxdibotSubcommand>{
             suggestionsUpdateChannel ? `✅ ${suggestionsUpdateChannel}` : '❌'
          }\n\nStarboard Channel: ${
             starboardChannel ? `✅ ${starboardChannel}` : '❌'
-         }\n\nAutomod has been configured with a basic suite of settings for you. You will need to provide blacklisted phrases with \`/moderation blacklist add (phrase)\` and roles exempt to automod with \`/moderation exceptions add (role)\``;
+         }\n\nAutomod has been configured with a basic suite of settings for you. You will need to provide blacklisted phrases with \`/moderation blacklist add (phrase)\` and roles exempt to AutoMod       with \`/moderation exceptions add (role)\``;
          return await interaction.editReply({ embeds: [embed] });
       } catch (x) {
          handleError(
