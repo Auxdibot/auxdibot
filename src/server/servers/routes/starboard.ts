@@ -45,7 +45,7 @@ const starboard = (auxdibot: Auxdibot, router: Router) => {
    );
 
    router
-      .route('/:serverID/starboard/board')
+      .route('/:serverID/starboard/boards')
       .post(
          (req, res, next) => checkAuthenticated(req, res, next),
          (req, res, next) => checkGuildOwnership(auxdibot, req, res, next),
@@ -60,11 +60,15 @@ const starboard = (auxdibot: Auxdibot, router: Router) => {
                board_name,
                channelID,
                reaction,
-               count,
+               count: Number(count),
                star_levels: reaction == '⭐' ? defaultStarLevels : [],
-            }).catch((x) => {
-               return res.status(500).json({ error: typeof x.message == 'string' ? x.message : 'an error occurred' });
-            });
+            })
+               .then((data) => res.json({ data }))
+               .catch((x) => {
+                  return res
+                     .status(500)
+                     .json({ error: typeof x.message == 'string' ? x.message : 'an error occurred' });
+               });
          },
       )
       .delete(
@@ -74,9 +78,13 @@ const starboard = (auxdibot: Auxdibot, router: Router) => {
             const board_name = req.body['board_name'];
             if (!board_name || typeof board_name != 'string')
                return res.status(400).json({ error: 'This is not a valid starboard board name!' });
-            return deleteStarboard(auxdibot, req.guild, req.user, board_name).catch((x) => {
-               return res.status(500).json({ error: typeof x.message == 'string' ? x.message : 'an error occurred' });
-            });
+            return deleteStarboard(auxdibot, req.guild, req.user, board_name)
+               .then((data) => res.json({ data }))
+               .catch((x) => {
+                  return res
+                     .status(500)
+                     .json({ error: typeof x.message == 'string' ? x.message : 'an error occurred' });
+               });
          },
       );
    router.post(

@@ -1,29 +1,40 @@
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
-import { StarboardBoardData } from '@prisma/client';
-import { GuildBasedChannel, MessageReaction, PartialMessageReaction } from 'discord.js';
+import handleLog from '@/util/handleLog';
+import { Log, LogAction, StarredMessage } from '@prisma/client';
+import { Guild, GuildBasedChannel } from 'discord.js';
 
-export default async function deleteStarredMessage(
-   auxdibot: Auxdibot,
-   board: StarboardBoardData,
-   messageReaction: MessageReaction | PartialMessageReaction,
-) {
-   const server = await findOrCreateServer(auxdibot, messageReaction.message.guild.id);
-   const starred = server.starred_messages.find(
-      (i) => i.starred_message_id == messageReaction.message.id && i.board == board.board_name,
-   );
-   if (!starred) return;
-   const starboard_channel: GuildBasedChannel | undefined = await messageReaction.message.guild.channels
+export default async function deleteStarredMessage(auxdibot: Auxdibot, guild: Guild, starredData: StarredMessage) {
+   const server = await findOrCreateServer(auxdibot, guild.id);
+   const board = server.starboard_boards.find((board) => board.board_name == starredData.board);
+   if (!board) return;
+   const starboard_channel: GuildBasedChannel | undefined = await guild.channels
       .fetch(board.channelID)
       .catch(() => undefined);
    if (!starboard_channel || !starboard_channel.isTextBased()) return;
-   const message = await starboard_channel.messages.fetch(starred?.starboard_message_id).catch(() => undefined);
+   const message = await starboard_channel.messages.fetch(starredData?.starboard_message_id).catch(() => undefined);
    try {
       if (message) await message.delete();
-      server.starred_messages.splice(server.starred_messages.indexOf(starred), 1);
+      console.log(
+         server.starred_messages.findIndex(
+            (i) => starredData.board == i.board && starredData.starred_message_id == i.starred_message_id,
+         ),
+      );
+      server.starred_messages.splice(
+         server.starred_messages.findIndex(
+            (i) => starredData.board == i.board && starredData.starred_message_id == i.starred_message_id,
+         ),
+         1,
+      );
       await auxdibot.database.servers.update({
-         where: { serverID: messageReaction.message.guild.id },
+         where: { serverID: guild.id },
          data: { starred_messages: server.starred_messages },
+      });
+      await handleLog(auxdibot, guild, <Log>{
+         type: LogAction.STARBOARD_MESSAGE_DELETED,
+         date_unix: Date.now(),
+         description: `Deleted a starred message in the starboard \`${starredData.board}\`.`,
+         userID: message?.member?.id ?? auxdibot.user.id,
       });
    } catch (x) {
       console.error(x);
