@@ -350,9 +350,9 @@ model servers {
   starboard_star                    Boolean              @default(true)
   starred_messages                  StarredMessage[]
   // deprecated, replaced with StarboardBoardData
-  starboard_channel                 String?
-  starboard_reaction                String?              @default("⭐")
-  starboard_reaction_count          Int?                 @default(5)
+  old_starboard_channel             String?              @map("starboard_channel")
+  old_starboard_reaction            String?              @map("starboard_reaction")
+  old_starboard_reaction_count      Int?                 @map("starboard_reaction_count")
   // deprecated, replaced with StarboardBoardData
   total_starred_messages            Int                  @default(0)
   total_stars                       Int                  @default(0)
