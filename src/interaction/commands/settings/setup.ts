@@ -3,6 +3,7 @@ import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import dotenv from 'dotenv';
 import Modules from '@/constants/bot/commands/Modules';
 import { setupAuto } from '@/interaction/subcommands/settings/setup/setupAuto';
+import { setupStarboard } from '@/interaction/subcommands/settings/setup/setupStarboard';
 dotenv.config();
 export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -14,13 +15,18 @@ export default <AuxdibotCommand>{
             .setDescription(
                'Auxdibot will be automatically configured, creating channels & roles for all enabled features.',
             ),
+      )
+      .addSubcommand((builder) =>
+         builder
+            .setName('starboard')
+            .setDescription('Auxdibot will be automatically configure a starboard for your server.'),
       ),
    info: {
       module: Modules['Settings'],
       description: "Setup one or all of Auxdibot's features.",
-      usageExample: '/setup (auto)',
+      usageExample: '/setup (auto|starboard)',
    },
-   subcommands: [setupAuto],
+   subcommands: [setupAuto, setupStarboard],
    async execute() {
       return;
    },
