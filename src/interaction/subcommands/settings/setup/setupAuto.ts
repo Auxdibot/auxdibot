@@ -4,6 +4,7 @@ import { Auxdibot } from '@/interfaces/Auxdibot';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
+import createStarboard from '@/modules/features/starboard/boards/createStarboard';
 import handleError from '@/util/handleError';
 import { PunishmentType } from '@prisma/client';
 import { ChannelType, EmbedBuilder } from 'discord.js';
@@ -85,6 +86,14 @@ export const setupAuto = <AuxdibotSubcommand>{
                })
                .catch(() => undefined);
          }
+         if (!server.disabled_modules.includes('Starboard'))
+            await createStarboard(auxdibot, interaction.guild, interaction.user, {
+               board_name: 'starboard',
+               star_levels: defaultStarLevels,
+               channelID: starboardChannel?.id,
+               count: 5,
+               reaction: '⭐',
+            });
          let muteRole = undefined;
          let reportsChannel = undefined;
          if (!server.disabled_modules.includes('Moderation')) {
@@ -118,19 +127,6 @@ export const setupAuto = <AuxdibotSubcommand>{
                reports_channel: reportsChannel?.id,
                suggestions_channel: suggestionsChannel?.id,
                suggestions_updates_channel: suggestionsUpdateChannel?.id,
-               starboard_boards: !server.disabled_modules.includes('Starboard')
-                  ? {
-                       set: [
-                          {
-                             channelID: starboardChannel?.id,
-                             board_name: 'starboard',
-                             star_levels: defaultStarLevels,
-                             reaction: '⭐',
-                             count: 5,
-                          },
-                       ],
-                    }
-                  : undefined,
                mute_role: muteRole?.id,
                automod_attachments_limit: { messages: 5, duration: 15000 },
                automod_invites_limit: { messages: 3, duration: 15000 },
@@ -163,7 +159,7 @@ export const setupAuto = <AuxdibotSubcommand>{
          handleError(
             auxdibot,
             'SERVER_SETUP_FAILURE',
-            'The server setup failed! This may be possible due to several reasons\n\n* A channel with the name of a channel Auxdibot tried to create already exists\n* A role with the name of a role Auxdibot tried to create already exists\n* An error occurred because of Auxdibot not having permission\n',
+            'The server setup failed! This may be possible due to several reasons\n\n* A channel with the name of a channel Auxdibot tried to create already exists\n* A starboard already exists with the name "starboard"\n* A role with the name of a role Auxdibot tried to create already exists\n* An error occurred because of Auxdibot not having permission\n',
             interaction,
          );
       }
