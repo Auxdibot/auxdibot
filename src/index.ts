@@ -20,6 +20,7 @@ import Subscriber from './modules/features/notifications/Subscriber';
 import createSubscribers from './modules/features/notifications/createSubscribers';
 import { createReply } from './util/createReply';
 import { migrateData } from './util/migrateData';
+import scheduleStarboardTimeoutClear from './modules/features/starboard/scheduleStarboardTimeoutClear';
 
 const TOKEN = process.env.DISCORD_BOT_TOKEN;
 const CLIENT_ID = process.env.DISCORD_BOT_CLIENT_ID;
@@ -61,6 +62,7 @@ const CLIENT_ID = process.env.DISCORD_BOT_CLIENT_ID;
    auxdibot.spam_detections = new Collection();
    auxdibot.invites_detections = new Collection();
    auxdibot.attachments_detections = new Collection();
+   auxdibot.starboard_timeout = new Collection();
    auxdibot.scheduler = new ToadScheduler();
    auxdibot.subscriber = new Subscriber();
    auxdibot.colors = {
@@ -149,6 +151,7 @@ const CLIENT_ID = process.env.DISCORD_BOT_CLIENT_ID;
    scheduleRunSchedules(auxdibot);
    scheduleChannelUnlocks(auxdibot);
    scheduleClearMessageCache(auxdibot);
+   scheduleStarboardTimeoutClear(auxdibot);
    auxdibot.subscriber.twitchInit().then(() => createSubscribers(auxdibot));
 
    console.log('-> Logging into client...');
