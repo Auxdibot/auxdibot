@@ -72,7 +72,10 @@ export interface Auxdibot extends Client {
     * Collection of invites detections in Auxdibot.
     */
    invites_detections: Collection<[string, bigint], Collection<bigint, CachedMessage>>;
-
+   /**
+    * Collection of starboard timeouts in Auxdibot.
+    */
+   starboard_timeout: Collection<string, number>;
    /**
     * Subscriber for handling notifications in Auxdibot.
     */

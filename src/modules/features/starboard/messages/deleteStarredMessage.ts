@@ -14,12 +14,15 @@ export default async function deleteStarredMessage(auxdibot: Auxdibot, guild: Gu
    if (!starboard_channel || !starboard_channel.isTextBased()) return;
    const message = await starboard_channel.messages.fetch(starredData?.starboard_message_id).catch(() => undefined);
    try {
-      if (message) await message.delete();
-      console.log(
-         server.starred_messages.findIndex(
-            (i) => starredData.board == i.board && starredData.starred_message_id == i.starred_message_id,
-         ),
-      );
+      if (message)
+         await message.delete().then(async () => {
+            await handleLog(auxdibot, guild, <Log>{
+               type: LogAction.STARBOARD_MESSAGE_DELETED,
+               date_unix: Date.now(),
+               description: `Deleted a starred message in the starboard \`${starredData.board}\`.`,
+               userID: message?.member?.id ?? auxdibot.user.id,
+            });
+         });
       server.starred_messages.splice(
          server.starred_messages.findIndex(
             (i) => starredData.board == i.board && starredData.starred_message_id == i.starred_message_id,
@@ -29,12 +32,6 @@ export default async function deleteStarredMessage(auxdibot: Auxdibot, guild: Gu
       await auxdibot.database.servers.update({
          where: { serverID: guild.id },
          data: { starred_messages: server.starred_messages },
-      });
-      await handleLog(auxdibot, guild, <Log>{
-         type: LogAction.STARBOARD_MESSAGE_DELETED,
-         date_unix: Date.now(),
-         description: `Deleted a starred message in the starboard \`${starredData.board}\`.`,
-         userID: message?.member?.id ?? auxdibot.user.id,
       });
    } catch (x) {
       console.error(x);

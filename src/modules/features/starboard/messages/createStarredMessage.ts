@@ -16,11 +16,17 @@ export default async function createStarredMessage(
    count: number,
 ) {
    const server = await findOrCreateServer(auxdibot, guild.id);
+   if (
+      server &&
+      server.starred_messages.find((i) => i.starred_message_id == starredMessage.id && board.board_name == i.board)
+   )
+      return;
    const starboard_channel = guild.channels.cache.get(board.channelID);
    if (!starboard_channel || !starboard_channel.isTextBased()) return;
    const starLevelsSorted = board.star_levels.sort((a, b) => b.stars - a.stars);
    const starLevel = starLevelsSorted.find((i) => count >= board.count * i.stars) ??
       starLevelsSorted[0] ?? { ...defaultStarLevels[defaultStarLevels.length - 1], message_reaction: board.reaction };
+
    try {
       const jsonEmbed = structuredClone(DEFAULT_STARBOARD_MESSAGE_EMBED);
       jsonEmbed.color = starLevel.color;
