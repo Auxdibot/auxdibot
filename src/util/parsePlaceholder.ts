@@ -44,7 +44,7 @@ export default async function parsePlaceholders(
       ? await auxdibot.database.servermembers.findFirst({ where: { serverID: guild.id, userID: member.id } })
       : undefined;
 
-   const board = server.starboard_boards.find((i) => i.board_name == starred_data.board);
+   const board = starred_data && server.starboard_boards.find((i) => i.board_name == starred_data?.board);
    const PLACEHOLDERS: Partial<Record<Placeholders, unknown>> = {
       ...(guild
          ? {
