@@ -12,12 +12,8 @@ import { suggestionsDiscussionThreads } from '../../subcommands/suggestions/sugg
 import { suggestionsBan } from '../../subcommands/suggestions/suggestionsBan';
 import { suggestionsUnban } from '../../subcommands/suggestions/suggestionsUnban';
 import { suggestionsDelete } from '../../subcommands/suggestions/suggestionsDelete';
-import {
-   addSuggestion,
-   approveSuggestion,
-   considerSuggestion,
-   denySuggestion,
-} from '../../subcommands/suggestions/suggestionsStateSubcommands';
+import { suggestionsRespond } from '../../subcommands/suggestions/suggestionsRespond';
+import { SuggestionState } from '@prisma/client';
 
 export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -108,48 +104,30 @@ export default <AuxdibotCommand>{
       )
       .addSubcommand((builder) =>
          builder
-            .setName('approve')
-            .setDescription('Mark a suggestion as approved.')
-            .addNumberOption((argBuilder) =>
-               argBuilder.setName('id').setDescription('The ID of the suggestion.').setRequired(true),
-            )
-            .addStringOption((argBuilder) =>
-               argBuilder.setName('reason').setDescription('The reason you would like to specify for this action.'),
-            ),
+         .setName("respond")
+         .setDescription("Respond to a suggestion submitted by a user.")
+         .addNumberOption((builder) => builder.setName("id").setDescription("The ID of the suggestion to respond to.").setRequired(true))
+         .addStringOption((builder) => builder.setName("response").setDescription("The response type for this suggestion.").addChoices(
+            {
+               name: "➕ Added",
+               value: SuggestionState.ADDED
+            },
+            {
+               name: "✅ Approved",
+               value: SuggestionState.APPROVED
+            },
+            {
+               name: "💭 Considered",
+               value: SuggestionState.CONSIDERED
+            },
+            {
+               name: "❌ Denied",
+               value: SuggestionState.DENIED
+            },
+         ).setRequired(true))
+         .addStringOption((builder) => builder.setName("reason").setDescription("The reason for this response. (Optional)"))
       )
-      .addSubcommand((builder) =>
-         builder
-            .setName('deny')
-            .setDescription('Mark a suggestion as denied.')
-            .addNumberOption((argBuilder) =>
-               argBuilder.setName('id').setDescription('The ID of the suggestion.').setRequired(true),
-            )
-            .addStringOption((argBuilder) =>
-               argBuilder.setName('reason').setDescription('The reason you would like to specify for this action.'),
-            ),
-      )
-      .addSubcommand((builder) =>
-         builder
-            .setName('consider')
-            .setDescription('Mark a suggestion as considered.')
-            .addNumberOption((argBuilder) =>
-               argBuilder.setName('id').setDescription('The ID of the suggestion.').setRequired(true),
-            )
-            .addStringOption((argBuilder) =>
-               argBuilder.setName('reason').setDescription('The reason you would like to specify for this action.'),
-            ),
-      )
-      .addSubcommand((builder) =>
-         builder
-            .setName('add')
-            .setDescription('Mark a suggestion as added.')
-            .addNumberOption((argBuilder) =>
-               argBuilder.setName('id').setDescription('The ID of the suggestion.').setRequired(true),
-            )
-            .addStringOption((argBuilder) =>
-               argBuilder.setName('reason').setDescription('The reason you would like to specify for this action.'),
-            ),
-      )
+      
       .addSubcommand((builder) =>
          builder
             .setName('ban')
@@ -178,7 +156,7 @@ export default <AuxdibotCommand>{
       module: Modules['Suggestions'],
       description: 'The main command for handling suggestions on this server.',
       usageExample:
-         '/suggestions (create|channel|updates_channel|auto_delete|discussion_threads|reactions|remove_reaction|add_reaction|approve|deny|consider|add|ban|unban|delete)',
+         '/suggestions (create|channel|updates_channel|auto_delete|discussion_threads|reactions|remove_reaction|add_reaction|respond|ban|unban|delete)',
    },
    subcommands: [
       suggestionsCreate,
@@ -192,10 +170,7 @@ export default <AuxdibotCommand>{
       suggestionsBan,
       suggestionsUnban,
       suggestionsDelete,
-      approveSuggestion,
-      denySuggestion,
-      considerSuggestion,
-      addSuggestion,
+      suggestionsRespond,
    ],
    async execute() {
       return;
