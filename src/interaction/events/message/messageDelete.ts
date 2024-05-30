@@ -45,19 +45,20 @@ export default async function messageDelete(auxdibot: Auxdibot, message: Message
       deleteStarredMessage(auxdibot, message.guild, starboard);
    }
    if (!sender || sender?.user.bot || sender?.id == auxdibot.user.id) return;
+   const channel = await message.channel.fetch().catch(() => undefined);
    await handleLog(
       auxdibot,
       message.guild,
       <Log>{
-         type: LogAction.MESSAGE_EDITED,
+         type: LogAction.MESSAGE_DELETED,
          date_unix: Date.now(),
-         description: `A message by ${sender?.user?.username ?? auxdibot.user.username} was deleted.`,
+         description: `A message by ${sender?.user?.username ?? auxdibot.user.username} in #${channel?.name ?? message.channel} was deleted.`,
          userID: message?.member?.id ?? auxdibot.user.id,
       },
       [
          {
             name: 'Deleted Message',
-            value: `Deleted Content: \n\`\`\`${message.cleanContent}\`\`\``,
+            value: `Author: ${message.author}\nChannel: ${message.channel}\n\n**Deleted Content** \n\`\`\`${message.cleanContent}\`\`\``,
             inline: false,
          },
       ],
