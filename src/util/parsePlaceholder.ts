@@ -147,7 +147,7 @@ export default async function parsePlaceholders(
               [Placeholders.SUGGESTION_STATE]: SuggestionStateName[suggestion.status],
               [Placeholders.SUGGESTION_HANDLER_MENTION]: suggestion.handlerID ? `<@${suggestion.handlerID}>` : 'None',
               [Placeholders.SUGGESTION_HANDLED_REASON]: suggestion.handled_reason || 'No reason given.',
-              [Placeholders.SUGGESTION_CONTENT]: suggestion.content.replaceAll(/"/g, '\\"').replaceAll(/\\/g, '\\\\'),
+              [Placeholders.SUGGESTION_CONTENT]: suggestion.content.replaceAll(/\\/g, '\\\\').replaceAll(/"/g, '\\"'),
               [Placeholders.SUGGESTION_DATE]: new Date(suggestion.date_unix).toDateString(),
               [Placeholders.SUGGESTION_DATE_FORMATTED]: `<t:${Math.round(suggestion.date_unix / 1000)}>`,
 
@@ -159,8 +159,8 @@ export default async function parsePlaceholders(
          ? {
               [Placeholders.STARBOARD_MESSAGE_ID]: starred_message.id,
               [Placeholders.STARBOARD_MESSAGE_CONTENT]: starred_message.content
-                 .replaceAll(/"/g, '\\"')
-                 .replaceAll(/\\/g, '\\\\'),
+                 .replaceAll(/\\/g, '\\\\')
+                 .replaceAll(/"/g, '\\"'),
               [Placeholders.STARBOARD_MESSAGE_STARS]: await calculateTotalStars(
                  auxdibot,
                  guild,
@@ -179,7 +179,7 @@ export default async function parsePlaceholders(
       ...(feed_data
          ? {
               [Placeholders.FEED_TITLE]: feed_data.title ?? '',
-              [Placeholders.FEED_CONTENT]: feed_data.content ?? '',
+              [Placeholders.FEED_CONTENT]: feed_data.content.replaceAll(/\\/g, '\\\\').replaceAll(/"/g, '\\"') ?? '',
               [Placeholders.FEED_LINK]: feed_data.link ?? '',
               [Placeholders.FEED_AUTHOR]: feed_data.author ?? '',
               [Placeholders.FEED_DATE]: new Date(feed_data.date).toDateString(),
