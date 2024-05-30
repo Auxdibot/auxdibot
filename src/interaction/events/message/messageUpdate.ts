@@ -17,6 +17,31 @@ export default async function messageUpdate(
    const server = await findOrCreateServer(auxdibot, newMessage.guildId);
 
    /*
+   Message Log
+   */
+   console.log(oldMessage);
+   if (oldMessage.content != newMessage.content) {
+      const channel = await newMessage.channel.fetch().catch(() => undefined)
+      await handleLog(
+         auxdibot,
+         newMessage.guild,
+         <Log>{
+            type: LogAction.MESSAGE_EDITED,
+            date_unix: Date.now(),
+            description: `A message by ${sender.user.username} in #${channel?.name ?? newMessage.channel} was edited.`,
+            userID: sender.id,
+         },
+         [
+            {
+               name: 'Edited Message',
+               value: `Author: ${newMessage.author}\nChannel: ${newMessage.channel} ([Original Message](https://discord.com/channels/${newMessage.guildId}/${newMessage.channelId}/${newMessage.id}))${oldMessage.content ? `\n\n**Old Message** \n\`\`\`${oldMessage.content}\`\`\`` : ""}\n\n**New Message** \n\`\`\`${newMessage.cleanContent}\`\`\``,
+               inline: false,
+            },
+         ],
+      );
+   }
+
+   /*
    Automod
    */
 
@@ -26,26 +51,6 @@ export default async function messageUpdate(
          checkBlacklistedWords(auxdibot, server, message);
       }
       
-   }
-   const oldContent = await oldMessage.fetch();
-   if (oldContent.content && oldContent.content != newMessage.content) {
-      await handleLog(
-         auxdibot,
-         newMessage.guild,
-         <Log>{
-            type: LogAction.MESSAGE_EDITED,
-            date_unix: Date.now(),
-            description: `A message by ${sender.user.username} was edited.`,
-            userID: sender.id,
-         },
-         [
-            {
-               name: 'Edited Message',
-               value: `Old: \n\`\`\`${oldContent.cleanContent}\`\`\`\n\nNew: \n\`\`\`${newMessage.cleanContent}\`\`\``,
-               inline: false,
-            },
-         ],
-      );
    }
    return;
 }
