@@ -7,7 +7,7 @@ export default async function updateSuggestion(auxdibot: Auxdibot, serverID: str
    const findSuggestion = server.suggestions.find((i) => i.suggestionID == suggestion.suggestionID);
    if (!findSuggestion) return undefined;
    server.suggestions[server.suggestions.indexOf(findSuggestion)] = suggestion;
-   
+
    return await auxdibot.database.servers
       .update({ where: { serverID }, data: { suggestions: server.suggestions } })
       .then(() => suggestion)
