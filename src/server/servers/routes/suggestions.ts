@@ -34,7 +34,10 @@ const suggestions = (auxdibot: Auxdibot, router: Router) => {
             .then(async (data) =>
                data
                   ? res.json({
-                       data,
+                       data: {
+                        ...data,
+                        suggestions: data.suggestions.map((i) => ({ ...i, date_unix: Number(i.date_unix) }))
+                       },
                     })
                   : res.status(404).json({ error: "couldn't find that server" }),
             )
