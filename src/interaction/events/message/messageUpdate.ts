@@ -21,7 +21,7 @@ export default async function messageUpdate(
    */
    console.log(oldMessage);
    if (oldMessage.content != newMessage.content) {
-      const channel = await newMessage.channel.fetch().catch(() => undefined)
+      const channel = await newMessage.channel.fetch().catch(() => undefined);
       await handleLog(
          auxdibot,
          newMessage.guild,
@@ -34,7 +34,13 @@ export default async function messageUpdate(
          [
             {
                name: 'Edited Message',
-               value: `Author: ${newMessage.author}\nChannel: ${newMessage.channel} ([Original Message](https://discord.com/channels/${newMessage.guildId}/${newMessage.channelId}/${newMessage.id}))${oldMessage.content ? `\n\n**Old Message** \n\`\`\`${oldMessage.content}\`\`\`` : ""}\n\n**New Message** \n\`\`\`${newMessage.cleanContent}\`\`\``,
+               value: `Author: ${newMessage.author}\nChannel: ${
+                  newMessage.channel
+               } ([Original Message](https://discord.com/channels/${newMessage.guildId}/${newMessage.channelId}/${
+                  newMessage.id
+               }))${
+                  oldMessage.content ? `\n\n**Old Message** \n\`\`\`${oldMessage.content}\`\`\`` : ''
+               }\n\n**New Message** \n\`\`\`${newMessage.cleanContent}\`\`\``,
                inline: false,
             },
          ],
@@ -50,7 +56,6 @@ export default async function messageUpdate(
       if (message) {
          checkBlacklistedWords(auxdibot, server, message);
       }
-      
    }
    return;
 }

@@ -6,8 +6,12 @@ export const promoRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
       .setStyle(5)
       .setLabel('Invite')
       .setEmoji(CustomEmojis.INVITE)
-      .setURL(process.env.DISCORD_INVITE_LINK ?? process.env.BOT_HOMEPAGE ?? "https://bot.auxdible.me"),
-   new ButtonBuilder().setStyle(5).setLabel('Website').setEmoji(CustomEmojis.LINK).setURL(process.env.BOT_HOMEPAGE ?? "https://bot.auxdible.me"),
+      .setURL(process.env.DISCORD_INVITE_LINK ?? process.env.BOT_HOMEPAGE ?? 'https://bot.auxdible.me'),
+   new ButtonBuilder()
+      .setStyle(5)
+      .setLabel('Website')
+      .setEmoji(CustomEmojis.LINK)
+      .setURL(process.env.BOT_HOMEPAGE ?? 'https://bot.auxdible.me'),
    new ButtonBuilder()
       .setStyle(5)
       .setLabel('Support Server')

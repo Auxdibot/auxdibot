@@ -52,7 +52,9 @@ export default async function messageDelete(auxdibot: Auxdibot, message: Message
       <Log>{
          type: LogAction.MESSAGE_DELETED,
          date_unix: Date.now(),
-         description: `A message by ${sender?.user?.username ?? auxdibot.user.username} in #${channel?.name ?? message.channel} was deleted.`,
+         description: `A message by ${sender?.user?.username ?? auxdibot.user.username} in #${
+            channel?.name ?? message.channel
+         } was deleted.`,
          userID: message?.member?.id ?? auxdibot.user.id,
       },
       [
