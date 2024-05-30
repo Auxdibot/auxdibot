@@ -104,30 +104,40 @@ export default <AuxdibotCommand>{
       )
       .addSubcommand((builder) =>
          builder
-         .setName("respond")
-         .setDescription("Respond to a suggestion submitted by a user.")
-         .addNumberOption((builder) => builder.setName("id").setDescription("The ID of the suggestion to respond to.").setRequired(true))
-         .addStringOption((builder) => builder.setName("response").setDescription("The response type for this suggestion.").addChoices(
-            {
-               name: "➕ Added",
-               value: SuggestionState.ADDED
-            },
-            {
-               name: "✅ Approved",
-               value: SuggestionState.APPROVED
-            },
-            {
-               name: "💭 Considered",
-               value: SuggestionState.CONSIDERED
-            },
-            {
-               name: "❌ Denied",
-               value: SuggestionState.DENIED
-            },
-         ).setRequired(true))
-         .addStringOption((builder) => builder.setName("reason").setDescription("The reason for this response. (Optional)"))
+            .setName('respond')
+            .setDescription('Respond to a suggestion submitted by a user.')
+            .addNumberOption((builder) =>
+               builder.setName('id').setDescription('The ID of the suggestion to respond to.').setRequired(true),
+            )
+            .addStringOption((builder) =>
+               builder
+                  .setName('response')
+                  .setDescription('The response type for this suggestion.')
+                  .addChoices(
+                     {
+                        name: '➕ Added',
+                        value: SuggestionState.ADDED,
+                     },
+                     {
+                        name: '✅ Approved',
+                        value: SuggestionState.APPROVED,
+                     },
+                     {
+                        name: '💭 Considered',
+                        value: SuggestionState.CONSIDERED,
+                     },
+                     {
+                        name: '❌ Denied',
+                        value: SuggestionState.DENIED,
+                     },
+                  )
+                  .setRequired(true),
+            )
+            .addStringOption((builder) =>
+               builder.setName('reason').setDescription('The reason for this response. (Optional)'),
+            ),
       )
-      
+
       .addSubcommand((builder) =>
          builder
             .setName('ban')
