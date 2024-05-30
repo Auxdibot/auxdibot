@@ -3,6 +3,8 @@ import { Message, PartialMessage } from 'discord.js';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import handleLog from '@/util/handleLog';
 import { Log, LogAction } from '@prisma/client';
+import checkBlacklistedWords from '@/modules/features/moderation/automod/checkBlacklistedWords';
+import findOrCreateServer from '@/modules/server/findOrCreateServer';
 
 export default async function messageUpdate(
    auxdibot: Auxdibot,
@@ -12,6 +14,19 @@ export default async function messageUpdate(
    const sender = newMessage.member;
    if (!sender || sender.user.bot || !newMessage.guild) return;
    if (newMessage.member && newMessage.member.user.id == newMessage.client.user.id) return;
+   const server = await findOrCreateServer(auxdibot, newMessage.guildId);
+
+   /*
+   Automod
+   */
+
+   if (!server.automod_role_exceptions.some((i) => newMessage.member.roles.cache.has(i))) {
+      const message = await newMessage.fetch().catch(() => undefined);
+      if (message) {
+         checkBlacklistedWords(auxdibot, server, message);
+      }
+      
+   }
    const oldContent = await oldMessage.fetch();
    if (oldContent.content && oldContent.content != newMessage.content) {
       await handleLog(
