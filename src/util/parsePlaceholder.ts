@@ -148,11 +148,11 @@ export default async function parsePlaceholders(
               [Placeholders.SUGGESTION_HANDLER_MENTION]: suggestion.handlerID ? `<@${suggestion.handlerID}>` : 'None',
               [Placeholders.SUGGESTION_HANDLED_REASON]: suggestion.handled_reason || 'No reason given.',
               [Placeholders.SUGGESTION_CONTENT]: suggestion.content.replaceAll(/\\/g, '\\\\').replaceAll(/"/g, '\\"'),
-              [Placeholders.SUGGESTION_DATE]: new Date(suggestion.date_unix).toDateString(),
-              [Placeholders.SUGGESTION_DATE_FORMATTED]: `<t:${Math.round(suggestion.date_unix / 1000)}>`,
+              [Placeholders.SUGGESTION_DATE]: new Date(Number(suggestion.date_unix)).toDateString(),
+              [Placeholders.SUGGESTION_DATE_FORMATTED]: `<t:${Math.round(Number(suggestion.date_unix) / 1000)}>`,
 
-              [Placeholders.SUGGESTION_DATE_UTC]: new Date(suggestion.date_unix).toUTCString(),
-              [Placeholders.SUGGESTION_DATE_ISO]: new Date(suggestion.date_unix).toISOString(),
+              [Placeholders.SUGGESTION_DATE_UTC]: new Date(Number(suggestion.date_unix)).toUTCString(),
+              [Placeholders.SUGGESTION_DATE_ISO]: new Date(Number(suggestion.date_unix)).toISOString(),
            }
          : undefined),
       ...(starred_data && starred_message && server

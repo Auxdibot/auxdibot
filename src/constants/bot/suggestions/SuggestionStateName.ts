@@ -3,5 +3,5 @@ export const SuggestionStateName = {
    APPROVED: '✅ Approved',
    DENIED: '❌ Denied',
    CONSIDERED: '💭 Considered',
-   ADDED: '🔨 Added',
+   ADDED: '➕ Added',
 };

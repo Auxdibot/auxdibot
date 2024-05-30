@@ -209,7 +209,7 @@ type Suggestion {
   messageID            String?
   creatorID            String          @default("")
   status               SuggestionState @default(WAITING)
-  date_unix            Int             @default(0)
+  date_unix            BigInt             @default(0)
   content              String          @default("")
   handlerID            String?
   handled_reason       String?
