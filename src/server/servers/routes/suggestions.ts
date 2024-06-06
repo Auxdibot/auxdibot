@@ -1,10 +1,12 @@
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import addSuggestionsReaction from '@/modules/features/suggestions/addSuggestionsReaction';
+import deleteSuggestion from '@/modules/features/suggestions/deleteSuggestion';
 import deleteSuggestionsReaction from '@/modules/features/suggestions/deleteSuggestionsReaction';
 import setSuggestionsAutoDelete from '@/modules/features/suggestions/setSuggestionsAutoDelete';
 import setSuggestionsChannel from '@/modules/features/suggestions/setSuggestionsChannel';
 import setSuggestionsDiscussionThreads from '@/modules/features/suggestions/setSuggestionsDiscussionThreads';
 import setSuggestionsUpdatesChannel from '@/modules/features/suggestions/setSuggestionsUpdatesChannel';
+import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import checkAuthenticated from '@/server/checkAuthenticated';
 import checkGuildOwnership from '@/server/checkGuildOwnership';
 import { Router } from 'express';
@@ -32,18 +34,34 @@ const suggestions = (auxdibot: Auxdibot, router: Router) => {
                },
             })
             .then(async (data) =>
-               data
-                  ? res.json({
-                       data: {
-                        ...data,
-                        suggestions: data.suggestions.map((i) => ({ ...i, date_unix: Number(i.date_unix) }))
-                       },
-                    })
-                  : res.status(404).json({ error: "couldn't find that server" }),
+               data ? res.json(data) : res.status(404).json({ error: "couldn't find that server" }),
             )
             .catch((x) => {
                console.error(x);
                return res.status(500).json({ error: 'an error occurred' });
+            });
+      },
+   );
+   router.delete(
+      '/:serverID/suggestions',
+      (req, res, next) => checkAuthenticated(req, res, next),
+      (req, res, next) => checkGuildOwnership(auxdibot, req, res, next),
+      async (req, res) => {
+         const suggestionID = req.body['id'];
+         if (!Number.isInteger(Number(suggestionID)))
+            return res.status(400).json({ error: 'This is not a valid suggestion ID!' });
+         const server = await findOrCreateServer(auxdibot, req.guild.id);
+         const suggestion = server.suggestions.find((sugg) => sugg.suggestionID == Number(suggestionID));
+         if (!suggestion) return res.status(404).json({ error: 'invalid suggestion' });
+         const channel = req.guild.channels.cache.get(server.suggestions_channel);
+         if (!channel) return res.status(404).json({ error: 'There is no suggestions channel!' });
+         const msg = await channel.messages.fetch(suggestion.messageID).catch(() => undefined);
+         if (msg) await msg.delete().catch(() => undefined);
+         return deleteSuggestion(auxdibot, req.guild.id, Number(suggestionID))
+            .then((i) => res.json({ data: i }))
+            .catch((x) => {
+               console.error(x);
+               return res.status(500).json({ error: typeof x.message == 'string' ? x.message : 'an error occurred' });
             });
       },
    );
