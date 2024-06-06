@@ -57,7 +57,7 @@ export const suggestionsCreate = <AuxdibotSubcommand>{
          messageID: null,
          discussion_thread_id: null,
          handled_reason: null,
-         date_unix: BigInt(Date.now()),
+         date_unix: Date.now(),
       };
       const embed = DEFAULT_SUGGESTION_EMBED;
       const successEmbed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
