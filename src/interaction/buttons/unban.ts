@@ -7,6 +7,7 @@ import { LogAction, PunishmentType } from '@prisma/client';
 import { punishmentInfoField } from '@/modules/features/moderation/punishmentInfoField';
 import handleLog from '@/util/handleLog';
 import handleError from '@/util/handleError';
+import { createUserEmbed } from '@/modules/features/moderation/createUserEmbed';
 
 export default <AuxdibotButton>{
    module: Modules['Moderation'],
@@ -17,7 +18,7 @@ export default <AuxdibotButton>{
       const [, user_id] = interaction.customId.split('-');
       const server = await findOrCreateServer(auxdibot, interaction.guild.id);
       if (!server) return;
-      const banned = server.punishments.find((p) => p.userID == user.id && p.type == PunishmentType.BAN && !p.expired);
+      const banned = server.punishments.find((p) => p.userID == user_id && p.type == PunishmentType.BAN && !p.expired);
       if (!banned) return await handleError(auxdibot, 'USER_NOT_BANNED', "This user isn't banned!", interaction);
 
       const user = interaction.client.users.resolve(user_id);
@@ -27,6 +28,10 @@ export default <AuxdibotButton>{
       await auxdibot.database.servers.update({
          where: { serverID: server.serverID },
          data: { punishments: server.punishments },
+      }).then(async () => {
+         if (interaction.message.editable) {
+               interaction.message.edit(await createUserEmbed(auxdibot, interaction.guild, user_id))    
+         }
       });
       embed.title = `📥 Unbanned ${user ? user.username : `<@${user_id}>`}`;
       embed.description = `User was unbanned.`;

@@ -91,8 +91,7 @@ export default async function createPunishment(
             [punishmentInfoField(punishment, true, true)],
             true,
          );
-         if (interaction && interaction.isRepliable() && !interaction.replied)
-            auxdibot.createReply(interaction, { embeds: [embed] });
+         auxdibot.createReply(interaction, { embeds: [embed] });
          if (punishment.type == PunishmentType.WARN) {
             await auxdibot.database.servermembers
                .update({
