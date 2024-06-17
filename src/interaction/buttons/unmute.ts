@@ -8,6 +8,7 @@ import { LogAction, PunishmentType } from '@prisma/client';
 import { punishmentInfoField } from '@/modules/features/moderation/punishmentInfoField';
 import handleLog from '@/util/handleLog';
 import handleError from '@/util/handleError';
+import { createUserEmbed } from '@/modules/features/moderation/createUserEmbed';
 
 export default <AuxdibotButton>{
    module: Modules['Moderation'],
@@ -52,6 +53,10 @@ export default <AuxdibotButton>{
       await auxdibot.database.servers.update({
          where: { serverID: server.serverID },
          data: { punishments: server.punishments },
+      }).then(async () => {
+         if (interaction.message.editable) {
+               interaction.message.edit(await createUserEmbed(auxdibot, interaction.guild, user_id))    
+         }
       });
       embed.title = `🔊 Unmuted ${user ? user.username : `<@${user_id}>`}`;
       embed.description = `User was unmuted.`;

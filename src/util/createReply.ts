@@ -79,10 +79,15 @@ export async function createReply(
          }
       }
    }
-
-   return interaction.isRepliable() && interaction.deferred
+   try {
+      return interaction.isRepliable() && interaction.deferred
       ? interaction.editReply(data)
       : interaction.isRepliable() && !interaction.replied
       ? interaction.reply(data)
       : interaction.channel.send(new MessagePayload(interaction.channel, data));
+   } catch (x) {
+      console.error("! -> Auxdibot failed to send a message!");
+      console.error(x);
+   }
+   
 }

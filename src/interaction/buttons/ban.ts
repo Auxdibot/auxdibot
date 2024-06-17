@@ -8,6 +8,7 @@ import { Punishment, PunishmentType } from '@prisma/client';
 import incrementPunishmentsTotal from '@/modules/features/moderation/incrementPunishmentsTotal';
 import createPunishment from '@/modules/features/moderation/createPunishment';
 import handleError from '@/util/handleError';
+import { createUserEmbed } from '@/modules/features/moderation/createUserEmbed';
 
 export default <AuxdibotButton>{
    module: Modules['Moderation'],
@@ -40,7 +41,12 @@ export default <AuxdibotButton>{
          moderatorID: interaction.user.id,
          punishmentID: await incrementPunishmentsTotal(auxdibot, interaction.guild.id),
       };
-      await createPunishment(auxdibot, interaction.guild, banData, interaction, member.user).catch(async () => {
+      await createPunishment(auxdibot, interaction.guild, banData, interaction, member.user)
+      .then(async () => {
+         if (interaction.message.editable) {
+               interaction.message.edit(await createUserEmbed(auxdibot, interaction.guild, user_id))    
+         }
+      }).catch(async () => {
          return await handleError(
             auxdibot,
             'FAILED_BAN_USER',
