@@ -12,8 +12,8 @@ export default <AuxdibotButton>{
       const [, user_id] = interaction.customId.split('-');
       await interaction.deferReply({ ephemeral: true });
       if (interaction.message.editable) {
-         interaction.message.edit(await createUserEmbed(auxdibot, interaction.guild, user_id))    
+         interaction.message.edit(await createUserEmbed(auxdibot, interaction.guild, user_id));
       }
-      return await auxdibot.createReply(interaction, { ephemeral: true, content: "Refreshed user data!" });
+      return await auxdibot.createReply(interaction, { ephemeral: true, content: 'Refreshed user data!' });
    },
 };

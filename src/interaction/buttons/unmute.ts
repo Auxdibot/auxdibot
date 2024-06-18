@@ -51,14 +51,16 @@ export default <AuxdibotButton>{
       }
 
       muted.expired = true;
-      await auxdibot.database.servers.update({
-         where: { serverID: server.serverID },
-         data: { punishments: server.punishments },
-      }).then(async () => {
-         if (interaction.message.editable) {
-               interaction.message.edit(await createUserEmbed(auxdibot, interaction.guild, user_id))    
-         }
-      });
+      await auxdibot.database.servers
+         .update({
+            where: { serverID: server.serverID },
+            data: { punishments: server.punishments },
+         })
+         .then(async () => {
+            if (interaction.message.editable) {
+               interaction.message.edit(await createUserEmbed(auxdibot, interaction.guild, user_id));
+            }
+         });
       embed.title = `🔊 Unmuted ${user ? user.username : `<@${user_id}>`}`;
       embed.description = `User was unmuted.`;
       embed.fields = [punishmentInfoField(muted, true, true)];

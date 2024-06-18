@@ -26,14 +26,16 @@ export default <AuxdibotButton>{
       const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
 
       banned.expired = true;
-      await auxdibot.database.servers.update({
-         where: { serverID: server.serverID },
-         data: { punishments: server.punishments },
-      }).then(async () => {
-         if (interaction.message.editable) {
-               interaction.message.edit(await createUserEmbed(auxdibot, interaction.guild, user_id))    
-         }
-      });
+      await auxdibot.database.servers
+         .update({
+            where: { serverID: server.serverID },
+            data: { punishments: server.punishments },
+         })
+         .then(async () => {
+            if (interaction.message.editable) {
+               interaction.message.edit(await createUserEmbed(auxdibot, interaction.guild, user_id));
+            }
+         });
       embed.title = `📥 Unbanned ${user ? user.username : `<@${user_id}>`}`;
       embed.description = `User was unbanned.`;
       embed.fields = [punishmentInfoField(banned, true, true)];
