@@ -23,7 +23,7 @@ services:
             DISCORD_OAUTH2_CALLBACK_URL: ${DISCORD_OAUTH2_CALLBACK_URL}
       image: auxdibot:latest
       env_file:
-        - .env
+         - .env
       restart: always
       networks:
          - auxdibot
@@ -32,5 +32,3 @@ services:
 networks:
    auxdibot:
       external: true
-
-      

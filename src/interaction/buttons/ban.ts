@@ -43,18 +43,19 @@ export default <AuxdibotButton>{
          punishmentID: await incrementPunishmentsTotal(auxdibot, interaction.guild.id),
       };
       await createPunishment(auxdibot, interaction.guild, banData, interaction, member.user)
-      .then(async () => {
-         if (interaction.message.editable) {
-               interaction.message.edit(await createUserEmbed(auxdibot, interaction.guild, user_id))    
-         }
-      }).catch(async () => {
-         return await handleError(
-            auxdibot,
-            'FAILED_BAN_USER',
-            "Couldn't ban that user. Check if they have a higher role than Auxdibot.",
-            interaction,
-         );
-      });
+         .then(async () => {
+            if (interaction.message.editable) {
+               interaction.message.edit(await createUserEmbed(auxdibot, interaction.guild, user_id));
+            }
+         })
+         .catch(async () => {
+            return await handleError(
+               auxdibot,
+               'FAILED_BAN_USER',
+               "Couldn't ban that user. Check if they have a higher role than Auxdibot.",
+               interaction,
+            );
+         });
       return;
    },
 };

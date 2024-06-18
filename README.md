@@ -49,61 +49,59 @@ Auxdibot is a Discord bot project founded and maintained by Auxdible. Auxdibot f
 
 `sample.env` - **Sample .env file, containing all .env parameters that need to be specified for Auxdibot to function properly**
 
-
 ## How to Use
 
 Auxdibot uses Discord's slash command system. If you want to run any command you must prefix it with a `/` and ensure you are running one of Auxdibot's commands.
 
-*Additionally, you can automatically setup Auxdibot for your server using the `/setup auto` command!*
+_Additionally, you can automatically setup Auxdibot for your server using the `/setup auto` command!_
 
 ## Features
 
-`🔨 ` *Moderation*
+`🔨 ` _Moderation_
 
 A moderation suite containing a fleshed out AutoMod system, extensive punishment history, and an ability to manage users on the fly with the /users command.
 
-`🗒️` *Logging*
+`🗒️` _Logging_
 
 An in-depth logging system, auditing every action taken on your Discord server through Auxdibot.
 
-
-`💻` *Embed Creator*
+`💻` _Embed Creator_
 
 An easy-to-use embed creation tool, allowing administrators to build customizable and approachable embeds for their members to view.
 
-`👋` *Greetings (Join, Join DM, Leave)*
+`👋` _Greetings (Join, Join DM, Leave)_
 
 A tool provided by Auxdibot for administrators to create customizable greeting and departure messages for their server.
 
-`👈` *Role Management (Join Roles, Sticky Roles, Massrole, Reaction Roles)*
+`👈` _Role Management (Join Roles, Sticky Roles, Massrole, Reaction Roles)_
 
 An expansive suite of role commands created to ease the burden of role management from administrators.
 
-`🔺` *Suggestions*
+`🔺` _Suggestions_
 
 A drop-in solution for administrators to receive feedback from the members of their server. Admins can implement custom suggestions reactions and react to user feedback with various responses. (Added, Denied, Accepted, Considered)
 
-`🏆` *Levels*
+`🏆` _Levels_
 
 An innovative leveling system allowing users to gain experience for interacting with your server. Admins can reward users with Level Rewards for their chat activity.
 
-`⭐` *Starboard*
+`⭐` _Starboard_
 
 A solution built to highlight the top posts from your community. Extremely customizable and built for servers of all sizes, providing the full context of every "starred" message.
 
-`⏲️` *Schedules*
+`⏲️` _Schedules_
 
 Auxdibot's method of building timed messages. Administrators can schedule messages to run on an interval, with custom embed content and a custom start date.
 
-`🖼️` *Server Cards/Websites*
+`🖼️` _Server Cards/Websites_
 
 A cutting-edge solution for building a website for your server. Using Auxdibot's dashboard, administrators can create their own stylistically creative server cards.
 
-`📽️` *Social Media Notifications*
+`📽️` _Social Media Notifications_
 
 A user friendly, customizable notification system to ping members for the latest and greatest videos/streams/feeds on your social media platform of choice! (RSS Supported)
 
-`💻` *User-friendly Dashboard*
+`💻` _User-friendly Dashboard_
 
 An approachable dashboard created for administrators to quickly interact with their server, browse documentation, or view updates for Auxdibot!
 
@@ -120,4 +118,3 @@ Create a feature request issue on this repo or submit a suggestion in [Auxdibot'
 ## Credits
 
 This project is developed solely by [Auxdible](https://github.com/Auxdible) on GitHub. Contact me through my Discord, `auxdible`, or by my email. Contributions accepted.
-

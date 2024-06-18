@@ -38,13 +38,15 @@ export default <AuxdibotButton>{
          moderatorID: interaction.user.id,
          punishmentID: await incrementPunishmentsTotal(auxdibot, interaction.guild.id),
       };
-      await createPunishment(auxdibot, interaction.guild, kickData, interaction, member.user).then(async () => {
-         if (interaction.message.editable) {
-               interaction.message.edit(await createUserEmbed(auxdibot, interaction.guild, user_id))    
-         }
-      }).catch(async () => {
-         return await handleError(auxdibot, 'FAILED_KICK_USER', "Couldn't kick that user.", interaction);
-      });
+      await createPunishment(auxdibot, interaction.guild, kickData, interaction, member.user)
+         .then(async () => {
+            if (interaction.message.editable) {
+               interaction.message.edit(await createUserEmbed(auxdibot, interaction.guild, user_id));
+            }
+         })
+         .catch(async () => {
+            return await handleError(auxdibot, 'FAILED_KICK_USER', "Couldn't kick that user.", interaction);
+         });
       return;
    },
 };

@@ -12,7 +12,7 @@ export default <AuxdibotButton>{
    async execute(auxdibot: Auxdibot, interaction: MessageComponentInteraction) {
       if (!interaction.guild || !interaction.user || !interaction.channel) return;
       const [, user_id] = interaction.customId.split('-');
-      const user = await auxdibot.users.fetch(user_id).catch(() => undefined)
+      const user = await auxdibot.users.fetch(user_id).catch(() => undefined);
       const data = await auxdibot.database.servermembers.findFirst({
          where: { userID: user_id, serverID: interaction.guild.id },
       });

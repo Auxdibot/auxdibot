@@ -23,6 +23,8 @@ export const levelsStats = <AuxdibotSubcommand>{
       if (!data)
          return await handleError(auxdibot, 'MEMBER_DATA_NOT_FOUND', 'Member data could not be found!', interaction);
 
-      return await auxdibot.createReply(interaction, { embeds: [await createLevelsStatEmbed(auxdibot, data, user ?? interaction.user)] });
+      return await auxdibot.createReply(interaction, {
+         embeds: [await createLevelsStatEmbed(auxdibot, data, user ?? interaction.user)],
+      });
    },
 };

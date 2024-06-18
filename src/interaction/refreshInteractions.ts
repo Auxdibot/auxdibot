@@ -3,6 +3,8 @@ import { REST, Routes } from 'discord.js';
 import fs from 'fs';
 import path from 'path';
 
+const isCommandFile = (file: string) =>
+   file.endsWith('.js') || (process.env.ENVIRONMENT == 'DEVELOPMENT' && file.endsWith('.ts'));
 export default async function refreshInteractions(auxdibot: Auxdibot, rest: REST, CLIENT_ID: string) {
    console.log('-> Declaring commands...');
    const commands = [];
@@ -20,7 +22,7 @@ export default async function refreshInteractions(auxdibot: Auxdibot, rest: REST
    const commandFiles = [
       {
          dir: '',
-         files: fs.readdirSync(path.join(__dirname, '/commands')).filter((file) => file.endsWith('.js')),
+         files: fs.readdirSync(path.join(__dirname, '/commands')).filter(isCommandFile),
       },
    ];
 
@@ -29,7 +31,7 @@ export default async function refreshInteractions(auxdibot: Auxdibot, rest: REST
       if (fs.existsSync(packageFile)) {
          commandFiles.push({
             dir: packageString,
-            files: fs.readdirSync(packageFile).filter((file) => file.endsWith('.js')),
+            files: fs.readdirSync(packageFile).filter(isCommandFile),
          });
       }
    }
@@ -59,7 +61,7 @@ export default async function refreshInteractions(auxdibot: Auxdibot, rest: REST
    /********************************************************************************/
    // Declare buttons
    console.log('-> Declaring button interactions...');
-   const buttonFiles = fs.readdirSync(path.join(__dirname, '/buttons')).filter((file) => file.endsWith('.js'));
+   const buttonFiles = fs.readdirSync(path.join(__dirname, '/buttons')).filter(isCommandFile);
    for (const file of buttonFiles) {
       const fileRequire = await import(`./buttons/${file}`);
       if (fileRequire.default) {
@@ -71,7 +73,7 @@ export default async function refreshInteractions(auxdibot: Auxdibot, rest: REST
    /********************************************************************************/
    // Declare select menus
    console.log('-> Declaring select menu interactions...');
-   const selectMenuFiles = fs.readdirSync(path.join(__dirname, '/menus')).filter((file) => file.endsWith('.js'));
+   const selectMenuFiles = fs.readdirSync(path.join(__dirname, '/menus')).filter(isCommandFile);
    for (const file of selectMenuFiles) {
       const fileRequire = await import(`./menus/${file}`);
       if (fileRequire.default) {
@@ -83,7 +85,7 @@ export default async function refreshInteractions(auxdibot: Auxdibot, rest: REST
    /********************************************************************************/
    // Declare modals
    console.log('-> Declaring modal interactions...');
-   const modalFiles = fs.readdirSync(path.join(__dirname, '/modals')).filter((file) => file.endsWith('.js'));
+   const modalFiles = fs.readdirSync(path.join(__dirname, '/modals')).filter(isCommandFile);
    for (const file of modalFiles) {
       const fileRequire = await import(`./modals/${file}`);
       if (fileRequire.default) {

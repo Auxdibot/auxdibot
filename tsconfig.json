@@ -1,27 +1,25 @@
 {
-  "compilerOptions": {
-    "target": "ES2022",
-    "module": "commonjs",
-    "outDir": "dist",
-    "strict": true,
-    "esModuleInterop": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "noFallthroughCasesInSwitch": true,
-    "noUnusedLocals": true,
-    "noImplicitAny": false,
-    "noImplicitThis": false,
-    "strictNullChecks": false,
-    "importHelpers": false,
-    "resolveJsonModule": true,
-    "baseUrl": "./src",
-    "paths": {
-        "@/*": ["*"],
-     },
-    "plugins": [
-      { "transform": "typescript-transform-paths", "afterDeclarations": true }
-    ]
-  },
-  "include": ["src", "global.d.ts"],
-  "exclude": ["test"]
+   "compilerOptions": {
+      "target": "ES2022",
+      "module": "commonjs",
+      "outDir": "dist",
+      "strict": true,
+      "esModuleInterop": true,
+      "skipLibCheck": true,
+      "forceConsistentCasingInFileNames": true,
+      "noFallthroughCasesInSwitch": true,
+      "noUnusedLocals": true,
+      "noImplicitAny": false,
+      "noImplicitThis": false,
+      "strictNullChecks": false,
+      "importHelpers": false,
+      "resolveJsonModule": true,
+      "baseUrl": "./src",
+      "paths": {
+         "@/*": ["*"]
+      },
+      "plugins": [{ "transform": "typescript-transform-paths", "afterDeclarations": true }]
+   },
+   "include": ["src", "global.d.ts"],
+   "exclude": ["test"]
 }
