@@ -1,4 +1,4 @@
-import { ChannelType, SlashCommandBuilder } from 'discord.js';
+import { ChannelType, PermissionFlagsBits, SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import Modules from '@/constants/bot/commands/Modules';
 import { suggestionsCreate } from '../../subcommands/suggestions/suggestionsCreate';
@@ -167,6 +167,7 @@ export default <AuxdibotCommand>{
       description: 'The main command for handling suggestions on this server.',
       usageExample:
          '/suggestions (create|channel|updates_channel|auto_delete|discussion_threads|reactions|remove_reaction|add_reaction|respond|ban|unban|delete)',
+      permissionsRequired: [PermissionFlagsBits.Administrator],
    },
    subcommands: [
       suggestionsCreate,

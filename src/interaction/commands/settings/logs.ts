@@ -1,4 +1,4 @@
-import { ChannelType, SlashCommandBuilder } from 'discord.js';
+import { ChannelType, PermissionFlagsBits, SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import dotenv from 'dotenv';
 import Modules from '@/constants/bot/commands/Modules';
@@ -40,6 +40,7 @@ export default <AuxdibotCommand>{
       module: Modules['Settings'],
       description: 'Manage how Auxdibot logs events on your server.',
       usageExample: '/logs (latest|filter|list_filtered|channel|actions)',
+      permissionsRequired: [PermissionFlagsBits.Administrator],
    },
    subcommands: [logsLogChannel, logsLatest, logsActions, logsListFiltered, logsFilter],
    async execute() {

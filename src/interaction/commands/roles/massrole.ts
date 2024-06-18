@@ -1,4 +1,4 @@
-import { SlashCommandBuilder } from 'discord.js';
+import { PermissionFlagsBits, SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import Modules from '@/constants/bot/commands/Modules';
 import { massroleGive } from '../../subcommands/roles/massrole/massroleGive';
@@ -28,6 +28,7 @@ export default <AuxdibotCommand>{
       module: Modules['Roles'],
       description: 'Give everybody a role, or take a role away from anyone that has it.',
       usageExample: '/massrole (give|take)',
+      permissionsRequired: [PermissionFlagsBits.ManageRoles],
    },
    subcommands: [massroleGive, massroleTake],
    async execute() {

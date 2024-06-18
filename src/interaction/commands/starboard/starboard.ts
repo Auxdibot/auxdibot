@@ -1,4 +1,4 @@
-import { ChannelType, SlashCommandBuilder } from 'discord.js';
+import { ChannelType, PermissionFlagsBits, SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import Modules from '@/constants/bot/commands/Modules';
 import { starboardBoardCreate } from '@/interaction/subcommands/starboard/board/starboardBoardCreate';
@@ -144,6 +144,7 @@ export default <AuxdibotCommand>{
       module: Modules['Starboard'],
       description: 'Change the starboard settings for this server.',
       usageExample: '/starboard (board|settings)',
+      permissionsRequired: [PermissionFlagsBits.Administrator],
    },
    subcommands: [
       starboardBoardCreate,

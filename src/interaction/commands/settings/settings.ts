@@ -1,4 +1,4 @@
-import { SlashCommandBuilder } from 'discord.js';
+import { PermissionFlagsBits, SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import Modules from '@/constants/bot/commands/Modules';
 import { settingsView } from '../../subcommands/settings/settings/settingsView';
@@ -16,6 +16,7 @@ export default <AuxdibotCommand>{
       module: Modules['Settings'],
       description: 'Change settings for the server.',
       usageExample: '/settings (view|reset)',
+      permissionsRequired: [PermissionFlagsBits.Administrator],
    },
    subcommands: [settingsView, settingsReset],
    async execute() {
