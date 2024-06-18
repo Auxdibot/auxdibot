@@ -10,6 +10,7 @@ export default <AuxdibotButton>{
    command: 'user',
    async execute(auxdibot: Auxdibot, interaction: MessageComponentInteraction) {
       const [, user_id] = interaction.customId.split('-');
+      await interaction.deferReply({ ephemeral: true });
       if (interaction.message.editable) {
          interaction.message.edit(await createUserEmbed(auxdibot, interaction.guild, user_id))    
       }

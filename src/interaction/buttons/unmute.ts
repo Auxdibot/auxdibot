@@ -19,6 +19,7 @@ export default <AuxdibotButton>{
       const [, user_id] = interaction.customId.split('-');
       const server = await findOrCreateServer(auxdibot, interaction.guild.id);
       if (!server) return;
+      await interaction.deferReply();
       if (!server.mute_role || !interaction.guild.roles.resolve(server.mute_role))
          return await handleError(
             auxdibot,

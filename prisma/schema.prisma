@@ -127,8 +127,8 @@ enum LogAction {
 type Punishment {
   type              PunishmentType
   expired           Boolean        @default(false)
-  date_unix         Int            @default(0)
-  expires_date_unix Int?
+  date_unix         Int            @default(0) @db.Long
+  expires_date_unix Int? @db.Long
   reason            String         @default("")
   dmed              Boolean        @default(false)
   userID            String
@@ -167,7 +167,7 @@ type ReactionRole {
 type Log {
   type        LogAction
   userID      String
-  date_unix   Int
+  date_unix   Int @db.Long
   description String    @default("")
 }
 
@@ -218,8 +218,10 @@ type Suggestion {
 
 type ScheduledMessage {
   channelID          String
+  // Deprecated
   old_last_run_unix  Int?      @map("last_run_unix")
   old_interval_unix  Int?      @map("interval_unix")
+  // Deprecated
   interval_timestamp String    @default("1d")
   last_run           DateTime? @default(now())
   times_run          Int?

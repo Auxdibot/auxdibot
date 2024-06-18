@@ -18,6 +18,7 @@ export default <AuxdibotButton>{
       if (!interaction.guild || !interaction.user || !interaction.channel) return;
       const [, user_id] = interaction.customId.split('-');
       const member = interaction.guild.members.resolve(user_id);
+      await interaction.deferReply();
       if (!member)
          return await handleError(auxdibot, 'MEMBER_NOT_IN_SERVER', 'This user is not in the server!', interaction);
 
