@@ -21,7 +21,7 @@ export default <AuxdibotCommand>{
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data || !interaction.channel) return;
-
-      return await auxdibot.createReply(interaction, await createUserEmbed(auxdibot, interaction.guild, interaction.user.id));
+      const user = interaction.options.getUser("user");
+      return await auxdibot.createReply(interaction, await createUserEmbed(auxdibot, interaction.guild, user?.id ?? interaction.user.id));
    },
 };

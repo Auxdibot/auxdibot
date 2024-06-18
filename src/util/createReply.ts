@@ -17,7 +17,7 @@ export async function createReply(
    interaction: BaseInteraction,
    data: InteractionReplyOptions,
    options?: AuxdibotReplyOptions,
-): Promise<Message<boolean> | InteractionResponse<boolean>> {
+): Promise<Message<boolean> | InteractionResponse<boolean>> | null {
    if (interaction.guildId && interaction.isChatInputCommand() && !options?.noOutputChannel) {
       const server = await findOrCreateServer(this, interaction.guildId);
       if (!server) return;
@@ -79,15 +79,14 @@ export async function createReply(
          }
       }
    }
-   try {
-      return interaction.isRepliable() && interaction.deferred
+      return (interaction.isRepliable() && interaction.deferred
       ? interaction.editReply(data)
       : interaction.isRepliable() && !interaction.replied
       ? interaction.reply(data)
-      : interaction.channel.send(new MessagePayload(interaction.channel, data));
-   } catch (x) {
-      console.error("! -> Auxdibot failed to send a message!");
-      console.error(x);
-   }
+      : interaction.channel.send(new MessagePayload(interaction.channel, data))).catch((x) => {
+         console.error("! -> Auxdibot failed to send a message!");
+         console.error(x);
+         return null;
+      });
    
 }
