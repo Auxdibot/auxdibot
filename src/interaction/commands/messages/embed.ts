@@ -1,4 +1,4 @@
-import { ChannelType, SlashCommandBuilder } from 'discord.js';
+import { ChannelType, PermissionFlagsBits, SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import dotenv from 'dotenv';
 import createEmbedParameters from '@/util/createEmbedParameters';
@@ -100,6 +100,7 @@ export default <AuxdibotCommand>{
       module: Modules['Messages'],
       description: 'Create or edit a Discord Embed with Auxdibot, as well as obtain the JSON data of any Embed.',
       usageExample: '/embed (create|custom|edit|edit_custom|json|parameters)',
+      permissionsRequired: [PermissionFlagsBits.ManageMessages],
    },
    subcommands: [createEmbed, createEmbedJSON, editEmbed, editEmbedJSON, getEmbedJSON, embedParameters],
    async execute() {

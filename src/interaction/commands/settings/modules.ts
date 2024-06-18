@@ -1,4 +1,4 @@
-import { APIApplicationCommandOptionChoice, SlashCommandBuilder } from 'discord.js';
+import { APIApplicationCommandOptionChoice, PermissionFlagsBits, SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import dotenv from 'dotenv';
 import Modules from '@/constants/bot/commands/Modules';
@@ -45,6 +45,7 @@ export default <AuxdibotCommand>{
       module: Modules['Settings'],
       description: "Manage Auxdibot's modules. (/help modules)",
       usageExample: '/modules (disable|enable) (module)',
+      permissionsRequired: [PermissionFlagsBits.Administrator],
    },
    subcommands: [moduleDisable, moduleEnable],
    async execute() {

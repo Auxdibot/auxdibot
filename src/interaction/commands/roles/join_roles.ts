@@ -1,4 +1,4 @@
-import { SlashCommandBuilder } from 'discord.js';
+import { PermissionFlagsBits, SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import Modules from '@/constants/bot/commands/Modules';
 import { joinRoleAdd } from '../../subcommands/roles/join_roles/joinRoleAdd';
@@ -42,6 +42,7 @@ export default <AuxdibotCommand>{
       module: Modules['Roles'],
       description: 'Change the roles given when a member joins the server.',
       usageExample: '/join_roles (add|remove|list)',
+      permissionsRequired: [PermissionFlagsBits.ManageRoles],
    },
    subcommands: [joinRoleAdd, joinRoleRemove, joinRoleList],
    async execute() {

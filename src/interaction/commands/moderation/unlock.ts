@@ -1,4 +1,4 @@
-import { ChannelType, SlashCommandBuilder } from 'discord.js';
+import { ChannelType, PermissionFlagsBits, SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import Modules from '@/constants/bot/commands/Modules';
 import { unlockChannel } from '@/interaction/subcommands/moderation/unlock/unlockChannel';
@@ -34,6 +34,7 @@ export default <AuxdibotCommand>{
       module: Modules['Moderation'],
       description: 'Command for unlocking channels and server.',
       usageExample: '/unlock (channel|server)',
+      permissionsRequired: [PermissionFlagsBits.ManageChannels],
    },
    subcommands: [unlockChannel, unlockServer],
    async execute() {

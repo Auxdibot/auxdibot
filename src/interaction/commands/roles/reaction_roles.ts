@@ -1,4 +1,4 @@
-import { SlashCommandBuilder, ChannelType, SlashCommandSubcommandBuilder } from 'discord.js';
+import { SlashCommandBuilder, ChannelType, SlashCommandSubcommandBuilder, PermissionFlagsBits } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import createEmbedParameters from '@/util/createEmbedParameters';
 import Modules from '@/constants/bot/commands/Modules';
@@ -174,6 +174,7 @@ export default <AuxdibotCommand>{
       module: Modules['Roles'],
       description: 'Create, edit, remove, or list the currently active reaction roles.',
       usageExample: '/reaction_roles (add|add_custom|add_json|add_message|remove|edit|list)',
+      permissionsRequired: [PermissionFlagsBits.ManageRoles, PermissionFlagsBits.ManageMessages],
    },
    subcommands: [
       reactionRolesAdd,

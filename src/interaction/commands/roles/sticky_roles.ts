@@ -1,4 +1,4 @@
-import { SlashCommandBuilder } from 'discord.js';
+import { PermissionFlagsBits, SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import Modules from '@/constants/bot/commands/Modules';
 import { stickyRoleAdd } from '../../subcommands/roles/sticky_roles/stickyRoleAdd';
@@ -42,6 +42,7 @@ export default <AuxdibotCommand>{
       module: Modules['Roles'],
       description: 'Change the roles that are kept when a member rejoins the server.',
       usageExample: '/sticky_roles (add|remove|list)',
+      permissionsRequired: [PermissionFlagsBits.ManageRoles],
    },
    subcommands: [stickyRoleAdd, stickyRoleRemove, stickyRoleList],
    async execute() {

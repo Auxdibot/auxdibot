@@ -4,7 +4,7 @@ import fs from 'fs';
 import path from 'path';
 
 const isCommandFile = (file: string) =>
-   file.endsWith('.js') || (process.env.ENVIRONMENT == 'DEVELOPMENT' && file.endsWith('.ts'));
+   file.endsWith('.js') || (process.env.NODE_ENV == 'DEVELOPMENT' && file.endsWith('.ts'));
 export default async function refreshInteractions(auxdibot: Auxdibot, rest: REST, CLIENT_ID: string) {
    console.log('-> Declaring commands...');
    const commands = [];

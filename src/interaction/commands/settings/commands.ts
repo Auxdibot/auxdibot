@@ -17,7 +17,7 @@ import commandsUsageChannel from '@/interaction/subcommands/commands/usage/comma
 import commandsUsageDisable from '@/interaction/subcommands/commands/usage/commandsUsageDisable';
 import commandsUsageEnable from '@/interaction/subcommands/commands/usage/commandsUsageEnable';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
-import { ChannelType, SlashCommandBuilder } from 'discord.js';
+import { ChannelType, PermissionFlagsBits, SlashCommandBuilder } from 'discord.js';
 
 export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -284,6 +284,7 @@ export default <AuxdibotCommand>{
       module: Modules['Settings'],
       description: "Manage access for all of Auxdibot's commands.",
       usageExample: '/commands',
+      permissionsRequired: [PermissionFlagsBits.Administrator],
    },
    subcommands: [
       commandsAdminSet,

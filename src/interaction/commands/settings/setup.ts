@@ -1,4 +1,4 @@
-import { SlashCommandBuilder } from 'discord.js';
+import { PermissionFlagsBits, SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import dotenv from 'dotenv';
 import Modules from '@/constants/bot/commands/Modules';
@@ -25,6 +25,7 @@ export default <AuxdibotCommand>{
       module: Modules['Settings'],
       description: "Setup one or all of Auxdibot's features.",
       usageExample: '/setup (auto|starboard)',
+      permissionsRequired: [PermissionFlagsBits.Administrator],
    },
    subcommands: [setupAuto, setupStarboard],
    async execute() {

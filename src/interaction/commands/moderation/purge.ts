@@ -1,4 +1,4 @@
-import { SlashCommandBuilder } from 'discord.js';
+import { PermissionFlagsBits, SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import Modules from '@/constants/bot/commands/Modules';
 import { purgeAll } from '@/interaction/subcommands/moderation/purge/purgeAll';
@@ -73,6 +73,7 @@ export default <AuxdibotCommand>{
       module: Modules['Moderation'],
       description: 'Purge messages in a channel.',
       usageExample: '/purge (user|filter|all|invites|attachments)',
+      permissionsRequired: [PermissionFlagsBits.ManageMessages],
    },
    subcommands: [purgeAll, purgeUser, purgeFilter, purgeAttachments, purgeInvites, purgeEmbeds],
    async execute() {
