@@ -1,4 +1,4 @@
-import { SlashCommandBuilder } from 'discord.js';
+import { PermissionFlagsBits, SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import createEmbedParameters from '@/util/createEmbedParameters';
 import Modules from '@/constants/bot/commands/Modules';
@@ -30,6 +30,7 @@ export default <AuxdibotCommand>{
       description:
          'Change settings for leave messages on the server. (Placeholders are supported. Do /help placeholders for a list of placeholders.)',
       usageExample: '/leave (message|embed_json|preview)',
+      permissionsRequired: [PermissionFlagsBits.Administrator],
    },
    subcommands: [leaveMessage, leaveEmbedJSON, leavePreview],
    async execute() {

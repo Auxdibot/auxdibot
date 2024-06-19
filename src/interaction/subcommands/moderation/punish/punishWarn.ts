@@ -9,6 +9,7 @@ import canExecute from '@/util/canExecute';
 import handleError from '@/util/handleError';
 import { EmbedBuilder } from '@discordjs/builders';
 import { Punishment, PunishmentType } from '@prisma/client';
+import { PermissionFlagsBits } from 'discord.js';
 
 export const punishWarn = <AuxdibotSubcommand>{
    name: 'warn',
@@ -17,6 +18,7 @@ export const punishWarn = <AuxdibotSubcommand>{
       description:
          'Warns a user, giving them a DM warning (if they have DMs enabled) and adding a warn to their record on the server.',
       usageExample: '/punish warn (user) [reason]',
+      permissionsRequired: [PermissionFlagsBits.ModerateMembers],
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

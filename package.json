@@ -5,7 +5,7 @@
    "main": "./dist/index.js",
    "scripts": {
       "start": "node ./dist/index.js",
-      "dev": "ts-node-dev --respawn --transpile-only --rs ./src/index.ts",
+      "dev": "ts-node-dev --no-notify --transpile-only --watch 'src' --exit-child src/",
       "build": "tsc",
       "lint": "eslint --ignore-path .eslintignore --ext .js,.ts . --quiet --fix",
       "test": "ts-mocha -p ./tsconfig.json -u tdd ./test/**/*.test.ts --recursive --paths",
@@ -58,6 +58,7 @@
       "ts-mocha": "^10.0.0",
       "ts-node": "^10.9.2",
       "ts-node-dev": "^2.0.0",
+      "tslib": "^2.6.3",
       "typescript": "^5.4.5"
    },
    "lint-staged": {

@@ -76,16 +76,19 @@ export default async function slashCreate(auxdibot: Auxdibot, interaction: ChatI
       if (permissionTest !== true) {
          const noPermissionEmbed = new EmbedBuilder().setColor(auxdibot.colors.denied).toJSON();
          noPermissionEmbed.title = '⛔ Permission Denied';
-         noPermissionEmbed.description =
-            permissionTest == 'noperm'
-               ? `You do not have permission to use this command.`
-               : permissionTest == 'notfound'
-               ? `This command is not found.`
-               : permissionTest == 'disabled'
-               ? `This command is disabled.`
-               : permissionTest == 'noperm-channel'
-               ? `You do not have permission to use this command in this channel.`
-               : `This command is not available in this server.`;
+         noPermissionEmbed.description = permissionTest.toString().includes('noperm')
+            ? `You do not have permission to use this command. ${
+                 permissionTest.toString().includes('-')
+                    ? ` (Missing Permission: \`${permissionTest.toString().split('-')[1]}\`)`
+                    : ''
+              }`
+            : permissionTest == 'notfound'
+            ? `This command is not found.`
+            : permissionTest == 'disabled'
+            ? `This command is disabled.`
+            : permissionTest == 'noperm-channel'
+            ? `You do not have permission to use this command in this channel.`
+            : `This command is not available in this server.`;
          return await auxdibot.createReply(interaction, {
             ephemeral: true,
             embeds: [noPermissionEmbed],

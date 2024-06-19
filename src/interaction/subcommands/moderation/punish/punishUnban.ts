@@ -8,6 +8,7 @@ import handleError from '@/util/handleError';
 import handleLog from '@/util/handleLog';
 import { EmbedBuilder } from '@discordjs/builders';
 import { LogAction, PunishmentType } from '@prisma/client';
+import { PermissionFlagsBits } from 'discord.js';
 
 export const punishUnban = <AuxdibotSubcommand>{
    name: 'unban',
@@ -15,6 +16,7 @@ export const punishUnban = <AuxdibotSubcommand>{
       module: Modules['Moderation'],
       description: 'Unbans a user if they are currently banned. For banned members, use their user ID.',
       usageExample: '/punish unban (user)',
+      permissionsRequired: [PermissionFlagsBits.BanMembers],
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

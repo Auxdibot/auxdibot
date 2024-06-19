@@ -10,6 +10,7 @@ import handleError from '@/util/handleError';
 import timestampToDuration from '@/util/timestampToDuration';
 import { EmbedBuilder } from '@discordjs/builders';
 import { Punishment, PunishmentType } from '@prisma/client';
+import { PermissionFlagsBits } from 'discord.js';
 
 export const punishMute = <AuxdibotSubcommand>{
    name: 'mute',
@@ -18,6 +19,7 @@ export const punishMute = <AuxdibotSubcommand>{
       description:
          'Mutes a user, making them unable to talk in the server and adding a mute to their record on the server. Default duration is permanent.',
       usageExample: '/punish mute (user) [reason] [duration]',
+      permissionsRequired: [PermissionFlagsBits.ModerateMembers],
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

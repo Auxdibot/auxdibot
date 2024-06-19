@@ -1,4 +1,4 @@
-import { ChannelType, SlashCommandBuilder } from 'discord.js';
+import { ChannelType, PermissionFlagsBits, SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import Modules from '@/constants/bot/commands/Modules';
 import { greetingsChannel } from '@/interaction/subcommands/greetings/greetingsChannel';
@@ -22,6 +22,7 @@ export default <AuxdibotCommand>{
       module: Modules['Greetings'],
       description: 'Change settings for greetings on the server.',
       usageExample: '/greetings (channel)',
+      permissionsRequired: [PermissionFlagsBits.Administrator],
    },
    subcommands: [greetingsChannel],
    async execute() {

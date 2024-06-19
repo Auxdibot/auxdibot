@@ -9,6 +9,7 @@ import canExecute from '@/util/canExecute';
 import handleError from '@/util/handleError';
 import { EmbedBuilder } from '@discordjs/builders';
 import { Punishment, PunishmentType } from '@prisma/client';
+import { PermissionFlagsBits } from 'discord.js';
 
 export const punishKick = <AuxdibotSubcommand>{
    name: 'kick',
@@ -16,6 +17,7 @@ export const punishKick = <AuxdibotSubcommand>{
       module: Modules['Moderation'],
       description: 'Kicks a user, removing them from the server and adding a kick to their record on the server.',
       usageExample: '/punish kick (user) [reason]',
+      permissionsRequired: [PermissionFlagsBits.KickMembers],
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;
