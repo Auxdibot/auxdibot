@@ -1,4 +1,4 @@
-import { AuditLogEvent, GuildAuditLogs, Message, PartialMessage } from 'discord.js';
+import { AuditLogEvent, GuildAuditLogs, Message, PartialMessage, User } from 'discord.js';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import deleteSuggestion from '@/modules/features/suggestions/deleteSuggestion';
@@ -9,7 +9,7 @@ import deleteStarredMessage from '@/modules/features/starboard/messages/deleteSt
 export default async function messageDelete(auxdibot: Auxdibot, message: Message<boolean> | PartialMessage) {
    const sender = message.member;
    // weird bandaid for checking if it's the bot deleting messages
-   const auditEntry: GuildAuditLogs<AuditLogEvent.MessageDelete> | undefined = await message.guild
+   const deletionEntryCheck: GuildAuditLogs<AuditLogEvent.MessageDelete> | undefined = await message.guild
       ?.fetchAuditLogs({ limit: 10, type: AuditLogEvent.MessageDelete })
       .then((a) =>
          a.entries.find(
@@ -20,7 +20,7 @@ export default async function messageDelete(auxdibot: Auxdibot, message: Message
          ),
       )
       .catch(() => undefined);
-   if (auditEntry && auditEntry?.entries?.size > 0) return;
+   if (deletionEntryCheck && deletionEntryCheck?.entries?.size > 0) return;
    const server = await findOrCreateServer(auxdibot, message.guild.id);
    const rr = server.reaction_roles.find((rr) => rr.messageID == message.id);
    if (rr) {
@@ -46,6 +46,14 @@ export default async function messageDelete(auxdibot: Auxdibot, message: Message
    }
    if (!sender || sender?.user.bot || sender?.id == auxdibot.user.id) return;
    const channel = await message.channel.fetch().catch(() => undefined);
+   const executorCheck: User | undefined = await message.guild
+      ?.fetchAuditLogs({ limit: 1, type: AuditLogEvent.MessageDelete })
+      .then(
+         (a) =>
+            a.entries.find((i) => i.targetId == message.author?.id && i.extra.channel.id == message.channel.id)
+               ?.executor,
+      )
+      .catch(() => undefined);
    await handleLog(
       auxdibot,
       message.guild,
@@ -54,13 +62,15 @@ export default async function messageDelete(auxdibot: Auxdibot, message: Message
          date_unix: Date.now(),
          description: `A message by ${sender?.user?.username ?? auxdibot.user.username} in #${
             channel?.name ?? message.channel
-         } was deleted.`,
-         userID: message?.member?.id ?? auxdibot.user.id,
+         } was deleted${executorCheck ? ` by ${executorCheck.username}` : ''}.`,
+         userID: executorCheck?.id ?? auxdibot.user.id,
       },
       [
          {
             name: 'Deleted Message',
-            value: `Author: ${message.author}\nChannel: ${message.channel}\n\n**Deleted Content** \n\`\`\`${message.cleanContent}\`\`\``,
+            value: `${executorCheck ? `Executor: ${executorCheck}` : ''}\nAuthor: ${message.author}\nChannel: ${
+               message.channel
+            }\n\n**Deleted Content** \n\`\`\`${message.cleanContent}\`\`\``,
             inline: false,
          },
       ],
