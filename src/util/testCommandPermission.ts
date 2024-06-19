@@ -52,7 +52,6 @@ export async function testCommandPermission(
    if (!server || !member) return false;
    if (member.id == member.guild.ownerId || member.permissions.has(PermissionFlagsBits.Administrator)) return true;
    const data = findCommand(auxdibot, command, subcommand);
-   console.log('CHECKING PERMISSION');
    if (!data) return 'notfound';
    const { commandData, subcommandData } = data;
 
@@ -88,11 +87,9 @@ export async function testCommandPermission(
       !member.permissions.has(PermissionFlagsBits.Administrator) &&
       checkPermissionBypass !== true
    ) {
-      console.log('TEST!!!');
       const permissionTest = testDiscordCommandPermissions(permissions, member);
       if (permissionTest !== true) return permissionTest;
    }
-   console.log('CONTINUE RUNNING');
    if (!commandPermission && !groupPermission && !subcommandPermission) {
       return allowedDefault ? true : 'noperm';
    }

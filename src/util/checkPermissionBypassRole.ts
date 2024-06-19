@@ -22,9 +22,7 @@ export async function checkPermissionBypassRole(
       commandPermission = permission.find((i) => !i.subcommand && !i.group),
       groupPermission = permission.find((i) => i.group == groupName && !i.subcommand),
       subcommandPermission = permission.find((i) => i.group == groupName && i.subcommand == subcommandName);
-   console.log('COMMAND ROLES');
-   console.log(commandPermission?.permission_bypass_roles);
-   console.log(Array.from(member.roles.cache));
+
    if (
       member.roles.cache.find(
          (i) =>
