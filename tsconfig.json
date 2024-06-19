@@ -1,4 +1,11 @@
 {
+  "ts-node": {
+    "files": true
+  },
+  "files": [
+    "src/index.ts",
+    "global.d.ts"
+  ],
    "compilerOptions": {
       "target": "ES2022",
       "module": "commonjs",

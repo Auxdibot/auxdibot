@@ -9,6 +9,7 @@ import handleError from '@/util/handleError';
 import handleLog from '@/util/handleLog';
 import { EmbedBuilder } from '@discordjs/builders';
 import { LogAction, PunishmentType } from '@prisma/client';
+import { PermissionFlagsBits } from 'discord.js';
 
 export const punishUnmute = <AuxdibotSubcommand>{
    name: 'unmute',
@@ -16,6 +17,7 @@ export const punishUnmute = <AuxdibotSubcommand>{
       module: Modules['Moderation'],
       description: 'Unmutes a user if they are currently muted.',
       usageExample: '/punish unmute (user)',
+      permissionsRequired: [PermissionFlagsBits.ModerateMembers],
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

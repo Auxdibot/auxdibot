@@ -10,6 +10,7 @@ import handleError from '@/util/handleError';
 import timestampToDuration from '@/util/timestampToDuration';
 import { EmbedBuilder } from '@discordjs/builders';
 import { Punishment, PunishmentType } from '@prisma/client';
+import { PermissionFlagsBits } from 'discord.js';
 
 export const punishBan = <AuxdibotSubcommand>{
    name: 'ban',
@@ -18,6 +19,7 @@ export const punishBan = <AuxdibotSubcommand>{
       description:
          'Bans a user, removing them from the server and adding a ban to their record on the server. Default duration is permanent.',
       usageExample: '/punish ban (user) [reason] [duration] [delete_message_days]',
+      permissionsRequired: [PermissionFlagsBits.BanMembers],
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

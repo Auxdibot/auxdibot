@@ -21,6 +21,7 @@ export const suggestionsCreate = <AuxdibotSubcommand>{
       description: 'Create a suggestion.',
       usageExample: '/suggestions create (suggestion)',
       allowedDefault: true,
+      permissionsRequired: [],
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

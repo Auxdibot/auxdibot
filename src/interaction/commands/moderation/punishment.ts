@@ -1,5 +1,5 @@
 import { punishmentView } from '../../subcommands/moderation/punishment/punishmentView';
-import { SlashCommandBuilder } from 'discord.js';
+import { PermissionFlagsBits, SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import Modules from '@/constants/bot/commands/Modules';
 import { punishmentDelete } from '../../subcommands/moderation/punishment/punishmentDelete';
@@ -39,6 +39,7 @@ export default <AuxdibotCommand>{
       module: Modules['Moderation'],
       description: 'View or delete a punishment.',
       usageExample: '/punishment (view|delete|latest)',
+      permissionsRequired: [PermissionFlagsBits.ModerateMembers],
    },
    subcommands: [punishmentView, punishmentDelete, punishmentLatest, punishmentRecord],
    async execute() {
