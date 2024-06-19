@@ -128,7 +128,7 @@ type Punishment {
   type              PunishmentType
   expired           Boolean        @default(false)
   date_unix         Int            @default(0) @db.Long
-  expires_date_unix Int? @db.Long
+  expires_date_unix Int?           @db.Long
   reason            String         @default("")
   dmed              Boolean        @default(false)
   userID            String
@@ -167,7 +167,7 @@ type ReactionRole {
 type Log {
   type        LogAction
   userID      String
-  date_unix   Int @db.Long
+  date_unix   Int       @db.Long
   description String    @default("")
 }
 
@@ -415,9 +415,10 @@ model totals {
 }
 
 model users {
-  id     String      @id @default(auto()) @map("_id") @db.ObjectId
-  userID String
-  badges UserBadge[]
+  id         String      @id @default(auto()) @map("_id") @db.ObjectId
+  userID     String
+  voted_date DateTime?
+  badges     UserBadge[]
 
   @@unique([userID])
 }

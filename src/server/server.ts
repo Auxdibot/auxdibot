@@ -18,6 +18,7 @@ import { notificationsRoute } from './notifications';
 import rateLimiter from './rateLimiter';
 import placeholders from './placeholders/placeholders';
 import commandsList from './servers/routes/commands_list';
+import { topggRoute } from './topgg';
 export default async function server(auxdibot: Auxdibot) {
    const app = express();
 
@@ -62,6 +63,7 @@ export default async function server(auxdibot: Auxdibot) {
    app.use('/servers', serversRoute(auxdibot));
    app.use('/notifications', notificationsRoute(auxdibot));
    app.use('/placeholders', placeholders());
+   app.use('/dblwebhook', topggRoute(auxdibot));
    app.get(
       '/user',
       (req, res, next) => checkAuthenticated(req, res, next),
