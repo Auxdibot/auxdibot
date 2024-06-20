@@ -91,7 +91,7 @@ export async function testCommandPermission(
       if (permissionTest !== true) return permissionTest;
    }
    if (!commandPermission && !groupPermission && !subcommandPermission) {
-      return allowedDefault ? true : 'noperm';
+      return allowedDefault !== false ? true : 'noperm';
    }
    let result: string | boolean = true;
    const commandTest = commandPermission ? testPermission(commandPermission, interaction, member) : null,
