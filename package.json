@@ -68,6 +68,6 @@
       ]
    },
    "_moduleAliases": {
-      "@": "src/"
+      "@": "dist/"
    }
 }
