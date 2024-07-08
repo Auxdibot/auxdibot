@@ -33,10 +33,13 @@ export const SettingsEmbeds: { [k: string]: (auxdibot: Auxdibot, servers: server
             {
                name: '📋 Filtered Logs',
                value:
-                  server.filtered_logs.reduce(
-                     (accumulator: string, val: string) => `${accumulator}\r\n* *${val}*`,
-                     '',
-                  ) || 'None',
+                  server.filtered_logs
+                     .slice(0, 10)
+                     .reduce((accumulator: string, val: string) => `${accumulator}\r\n* **\`${val}\`**`, '') +
+                     (server.filtered_logs?.length > 10 &&
+                        `\n*And ${
+                           server.filtered_logs.length - 10
+                        } more*...\n\n**/logs list_filtered** to view more`) || 'None',
                inline: true,
             },
          )
