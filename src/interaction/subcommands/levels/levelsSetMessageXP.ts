@@ -9,10 +9,11 @@ import { EmbedBuilder } from '@discordjs/builders';
 
 export const levelsSetMessageXP = <AuxdibotSubcommand>{
    name: 'message_xp',
+   group: 'settings',
    info: {
       module: Modules['Levels'],
       description: 'Set the amount of XP given for sending a message.',
-      usageExample: '/levels message_xp (xp)',
+      usageExample: '/levels settings message_xp (xp)',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

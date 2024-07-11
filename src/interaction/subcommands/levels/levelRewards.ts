@@ -6,11 +6,12 @@ import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 import { EmbedBuilder } from '@discordjs/builders';
 
 export const levelRewards = <AuxdibotSubcommand>{
-   name: 'rewards',
+   name: 'list',
+   group: 'rewards',
    info: {
       module: Modules['Levels'],
       description: 'View the Level Rewards for this server.',
-      usageExample: '/levels rewards',
+      usageExample: '/levels rewards list',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

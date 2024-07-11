@@ -10,10 +10,11 @@ import { ChannelType } from 'discord.js';
 
 export const levelsChannel = <AuxdibotSubcommand>{
    name: 'channel',
+   group: 'settings',
    info: {
       module: Modules['Levels'],
       description: 'Levelup messages channel, or leave empty for Auxdibot to reply to the current message.',
-      usageExample: '/levels channel [channel]',
+      usageExample: '/levels settings channel [channel]',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       const channel = interaction.options.getChannel('channel', false, [ChannelType.GuildText]);

@@ -13,106 +13,149 @@ import { levelsSetMessageXP } from '../../subcommands/levels/levelsSetMessageXP'
 import { levelsToggleEmbed } from '@/interaction/subcommands/levels/levelsToggleEmbed';
 import { levelsChannel } from '@/interaction/subcommands/levels/levelsChannel';
 import { resetAllLevels } from '@/interaction/subcommands/levels/resetAllLevels';
+import createEmbedParameters from '@/util/createEmbedParameters';
 
 export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
       .setName('levels')
       .setDescription('Change settings for leveling on this server.')
-      .addSubcommand((builder) =>
-         builder
-            .setName('stats')
-            .setDescription("View you or another member's level stats on this server.")
-            .addUserOption((argBuilder) => argBuilder.setName('user').setDescription('The user to view.')),
-      )
-      .addSubcommand((builder) =>
-         builder.setName('leaderboard').setDescription('View the leaderboard for this server.'),
-      )
-      .addSubcommand((builder) =>
-         builder
-            .setName('add_reward')
-            .setDescription('Add a reward to the Level Rewards.')
-            .addNumberOption((argBuilder) =>
-               argBuilder.setName('level').setDescription('The level at which this reward is given.').setRequired(true),
-            )
-            .addRoleOption((argBuilder) =>
-               argBuilder.setName('role').setDescription('The role that is given.').setRequired(true),
-            ),
-      )
-      .addSubcommand((builder) =>
-         builder
-            .setName('remove_reward')
-            .setDescription('Remove a reward from the Level Rewards.')
-            .addNumberOption((argBuilder) =>
-               argBuilder.setName('level').setDescription('The level at which this reward is given.').setRequired(true),
-            ),
-      )
-      .addSubcommand((builder) => builder.setName('rewards').setDescription('View the Level Rewards for this server.'))
-      .addSubcommand((builder) =>
-         builder
-            .setName('award_xp')
-            .setDescription('Award a user XP points.')
-            .addNumberOption((argBuilder) =>
-               argBuilder.setName('xp').setDescription('How much XP is awarded.').setRequired(true),
-            )
-            .addUserOption((argBuilder) =>
-               argBuilder.setName('user').setDescription('The user to award the XP to.').setRequired(true),
-            ),
-      )
-      .addSubcommand((builder) =>
-         builder
-            .setName('remove_xp')
-            .setDescription('Remove XP points from a user.')
-            .addNumberOption((argBuilder) =>
-               argBuilder.setName('xp').setDescription('How much XP is removed.').setRequired(true),
-            )
-            .addUserOption((argBuilder) =>
-               argBuilder.setName('user').setDescription('The user to remove the XP from.').setRequired(true),
-            ),
-      )
-      .addSubcommand((builder) =>
-         builder
-            .setName('reset')
-            .setDescription("Reset a user's level and XP.")
-            .addUserOption((argBuilder) =>
-               argBuilder.setName('user').setDescription('The user to be reset.').setRequired(true),
-            ),
-      )
-      .addSubcommand((builder) =>
-         builder
-            .setName('reset_all')
-            .setDescription("Reset every member's level and XP. (WARNING: THIS CANNOT BE RECOVERED)"),
-      )
-      .addSubcommand((builder) =>
-         builder
-            .setName('message_xp')
-            .setDescription('Set the amount of XP given for sending a message.')
-            .addNumberOption((argBuilder) =>
-               argBuilder.setName('xp').setDescription('The amount of XP to give.').setRequired(true),
-            ),
-      )
-      .addSubcommand((builder) =>
-         builder
-            .setName('toggle_embed')
-            .setDescription('Toggle whether the Level embed is sent upon a user leveling up.'),
-      )
-      .addSubcommand((builder) =>
-         builder
-            .setName('channel')
-            .setDescription('The channel to post level messages in.')
-            .addChannelOption((argBuilder) =>
-               argBuilder
-                  .setName('channel')
-                  .setDescription(
-                     'Levelup messages channel, or leave empty for Auxdibot to reply to the current message.',
+      .addSubcommandGroup((group) =>
+         group
+            .setName('xp')
+            .setDescription('XP related commands')
+            .addSubcommand((builder) =>
+               builder
+                  .setName('award')
+                  .setDescription('Award a user XP points.')
+                  .addNumberOption((argBuilder) =>
+                     argBuilder.setName('xp').setDescription('How much XP is awarded.').setRequired(true),
                   )
-                  .addChannelTypes(ChannelType.GuildText),
+                  .addUserOption((argBuilder) =>
+                     argBuilder.setName('user').setDescription('The user to award the XP to.').setRequired(true),
+                  ),
+            )
+            .addSubcommand((builder) =>
+               builder
+                  .setName('remove')
+                  .setDescription('Remove XP points from a user.')
+                  .addNumberOption((argBuilder) =>
+                     argBuilder.setName('xp').setDescription('How much XP is removed.').setRequired(true),
+                  )
+                  .addUserOption((argBuilder) =>
+                     argBuilder.setName('user').setDescription('The user to remove the XP from.').setRequired(true),
+                  ),
+            )
+            .addSubcommand((builder) =>
+               builder
+                  .setName('reset')
+                  .setDescription("Reset a user's level and XP.")
+                  .addUserOption((argBuilder) =>
+                     argBuilder.setName('user').setDescription('The user to be reset.').setRequired(true),
+                  ),
+            )
+            .addSubcommand((builder) =>
+               builder
+                  .setName('reset_all')
+                  .setDescription("Reset every member's level and XP. (WARNING: THIS CANNOT BE RECOVERED)"),
+            ),
+      )
+      .addSubcommandGroup((group) =>
+         group
+            .setName('reward')
+            .setDescription('Reward related commands')
+            .addSubcommand((builder) =>
+               builder
+                  .setName('add')
+                  .setDescription('Add a reward to the Level Rewards.')
+                  .addNumberOption((argBuilder) =>
+                     argBuilder
+                        .setName('level')
+                        .setDescription('The level at which this reward is given.')
+                        .setRequired(true),
+                  )
+                  .addRoleOption((argBuilder) =>
+                     argBuilder.setName('role').setDescription('The role that is given.').setRequired(true),
+                  ),
+            )
+            .addSubcommand((builder) =>
+               builder
+                  .setName('remove')
+                  .setDescription('Remove a reward from the Level Rewards.')
+                  .addNumberOption((argBuilder) =>
+                     argBuilder
+                        .setName('level')
+                        .setDescription('The level at which this reward is given.')
+                        .setRequired(true),
+                  ),
+            )
+            .addSubcommand((builder) =>
+               builder.setName('list').setDescription('List the Level Rewards for this server.'),
+            ),
+      )
+      .addSubcommandGroup((group) =>
+         group
+            .setName('stats')
+            .setDescription('Stats related commands')
+            .addSubcommand((builder) =>
+               builder
+                  .setName('level')
+                  .setDescription("View you or another member's level stats on this server.")
+                  .addUserOption((argBuilder) => argBuilder.setName('user').setDescription('The user to view.')),
+            )
+            .addSubcommand((builder) =>
+               builder.setName('leaderboard').setDescription('View the leaderboard for this server.'),
+            ),
+      )
+      .addSubcommandGroup((group) =>
+         group
+            .setName('settings')
+            .setDescription('Settings related commands')
+            .addSubcommand((builder) =>
+               builder
+                  .setName('message_xp')
+                  .setDescription('Set the amount of XP given for sending a message.')
+                  .addNumberOption((argBuilder) =>
+                     argBuilder.setName('xp').setDescription('The amount of XP to give.').setRequired(true),
+                  ),
+            )
+            .addSubcommand((builder) =>
+               builder
+                  .setName('toggle_embed')
+                  .setDescription('Toggle whether the Level embed is sent upon a user leveling up.'),
+            )
+            .addSubcommand((builder) =>
+               builder
+                  .setName('channel')
+                  .setDescription('The channel to post level messages in.')
+                  .addChannelOption((argBuilder) =>
+                     argBuilder
+                        .setName('channel')
+                        .setDescription(
+                           'Levelup messages channel, or leave empty for Auxdibot to reply to the current message.',
+                        )
+                        .addChannelTypes(ChannelType.GuildText),
+                  ),
+            ),
+      )
+      .addSubcommandGroup((group) =>
+         group
+            .setName('message')
+            .setDescription('Message related commands')
+            .addSubcommand((builder) =>
+               createEmbedParameters(
+                  builder.setName('set').setDescription('Set the message to be sent when a user levels up.'),
+               ),
+            )
+            .addSubcommand((builder) => builder.setName('reset').setDescription('Reset the message to the default.'))
+            .addSubcommand((builder) =>
+               builder.setName('preview').setDescription('Preview the message that will be sent.'),
             ),
       ),
    info: {
       module: Modules['Levels'],
       description: 'Change settings for leveling on this server.',
       usageExample:
-         '/levels (leaderboard|add_reward|rewards|remove_reward|award_xp|reset|reset_all|remove_xp|message_xp|toggle_embed|channel)',
+         '/levels (stats|rewards|message_xp|toggle_embed|channel) (level|leaderboard) (add|remove) (award|remove|reset|reset_all)',
       permissionsRequired: [PermissionFlagsBits.Administrator],
    },
    subcommands: [

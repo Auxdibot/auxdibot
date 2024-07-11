@@ -11,6 +11,7 @@ const TROPHIES = ['🏆', '🥈', '🥉'];
 
 export const levelsLeaderboard = <AuxdibotSubcommand>{
    name: 'leaderboard',
+   group: 'stats',
    info: {
       module: Modules['Levels'],
       description: 'View the top leveled members on this server.',
