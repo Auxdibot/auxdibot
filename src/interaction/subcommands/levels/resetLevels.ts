@@ -9,10 +9,11 @@ import { EmbedBuilder } from '@discordjs/builders';
 
 export const resetLevels = <AuxdibotSubcommand>{
    name: 'reset',
+   group: 'xp',
    info: {
       module: Modules['Levels'],
       description: "Reset a user's level and XP.",
-      usageExample: '/levels reset (user)',
+      usageExample: '/levels xp reset (user)',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

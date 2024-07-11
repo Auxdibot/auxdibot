@@ -345,6 +345,7 @@ model servers {
   suggestions_discussion_threads    Boolean              @default(true)
   message_xp                        Int                  @default(20)
   level_rewards                     LevelReward[]
+  level_message                     MessageContent?
   level_channel                     String?
   level_embed                       Boolean              @default(true)
   starboard_boards                  StarboardBoardData[]

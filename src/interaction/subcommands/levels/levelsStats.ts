@@ -7,11 +7,12 @@ import { createLevelsStatEmbed } from '@/modules/features/levels/createLevelsSta
 import handleError from '@/util/handleError';
 
 export const levelsStats = <AuxdibotSubcommand>{
-   name: 'stats',
+   name: 'level',
+   group: 'stats',
    info: {
       module: Modules['Levels'],
       description: "View a user's level stats. Leave empty to view your own.",
-      usageExample: '/levels stats [user]',
+      usageExample: '/levels stats level [user]',
       allowedDefault: true,
       permissionsRequired: [],
    },

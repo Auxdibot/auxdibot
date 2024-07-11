@@ -8,11 +8,12 @@ import handleError from '@/util/handleError';
 import { EmbedBuilder } from '@discordjs/builders';
 
 export const removeLevelReward = <AuxdibotSubcommand>{
-   name: 'remove_reward',
+   name: 'remove',
+   group: 'reward',
    info: {
       module: Modules['Levels'],
       description: 'Remove a reward from the Level Rewards.',
-      usageExample: '/levels remove_reward (level)',
+      usageExample: '/levels reward remove (level)',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

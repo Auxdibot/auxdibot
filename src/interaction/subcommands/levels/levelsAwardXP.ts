@@ -8,11 +8,12 @@ import handleError from '@/util/handleError';
 import { EmbedBuilder } from '@discordjs/builders';
 
 export const levelsAwardXP = <AuxdibotSubcommand>{
-   name: 'award_xp',
+   name: 'award',
+   group: 'xp',
    info: {
       module: Modules['Levels'],
       description: 'Award a user XP points.',
-      usageExample: '/levels award_xp (xp) (user)',
+      usageExample: '/levels xp award (xp) (user)',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

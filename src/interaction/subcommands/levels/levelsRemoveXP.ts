@@ -8,7 +8,8 @@ import handleError from '@/util/handleError';
 import { EmbedBuilder } from '@discordjs/builders';
 
 export const levelsRemoveXP = <AuxdibotSubcommand>{
-   name: 'remove_xp',
+   name: 'remove',
+   group: 'xp',
    info: {
       module: Modules['Levels'],
       description: 'Remove XP points from a user.',

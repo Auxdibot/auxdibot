@@ -9,11 +9,12 @@ import { EmbedBuilder } from '@discordjs/builders';
 import { PermissionsBitField } from 'discord.js';
 
 export const addLevelReward = <AuxdibotSubcommand>{
-   name: 'add_reward',
+   name: 'add',
+   group: 'rewards',
    info: {
       module: Modules['Levels'],
       description: 'Add a reward to the Level Rewards.',
-      usageExample: '/levels add_reward (level) (role)',
+      usageExample: '/levels rewards add (level) (role)',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;
