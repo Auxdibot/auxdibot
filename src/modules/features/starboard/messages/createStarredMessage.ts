@@ -36,14 +36,11 @@ export default async function createStarredMessage(
          board: board.board_name,
       };
       const embed = JSON.parse(
-         await parsePlaceholders(
-            auxdibot,
-            JSON.stringify(jsonEmbed),
+         await parsePlaceholders(auxdibot, JSON.stringify(jsonEmbed), {
             guild,
-            starredMessage.author,
-            undefined,
-            starredData,
-         ),
+            member: starredMessage.author,
+            starred_data: starredData,
+         }),
       );
 
       const reference = await starredMessage.fetchReference().catch(() => undefined);

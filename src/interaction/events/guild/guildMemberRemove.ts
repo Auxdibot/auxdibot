@@ -20,12 +20,10 @@ export default async function guildMemberRemove(auxdibot: Auxdibot, member: Guil
                         ? {
                              embeds: [
                                 JSON.parse(
-                                   await parsePlaceholders(
-                                      auxdibot,
-                                      JSON.stringify(server.leave_embed),
-                                      member.guild,
+                                   await parsePlaceholders(auxdibot, JSON.stringify(server.leave_embed), {
+                                      guild: member.guild,
                                       member,
-                                   ),
+                                   }),
                                 ) as APIEmbed,
                              ],
                           }

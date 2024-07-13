@@ -64,6 +64,8 @@ enum Placeholders {
    MESSAGE_DATE_FORMATTED = 'MESSAGE_DATE_FORMATTED',
    MESSAGE_DATE_UTC = 'MESSAGE_DATE_UTC',
    MESSAGE_DATE_ISO = 'MESSAGE_DATE_ISO',
+   LEVEL_FROM = 'LEVEL_FROM',
+   LEVEL_TO = 'LEVEL_TO',
 }
 
 export default Placeholders;

@@ -28,7 +28,8 @@ export const DEFAULT_LEAVE_EMBED = {
 export const DEFAULT_LEVELUP_EMBED = {
    type: 'rich',
    title: '🏆 Level Up!',
-   description: '{%MEMBER_MENTION%} leveled up.\n\n🏅 Experience: `{%MEMBER_EXPERIENCE%} XP`\n\n🏆 {%LEVELUP%}',
+   description:
+      '{%MEMBER_MENTION%} leveled up.\n\n🏅 Experience: `{%MEMBER_EXPERIENCE%} XP`\n\n🏆 `Level {%LEVEL_FROM%}` -> `Level {%LEVEL_TO%}`',
    color: 15845147,
    author: { name: '{%MEMBER_TAG%}', icon_url: '{%MEMBER_AVATAR_128%}' },
 };

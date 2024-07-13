@@ -14,27 +14,14 @@ export default async function publishNotification(
    if (!channel || !channel.isTextBased()) return;
    channel
       .send({
-         content: await parsePlaceholders(
-            auxdibot,
-            notification.message.content,
-            guild,
-            undefined,
-            undefined,
-            undefined,
-            data,
-         ),
+         content: await parsePlaceholders(auxdibot, notification.message.content, { guild, feed_data: data }),
          embeds: notification.message.embed
             ? [
                  JSON.parse(
-                    await parsePlaceholders(
-                       auxdibot,
-                       JSON.stringify(notification.message.embed),
+                    await parsePlaceholders(auxdibot, JSON.stringify(notification.message.embed), {
                        guild,
-                       undefined,
-                       undefined,
-                       undefined,
-                       data,
-                    ),
+                       feed_data: data,
+                    }),
                  ),
               ]
             : undefined,

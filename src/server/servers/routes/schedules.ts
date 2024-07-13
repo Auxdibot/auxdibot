@@ -37,7 +37,9 @@ const schedules = (auxdibot: Auxdibot, router: Router) => {
                                       ...i,
                                       embed: i.embed
                                          ? JSON.parse(
-                                              await parsePlaceholders(auxdibot, JSON.stringify(i.embed), req.guild),
+                                              await parsePlaceholders(auxdibot, JSON.stringify(i.embed), {
+                                                 guild: req.guild,
+                                              }),
                                            )
                                          : undefined,
                                       index,

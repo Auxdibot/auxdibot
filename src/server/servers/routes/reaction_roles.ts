@@ -53,7 +53,9 @@ const reactionRoles = (auxdibot: Auxdibot, router: Router) => {
                ) satisfies Array<ReactionRoleRequest>;
 
                const embed = req.body['embed']
-                  ? (JSON.parse(await parsePlaceholders(auxdibot, req.body['embed'], req.guild)) satisfies APIEmbed)
+                  ? (JSON.parse(
+                       await parsePlaceholders(auxdibot, req.body['embed'], { guild: req.guild }),
+                    ) satisfies APIEmbed)
                   : undefined;
                const type = ReactionRoleType[req.body['type'] ?? 'DEFAULT'] ?? ReactionRoleType.DEFAULT;
                if (reactionsParsed.length > 10)
@@ -78,7 +80,7 @@ const reactionRoles = (auxdibot: Auxdibot, router: Router) => {
                   title,
                   reactionsParsed,
                   embed ?? undefined,
-                  await parsePlaceholders(auxdibot, req.body['message'], req.guild),
+                  await parsePlaceholders(auxdibot, req.body['message'], { guild: req.guild }),
                   type,
                   webhook_url ?? undefined,
                )

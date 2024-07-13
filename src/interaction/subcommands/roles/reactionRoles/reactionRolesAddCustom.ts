@@ -63,15 +63,16 @@ export const reactionRolesAddCustom = <AuxdibotSubcommand>{
          builder,
          toAPIEmbed(
             JSON.parse(
-               await parsePlaceholders(
-                  auxdibot,
-                  JSON.stringify(content),
-                  interaction.data.guild,
-                  interaction.data.member,
-               ),
+               await parsePlaceholders(auxdibot, JSON.stringify(content), {
+                  guild: interaction.data.guild,
+                  member: interaction.data.member,
+               }),
             ),
          ),
-         await parsePlaceholders(auxdibot, JSON.stringify(parameters), interaction.data.guild, interaction.data.member),
+         await parsePlaceholders(auxdibot, JSON.stringify(parameters), {
+            guild: interaction.data.guild,
+            member: interaction.data.member,
+         }),
          ReactionRoleType[type],
          webhook_url,
       )

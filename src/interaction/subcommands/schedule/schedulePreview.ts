@@ -30,7 +30,9 @@ export const schedulePreview = <AuxdibotSubcommand>{
             ? {
                  embeds: [
                     JSON.parse(
-                       await parsePlaceholders(auxdibot, JSON.stringify(schedule.embed), interaction.guild),
+                       await parsePlaceholders(auxdibot, JSON.stringify(schedule.embed), {
+                          guild: interaction.data.guild,
+                       }),
                     ) as APIEmbed,
                  ],
               }

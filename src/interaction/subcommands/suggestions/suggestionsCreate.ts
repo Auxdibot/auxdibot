@@ -69,13 +69,11 @@ export const suggestionsCreate = <AuxdibotSubcommand>{
          .send({
             embeds: [
                JSON.parse(
-                  await parsePlaceholders(
-                     auxdibot,
-                     JSON.stringify(embed),
-                     interaction.data.guild,
-                     interaction.data.member,
+                  await parsePlaceholders(auxdibot, JSON.stringify(embed), {
+                     guild: interaction.data.guild,
+                     member: interaction.data.member,
                      suggestion,
-                  ),
+                  }),
                ),
             ],
          })

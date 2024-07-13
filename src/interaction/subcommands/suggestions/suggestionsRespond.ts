@@ -80,13 +80,11 @@ export const suggestionsRespond = <AuxdibotSubcommand>{
             .catch(() => undefined);
          if (channel && channel.isTextBased()) {
             const embed = JSON.parse(
-               await parsePlaceholders(
-                  auxdibot,
-                  JSON.stringify(DEFAULT_SUGGESTION_UPDATE_EMBED),
-                  interaction.data.guild,
-                  interaction.data.member,
+               await parsePlaceholders(auxdibot, JSON.stringify(DEFAULT_SUGGESTION_UPDATE_EMBED), {
+                  guild: interaction.data.guild,
+                  member: interaction.data.member,
                   suggestion,
-               ),
+               }),
             );
             embed.color = auxdibot.colors.suggestions[suggestion.status];
             await channel.send({ embeds: [embed] });
@@ -97,13 +95,11 @@ export const suggestionsRespond = <AuxdibotSubcommand>{
             .catch(() => undefined);
          if (channel && channel.isTextBased()) {
             const embed = JSON.parse(
-               await parsePlaceholders(
-                  auxdibot,
-                  JSON.stringify(DEFAULT_SUGGESTION_EMBED),
-                  interaction.data.guild,
-                  interaction.data.member,
+               await parsePlaceholders(auxdibot, JSON.stringify(DEFAULT_SUGGESTION_EMBED), {
+                  guild: interaction.data.guild,
+                  member: interaction.data.member,
                   suggestion,
-               ),
+               }),
             );
             embed.color = auxdibot.colors.suggestions[suggestion.status];
             embed.fields?.push({

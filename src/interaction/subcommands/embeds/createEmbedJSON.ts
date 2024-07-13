@@ -23,7 +23,7 @@ export const createEmbedJSON = <AuxdibotSubcommand>{
       const webhook_url = interaction.options.getString('webhook_url');
       try {
          const apiEmbed = JSON.parse(
-            await parsePlaceholders(auxdibot, json, interaction.data.guild, interaction.data.member),
+            await parsePlaceholders(auxdibot, json, { guild: interaction.data.guild, member: interaction.data.member }),
          ) satisfies APIEmbed;
 
          await sendEmbed(channel, undefined, apiEmbed, webhook_url);
