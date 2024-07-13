@@ -23,12 +23,10 @@ export const joinPreview = <AuxdibotSubcommand>{
                ? {
                     embeds: [
                        JSON.parse(
-                          await parsePlaceholders(
-                             auxdibot,
-                             JSON.stringify(server.join_embed),
-                             interaction.data.guild,
-                             interaction.data.member,
-                          ),
+                          await parsePlaceholders(auxdibot, JSON.stringify(server.join_embed), {
+                             guild: interaction.data.guild,
+                             member: interaction.data.member,
+                          }),
                        ),
                     ],
                  }

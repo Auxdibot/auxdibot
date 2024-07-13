@@ -54,7 +54,10 @@ export const reactionRolesAddJSON = <AuxdibotSubcommand>{
          );
       }
       const embed = JSON.parse(
-         await parsePlaceholders(auxdibot, json || '', interaction.data.guild, interaction.data.member),
+         await parsePlaceholders(auxdibot, json || '', {
+            guild: interaction.data.guild,
+            member: interaction.data.member,
+         }),
       ) satisfies APIEmbed;
       addReactionRole(
          auxdibot,

@@ -28,17 +28,18 @@ export const createEmbed = <AuxdibotSubcommand>{
       try {
          const apiEmbed = toAPIEmbed(
             JSON.parse(
-               await parsePlaceholders(
-                  auxdibot,
-                  JSON.stringify(parameters),
-                  interaction.data.guild,
-                  interaction.data.member,
-               ),
+               await parsePlaceholders(auxdibot, JSON.stringify(parameters), {
+                  guild: interaction.data.guild,
+                  member: interaction.data.member,
+               }),
             ),
          );
          await sendEmbed(
             channel,
-            await parsePlaceholders(auxdibot, content, interaction.data.guild, interaction.data.member),
+            await parsePlaceholders(auxdibot, content, {
+               guild: interaction.data.guild,
+               member: interaction.data.member,
+            }),
             apiEmbed,
             webhook_url,
          );

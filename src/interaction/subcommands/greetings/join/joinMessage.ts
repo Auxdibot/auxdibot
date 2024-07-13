@@ -30,12 +30,10 @@ export const joinMessage = <AuxdibotSubcommand>{
                content: `Here's a preview of the new join embed!\n${server.join_dm_text || ''}`,
                embeds: [
                   JSON.parse(
-                     await parsePlaceholders(
-                        auxdibot,
-                        JSON.stringify(newEmbed),
-                        interaction.data.guild,
-                        interaction.data.member,
-                     ),
+                     await parsePlaceholders(auxdibot, JSON.stringify(newEmbed), {
+                        guild: interaction.data.guild,
+                        member: interaction.data.member,
+                     }),
                   ),
                ],
             });

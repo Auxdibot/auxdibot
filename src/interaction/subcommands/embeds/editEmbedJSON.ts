@@ -27,7 +27,12 @@ export const editEmbedJSON = <AuxdibotSubcommand>{
       try {
          await message.edit({
             embeds: [
-               JSON.parse(await parsePlaceholders(auxdibot, json, interaction.data.guild, interaction.data.member)),
+               JSON.parse(
+                  await parsePlaceholders(auxdibot, json, {
+                     guild: interaction.data.guild,
+                     member: interaction.data.member,
+                  }),
+               ),
             ],
          });
       } catch (x) {

@@ -31,7 +31,7 @@ export const editEmbed = <AuxdibotSubcommand>{
          const embed = message.embeds[0].toJSON();
          embed.url = parameters.title_url;
          embed.title = parameters.title
-            ? await parsePlaceholders(auxdibot, parameters.title, guild, sender)
+            ? await parsePlaceholders(auxdibot, parameters.title, { guild, member: sender })
             : embed.title;
          embed.color = parameters.color
             ? typeof parameters.color == 'number'
@@ -39,11 +39,11 @@ export const editEmbed = <AuxdibotSubcommand>{
                : parseInt('0x' + parameters.color.replaceAll('#', ''), 16)
             : embed.color;
          embed.description = parameters.description
-            ? await parsePlaceholders(auxdibot, parameters.description, guild, sender)
+            ? await parsePlaceholders(auxdibot, parameters.description, { guild, member: sender })
             : embed.description;
          embed.author = parameters.author_text
             ? {
-                 name: await parsePlaceholders(auxdibot, parameters.author_text, guild, sender),
+                 name: await parsePlaceholders(auxdibot, parameters.author_text, { guild, member: sender }),
                  ...(parameters.author_url ? { url: parameters.author_url } : {}),
                  ...(parameters.author_icon ? { iconURL: parameters.author_icon } : {}),
               }
@@ -51,19 +51,19 @@ export const editEmbed = <AuxdibotSubcommand>{
          embed.fields = parameters.fields || embed.fields;
          embed.footer = parameters.footer_text
             ? {
-                 text: await parsePlaceholders(auxdibot, parameters.footer_text, guild, sender),
+                 text: await parsePlaceholders(auxdibot, parameters.footer_text, { guild, member: sender }),
                  ...(parameters.footer_icon ? { iconURL: parameters.footer_icon } : {}),
               }
             : embed.footer;
          embed.image = parameters.image_url
-            ? { url: await parsePlaceholders(auxdibot, parameters.image_url, guild, sender) }
+            ? { url: await parsePlaceholders(auxdibot, parameters.image_url, { guild, member: sender }) }
             : embed.image;
          embed.thumbnail = parameters.thumbnail_url
-            ? { url: await parsePlaceholders(auxdibot, parameters.thumbnail_url, guild, sender) }
+            ? { url: await parsePlaceholders(auxdibot, parameters.thumbnail_url, { guild, member: sender }) }
             : embed.thumbnail;
 
          await message.edit({
-            ...(content ? { content: await parsePlaceholders(auxdibot, content, guild, sender) } : {}),
+            ...(content ? { content: await parsePlaceholders(auxdibot, content, { guild, member: sender }) } : {}),
             embeds: [embed],
          });
       } catch (x) {

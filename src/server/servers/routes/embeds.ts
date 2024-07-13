@@ -20,13 +20,15 @@ const embeds = (auxdibot: Auxdibot, router: Router) => {
          try {
             const channel = req.guild.channels.cache.get(req.body['channel']);
             const embed = req.body['embed']
-               ? (JSON.parse(await parsePlaceholders(auxdibot, req.body['embed'], req.guild)) satisfies APIEmbed)
+               ? (JSON.parse(
+                    await parsePlaceholders(auxdibot, req.body['embed'], { guild: req.guild }),
+                 ) satisfies APIEmbed)
                : undefined;
             if (!channel || !channel.isTextBased()) return res.status(400).json({ error: 'invalid channel' });
             const webhook_url = req.body['webhook_url'];
             return sendEmbed(
                channel,
-               await parsePlaceholders(auxdibot, req.body['message'], req.guild),
+               await parsePlaceholders(auxdibot, req.body['message'], { guild: req.guild }),
                embed,
                webhook_url,
             )

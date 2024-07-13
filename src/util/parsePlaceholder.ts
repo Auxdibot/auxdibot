@@ -12,23 +12,24 @@ import { calculateTotalStars } from '@/modules/features/starboard/calculateTotal
 /**
  * Parses placeholders in a given message and replaces them with corresponding values.
  * @param auxdibot - The Auxdibot instance.
- * @param msg - The message containing placeholders.
- * @param guild - The guild associated with the message.
- * @param member - The guild member/user associated with the message.
- * @param suggestion - The suggestion associated with the message.
- * @param starred_message - The starred message associated with the message.
- * @param feed_data - The feed data associated with the message.
+ * @param msg - The message to parse.
+ * @param context - The context to use for the placeholders.
  * @returns The message with placeholders replaced by their corresponding values.
  */
+type MessageContext = {
+   guild: Guild;
+   member: GuildMember | PartialGuildMember | User | PartialUser;
+   suggestion: Suggestion;
+   starred_data: StarredMessage;
+   feed_data: GenericFeed;
+   levelup: { from: number; to: number };
+};
 export default async function parsePlaceholders(
    auxdibot: Auxdibot,
    msg: string,
-   guild?: Guild,
-   member?: GuildMember | PartialGuildMember | User | PartialUser,
-   suggestion?: Suggestion,
-   starred_data?: StarredMessage,
-   feed_data?: GenericFeed,
+   { guild, member, suggestion, starred_data, feed_data, levelup }: Partial<MessageContext>,
 ) {
+   if (!msg) return msg;
    const server = guild ? await findOrCreateServer(auxdibot, guild.id) : undefined;
    if (suggestion?.creatorID && guild && guild.members.cache.get(suggestion.creatorID))
       member = guild.members.cache.get(suggestion.creatorID);
@@ -189,6 +190,12 @@ export default async function parsePlaceholders(
               [Placeholders.FEED_DATE_ISO]: new Date(feed_data.date).toISOString(),
            }
          : undefined),
+      ...(levelup
+         ? {
+              [Placeholders.LEVEL_FROM]: levelup.from,
+              [Placeholders.LEVEL_TO]: levelup.to,
+           }
+         : {}),
       [Placeholders.MESSAGE_DATE]: new Date().toDateString(),
       [Placeholders.MESSAGE_DATE_FORMATTED]: `<t:${Math.round(Date.now() / 1000)}>`,
 

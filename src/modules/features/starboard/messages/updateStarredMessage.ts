@@ -29,14 +29,11 @@ export default async function updateStarredMessage(
          const jsonEmbed = structuredClone(DEFAULT_STARBOARD_MESSAGE_EMBED);
          jsonEmbed.color = starLevel.color;
          const embed = JSON.parse(
-            await parsePlaceholders(
-               auxdibot,
-               JSON.stringify(jsonEmbed),
+            await parsePlaceholders(auxdibot, JSON.stringify(jsonEmbed), {
                guild,
-               starredMessage.author,
-               undefined,
-               starredData,
-            ),
+               member: starredMessage.author,
+               starred_data: starredData,
+            }),
          );
          const reference = await starredMessage.fetchReference().catch(() => undefined);
          const quoteEmbed = reference

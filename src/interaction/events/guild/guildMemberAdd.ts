@@ -20,12 +20,10 @@ export default async function guildMemberAdd(auxdibot: Auxdibot, member: GuildMe
                         ? {
                              embeds: [
                                 JSON.parse(
-                                   await parsePlaceholders(
-                                      auxdibot,
-                                      JSON.stringify(server.join_embed),
-                                      member.guild,
+                                   await parsePlaceholders(auxdibot, JSON.stringify(server.join_embed), {
+                                      guild: member.guild,
                                       member,
-                                   ),
+                                   }),
                                 ) as APIEmbed,
                              ],
                           }
@@ -44,7 +42,10 @@ export default async function guildMemberAdd(auxdibot: Auxdibot, member: GuildMe
                ? {
                     embeds: [
                        JSON.parse(
-                          await parsePlaceholders(auxdibot, JSON.stringify(server.join_dm_embed), member.guild, member),
+                          await parsePlaceholders(auxdibot, JSON.stringify(server.join_dm_embed), {
+                             guild: member.guild,
+                             member,
+                          }),
                        ) as APIEmbed,
                     ],
                  }

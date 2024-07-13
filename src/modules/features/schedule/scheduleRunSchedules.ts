@@ -56,7 +56,9 @@ export default function scheduleRunSchedules(auxdibot: Auxdibot) {
                                  ? {
                                       embeds: [
                                          JSON.parse(
-                                            await parsePlaceholders(auxdibot, JSON.stringify(schedule.embed), guild),
+                                            await parsePlaceholders(auxdibot, JSON.stringify(schedule.embed), {
+                                               guild,
+                                            }),
                                          ) as APIEmbed,
                                       ],
                                    }

@@ -64,7 +64,10 @@ export const reactionRolesEdit = <AuxdibotSubcommand>{
                ...(content ? { content } : {}),
                embeds: [
                   JSON.parse(
-                     await parsePlaceholders(auxdibot, json || '', interaction.data.guild, interaction.data.member),
+                     await parsePlaceholders(auxdibot, json || '', {
+                        guild: interaction.data.guild,
+                        member: interaction.data.member,
+                     }),
                   ),
                ],
             })
@@ -99,12 +102,10 @@ export const reactionRolesEdit = <AuxdibotSubcommand>{
                embeds: [
                   toAPIEmbed(
                      JSON.parse(
-                        await parsePlaceholders(
-                           auxdibot,
-                           JSON.stringify(parameters),
-                           interaction.data.guild,
-                           interaction.data.member,
-                        ),
+                        await parsePlaceholders(auxdibot, JSON.stringify(parameters), {
+                           guild: interaction.data.guild,
+                           member: interaction.data.member,
+                        }),
                      ),
                   ),
                ],

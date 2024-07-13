@@ -5,8 +5,9 @@
    "main": "./dist/index.js",
    "scripts": {
       "start": "node ./dist/index.js",
-      "dev": "ts-node-dev --no-notify --transpile-only --watch 'src' --exit-child src/",
-      "build": "tsc", 
+      "dev": "ts-node-dev --no-notify --transpile-only --exit-child src/",
+      "build": "tsc",
+      "build-watch": "tsc -w",
       "lint": "eslint --ignore-path .eslintignore --ext .js,.ts . --quiet --fix",
       "test": "ts-mocha -p ./tsconfig.json -u tdd ./test/**/*.test.ts --recursive --paths",
       "prepare": "husky install"

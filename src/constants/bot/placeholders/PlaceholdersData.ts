@@ -266,4 +266,12 @@ export const PlaceholdersData: {
       context: 'feed',
       description: 'The date of the feed as an ISO date.',
    },
+   LEVEL_FROM: {
+      context: 'level',
+      description: 'The level the member is leveling from.',
+   },
+   LEVEL_TO: {
+      context: 'level',
+      description: 'The level the member is leveling to.',
+   },
 };

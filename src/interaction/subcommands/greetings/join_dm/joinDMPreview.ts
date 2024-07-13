@@ -23,12 +23,10 @@ export const joinDMPreview = <AuxdibotSubcommand>{
                ? {
                     embeds: [
                        JSON.parse(
-                          await parsePlaceholders(
-                             auxdibot,
-                             JSON.stringify(settings.join_dm_embed),
-                             interaction.data.guild,
-                             interaction.data.member,
-                          ),
+                          await parsePlaceholders(auxdibot, JSON.stringify(settings.join_dm_embed), {
+                             guild: interaction.data.guild,
+                             member: interaction.data.member,
+                          }),
                        ),
                     ],
                  }

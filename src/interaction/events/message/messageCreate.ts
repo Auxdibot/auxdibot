@@ -46,24 +46,43 @@ export default async function messageCreate(auxdibot: Auxdibot, message: Message
             if (!message.guild || !message.member) return;
             if (server.level_embed) {
                const embed = JSON.parse(
-                  (
-                     await parsePlaceholders(
-                        auxdibot,
-                        JSON.stringify(DEFAULT_LEVELUP_EMBED),
-                        message.guild,
-                        message.member,
-                     )
-                  ).replaceAll(
-                     '{%LEVELUP%}',
-                     ` \`Level ${level.toLocaleString()}\` -> \`Level ${newLevel.toLocaleString()}\` `,
+                  await parsePlaceholders(
+                     auxdibot,
+                     JSON.stringify(server.level_message?.embed ?? DEFAULT_LEVELUP_EMBED),
+                     {
+                        guild: message.guild,
+                        member: message.member,
+                        levelup: { from: level, to: newLevel },
+                     },
                   ),
                );
                if (server.level_channel) {
                   const channel = message.guild.channels.cache.get(server.level_channel);
                   if (channel && channel.isTextBased())
-                     await channel.send({ content: `${message.author}`, embeds: [embed as APIEmbed] });
+                     await channel.send({
+                        content:
+                           `${message.author}` +
+                           (server.level_message?.content
+                              ? '\n' +
+                                (await parsePlaceholders(auxdibot, server.level_message.content, {
+                                   guild: message.guild,
+                                   member: message.member,
+                                   levelup: { from: level, to: newLevel },
+                                }))
+                              : ''),
+                        embeds: [embed as APIEmbed],
+                     });
                } else {
-                  await message.reply({ embeds: [embed as APIEmbed] });
+                  await message.reply({
+                     embeds: [embed as APIEmbed],
+                     content:
+                        server.level_message?.content &&
+                        (await parsePlaceholders(auxdibot, server.level_message.content, {
+                           guild: message.guild,
+                           member: message.member,
+                           levelup: { from: level, to: newLevel },
+                        })),
+                  });
                }
             }
          } catch (x) {}

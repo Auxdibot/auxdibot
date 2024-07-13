@@ -14,6 +14,9 @@ import { levelsToggleEmbed } from '@/interaction/subcommands/levels/levelsToggle
 import { levelsChannel } from '@/interaction/subcommands/levels/levelsChannel';
 import { resetAllLevels } from '@/interaction/subcommands/levels/resetAllLevels';
 import createEmbedParameters from '@/util/createEmbedParameters';
+import { levelMessage } from '@/interaction/subcommands/levels/levelMessage';
+import { levelReset } from '@/interaction/subcommands/levels/levelReset';
+import { levelPreview } from '@/interaction/subcommands/levels/levelPreview';
 
 export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -171,6 +174,9 @@ export default <AuxdibotCommand>{
       levelsToggleEmbed,
       levelsChannel,
       resetAllLevels,
+      levelMessage,
+      levelReset,
+      levelPreview,
    ],
    async execute() {
       return;

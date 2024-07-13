@@ -36,7 +36,7 @@ export default async function slashCreate(auxdibot: Auxdibot, interaction: ChatI
 
    const commandData =
       command.subcommands?.find((subcommand) =>
-         subcommandArgs.length > 1
+         subcommand && subcommandArgs.length > 1
             ? subcommand.name == subcommandArgs[1] && subcommand.group == subcommandArgs[0]
             : subcommand.name == subcommandArgs[0],
       ) || command;
