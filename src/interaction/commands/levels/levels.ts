@@ -17,6 +17,8 @@ import createEmbedParameters from '@/util/createEmbedParameters';
 import { levelMessage } from '@/interaction/subcommands/levels/levelMessage';
 import { levelReset } from '@/interaction/subcommands/levels/levelReset';
 import { levelPreview } from '@/interaction/subcommands/levels/levelPreview';
+import levelsExportCSV from '@/interaction/subcommands/levels/levelsExportCSV';
+import levelsImportCSV from '@/interaction/subcommands/levels/levelsImportCSV';
 
 export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -102,8 +104,10 @@ export default <AuxdibotCommand>{
             .addSubcommand((builder) =>
                builder
                   .setName('level')
-                  .setDescription("View you or another member's level stats on this server.")
-                  .addUserOption((argBuilder) => argBuilder.setName('user').setDescription('The user to view.')),
+                  .setDescription("View your or another member's level stats on this server.")
+                  .addUserOption((argBuilder) =>
+                     argBuilder.setName('user').setDescription('The user to check the level of.'),
+                  ),
             )
             .addSubcommand((builder) =>
                builder.setName('leaderboard').setDescription('View the leaderboard for this server.'),
@@ -153,6 +157,29 @@ export default <AuxdibotCommand>{
             .addSubcommand((builder) =>
                builder.setName('preview').setDescription('Preview the message that will be sent.'),
             ),
+      )
+      .addSubcommandGroup((group) =>
+         group
+            .setName('data')
+            .setDescription('Command for exporting and importing level data with Auxdibot.')
+            .addSubcommand((builder) =>
+               builder.setName('export_csv').setDescription('Export the levels data to a CSV file.'),
+            )
+            .addSubcommand((builder) =>
+               builder
+                  .setName('import_csv')
+                  .setDescription('Import the levels data from a CSV file.')
+                  .addAttachmentOption((input) =>
+                     input.setName('csv').setDescription('The CSV file to import.').setRequired(true),
+                  )
+                  .addBooleanOption((input) =>
+                     input
+                        .setName('show_errors')
+                        .setDescription(
+                           'Whether to show issues with invalid data in the CSV file. (Errors will stop import process.)',
+                        ),
+                  ),
+            ),
       ),
    info: {
       module: Modules['Levels'],
@@ -177,6 +204,8 @@ export default <AuxdibotCommand>{
       levelMessage,
       levelReset,
       levelPreview,
+      levelsExportCSV,
+      levelsImportCSV,
    ],
    async execute() {
       return;
