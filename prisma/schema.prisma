@@ -348,6 +348,7 @@ model servers {
   level_message                     MessageContent?
   level_channel                     String?
   level_embed                       Boolean              @default(true)
+  level_event_xp                    Int                  @default(0)
   starboard_boards                  StarboardBoardData[]
   self_star                         Boolean              @default(true)
   starboard_star                    Boolean              @default(true)

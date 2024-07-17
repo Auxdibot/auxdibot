@@ -1,15 +1,14 @@
-import { APIEmbed, Message } from 'discord.js';
-import parsePlaceholders from '@/util/parsePlaceholder';
+import { Message } from 'discord.js';
 import Modules from '@/constants/bot/commands/Modules';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import awardXP from '@/modules/features/levels/awardXP';
-import { DEFAULT_LEVELUP_EMBED } from '@/constants/embeds/DefaultEmbeds';
 import checkBlacklistedWords from '@/modules/features/moderation/automod/checkBlacklistedWords';
 import { cacheMessage } from '@/modules/features/cacheMessage';
 import checkMessageSpam from '@/modules/features/moderation/automod/checkMessageSpam';
 import checkAttachmentsSpam from '@/modules/features/moderation/automod/checkAttachmentsSpam';
 import checkInvitesSpam from '@/modules/features/moderation/automod/checkInvitesSpam';
+import { sendLevelMessage } from '@/util/sendLevelMessage';
 
 export default async function messageCreate(auxdibot: Auxdibot, message: Message) {
    if (message.author.bot) return;
@@ -42,55 +41,11 @@ export default async function messageCreate(auxdibot: Auxdibot, message: Message
          .catch(() => undefined);
       const newLevel = await awardXP(auxdibot, message.guild.id, message.member.id, server.message_xp);
       if (newLevel && level && newLevel > level) {
-         try {
-            if (!message.guild || !message.member) return;
-            if (server.level_embed) {
-               const embed = JSON.parse(
-                  await parsePlaceholders(
-                     auxdibot,
-                     JSON.stringify(server.level_message?.embed ?? DEFAULT_LEVELUP_EMBED),
-                     {
-                        guild: message.guild,
-                        member: message.member,
-                        levelup: { from: level, to: newLevel },
-                     },
-                  ),
-               );
-               if (server.level_channel) {
-                  const channel = message.guild.channels.cache.get(server.level_channel);
-                  if (channel && channel.isTextBased())
-                     await channel.send({
-                        content:
-                           `${message.author}` +
-                           (server.level_message?.content
-                              ? '\n' +
-                                (await parsePlaceholders(auxdibot, server.level_message.content, {
-                                   guild: message.guild,
-                                   member: message.member,
-                                   levelup: { from: level, to: newLevel },
-                                }))
-                              : ''),
-                        embeds: [embed as APIEmbed],
-                     });
-               } else {
-                  await message.reply({
-                     embeds: [embed as APIEmbed],
-                     content:
-                        server.level_message?.content &&
-                        (await parsePlaceholders(auxdibot, server.level_message.content, {
-                           guild: message.guild,
-                           member: message.member,
-                           levelup: { from: level, to: newLevel },
-                        })),
-                  });
-               }
-            }
-         } catch (x) {}
-         const reward = server.level_rewards.find((reward) => reward.level == newLevel);
-         if (reward) {
-            const role = message.guild.roles.cache.get(reward.roleID);
-            if (role) sender.roles.add(role);
-         }
+         if (!message.member) return;
+         await sendLevelMessage(auxdibot, message.member, level, newLevel, {
+            message: message,
+            textChannel: message.channel,
+         }).catch(() => undefined);
       }
    }
 }
