@@ -77,6 +77,10 @@ export interface Auxdibot extends Client {
     */
    starboard_timeout: Collection<string, number>;
    /**
+    * Collection of level events attended in Auxdibot
+    */
+   level_events: [string, string][];
+   /**
     * Subscriber for handling notifications in Auxdibot.
     */
    subscriber: Subscriber;

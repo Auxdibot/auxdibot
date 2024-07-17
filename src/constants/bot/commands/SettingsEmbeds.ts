@@ -193,7 +193,9 @@ export const SettingsEmbeds: { [k: string]: (auxdibot: Auxdibot, servers: server
                server.level_embed
                   ? `✅ ${server.level_channel ? `<#${server.level_channel}>` : '`Reply to Message`'}`
                   : '❌'
-            }\n💬 **Message XP**: \`${server.message_xp} XP / message\`\n
+            }\n💬 **Message XP**: \`${server.message_xp} XP / message\`\n👋 **Event XP**: \`${
+               server.level_event_xp
+            } XP / event attended\`\n
             🗒️ **Levelup Channel**: ${server.level_channel ?? '`None (Reply)`'} (${
                server.level_embed ? '✅ Send Levelup Messages' : "❌ Don't Send Levelup Messages"
             })`,

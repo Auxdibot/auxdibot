@@ -19,6 +19,7 @@ import { levelReset } from '@/interaction/subcommands/levels/levelReset';
 import { levelPreview } from '@/interaction/subcommands/levels/levelPreview';
 import levelsExportCSV from '@/interaction/subcommands/levels/levelsExportCSV';
 import levelsImportCSV from '@/interaction/subcommands/levels/levelsImportCSV';
+import { levelsSetEventXP } from '@/interaction/subcommands/levels/levelsSetEventXP';
 
 export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -127,6 +128,14 @@ export default <AuxdibotCommand>{
             )
             .addSubcommand((builder) =>
                builder
+                  .setName('event_xp')
+                  .setDescription('Set the amount of XP given for attending an event on your Discord server.')
+                  .addNumberOption((argBuilder) =>
+                     argBuilder.setName('xp').setDescription('The amount of XP to give.').setRequired(true),
+                  ),
+            )
+            .addSubcommand((builder) =>
+               builder
                   .setName('toggle_embed')
                   .setDescription('Toggle whether the Level embed is sent upon a user leveling up.'),
             )
@@ -206,6 +215,7 @@ export default <AuxdibotCommand>{
       levelPreview,
       levelsExportCSV,
       levelsImportCSV,
+      levelsSetEventXP,
    ],
    async execute() {
       return;

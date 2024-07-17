@@ -63,6 +63,7 @@ const CLIENT_ID = process.env.DISCORD_BOT_CLIENT_ID;
    auxdibot.invites_detections = new Collection();
    auxdibot.attachments_detections = new Collection();
    auxdibot.starboard_timeout = new Collection();
+   auxdibot.level_events = [];
    auxdibot.scheduler = new ToadScheduler();
    auxdibot.subscriber = new Subscriber();
    auxdibot.colors = {

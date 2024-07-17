@@ -20,6 +20,7 @@ import channelDelete from './channel/channelDelete';
 import voiceStateUpdate from './voice/voiceStateUpdate';
 import selectMenuCreate from './interaction/selectMenuCreate';
 import modalSubmit from './interaction/modalSubmit';
+import { eventDelete } from './events/eventDelete';
 
 export default function listenEvents(auxdibot: Auxdibot) {
    auxdibot.once('ready', () => onReady(auxdibot));
@@ -44,4 +45,5 @@ export default function listenEvents(auxdibot: Auxdibot) {
    auxdibot.on('channelCreate', (channel) => channelCreate(auxdibot, channel));
    auxdibot.on('channelDelete', (channel) => channelDelete(auxdibot, channel));
    auxdibot.on('voiceStateUpdate', (oldState, newState) => voiceStateUpdate(auxdibot, oldState, newState));
+   auxdibot.on('guildScheduledEventDelete', (event) => eventDelete(auxdibot, event));
 }
