@@ -5,7 +5,7 @@ import { SlashCommandBuilder } from 'discord.js';
 export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
       .setName('mylevel')
-      .setDescription('Check your current level and XP.')
+      .setDescription("View your or another member's level stats on this server.")
       .addUserOption((option) =>
          option.setName('user').setDescription('The user to check the level of.').setRequired(false),
       ),
