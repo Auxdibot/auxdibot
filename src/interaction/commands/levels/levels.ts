@@ -22,6 +22,8 @@ import levelsImportCSV from '@/interaction/subcommands/levels/levelsImportCSV';
 import { levelsSetEventXP } from '@/interaction/subcommands/levels/levelsSetEventXP';
 import { levelsAddChannelMultiplier } from '@/interaction/subcommands/levels/levelsAddChannelMultiplier';
 import { levelsRemoveChannelMultiplier } from '@/interaction/subcommands/levels/levelsRemoveChannelMultiplier';
+import { levelsAddRoleMultiplier } from '@/interaction/subcommands/levels/levelsAddRoleMultiplier';
+import { levelsRemoveRoleMultiplier } from '@/interaction/subcommands/levels/levelsRemoveRoleMultiplier';
 
 export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -220,7 +222,7 @@ export default <AuxdibotCommand>{
                   .addRoleOption((argBuilder) =>
                      argBuilder.setName('role').setDescription('The role to remove from the multiplier list.'),
                   )
-                  .addNumberOption((argBuilder) =>
+                  .addIntegerOption((argBuilder) =>
                      argBuilder
                         .setName('index')
                         .setDescription('The index of the role to remove from the multiplier list.'),
@@ -237,6 +239,12 @@ export default <AuxdibotCommand>{
                      argBuilder
                         .setName('channel')
                         .setDescription('The channel to add to the multiplier list.')
+                        .addChannelTypes(
+                           ChannelType.GuildAnnouncement,
+                           ChannelType.GuildText,
+                           ChannelType.GuildVoice,
+                           ChannelType.GuildStageVoice,
+                        )
                         .setRequired(true),
                   )
                   .addNumberOption((argBuilder) =>
@@ -251,9 +259,17 @@ export default <AuxdibotCommand>{
                   .setName('remove_channel')
                   .setDescription('Remove a channel multiplier.')
                   .addChannelOption((argBuilder) =>
-                     argBuilder.setName('channel').setDescription('The channel to remove from the multiplier list.'),
+                     argBuilder
+                        .setName('channel')
+                        .setDescription('The channel to remove from the multiplier list.')
+                        .addChannelTypes(
+                           ChannelType.GuildAnnouncement,
+                           ChannelType.GuildText,
+                           ChannelType.GuildVoice,
+                           ChannelType.GuildStageVoice,
+                        ),
                   )
-                  .addNumberOption((argBuilder) =>
+                  .addIntegerOption((argBuilder) =>
                      argBuilder
                         .setName('index')
                         .setDescription('The index of the channel to remove from the multiplier list.'),
@@ -292,6 +308,8 @@ export default <AuxdibotCommand>{
       levelsSetEventXP,
       levelsAddChannelMultiplier,
       levelsRemoveChannelMultiplier,
+      levelsAddRoleMultiplier,
+      levelsRemoveRoleMultiplier,
    ],
    async execute() {
       return;

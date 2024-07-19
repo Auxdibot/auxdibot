@@ -36,7 +36,14 @@ export default async function voiceStateUpdate(auxdibot: Auxdibot, oldState: Voi
                   event.isActive() &&
                   !auxdibot.level_events.find((value) => value[0] == newState.member.id && value[1] == event.id),
             );
-            const multiplier = server.channel_multipliers.find((i) => i.id == newState.channelId);
+            const channelMultiplier = server.channel_multipliers.find((i) => i.id == newState.channelId);
+            const roleMultiplier =
+               server.role_multipliers.length > 0
+                  ? server.role_multipliers.reduce(
+                       (acc, i) => (newState.member.roles.cache.has(i.id) ? acc + i.multiplier : acc),
+                       0,
+                    )
+                  : 1;
             if (events.size > 0 && server.level_event_xp > 0) {
                events.forEach((event) => auxdibot.level_events.push([newState.member.id, event.id]));
                const level = await auxdibot.database.servermembers
@@ -50,7 +57,8 @@ export default async function voiceStateUpdate(auxdibot: Auxdibot, oldState: Voi
                   auxdibot,
                   guild.id,
                   newState.member.id,
-                  server.level_event_xp * events.size * (multiplier ? multiplier.multiplier : 1),
+                  server.level_event_xp *
+                     ((channelMultiplier ? channelMultiplier.multiplier : 1) + (roleMultiplier || 1)),
                );
                if (newLevel && level && newLevel > level) {
                   await sendLevelMessage(auxdibot, newState.member, level, newLevel, {
