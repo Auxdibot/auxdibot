@@ -23,8 +23,8 @@ export default async function createRoleMultiplier(
    return await auxdibot.database.servers
       .update({
          where: { serverID: guild.id },
-         select: { level_rewards: true },
-         data: { channel_multipliers: { push: multiplier } },
+         select: { role_multipliers: true },
+         data: { role_multipliers: { push: multiplier } },
       })
       .then((data) => {
          handleLog(auxdibot, guild, {

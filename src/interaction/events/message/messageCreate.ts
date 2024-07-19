@@ -43,7 +43,7 @@ export default async function messageCreate(auxdibot: Auxdibot, message: Message
       const roleMultiplier =
          server.role_multipliers.length > 0
             ? server.role_multipliers.reduce(
-                 (acc, i) => (message.member.roles.cache.has(i.id) ? acc + i.multiplier : acc),
+                 (acc, i) => (message.member.roles.cache.has(i.id) ? acc * i.multiplier : acc),
                  0,
               )
             : 1;
@@ -51,7 +51,10 @@ export default async function messageCreate(auxdibot: Auxdibot, message: Message
          auxdibot,
          message.guild.id,
          message.member.id,
-         server.message_xp * ((channelMultiplier ? channelMultiplier.multiplier : 1) + (roleMultiplier || 1)),
+         server.message_xp *
+            (channelMultiplier ? channelMultiplier.multiplier : 1) *
+            (roleMultiplier || 1) *
+            server.global_multiplier,
       );
       if (newLevel && level && newLevel > level) {
          if (!message.member) return;
