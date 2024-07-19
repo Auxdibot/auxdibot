@@ -20,6 +20,8 @@ import { levelPreview } from '@/interaction/subcommands/levels/levelPreview';
 import levelsExportCSV from '@/interaction/subcommands/levels/levelsExportCSV';
 import levelsImportCSV from '@/interaction/subcommands/levels/levelsImportCSV';
 import { levelsSetEventXP } from '@/interaction/subcommands/levels/levelsSetEventXP';
+import { levelsAddChannelMultiplier } from '@/interaction/subcommands/levels/levelsAddChannelMultiplier';
+import { levelsRemoveChannelMultiplier } from '@/interaction/subcommands/levels/levelsRemoveChannelMultiplier';
 
 export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -189,6 +191,78 @@ export default <AuxdibotCommand>{
                         ),
                   ),
             ),
+      )
+      .addSubcommandGroup((group) =>
+         group
+            .setName('multipliers')
+            .setDescription('Multiplier related commands')
+            .addSubcommand((builder) =>
+               builder
+                  .setName('add_role')
+                  .setDescription('Add a role to the multiplier list.')
+                  .addRoleOption((argBuilder) =>
+                     argBuilder
+                        .setName('role')
+                        .setDescription('The role to add to the multiplier list.')
+                        .setRequired(true),
+                  )
+                  .addNumberOption((argBuilder) =>
+                     argBuilder
+                        .setName('multiplier')
+                        .setDescription('The multiplier to apply to the role.')
+                        .setRequired(true),
+                  ),
+            )
+            .addSubcommand((builder) =>
+               builder
+                  .setName('remove_role')
+                  .setDescription('Remove a role from the multiplier list.')
+                  .addRoleOption((argBuilder) =>
+                     argBuilder.setName('role').setDescription('The role to remove from the multiplier list.'),
+                  )
+                  .addNumberOption((argBuilder) =>
+                     argBuilder
+                        .setName('index')
+                        .setDescription('The index of the role to remove from the multiplier list.'),
+                  ),
+            )
+            .addSubcommand((builder) =>
+               builder.setName('set_global').setDescription('Set the global multiplier for the server.'),
+            )
+            .addSubcommand((builder) =>
+               builder
+                  .setName('add_channel')
+                  .setDescription('Add a channel multiplier.')
+                  .addChannelOption((argBuilder) =>
+                     argBuilder
+                        .setName('channel')
+                        .setDescription('The channel to add to the multiplier list.')
+                        .setRequired(true),
+                  )
+                  .addNumberOption((argBuilder) =>
+                     argBuilder
+                        .setName('multiplier')
+                        .setDescription('The multiplier to apply to the channel.')
+                        .setRequired(true),
+                  ),
+            )
+            .addSubcommand((builder) =>
+               builder
+                  .setName('remove_channel')
+                  .setDescription('Remove a channel multiplier.')
+                  .addChannelOption((argBuilder) =>
+                     argBuilder.setName('channel').setDescription('The channel to remove from the multiplier list.'),
+                  )
+                  .addNumberOption((argBuilder) =>
+                     argBuilder
+                        .setName('index')
+                        .setDescription('The index of the channel to remove from the multiplier list.'),
+                  ),
+            )
+            .addSubcommand((builder) =>
+               builder.setName('list').setDescription('List the roles in the multiplier list.'),
+            )
+            .addSubcommand((builder) => builder.setName('reset').setDescription('Reset the multiplier list.')),
       ),
    info: {
       module: Modules['Levels'],
@@ -216,6 +290,8 @@ export default <AuxdibotCommand>{
       levelsExportCSV,
       levelsImportCSV,
       levelsSetEventXP,
+      levelsAddChannelMultiplier,
+      levelsRemoveChannelMultiplier,
    ],
    async execute() {
       return;

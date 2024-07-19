@@ -39,7 +39,13 @@ export default async function messageCreate(auxdibot: Auxdibot, message: Message
          })
          .then((memberData) => memberData.level)
          .catch(() => undefined);
-      const newLevel = await awardXP(auxdibot, message.guild.id, message.member.id, server.message_xp);
+      const multiplier = server.channel_multipliers.find((i) => i.id == message.channel.id);
+      const newLevel = await awardXP(
+         auxdibot,
+         message.guild.id,
+         message.member.id,
+         server.message_xp * (multiplier ? multiplier.multiplier : 1),
+      );
       if (newLevel && level && newLevel > level) {
          if (!message.member) return;
          await sendLevelMessage(auxdibot, message.member, level, newLevel, {

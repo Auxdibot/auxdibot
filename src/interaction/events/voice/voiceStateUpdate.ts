@@ -36,7 +36,7 @@ export default async function voiceStateUpdate(auxdibot: Auxdibot, oldState: Voi
                   event.isActive() &&
                   !auxdibot.level_events.find((value) => value[0] == newState.member.id && value[1] == event.id),
             );
-            console.log(events);
+            const multiplier = server.channel_multipliers.find((i) => i.id == newState.channelId);
             if (events.size > 0 && server.level_event_xp > 0) {
                events.forEach((event) => auxdibot.level_events.push([newState.member.id, event.id]));
                const level = await auxdibot.database.servermembers
@@ -50,7 +50,7 @@ export default async function voiceStateUpdate(auxdibot: Auxdibot, oldState: Voi
                   auxdibot,
                   guild.id,
                   newState.member.id,
-                  server.level_event_xp * events.size,
+                  server.level_event_xp * events.size * (multiplier ? multiplier.multiplier : 1),
                );
                if (newLevel && level && newLevel > level) {
                   await sendLevelMessage(auxdibot, newState.member, level, newLevel, {
