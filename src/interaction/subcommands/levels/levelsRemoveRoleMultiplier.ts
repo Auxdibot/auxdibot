@@ -24,7 +24,7 @@ export const levelsRemoveRoleMultiplier = <AuxdibotSubcommand>{
       if (!role && !index) {
          return await handleError(auxdibot, 'ROLE_INVALID', 'You must provide a valid channel or index.', interaction);
       }
-      const multiplier = server.role_multipliers.find((reward, i) => reward.id == role.id || i == index);
+      const multiplier = server.role_multipliers.find((reward, i) => reward.id == role?.id || i == index - 1);
       if (!multiplier) {
          return await handleError(
             auxdibot,

@@ -35,7 +35,7 @@ export const levelsRemoveChannelMultiplier = <AuxdibotSubcommand>{
             interaction,
          );
       }
-      const multiplier = server.channel_multipliers.find((reward, i) => reward.id == channel.id || i == index);
+      const multiplier = server.channel_multipliers.find((reward, i) => reward.id == channel?.id || i == index - 1);
       if (!multiplier) {
          return await handleError(
             auxdibot,

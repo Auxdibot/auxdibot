@@ -24,6 +24,8 @@ import { levelsAddChannelMultiplier } from '@/interaction/subcommands/levels/lev
 import { levelsRemoveChannelMultiplier } from '@/interaction/subcommands/levels/levelsRemoveChannelMultiplier';
 import { levelsAddRoleMultiplier } from '@/interaction/subcommands/levels/levelsAddRoleMultiplier';
 import { levelsRemoveRoleMultiplier } from '@/interaction/subcommands/levels/levelsRemoveRoleMultiplier';
+import { levelMultipliers } from '@/interaction/subcommands/levels/levelsMultipliers';
+import { levelsSetGlobalMultiplier } from '@/interaction/subcommands/levels/levelsSetGlobalMultiplier';
 
 export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -229,7 +231,14 @@ export default <AuxdibotCommand>{
                   ),
             )
             .addSubcommand((builder) =>
-               builder.setName('set_global').setDescription('Set the global multiplier for the server.'),
+               builder
+                  .setName('set_global')
+                  .setDescription('Set the global multiplier for the server.')
+                  .addNumberOption((argBuilder) =>
+                     argBuilder
+                        .setName('multiplier')
+                        .setDescription('The multiplier to apply to the server. (Default: 1)'),
+                  ),
             )
             .addSubcommand((builder) =>
                builder
@@ -275,10 +284,7 @@ export default <AuxdibotCommand>{
                         .setDescription('The index of the channel to remove from the multiplier list.'),
                   ),
             )
-            .addSubcommand((builder) =>
-               builder.setName('list').setDescription('List the roles in the multiplier list.'),
-            )
-            .addSubcommand((builder) => builder.setName('reset').setDescription('Reset the multiplier list.')),
+            .addSubcommand((builder) => builder.setName('list').setDescription('List all multipliers on your server.')),
       ),
    info: {
       module: Modules['Levels'],
@@ -310,6 +316,8 @@ export default <AuxdibotCommand>{
       levelsRemoveChannelMultiplier,
       levelsAddRoleMultiplier,
       levelsRemoveRoleMultiplier,
+      levelMultipliers,
+      levelsSetGlobalMultiplier,
    ],
    async execute() {
       return;

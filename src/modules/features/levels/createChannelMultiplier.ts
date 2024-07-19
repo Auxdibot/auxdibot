@@ -23,7 +23,7 @@ export default async function createChannelMultiplier(
    return await auxdibot.database.servers
       .update({
          where: { serverID: guild.id },
-         select: { level_rewards: true },
+         select: { channel_multipliers: true },
          data: { channel_multipliers: { push: multiplier } },
       })
       .then((data) => {
