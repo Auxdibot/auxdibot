@@ -113,6 +113,9 @@ enum LogAction {
   LEVEL_CHANNEL_CHANGED
   LEVEL_REWARD_CREATED
   LEVEL_REWARD_DELETED
+  MULTIPLIER_CREATED
+  MULTIPLIER_DELETED
+  MULTIPLIER_SET
   CHANNEL_LOCKED
   CHANNEL_UNLOCKED
   SERVER_LOCKED
@@ -304,6 +307,11 @@ enum GradientTypes {
   BACKGROUND
 }
 
+type Multiplier {
+  id         String
+  multiplier Float
+}
+
 model servermembers {
   id                 String   @id @default(auto()) @map("_id") @db.ObjectId
   v                  Int?     @map("__v")
@@ -349,6 +357,9 @@ model servers {
   level_channel                     String?
   level_embed                       Boolean              @default(true)
   level_event_xp                    Int                  @default(0)
+  channel_multipliers               Multiplier[]
+  role_multipliers                  Multiplier[]
+  global_multiplier                 Float                @default(1)
   starboard_boards                  StarboardBoardData[]
   self_star                         Boolean              @default(true)
   starboard_star                    Boolean              @default(true)
