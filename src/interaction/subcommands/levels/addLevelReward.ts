@@ -20,8 +20,6 @@ export const addLevelReward = <AuxdibotSubcommand>{
       if (!interaction.data) return;
       const role = interaction.options.getRole('role', true),
          level = interaction.options.getNumber('level', true);
-      const server = interaction.data.guildData;
-      const reward = server.level_rewards.find((reward) => reward.roleID == role.id || reward.level == level);
       if (role.id == interaction.data.guild.roles.everyone.id) {
          return await handleError(auxdibot, 'LEVEL_REWARD_EVERYONE', 'This is the everyone role, silly!', interaction);
       }
@@ -51,17 +49,10 @@ export const addLevelReward = <AuxdibotSubcommand>{
             interaction,
          );
       }
-      if (reward) {
-         return await handleError(
-            auxdibot,
-            'LEVEL_REWARD_EXISTS',
-            'This reward role already exists, or there is already a reward for that level!',
-            interaction,
-         );
-      }
       createLevelReward(auxdibot, interaction.guild, interaction.user, { level, roleID: role.id })
          .then(async () => {
             const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
+            embed.title = 'Success!';
             embed.description = `Successfully added <@&${role.id}> as a role reward!`;
             return await auxdibot.createReply(interaction, { embeds: [embed] });
          })

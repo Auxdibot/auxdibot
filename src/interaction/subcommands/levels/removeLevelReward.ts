@@ -9,24 +9,26 @@ import { EmbedBuilder } from '@discordjs/builders';
 
 export const removeLevelReward = <AuxdibotSubcommand>{
    name: 'remove',
-   group: 'reward',
+   group: 'rewards',
    info: {
       module: Modules['Levels'],
       description: 'Remove a reward from the Level Rewards.',
-      usageExample: '/levels reward remove (level)',
+      usageExample: '/levels reward remove [level|index]',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;
-      const level = interaction.options.getNumber('level', true);
+      const level = interaction.options.getInteger('level', false);
+      const indexID = interaction.options.getInteger('index', false);
       const server = interaction.data.guildData;
-      const reward = server.level_rewards.find((reward) => reward.level == level);
+      const reward = server.level_rewards.find((reward, index) => reward.level == level || index == indexID - 1);
       if (!reward) {
          return await handleError(auxdibot, 'REWARD_ROLE_NOT_FOUND', "This reward role doesn't exist!", interaction);
       }
       deleteLevelReward(auxdibot, interaction.guild, interaction.user, server.level_rewards.indexOf(reward))
          .then(async () => {
             const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
-            embed.description = `Successfully removed <@&${reward.roleID}> from the role rewards!`;
+            embed.title = 'Success!';
+            embed.description = `Successfully removed <@&${reward.roleID}> (for \`Level ${reward.level}\`) from the role rewards!`;
             return await auxdibot.createReply(interaction, { embeds: [embed] });
          })
          .catch((x) => {

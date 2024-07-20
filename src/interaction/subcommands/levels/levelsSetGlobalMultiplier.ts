@@ -4,7 +4,6 @@ import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandD
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 import setGlobalMultiplier from '@/modules/features/levels/setGlobalMultiplier';
-import setMessageXP from '@/modules/features/levels/setMessageXP';
 import handleError from '@/util/handleError';
 import { EmbedBuilder } from '@discordjs/builders';
 

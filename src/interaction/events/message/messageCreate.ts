@@ -9,6 +9,7 @@ import checkMessageSpam from '@/modules/features/moderation/automod/checkMessage
 import checkAttachmentsSpam from '@/modules/features/moderation/automod/checkAttachmentsSpam';
 import checkInvitesSpam from '@/modules/features/moderation/automod/checkInvitesSpam';
 import { sendLevelMessage } from '@/util/sendLevelMessage';
+import { grantLevelRewards } from '@/modules/features/levels/grantLevelRewards';
 
 export default async function messageCreate(auxdibot: Auxdibot, message: Message) {
    if (message.author.bot) return;
@@ -62,6 +63,7 @@ export default async function messageCreate(auxdibot: Auxdibot, message: Message
             message: message,
             textChannel: message.channel,
          }).catch(() => undefined);
+         await grantLevelRewards(auxdibot, message.member, newLevel).catch(() => undefined);
       }
    }
 }

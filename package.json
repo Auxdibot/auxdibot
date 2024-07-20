@@ -20,6 +20,7 @@
    },
    "homepage": "https://github.com/Auxdibot/auxdibot#readme",
    "dependencies": {
+      "@napi-rs/canvas": "^0.1.53",
       "@prisma/client": "^5.14.0",
       "@top-gg/sdk": "^3.1.6",
       "@types/lodash": "^4.17.4",
