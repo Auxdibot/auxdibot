@@ -16,8 +16,6 @@ export default async function createLevelReward(
    if (!testLimit(server.level_rewards, Limits.LEVEL_REWARDS_DEFAULT_LIMIT))
       throw new Error('You have too many level rewards!');
    if (levelReward.level < 1) throw new Error('You cannot specify a level reward for a level less than 1!');
-   if (server.level_rewards.find((i) => i.level == levelReward.level))
-      throw new Error('You already have a reward setup for that level!');
    return await auxdibot.database.servers
       .update({
          where: { serverID: guild.id },

@@ -73,7 +73,7 @@ export default <AuxdibotCommand>{
       )
       .addSubcommandGroup((group) =>
          group
-            .setName('reward')
+            .setName('rewards')
             .setDescription('Reward related commands')
             .addSubcommand((builder) =>
                builder
@@ -93,11 +93,11 @@ export default <AuxdibotCommand>{
                builder
                   .setName('remove')
                   .setDescription('Remove a reward from the Level Rewards.')
-                  .addNumberOption((argBuilder) =>
-                     argBuilder
-                        .setName('level')
-                        .setDescription('The level at which this reward is given.')
-                        .setRequired(true),
+                  .addIntegerOption((argBuilder) =>
+                     argBuilder.setName('level').setDescription('The level at which this reward is given.'),
+                  )
+                  .addIntegerOption((argBuilder) =>
+                     argBuilder.setName('index').setDescription('The index of the reward to remove from the list.'),
                   ),
             )
             .addSubcommand((builder) =>

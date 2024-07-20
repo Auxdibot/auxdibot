@@ -5,6 +5,7 @@ import { LogAction } from '@prisma/client';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import awardXP from '@/modules/features/levels/awardXP';
 import { sendLevelMessage } from '@/util/sendLevelMessage';
+import { grantLevelRewards } from '@/modules/features/levels/grantLevelRewards';
 
 export default async function voiceStateUpdate(auxdibot: Auxdibot, oldState: VoiceState, newState: VoiceState) {
    if (!oldState.serverDeaf && newState.serverDeaf) {
@@ -66,6 +67,7 @@ export default async function voiceStateUpdate(auxdibot: Auxdibot, oldState: Voi
                   await sendLevelMessage(auxdibot, newState.member, level, newLevel, {
                      textChannel: newState.channel,
                   }).catch(() => undefined);
+                  await grantLevelRewards(auxdibot, newState.member, newLevel).catch(() => undefined);
                }
             }
          } catch (x) {

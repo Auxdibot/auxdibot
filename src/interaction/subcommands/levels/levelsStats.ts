@@ -3,7 +3,8 @@ import { Auxdibot } from '@/interfaces/Auxdibot';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
-import { createLevelsStatEmbed } from '@/modules/features/levels/createLevelsStatEmbed';
+import calcXP from '@/util/calcXP';
+import { generateLevelCard } from '@/modules/features/levels/generateLevelCard';
 import handleError from '@/util/handleError';
 
 export const levelsStats = <AuxdibotSubcommand>{
@@ -18,15 +19,23 @@ export const levelsStats = <AuxdibotSubcommand>{
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;
-      const user = interaction.options.getUser('user');
+      await interaction.deferReply();
+      const user = interaction.options.getUser('user') ?? interaction.user;
       const data = await auxdibot.database.servermembers.findFirst({
-         where: { userID: user?.id || interaction.data.member.id, serverID: interaction.data.guild.id },
+         where: { userID: user.id, serverID: interaction.data.guild.id },
       });
       if (!data)
          return await handleError(auxdibot, 'MEMBER_DATA_NOT_FOUND', 'Member data could not be found!', interaction);
-
+      const levelXP = calcXP(data.level);
+      const leaderboard =
+         (await auxdibot.database.servermembers
+            .count({
+               where: { serverID: interaction.data.guild.id, xp: { gt: data.xp } },
+            })
+            .catch(() => 0)) + 1;
+      const image = await generateLevelCard(user, data.xp, data.xpTill, data.level, levelXP, leaderboard);
       return await auxdibot.createReply(interaction, {
-         embeds: [await createLevelsStatEmbed(auxdibot, data, user ?? interaction.user)],
+         files: [{ attachment: image, name: 'level.png' }],
       });
    },
 };

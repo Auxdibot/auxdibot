@@ -7,6 +7,7 @@ import { PunishmentValues } from '../punishments/PunishmentValues';
 import durationToTimestamp from '@/util/durationToTimestamp';
 import timestampToDuration from '@/util/timestampToDuration';
 import { FeedNames } from '../notifications/FeedNames';
+import _ from 'lodash';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const SettingsEmbeds: { [k: string]: (auxdibot: Auxdibot, servers: servers, ...args: any[]) => APIEmbed } = {
@@ -196,18 +197,44 @@ export const SettingsEmbeds: { [k: string]: (auxdibot: Auxdibot, servers: server
             }\n💬 **Message XP**: \`${server.message_xp} XP / message\`\n👋 **Event XP**: \`${
                server.level_event_xp
             } XP / event attended\`\n
+            📊 **Global XP Multiplier**: \`x${server.global_multiplier}\`\n
             🗒️ **Levelup Channel**: ${server.level_channel ?? '`None (Reply)`'} (${
                server.level_embed ? '✅ Send Levelup Messages' : "❌ Don't Send Levelup Messages"
             })`,
          )
-         .addFields({
-            name: '🏆 Level Rewards',
-            value:
-               server.level_rewards.reduce(
-                  (accumulator: string, val) => `${accumulator}\r\n* Level ${val.level}: <@&${val.roleID}>`,
-                  '',
-               ) || 'No Level Rewards',
-         })
+         .addFields(
+            {
+               name: '✨ Channel XP Multipliers',
+               value:
+                  server.channel_multipliers.reduce(
+                     (accumulator: string, val) => `${accumulator}\r\n* <#${val.id}>: **${val.multiplier}x**`,
+                     '',
+                  ) || 'No Channel Multipliers',
+               inline: true,
+            },
+            {
+               name: '✨ Role XP Multipliers',
+               value:
+                  server.role_multipliers.reduce(
+                     (accumulator: string, val) => `${accumulator}\r\n* <@&${val.id}>: **${val.multiplier}x**`,
+                     '',
+                  ) || 'No Role Multipliers',
+               inline: true,
+            },
+            {
+               name: '🏆 Level Rewards',
+               value:
+                  _.chain(server.level_rewards.map((i, index) => ({ ...i, index })))
+                     .groupBy('level')
+                     .map((i) => {
+                        return `**Rewards for \`Level ${i[0].level}\`**:\n${i
+                           .map((x) => `* \`#${x.index + 1}\` - <@&${x.roleID}>`)
+                           .join('\n')}`;
+                     })
+                     .value()
+                     .reduce((accumulator: string, val) => `${accumulator}\r\n\n${val}`, '') || 'No Level Rewards',
+            },
+         )
          .toJSON(),
    suggestions: (auxdibot, server) =>
       new EmbedBuilder()
