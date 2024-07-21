@@ -8,12 +8,12 @@ Users must be at minimum 13 years of age to use our Bot and Services.
 
 ### 1. Information We Collect
 
-User IDs: User IDs are collected in order to connect server members to data stored on Auxdibot.
-Channel IDs: Channel IDs are collected for channel-specific configurations and command permissions set by members with the Administrator permission on your Discord server.
-Role IDs: Role IDs are collected for role-specific configurations, messages with role data attached (such as Reaction Roles), and command permissions set by members with the Administrator permission on your Discord server.
-Message IDs: Message IDs are collected in order to provide functionality for modules that utilize Discord messages on Auxdibot. (Reaction Roles, Starboard, Feeds, Embeds, and Schedules.)
+* User IDs: User IDs are collected in order to connect server members to data stored on Auxdibot.
+* Channel IDs: Channel IDs are collected for channel-specific configurations and command permissions set by members with the Administrator permission on your Discord server.
+* Role IDs: Role IDs are collected for role-specific configurations, messages with role data attached (such as Reaction Roles), and command permissions set by members with the Administrator permission on your Discord server.
+* Message IDs: Message IDs are collected in order to provide functionality for modules that utilize Discord messages on Auxdibot. (Reaction Roles, Starboard, Feeds, Embeds, and Schedules.)
 
-Information Provided by Users: We may collect additional information that users voluntarily provide, such as message configurations, scheduled messages, feed data, and suggestion content.
+* Information Provided by Users: We may collect additional information that users voluntarily provide, such as message configurations, scheduled messages, feed data, and suggestion content.
 
 ### 2. Data Security
 

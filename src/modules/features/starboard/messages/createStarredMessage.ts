@@ -7,6 +7,9 @@ import parsePlaceholders from '@/util/parsePlaceholder';
 import { testLimit } from '@/util/testLimit';
 import { StarboardBoardData } from '@prisma/client';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, Guild, Message, PartialMessage } from 'discord.js';
+import awardXP from '../../levels/awardXP';
+import { sendLevelMessage } from '@/util/sendLevelMessage';
+import { grantLevelRewards } from '../../levels/grantLevelRewards';
 
 export default async function createStarredMessage(
    auxdibot: Auxdibot,
@@ -28,6 +31,7 @@ export default async function createStarredMessage(
       starLevelsSorted[0] ?? { ...defaultStarLevels[defaultStarLevels.length - 1], message_reaction: board.reaction };
 
    try {
+      starredMessage = await starredMessage.fetch();
       const jsonEmbed = structuredClone(DEFAULT_STARBOARD_MESSAGE_EMBED);
       jsonEmbed.color = starLevel.color;
       const starredData = {
@@ -92,6 +96,40 @@ export default async function createStarredMessage(
             data: { starred_messages: { push: starredData } },
          })
          .catch(() => message.delete());
+      if (server.level_starboard_xp > 0 && starredMessage.member) {
+         const level = await auxdibot.database.servermembers
+            .findFirst({
+               where: { serverID: guild.id, userID: starredMessage.member.id },
+            })
+            .then((memberData) => memberData.level)
+            .catch(() => undefined);
+         const channelMultiplier = server.channel_multipliers.find((i) => i.id == starredMessage.channel.id);
+         const roleMultiplier =
+            server.role_multipliers.length > 0
+               ? server.role_multipliers.reduce(
+                    (acc, i) => (starredMessage.member.roles.cache.has(i.id) ? acc * i.multiplier : acc),
+                    0,
+                 )
+               : 1;
+         const newLevel = await awardXP(
+            auxdibot,
+            starredMessage.guild.id,
+            starredMessage.member.id,
+            server.level_starboard_xp *
+               (channelMultiplier ? channelMultiplier.multiplier : 1) *
+               (roleMultiplier || 1) *
+               server.global_multiplier,
+         );
+
+         if (newLevel && level && newLevel > level) {
+            if (!starredMessage.member) return;
+            await sendLevelMessage(auxdibot, starredMessage.member, level, newLevel, {
+               message: starredMessage,
+               textChannel: !starredMessage.channel.isDMBased() && starredMessage.channel,
+            }).catch(() => undefined);
+            await grantLevelRewards(auxdibot, starredMessage.member, newLevel).catch(() => undefined);
+         }
+      }
    } catch (x) {
       console.error(x);
    }
