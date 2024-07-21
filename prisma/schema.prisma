@@ -357,6 +357,7 @@ model servers {
   level_channel                     String?
   level_embed                       Boolean              @default(true)
   level_event_xp                    Int                  @default(0)
+  level_starboard_xp                Int                  @default(0)
   channel_multipliers               Multiplier[]
   role_multipliers                  Multiplier[]
   global_multiplier                 Float                @default(1)

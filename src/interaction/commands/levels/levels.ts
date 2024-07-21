@@ -26,6 +26,7 @@ import { levelsAddRoleMultiplier } from '@/interaction/subcommands/levels/levels
 import { levelsRemoveRoleMultiplier } from '@/interaction/subcommands/levels/levelsRemoveRoleMultiplier';
 import { levelMultipliers } from '@/interaction/subcommands/levels/levelsMultipliers';
 import { levelsSetGlobalMultiplier } from '@/interaction/subcommands/levels/levelsSetGlobalMultiplier';
+import { levelsSetStarboardXP } from '@/interaction/subcommands/levels/levelsSetStarboardXP';
 
 export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -136,6 +137,14 @@ export default <AuxdibotCommand>{
                builder
                   .setName('event_xp')
                   .setDescription('Set the amount of XP given for attending an event on your Discord server.')
+                  .addNumberOption((argBuilder) =>
+                     argBuilder.setName('xp').setDescription('The amount of XP to give.').setRequired(true),
+                  ),
+            )
+            .addSubcommand((builder) =>
+               builder
+                  .setName('starboard_xp')
+                  .setDescription("Set the amount of XP given for a message being starred on the server's starboard.")
                   .addNumberOption((argBuilder) =>
                      argBuilder.setName('xp').setDescription('The amount of XP to give.').setRequired(true),
                   ),
@@ -318,6 +327,7 @@ export default <AuxdibotCommand>{
       levelsRemoveRoleMultiplier,
       levelMultipliers,
       levelsSetGlobalMultiplier,
+      levelsSetStarboardXP,
    ],
    async execute() {
       return;
