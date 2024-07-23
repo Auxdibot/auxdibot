@@ -1,11 +1,16 @@
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import createLevelReward from '@/modules/features/levels/createLevelReward';
 import deleteLevelReward from '@/modules/features/levels/deleteLevelReward';
+import setEventXP from '@/modules/features/levels/setEventXP';
 import setLevelChannel from '@/modules/features/levels/setLevelChannel';
+import setLevelMessage from '@/modules/features/levels/setLevelMessage';
 import setMessageXP from '@/modules/features/levels/setMessageXP';
+import setStarboardXP from '@/modules/features/levels/setStarboardXP';
+import setVoiceXP from '@/modules/features/levels/setVoiceXP';
 import toggleLevelsEmbed from '@/modules/features/levels/toggleLevelsEmbed';
 import checkAuthenticated from '@/server/checkAuthenticated';
 import checkGuildOwnership from '@/server/checkGuildOwnership';
+import { APIEmbed } from '@prisma/client';
 import { Router } from 'express';
 /*
    Levels
@@ -26,13 +31,20 @@ const levels = (auxdibot: Auxdibot, router: Router) => {
                   level_channel: true,
                   level_rewards: true,
                   message_xp_range: true,
+                  event_xp_range: true,
+                  level_message: true,
+                  voice_xp_range: true,
+                  starboard_xp_range: true,
                   level_embed: true,
                },
             })
             .then(async (data) =>
                data
                   ? res.json({
-                       data,
+                       data: {
+                          ...data,
+                          level_rewards: data.level_rewards.map((x, index) => ({ ...x, index })),
+                       },
                     })
                   : res.status(404).json({ error: "couldn't find that server" }),
             )
@@ -69,15 +81,81 @@ const levels = (auxdibot: Auxdibot, router: Router) => {
       (req, res, next) => checkGuildOwnership(auxdibot, req, res, next),
       (req, res) => {
          const messageXP = req.body['message_xp'];
-         if ((typeof messageXP != 'string' && typeof messageXP != 'number') || !Number(messageXP))
-            return res.status(400).json({ error: 'this is not a valid message XP count!' });
+         if (typeof messageXP != 'string')
+            return res.status(400).json({ error: 'This is not a valid message XP count!' });
          const xpRange = messageXP
             .toString()
             .split('-')
             .map((x) => Number(x));
-         const xp = Math.round(Number(messageXP));
-         if (xp < 0) return res.status(400).json({ error: 'xp must be greater than zero' });
+
          return setMessageXP(auxdibot, req.guild, xpRange)
+            .then(async (i) => {
+               return i ? res.json({ data: i }) : res.status(500).json({ error: "couldn't update that server" });
+            })
+            .catch((x) => {
+               console.error(x);
+               return res.status(500).json({ error: typeof x.message == 'string' ? x.message : 'an error occurred' });
+            });
+      },
+   );
+   router.post(
+      '/:serverID/levels/event_xp',
+      (req, res, next) => checkAuthenticated(req, res, next),
+      (req, res, next) => checkGuildOwnership(auxdibot, req, res, next),
+      (req, res) => {
+         const eventXP = req.body['event_xp'];
+         if (typeof eventXP != 'string') return res.status(400).json({ error: 'This is not a valid event XP count!' });
+         const xpRange = eventXP
+            .toString()
+            .split('-')
+            .map((x) => Number(x));
+
+         return setEventXP(auxdibot, req.guild, xpRange)
+            .then(async (i) => {
+               return i ? res.json({ data: i }) : res.status(500).json({ error: "couldn't update that server" });
+            })
+            .catch((x) => {
+               console.error(x);
+               return res.status(500).json({ error: typeof x.message == 'string' ? x.message : 'an error occurred' });
+            });
+      },
+   );
+   router.post(
+      '/:serverID/levels/voice_xp',
+      (req, res, next) => checkAuthenticated(req, res, next),
+      (req, res, next) => checkGuildOwnership(auxdibot, req, res, next),
+      (req, res) => {
+         const voiceXP = req.body['voice_xp'];
+         if (typeof voiceXP != 'string') return res.status(400).json({ error: 'this is not a valid voice XP count!' });
+         const xpRange = voiceXP
+            .toString()
+            .split('-')
+            .map((x) => Number(x));
+
+         return setVoiceXP(auxdibot, req.guild, xpRange)
+            .then(async (i) => {
+               return i ? res.json({ data: i }) : res.status(500).json({ error: "couldn't update that server" });
+            })
+            .catch((x) => {
+               console.error(x);
+               return res.status(500).json({ error: typeof x.message == 'string' ? x.message : 'an error occurred' });
+            });
+      },
+   );
+   router.post(
+      '/:serverID/levels/starboard_xp',
+      (req, res, next) => checkAuthenticated(req, res, next),
+      (req, res, next) => checkGuildOwnership(auxdibot, req, res, next),
+      (req, res) => {
+         const starboardXP = req.body['starboard_xp'];
+         if (typeof starboardXP != 'string')
+            return res.status(400).json({ error: 'this is not a valid starboard XP count!' });
+         const xpRange = starboardXP
+            .toString()
+            .split('-')
+            .map((x) => Number(x));
+
+         return setStarboardXP(auxdibot, req.guild, xpRange)
             .then(async (i) => {
                return i ? res.json({ data: i }) : res.status(500).json({ error: "couldn't update that server" });
             })
@@ -98,6 +176,27 @@ const levels = (auxdibot: Auxdibot, router: Router) => {
                console.error(x);
                return res.status(500).json({ error: typeof x.message == 'string' ? x.message : 'an error occurred' });
             });
+      },
+   );
+   router.post(
+      '/:serverID/levels/message',
+      (req, res, next) => checkAuthenticated(req, res, next),
+      (req, res, next) => checkGuildOwnership(auxdibot, req, res, next),
+      (req, res) => {
+         const content = req.body['content'],
+            embed = req.body['embed'];
+
+         try {
+            const embedJSON = embed ? (JSON.parse(embed) satisfies APIEmbed) : null;
+            return setLevelMessage(auxdibot, req.guild.id, embedJSON, content)
+               .then((data) => res.json({ data }))
+               .catch((x) => {
+                  res.status(500).json({ error: x.message });
+               });
+         } catch (x) {
+            console.log(x);
+            return res.status(500).json({ error: 'an error occurred' });
+         }
       },
    );
    router
