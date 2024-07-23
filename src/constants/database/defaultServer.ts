@@ -15,6 +15,7 @@ export const defaultServer: Partial<servers> = {
    suggestions: [],
    punishments: [],
    starred_messages: [],
+   message_xp_range: [20],
    level_rewards: [],
    join_roles: [],
    sticky_roles: [],

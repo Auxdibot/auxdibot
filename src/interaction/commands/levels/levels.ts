@@ -130,8 +130,11 @@ export default <AuxdibotCommand>{
                builder
                   .setName('message_xp')
                   .setDescription('Set the amount of XP given for sending a message.')
-                  .addNumberOption((argBuilder) =>
-                     argBuilder.setName('xp').setDescription('The amount of XP to give.').setRequired(true),
+                  .addStringOption((argBuilder) =>
+                     argBuilder
+                        .setName('xp')
+                        .setDescription('The amount of XP to give. (ex. "15", or "15-50")')
+                        .setRequired(true),
                   ),
             )
             .addSubcommand((builder) =>
@@ -208,11 +211,7 @@ export default <AuxdibotCommand>{
             .addSubcommand((builder) =>
                builder
                   .setName('import_mee6')
-                  .setDescription('Import level data from the MEE6 Discord app on your server.')
-                  // TODO: Remove before pushing to prod
-                  .addStringOption((builder) =>
-                     builder.setName('guildid_debug').setDescription('The guild ID to import.'),
-                  ),
+                  .setDescription('Import level data from the MEE6 Discord app on your server.'),
             ),
       )
       .addSubcommandGroup((group) =>

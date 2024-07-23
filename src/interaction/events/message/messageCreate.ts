@@ -29,7 +29,7 @@ export default async function messageCreate(auxdibot: Auxdibot, message: Message
       checkInvitesSpam(auxdibot, server, message);
    }
 
-   if (server.message_xp <= 0) return;
+   if (server.message_xp_range[0] <= 0 && server.message_xp_range.length <= 1) return;
    /*
    Leveling
    */
@@ -48,11 +48,16 @@ export default async function messageCreate(auxdibot: Auxdibot, message: Message
                  0,
               )
             : 1;
+      const randomValue =
+         server.message_xp_range[0] +
+         (server.message_xp_range
+            ? Math.floor(Math.random() * (server.message_xp_range[1] - server.message_xp_range[0] + 1))
+            : 0);
       const newLevel = await awardXP(
          auxdibot,
          message.guild.id,
          message.member.id,
-         server.message_xp *
+         randomValue *
             (channelMultiplier ? channelMultiplier.multiplier : 1) *
             (roleMultiplier || 1) *
             server.global_multiplier,
