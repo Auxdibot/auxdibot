@@ -351,7 +351,10 @@ model servers {
   suggestions_updates_channel       String?
   suggestions_auto_delete           Boolean              @default(true)
   suggestions_discussion_threads    Boolean              @default(true)
-  message_xp                        Int                  @default(20)
+  // Deprecated, replaced with message_xp
+  old_message_xp                    Int?                 @map("message_xp")
+  // Deprecated, replaced with message_xp
+  message_xp_range                  Int[]                @default([20])
   level_rewards                     LevelReward[]
   level_message                     MessageContent?
   level_channel                     String?

@@ -77,10 +77,12 @@ export default <AuxdibotSubcommand>{
             changes.push(`✅ Imported ${role_rewards.length} role rewards from MEE6`);
          }
          if (xp_per_message) {
-            await setMessageXP(auxdibot, interaction.guild, xp_per_message[0])
+            await setMessageXP(auxdibot, interaction.guild, xp_per_message.slice(0, 2))
                .then(() => {
                   changes.push(
-                     `✅ Imported message XP from MEE6 (${interaction.data.guildData.message_xp} -> ${xp_per_message[0]})`,
+                     `✅ Imported message XP from MEE6 (${interaction.data.guildData.message_xp_range.join(
+                        '-',
+                     )} -> ${xp_per_message.join('-')})`,
                   );
                })
                .catch(() => {

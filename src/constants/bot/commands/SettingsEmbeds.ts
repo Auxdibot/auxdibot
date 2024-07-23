@@ -194,7 +194,7 @@ export const SettingsEmbeds: { [k: string]: (auxdibot: Auxdibot, servers: server
                server.level_embed
                   ? `✅ ${server.level_channel ? `<#${server.level_channel}>` : '`Reply to Message`'}`
                   : '❌'
-            }\n💬 **Message XP**: \`${server.message_xp} XP / message\`\n👋 **Event XP**: \`${
+            }\n💬 **Message XP Range**: \`${server.message_xp_range.join(' - ')} XP / message\`\n👋 **Event XP**: \`${
                server.level_event_xp
             } XP / event attended\`\n
             📊 **Global XP Multiplier**: \`x${server.global_multiplier}\`\n
