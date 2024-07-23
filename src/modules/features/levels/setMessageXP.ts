@@ -9,7 +9,7 @@ export default async function setMessageXP(auxdibot: Auxdibot, guild: Guild, mes
    if (Number.isNaN(messageXP.find((i) => isNaN(i)))) throw new Error('The Message XP range must be a valid number.');
    return auxdibot.database.servers.update({
       where: { serverID: guild.id },
-      select: { level_channel: true, serverID: true },
+      select: { message_xp_range: true, serverID: true },
       data: { message_xp_range: messageXP },
    });
 }
