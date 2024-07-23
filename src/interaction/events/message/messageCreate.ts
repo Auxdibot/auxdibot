@@ -50,7 +50,7 @@ export default async function messageCreate(auxdibot: Auxdibot, message: Message
             : 1;
       const randomValue =
          server.message_xp_range[0] +
-         (server.message_xp_range
+         (server.message_xp_range[1]
             ? Math.floor(Math.random() * (server.message_xp_range[1] - server.message_xp_range[0] + 1))
             : 0);
       const newLevel = await awardXP(

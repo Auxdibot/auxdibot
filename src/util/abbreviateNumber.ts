@@ -5,5 +5,5 @@ export function abbreviateNumber(number: number): string {
       const abbreviatedNumber = (number / Math.pow(1000, unitIndex + 1)).toFixed(1);
       return abbreviatedNumber + units[unitIndex];
    }
-   return number.toString();
+   return number?.toString() || '0';
 }

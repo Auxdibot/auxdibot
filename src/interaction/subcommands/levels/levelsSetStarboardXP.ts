@@ -17,15 +17,15 @@ export const levelsSetStarboardXP = <AuxdibotSubcommand>{
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;
-      const xp = Math.round(interaction.options.getNumber('xp', true));
+      const xp = interaction.options.getString('xp', true);
+      const xpRange = xp.split('-').map((x) => parseInt(x));
 
-      if (xp < 0) {
-         handleError(auxdibot, 'XP_LESS_THAN_ZERO', 'Message XP cannot be less than zero!', interaction);
-      }
-      setStarboardXP(auxdibot, interaction.guild, xp)
+      setStarboardXP(auxdibot, interaction.guild, xpRange)
          .then(async () => {
             const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
-            embed.description = `Members will now get ${xp.toLocaleString()} XP from a starred message.`;
+            embed.description = `Members will now get ${
+               xpRange[0].toLocaleString() + (xpRange.length > 1 ? ' to ' + xpRange[1].toLocaleString() : '')
+            } XP from a starred message.`;
             embed.title = 'Success!';
             return await auxdibot.createReply(interaction, { embeds: [embed] });
          })

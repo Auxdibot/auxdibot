@@ -76,7 +76,6 @@ export async function fetchFullMEE6LeaderboardPage(guildID: string) {
       if (page.length < 1000) {
          break;
       }
-      console.log(results);
       pn++;
       await new Promise((resolve) => setTimeout(resolve, 1000));
    }

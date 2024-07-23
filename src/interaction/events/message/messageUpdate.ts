@@ -19,7 +19,6 @@ export default async function messageUpdate(
    /*
    Message Log
    */
-   console.log(oldMessage);
    if (oldMessage.content != newMessage.content) {
       const channel = await newMessage.channel.fetch().catch(() => undefined);
       await handleLog(
