@@ -194,10 +194,15 @@ export const SettingsEmbeds: { [k: string]: (auxdibot: Auxdibot, servers: server
                server.level_embed
                   ? `✅ ${server.level_channel ? `<#${server.level_channel}>` : '`Reply to Message`'}`
                   : '❌'
-            }\n💬 **Message XP Range**: \`${server.message_xp_range.join(' - ')} XP / message\`\n👋 **Event XP**: \`${
-               server.level_event_xp
-            } XP / event attended\`\n
-            📊 **Global XP Multiplier**: \`x${server.global_multiplier}\`\n
+            }\n💬 **Message XP Range**: \`${server.message_xp_range.join(
+               ' to ',
+            )} XP / message\`\n👋 **Event XP**: \`${server.event_xp_range.join(
+               ' to ',
+            )} XP / event attended\`\n🎙️ **Voice Chat XP**: \`${server.voice_xp_range.join(
+               ' to ',
+            )} XP / minute in VC\`\n⭐ **Starboard XP**: \`${server.starboard_xp_range.join(
+               ' to ',
+            )} XP / starred message\`\n\n📊 **Global XP Multiplier**: \`x${server.global_multiplier}\`\n
             🗒️ **Levelup Channel**: ${server.level_channel ?? '`None (Reply)`'} (${
                server.level_embed ? '✅ Send Levelup Messages' : "❌ Don't Send Levelup Messages"
             })`,

@@ -355,12 +355,13 @@ model servers {
   old_message_xp                    Int?                 @map("message_xp")
   // Deprecated, replaced with message_xp
   message_xp_range                  Int[]                @default([20])
+  voice_xp_range                    Int[]                @default([5])
+  starboard_xp_range                Int[]                @default([50])
+  event_xp_range                    Int[]                @default([100])
   level_rewards                     LevelReward[]
   level_message                     MessageContent?
   level_channel                     String?
   level_embed                       Boolean              @default(true)
-  level_event_xp                    Int                  @default(0)
-  level_starboard_xp                Int                  @default(0)
   channel_multipliers               Multiplier[]
   role_multipliers                  Multiplier[]
   global_multiplier                 Float                @default(1)

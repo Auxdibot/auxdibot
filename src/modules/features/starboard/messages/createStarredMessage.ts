@@ -96,13 +96,18 @@ export default async function createStarredMessage(
             data: { starred_messages: { push: starredData } },
          })
          .catch(() => message.delete());
-      if (server.level_starboard_xp > 0 && starredMessage.member) {
+      if (!(server.event_xp_range[0] == 0 && !server.event_xp_range[1]) && starredMessage.member) {
          const level = await auxdibot.database.servermembers
             .findFirst({
                where: { serverID: guild.id, userID: starredMessage.member.id },
             })
             .then((memberData) => memberData.level)
             .catch(() => undefined);
+         const randomValue =
+            server.starboard_xp_range[0] +
+            (server.starboard_xp_range[1]
+               ? Math.floor(Math.random() * (server.starboard_xp_range[1] - server.starboard_xp_range[0] + 1))
+               : 0);
          const channelMultiplier = server.channel_multipliers.find((i) => i.id == starredMessage.channel.id);
          const roleMultiplier =
             server.role_multipliers.length > 0
@@ -115,7 +120,7 @@ export default async function createStarredMessage(
             auxdibot,
             starredMessage.guild.id,
             starredMessage.member.id,
-            server.level_starboard_xp *
+            randomValue *
                (channelMultiplier ? channelMultiplier.multiplier : 1) *
                (roleMultiplier || 1) *
                server.global_multiplier,

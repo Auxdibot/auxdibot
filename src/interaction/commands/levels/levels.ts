@@ -28,6 +28,7 @@ import { levelMultipliers } from '@/interaction/subcommands/levels/levelsMultipl
 import { levelsSetGlobalMultiplier } from '@/interaction/subcommands/levels/levelsSetGlobalMultiplier';
 import { levelsSetStarboardXP } from '@/interaction/subcommands/levels/levelsSetStarboardXP';
 import levelsImportMEE6 from '@/interaction/subcommands/levels/levelsImportMEE6';
+import { levelsSetVoiceXP } from '@/interaction/subcommands/levels/levelsSetVoiceXP';
 
 export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -141,16 +142,35 @@ export default <AuxdibotCommand>{
                builder
                   .setName('event_xp')
                   .setDescription('Set the amount of XP given for attending an event on your Discord server.')
-                  .addNumberOption((argBuilder) =>
-                     argBuilder.setName('xp').setDescription('The amount of XP to give.').setRequired(true),
+                  .addStringOption((argBuilder) =>
+                     argBuilder
+                        .setName('xp')
+                        .setDescription('The amount of XP to give. (ex. "15", or "15-50")')
+                        .setRequired(true),
+                  ),
+            )
+            .addSubcommand((builder) =>
+               builder
+                  .setName('voice_xp')
+                  .setDescription(
+                     'Set the amount of XP given for being in a voice channel on your Discord server for 1 minute.',
+                  )
+                  .addStringOption((argBuilder) =>
+                     argBuilder
+                        .setName('xp')
+                        .setDescription('The amount of XP to give. (ex. "15", or "15-50")')
+                        .setRequired(true),
                   ),
             )
             .addSubcommand((builder) =>
                builder
                   .setName('starboard_xp')
                   .setDescription("Set the amount of XP given for a message being starred on the server's starboard.")
-                  .addNumberOption((argBuilder) =>
-                     argBuilder.setName('xp').setDescription('The amount of XP to give.').setRequired(true),
+                  .addStringOption((argBuilder) =>
+                     argBuilder
+                        .setName('xp')
+                        .setDescription('The amount of XP to give. (ex. "15", or "15-50")')
+                        .setRequired(true),
                   ),
             )
             .addSubcommand((builder) =>
@@ -338,6 +358,7 @@ export default <AuxdibotCommand>{
       levelsSetGlobalMultiplier,
       levelsSetStarboardXP,
       levelsImportMEE6,
+      levelsSetVoiceXP,
    ],
    async execute() {
       return;
