@@ -227,11 +227,6 @@ export default <AuxdibotCommand>{
                            'Whether to show issues with invalid data in the CSV file. (Errors will stop import process.)',
                         ),
                   ),
-            )
-            .addSubcommand((builder) =>
-               builder
-                  .setName('import_mee6')
-                  .setDescription('Import level data from the MEE6 Discord app on your server.'),
             ),
       )
       .addSubcommandGroup((group) =>
