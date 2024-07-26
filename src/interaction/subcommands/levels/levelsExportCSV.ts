@@ -22,7 +22,7 @@ export default <AuxdibotSubcommand>{
          },
       });
       const csv = data.map((member) => `${member.userID},${member.xp}`);
-      csv.unshift('userID,level,xp');
+      csv.unshift('userID,xp');
       return await auxdibot.createReply(interaction, {
          content: '✅ Your level data has been processed.',
          files: [new AttachmentBuilder(Buffer.from(csv.join('\n'), 'utf-8'), { name: 'levels_data.csv' })],

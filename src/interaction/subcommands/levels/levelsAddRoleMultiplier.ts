@@ -26,7 +26,7 @@ export const levelsAddRoleMultiplier = <AuxdibotSubcommand>{
          .then(async () => {
             const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.title = 'Role Multiplier Added';
-            embed.description = `Successfully added <@&${role.id}> (with a multiplier of \`x${multiplier}\` as a role multiplier!`;
+            embed.description = `Successfully added <@&${role.id}> (with a multiplier of \`x${multiplier}\`) as a role multiplier!`;
             return await auxdibot.createReply(interaction, { embeds: [embed] });
          })
          .catch((x) => {

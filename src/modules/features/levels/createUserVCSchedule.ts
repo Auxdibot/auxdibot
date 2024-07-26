@@ -36,7 +36,7 @@ export function createUserVCSchedule(auxdibot: Auxdibot, member: GuildMember) {
       const channelMultiplier = server.channel_multipliers.find((i) => i.id == member.voice.channelId);
       const roleMultiplier =
          server.role_multipliers.length > 0
-            ? server.role_multipliers.reduce((acc, i) => (member.roles.cache.has(i.id) ? acc * i.multiplier : acc), 0)
+            ? server.role_multipliers.reduce((acc, i) => (member.roles.cache.has(i.id) ? acc * i.multiplier : acc), 1)
             : 1;
       const newLevel = await awardXP(
          auxdibot,

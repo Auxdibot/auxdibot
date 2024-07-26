@@ -1,9 +1,10 @@
 import AuxdibotButton from '@/interfaces/buttons/AuxdibotButton';
-import { MessageComponentInteraction } from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageComponentInteraction } from 'discord.js';
 import Modules from '@/constants/bot/commands/Modules';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import handleError from '@/util/handleError';
-import { createLevelsStatEmbed } from '@/modules/features/levels/createLevelsStatEmbed';
+import { generateLevelCard } from '@/modules/features/levels/generateLevelCard';
+import { CustomEmojis } from '@/constants/bot/CustomEmojis';
 
 export default <AuxdibotButton>{
    module: Modules['Moderation'],
@@ -18,6 +19,27 @@ export default <AuxdibotButton>{
       });
       if (!data)
          return await handleError(auxdibot, 'MEMBER_DATA_NOT_FOUND', 'Member data could not be found!', interaction);
-      return await auxdibot.createReply(interaction, { embeds: [await createLevelsStatEmbed(auxdibot, data, user)] });
+      const leaderboard =
+         (await auxdibot.database.servermembers
+            .count({
+               where: { serverID: interaction.guild.id, xp: { gt: data.xp } },
+            })
+            .catch(() => 0)) + 1;
+      const image = await generateLevelCard(user, data.xp, leaderboard);
+      const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
+         new ButtonBuilder()
+            .setURL(`${process.env.SITE_URL}/leaderboard/${interaction.guild.id}`)
+            .setEmoji(CustomEmojis.LEVELS)
+            .setLabel('Leaderboard')
+            .setStyle(ButtonStyle.Link),
+         new ButtonBuilder()
+            .setCustomId('levelembed-' + user.id)
+            .setLabel('View Legacy Embed')
+            .setStyle(ButtonStyle.Secondary),
+      );
+      return await auxdibot.createReply(interaction, {
+         files: [{ attachment: image, name: 'level.png' }],
+         components: [row],
+      });
    },
 };
