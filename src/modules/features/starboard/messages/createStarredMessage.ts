@@ -114,7 +114,7 @@ export default async function createStarredMessage(
             server.role_multipliers.length > 0
                ? server.role_multipliers.reduce(
                     (acc, i) => (starredMessage.member.roles.cache.has(i.id) ? acc * i.multiplier : acc),
-                    0,
+                    1,
                  )
                : 1;
          const newLevel = await awardXP(

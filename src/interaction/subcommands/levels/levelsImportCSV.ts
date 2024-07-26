@@ -45,7 +45,6 @@ export default <AuxdibotSubcommand>{
          for (const csvObject of csvObjects) {
             const userID = csvObject['userID'];
             const xp = parseInt(csvObject['xp']);
-            const level = parseInt(csvObject['level']);
             if (isNaN(xp) && showErrors) {
                return await handleError(
                   auxdibot,
@@ -54,16 +53,8 @@ export default <AuxdibotSubcommand>{
                   interaction,
                );
             }
-            if (isNaN(level) && showErrors) {
-               return await handleError(
-                  auxdibot,
-                  'CSV_PARSE_ERROR',
-                  `The "level" field for user with ID ${userID} is not a number.`,
-                  interaction,
-               );
-            }
 
-            if (isNaN(xp) || isNaN(level)) continue;
+            if (isNaN(xp)) continue;
             const member: GuildMember | undefined = await interaction.guild.members
                .fetch(userID)
                .catch(() => undefined);
@@ -81,7 +72,7 @@ export default <AuxdibotSubcommand>{
                   },
                })
                .then(() => {
-                  updated.push({ name: member.displayName, new: `Level: ${level}, XP: ${xp}` });
+                  updated.push({ name: member.displayName, new: `XP: ${xp}` });
                });
          }
          return auxdibot.createReply(interaction, {

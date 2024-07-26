@@ -33,7 +33,7 @@ export const levelsAddChannelMultiplier = <AuxdibotSubcommand>{
          .then(async () => {
             const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.title = 'Channel Multiplier Added';
-            embed.description = `Successfully added <#${channel.id}> (with a multiplier of \`x${multiplier}\` as a channel multiplier!`;
+            embed.description = `Successfully added <#${channel.id}> (with a multiplier of \`x${multiplier}\`) as a channel multiplier!`;
             return await auxdibot.createReply(interaction, { embeds: [embed] });
          })
          .catch((x) => {

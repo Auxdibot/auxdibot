@@ -45,7 +45,7 @@ export default async function voiceStateUpdate(auxdibot: Auxdibot, oldState: Voi
                server.role_multipliers.length > 0
                   ? server.role_multipliers.reduce(
                        (acc, i) => (newState.member.roles.cache.has(i.id) ? acc * i.multiplier : acc),
-                       0,
+                       1,
                     )
                   : 1;
             if (events.size > 0 && !(server.event_xp_range[0] == 0 && !server.event_xp_range[1])) {
