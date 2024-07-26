@@ -27,8 +27,8 @@ import { levelsRemoveRoleMultiplier } from '@/interaction/subcommands/levels/lev
 import { levelMultipliers } from '@/interaction/subcommands/levels/levelsMultipliers';
 import { levelsSetGlobalMultiplier } from '@/interaction/subcommands/levels/levelsSetGlobalMultiplier';
 import { levelsSetStarboardXP } from '@/interaction/subcommands/levels/levelsSetStarboardXP';
-import levelsImportMEE6 from '@/interaction/subcommands/levels/levelsImportMEE6';
 import { levelsSetVoiceXP } from '@/interaction/subcommands/levels/levelsSetVoiceXP';
+import { levelsLeaderboardVisibility } from '@/interaction/subcommands/levels/levelsLeaderboardVisibility';
 
 export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -363,8 +363,8 @@ export default <AuxdibotCommand>{
       levelMultipliers,
       levelsSetGlobalMultiplier,
       levelsSetStarboardXP,
-      levelsImportMEE6,
       levelsSetVoiceXP,
+      levelsLeaderboardVisibility,
    ],
    async execute() {
       return;

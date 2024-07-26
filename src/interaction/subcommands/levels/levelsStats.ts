@@ -1,10 +1,12 @@
 import Modules from '@/constants/bot/commands/Modules';
+import { CustomEmojis } from '@/constants/bot/CustomEmojis';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 import { generateLevelCard } from '@/modules/features/levels/generateLevelCard';
 import handleError from '@/util/handleError';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 
 export const levelsStats = <AuxdibotSubcommand>{
    name: 'level',
@@ -32,8 +34,20 @@ export const levelsStats = <AuxdibotSubcommand>{
             })
             .catch(() => 0)) + 1;
       const image = await generateLevelCard(user, data.xp, leaderboard);
+      const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
+         new ButtonBuilder()
+            .setURL(`${process.env.SITE_URL}/leaderboard/${interaction.data.guild.id}`)
+            .setEmoji(CustomEmojis.LEVELS)
+            .setLabel('Leaderboard')
+            .setStyle(ButtonStyle.Link),
+         new ButtonBuilder()
+            .setCustomId('levelembed-' + user.id)
+            .setLabel('View Legacy Embed')
+            .setStyle(ButtonStyle.Secondary),
+      );
       return await auxdibot.createReply(interaction, {
          files: [{ attachment: image, name: 'level.png' }],
+         components: [row],
       });
    },
 };

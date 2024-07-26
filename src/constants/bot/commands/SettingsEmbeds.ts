@@ -37,10 +37,9 @@ export const SettingsEmbeds: { [k: string]: (auxdibot: Auxdibot, servers: server
                   server.filtered_logs
                      .slice(0, 10)
                      .reduce((accumulator: string, val: string) => `${accumulator}\r\n* **\`${val}\`**`, '') +
-                     (server.filtered_logs?.length > 10 &&
-                        `\n*And ${
-                           server.filtered_logs.length - 10
-                        } more*...\n\n**/logs list_filtered** to view more`) || 'None',
+                     (server.filtered_logs?.length > 10
+                        ? `\n*And ${server.filtered_logs.length - 10} more*...\n\n**/logs list_filtered** to view more`
+                        : '') || 'None',
                inline: true,
             },
          )
@@ -190,11 +189,17 @@ export const SettingsEmbeds: { [k: string]: (auxdibot: Auxdibot, servers: server
          .setTitle(`${CustomEmojis.LEVELS} Levels Settings`)
          .setColor(auxdibot.colors.info)
          .setDescription(
-            `You can edit and view these settings further on [Auxdibot's Dashboard](https://bot.auxdible.me)\n\n**Send Level Embed**: ${
+            `You can edit and view these settings further on [Auxdibot's Dashboard](https://bot.auxdible.me)\n\n${
+               server.publicize_leaderboard
+                  ? `🏆 **Leaderboard**: [View Leaderboard](https://bot.auxdible.me/leaderboard/${server.serverID})`
+                  : '**Public Leaderboard Hidden**'
+            }\n\n**Send Level Embed**: ${
                server.level_embed
                   ? `✅ ${server.level_channel ? `<#${server.level_channel}>` : '`Reply to Message`'}`
                   : '❌'
-            }\n💬 **Message XP Range**: \`${server.message_xp_range.join(
+            }\n🗒️ **Levelup Channel**: ${server.level_channel ?? '`None (Reply)`'} (${
+               server.level_embed ? '✅ Send Levelup Messages' : "❌ Don't Send Levelup Messages"
+            })\n\n💬 **Message XP Range**: \`${server.message_xp_range.join(
                ' to ',
             )} XP / message\`\n👋 **Event XP**: \`${server.event_xp_range.join(
                ' to ',
@@ -202,10 +207,8 @@ export const SettingsEmbeds: { [k: string]: (auxdibot: Auxdibot, servers: server
                ' to ',
             )} XP / minute in VC\`\n⭐ **Starboard XP**: \`${server.starboard_xp_range.join(
                ' to ',
-            )} XP / starred message\`\n\n📊 **Global XP Multiplier**: \`x${server.global_multiplier}\`\n
-            🗒️ **Levelup Channel**: ${server.level_channel ?? '`None (Reply)`'} (${
-               server.level_embed ? '✅ Send Levelup Messages' : "❌ Don't Send Levelup Messages"
-            })`,
+            )} XP / starred message\`\n\n📊 **Global XP Multiplier**: \`x${server.global_multiplier}\`
+            `,
          )
          .addFields(
             {

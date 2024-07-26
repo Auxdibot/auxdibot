@@ -26,24 +26,34 @@ export async function generateLeaderboardEmbed(auxdibot: Auxdibot, guild: Guild,
          }> - \`Level ${calculateLevel(member.xp)}\` (\`${member.xp} XP\`)\n`
       );
    }, '');
-   const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
-      new ButtonBuilder().setCustomId('leaderboard-start').setEmoji('⏮️').setStyle(ButtonStyle.Secondary),
-      new ButtonBuilder()
-         .setCustomId(`leaderboard-prev-${start}`)
-         .setEmoji('⬅️')
-         .setStyle(ButtonStyle.Secondary)
-         .setDisabled(start - 20 < 0),
-      new ButtonBuilder()
-         .setCustomId('dummy')
-         .setEmoji(CustomEmojis.LEVELS)
-         .setLabel(`Page ${Math.ceil(start / 20) + 1} / ${Math.ceil(total / 20)}`)
-         .setStyle(ButtonStyle.Primary),
-      new ButtonBuilder()
-         .setCustomId(`leaderboard-next-${start}`)
-         .setEmoji('➡️')
-         .setStyle(ButtonStyle.Secondary)
-         .setDisabled(start + 20 > total),
-      new ButtonBuilder().setCustomId(`leaderboard-end`).setEmoji('⏭️').setStyle(ButtonStyle.Secondary),
-   );
+   const row = [
+      new ActionRowBuilder<ButtonBuilder>().addComponents(
+         new ButtonBuilder().setCustomId('leaderboard-start').setEmoji('⏮️').setStyle(ButtonStyle.Secondary),
+         new ButtonBuilder()
+            .setCustomId(`leaderboard-prev-${start}`)
+            .setEmoji('⬅️')
+            .setStyle(ButtonStyle.Secondary)
+            .setDisabled(start - 20 < 0),
+         new ButtonBuilder()
+            .setCustomId('dummy')
+            .setEmoji(CustomEmojis.LEVELS)
+            .setLabel(`Page ${Math.ceil(start / 20) + 1} / ${Math.ceil(total / 20)}`)
+            .setStyle(ButtonStyle.Primary),
+         new ButtonBuilder()
+            .setCustomId(`leaderboard-next-${start}`)
+            .setEmoji('➡️')
+            .setStyle(ButtonStyle.Secondary)
+            .setDisabled(start + 20 > total),
+         new ButtonBuilder().setCustomId(`leaderboard-end`).setEmoji('⏭️').setStyle(ButtonStyle.Secondary),
+      ),
+      server.publicize_leaderboard &&
+         new ActionRowBuilder<ButtonBuilder>().addComponents(
+            new ButtonBuilder()
+               .setURL(`${process.env.SITE_URL}/leaderboard/${guild.id}`)
+               .setEmoji(CustomEmojis.BOLT)
+               .setLabel('View Leaderboard')
+               .setStyle(ButtonStyle.Link),
+         ),
+   ].filter((i) => i);
    return { embed, row };
 }

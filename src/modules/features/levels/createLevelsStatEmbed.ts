@@ -8,8 +8,9 @@ import { calculateLevel } from './calculateLevel';
 export async function createLevelsStatEmbed(auxdibot: Auxdibot, data: servermembers, user: User) {
    const level = calculateLevel(data.xp);
 
-   let percent = Math.round((data.xp / calcXP(level + 1) || 0) * 10);
    const xpTill = data.xp - calcXP(level);
+   const nextLevelXP = Math.round(calcXP(level + 1)) - calcXP(level);
+   let percent = Math.round((xpTill / nextLevelXP) * 10);
    if (!isFinite(percent)) percent = 0;
    const avatar = user?.avatarURL({ size: 128 });
 
@@ -23,9 +24,9 @@ export async function createLevelsStatEmbed(auxdibot: Auxdibot, data: servermemb
          name: 'Level Progress',
          value: `\`Level ${level.toLocaleString()}\` [${
             new Array(percent + 1).join('🟩') + new Array(10 - percent).join('⬛')
-         }] \`Level ${(level + 1).toLocaleString()}\`\n(\`${xpTill.toLocaleString()}\ XP\`/\`${calcXP(
-            level + 1,
-         ).toLocaleString()}\ XP\`)`,
+         }] \`Level ${(
+            level + 1
+         ).toLocaleString()}\`\n(\`${xpTill.toLocaleString()}\ XP\`/\`${nextLevelXP.toLocaleString()}\ XP\`)`,
       },
    ];
    return embed;

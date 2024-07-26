@@ -33,7 +33,7 @@ export default <AuxdibotButton>{
       const content = await generateLeaderboardEmbed(auxdibot, interaction.guild, start);
 
       return interaction.message
-         .edit({ embeds: [content.embed], components: [content.row] })
+         .edit({ embeds: [content.embed], components: content.row })
          .then(() => {
             auxdibot
                .createReply(interaction, { content: 'Leaderboard updated.', ephemeral: true })
