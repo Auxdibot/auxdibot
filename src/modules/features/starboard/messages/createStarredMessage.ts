@@ -10,6 +10,7 @@ import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, Guild, Mess
 import awardXP from '../../levels/awardXP';
 import { sendLevelMessage } from '@/util/sendLevelMessage';
 import { grantLevelRewards } from '../../levels/grantLevelRewards';
+import { calculateLevel } from '../../levels/calculateLevel';
 
 export default async function createStarredMessage(
    auxdibot: Auxdibot,
@@ -101,7 +102,7 @@ export default async function createStarredMessage(
             .findFirst({
                where: { serverID: guild.id, userID: starredMessage.member.id },
             })
-            .then((memberData) => memberData.level)
+            .then((memberData) => calculateLevel(memberData.xp))
             .catch(() => undefined);
          const randomValue =
             server.starboard_xp_range[0] +

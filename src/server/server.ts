@@ -13,12 +13,13 @@ import { serversRoute } from './servers';
 import Strategy from 'passport-discord';
 import bodyParser from 'body-parser';
 import checkAuthenticated from './checkAuthenticated';
-import cards from './servers/routes/cards';
+import cards from './public/cards';
 import { notificationsRoute } from './notifications';
 import rateLimiter from './rateLimiter';
 import placeholders from './placeholders/placeholders';
 import commandsList from './servers/routes/commands_list';
 import { topggRoute } from './topgg';
+import leaderboard from './public/leaderboard';
 export default async function server(auxdibot: Auxdibot) {
    const app = express();
 
@@ -57,6 +58,7 @@ export default async function server(auxdibot: Auxdibot) {
       },
    );
    cards(auxdibot, app);
+   leaderboard(auxdibot, app);
    commandsList(auxdibot, app);
    app.use('/analytics', analyticsRoute(auxdibot));
    app.use('/auth', authRoute());

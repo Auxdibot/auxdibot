@@ -6,6 +6,11 @@ export default async function generateLevelLeaderboard(auxdibot: Auxdibot, serve
       orderBy: { xp: 'desc' },
       take: limit,
       skip: start,
+      select: {
+         userID: true,
+         xp: true,
+         in_server: true,
+      },
    });
    return members;
 }

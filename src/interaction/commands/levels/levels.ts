@@ -190,6 +190,17 @@ export default <AuxdibotCommand>{
                         )
                         .addChannelTypes(ChannelType.GuildText),
                   ),
+            )
+            .addSubcommand((builder) =>
+               builder
+                  .setName('leaderboard_visibility')
+                  .setDescription('Toggle whether the leaderboard can be viewed online.')
+                  .addBooleanOption((argBuilder) =>
+                     argBuilder
+                        .setName('visibility')
+                        .setDescription('Whether the leaderboard can be viewed online.')
+                        .setRequired(true),
+                  ),
             ),
       )
       .addSubcommandGroup((group) =>

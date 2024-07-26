@@ -29,15 +29,18 @@ export default <AuxdibotButton>{
          default:
             break;
       }
-      console.log(start);
+      await interaction.deferReply({ ephemeral: true });
       const content = await generateLeaderboardEmbed(auxdibot, interaction.guild, start);
 
       return interaction.message
          .edit({ embeds: [content.embed], components: [content.row] })
          .then(() => {
-            interaction.reply({ content: 'Leaderboard updated.', ephemeral: true }).then(() => {
-               interaction.deleteReply();
-            });
+            auxdibot
+               .createReply(interaction, { content: 'Leaderboard updated.', ephemeral: true })
+               .then(() => {
+                  interaction.deleteReply().catch(() => undefined);
+               })
+               .catch(() => undefined);
          })
          .catch(async (x) => {
             console.error(x);

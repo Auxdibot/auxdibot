@@ -2,16 +2,14 @@ import { User } from 'discord.js';
 import { createCanvas, GlobalFonts, loadImage } from '@napi-rs/canvas';
 import { join } from 'path';
 import { abbreviateNumber } from '../../../util/abbreviateNumber';
+import { calculateLevel } from './calculateLevel';
+import calcXP from '@/util/calcXP';
 GlobalFonts.registerFromPath(join(__dirname, '..', '..', '..', '..', 'fonts', 'Montserrat-Light.ttf'), 'Montserrat');
 GlobalFonts.registerFromPath(join(__dirname, '..', '..', '..', '..', 'fonts', 'Raleway-Medium.ttf'), 'Raleway');
-export async function generateLevelCard(
-   user: User,
-   xp: number,
-   xpTill: number,
-   level: number,
-   nextLevelXP: number,
-   leaderboard: number,
-): Promise<Buffer> {
+export async function generateLevelCard(user: User, xp: number, leaderboard: number): Promise<Buffer> {
+   const level = calculateLevel(xp);
+   const nextLevelXP = Math.round(calcXP(level + 1)) - calcXP(level);
+   const xpTill = xp - calcXP(level);
    const canvas = createCanvas(1200, 400);
    const ctx = canvas.getContext('2d');
    /*

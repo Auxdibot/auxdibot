@@ -73,13 +73,11 @@ export default <AuxdibotSubcommand>{
                   where: { serverID_userID: { serverID: interaction.guildId, userID } },
                   update: {
                      xp: xp,
-                     level: level,
                   },
                   create: {
                      serverID: interaction.guildId,
                      userID,
                      xp,
-                     level,
                   },
                })
                .then(() => {

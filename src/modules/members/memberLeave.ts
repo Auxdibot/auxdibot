@@ -14,8 +14,6 @@ export default async function memberLeave(
          data: {
             in_server: false,
             xp: undefined,
-            level: undefined,
-            xpTill: undefined,
             sticky_roles: member.roles.cache
                .filter((role) => server && server.sticky_roles.indexOf(role.id) != -1)
                .map((role) => role.id),
