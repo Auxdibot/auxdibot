@@ -18,11 +18,10 @@ export default <AuxdibotSubcommand>{
          where: { serverID: interaction.guildId },
          select: {
             userID: true,
-            level: true,
             xp: true,
          },
       });
-      const csv = data.map((member) => `${member.userID},${member.level},${member.xp}`);
+      const csv = data.map((member) => `${member.userID},${member.xp}`);
       csv.unshift('userID,level,xp');
       return await auxdibot.createReply(interaction, {
          content: '✅ Your level data has been processed.',

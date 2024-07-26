@@ -1,4 +1,5 @@
 import { Auxdibot } from '@/interfaces/Auxdibot';
+import changeLeaderboardVisibility from '@/modules/features/levels/changeLeaderboardVisibility';
 import createLevelReward from '@/modules/features/levels/createLevelReward';
 import deleteLevelReward from '@/modules/features/levels/deleteLevelReward';
 import setEventXP from '@/modules/features/levels/setEventXP';
@@ -36,6 +37,7 @@ const levels = (auxdibot: Auxdibot, router: Router) => {
                   voice_xp_range: true,
                   starboard_xp_range: true,
                   level_embed: true,
+                  publicize_leaderboard: true,
                },
             })
             .then(async (data) =>
@@ -171,6 +173,19 @@ const levels = (auxdibot: Auxdibot, router: Router) => {
       (req, res, next) => checkGuildOwnership(auxdibot, req, res, next),
       (req, res) => {
          return toggleLevelsEmbed(auxdibot, req.guild)
+            .then(async (i) => res.json(i))
+            .catch((x) => {
+               console.error(x);
+               return res.status(500).json({ error: typeof x.message == 'string' ? x.message : 'an error occurred' });
+            });
+      },
+   );
+   router.post(
+      '/:serverID/levels/leaderboard_visibility',
+      (req, res, next) => checkAuthenticated(req, res, next),
+      (req, res, next) => checkGuildOwnership(auxdibot, req, res, next),
+      (req, res) => {
+         return changeLeaderboardVisibility(auxdibot, req.guild)
             .then(async (i) => res.json(i))
             .catch((x) => {
                console.error(x);

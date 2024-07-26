@@ -60,9 +60,7 @@ export async function fetchMEE6LeaderboardPage(guildID: string, page: number) {
          throw new Error('Failed to fetch MEE6 leaderboard page.');
       }
       const { players } = data;
-      return players.map(
-         (player) => <servermembers>{ id: player.id, xp: parseInt(player.xp), level: parseInt(player.level) },
-      );
+      return players.map((player) => <servermembers>{ id: player.id, xp: parseInt(player.xp) });
    });
 }
 

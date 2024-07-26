@@ -4,6 +4,7 @@ import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, Guild } from 'discord.js';
 import generateLevelLeaderboard from './generateLevelLeaderboard';
 import { generateLeaderboardCount } from './generateLeaderboardCount';
+import { calculateLevel } from './calculateLevel';
 
 const TROPHIES = ['🏆', '🥈', '🥉'];
 
@@ -22,7 +23,7 @@ export async function generateLeaderboardEmbed(auxdibot: Auxdibot, guild: Guild,
          acc +
          `**${placement <= 3 ? `${TROPHIES[placement - 1]} ${placement}` : placement}**) <@${
             member.userID
-         }> - \`Level ${member.level}\` (\`${member.xp} XP\`)\n`
+         }> - \`Level ${calculateLevel(member.xp)}\` (\`${member.xp} XP\`)\n`
       );
    }, '');
    const row = new ActionRowBuilder<ButtonBuilder>().addComponents(

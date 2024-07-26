@@ -7,6 +7,7 @@ import awardXP from '@/modules/features/levels/awardXP';
 import { sendLevelMessage } from '@/util/sendLevelMessage';
 import { grantLevelRewards } from '@/modules/features/levels/grantLevelRewards';
 import { createUserVCSchedule } from '@/modules/features/levels/createUserVCSchedule';
+import { calculateLevel } from '@/modules/features/levels/calculateLevel';
 
 export default async function voiceStateUpdate(auxdibot: Auxdibot, oldState: VoiceState, newState: VoiceState) {
    if (!oldState.serverDeaf && newState.serverDeaf) {
@@ -52,9 +53,9 @@ export default async function voiceStateUpdate(auxdibot: Auxdibot, oldState: Voi
                const level = await auxdibot.database.servermembers
                   .findFirst({
                      where: { serverID: guild.id, userID: newState.member.id },
-                     select: { level: true },
+                     select: { xp: true },
                   })
-                  .then((memberData) => memberData.level)
+                  .then((memberData) => calculateLevel(memberData.xp))
                   .catch(() => undefined);
                const randomValue =
                   server.event_xp_range[0] +

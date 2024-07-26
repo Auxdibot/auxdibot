@@ -318,13 +318,15 @@ model servermembers {
   userID             String
   serverID           String
   warns              Int      @default(0)
-  level              Int?     @default(0)
+  // deprecated, unneeded
+  old_level          Int?     @default(0) @map("level")
   in_server          Boolean  @default(true)
   sticky_roles       String[] @default([])
   suggestions_banned Boolean? @default(false)
   reports_banned     Boolean? @default(false)
   xp                 Int?     @default(0)
-  xpTill             Int?     @default(0)
+  // deprecated, unneeded
+  old_xpTill         Int?     @default(0) @map("xpTill")
 
   @@unique([serverID, userID])
 }
@@ -358,6 +360,7 @@ model servers {
   voice_xp_range                    Int[]                @default([5])
   starboard_xp_range                Int[]                @default([50])
   event_xp_range                    Int[]                @default([100])
+  publicize_leaderboard             Boolean              @default(true)
   level_rewards                     LevelReward[]
   level_message                     MessageContent?
   level_channel                     String?

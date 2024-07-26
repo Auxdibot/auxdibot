@@ -8,6 +8,8 @@ import { GenericFeed } from '@/interfaces/notifications/GenericFeed';
 import Placeholders from '@/constants/bot/placeholders/Placeholders';
 import { getMessage } from './getMessage';
 import { calculateTotalStars } from '@/modules/features/starboard/calculateTotalStars';
+import { calculateLevel } from '@/modules/features/levels/calculateLevel';
+import calcXP from './calcXP';
 
 /**
  * Parses placeholders in a given message and replaces them with corresponding values.
@@ -44,7 +46,7 @@ export default async function parsePlaceholders(
    const memberData = member
       ? await auxdibot.database.servermembers.findFirst({ where: { serverID: guild.id, userID: member.id } })
       : undefined;
-
+   const memberLevel = memberData ? calculateLevel(memberData.xp) : 0;
    const board = starred_data && server.starboard_boards.find((i) => i.board_name == starred_data?.board);
    const PLACEHOLDERS: Partial<Record<Placeholders, unknown>> = {
       ...(guild
@@ -96,8 +98,8 @@ export default async function parsePlaceholders(
               ...(memberData
                  ? {
                       [Placeholders.MEMBER_EXPERIENCE]: memberData.xp.toLocaleString(),
-                      [Placeholders.MEMBER_LEVEL]: memberData.level.toLocaleString(),
-                      [Placeholders.MEMBER_XP_TILL]: memberData.xpTill.toLocaleString(),
+                      [Placeholders.MEMBER_LEVEL]: memberLevel,
+                      [Placeholders.MEMBER_XP_TILL]: memberData.xp - calcXP(memberLevel + 1),
                    }
                  : {}),
               ...(server

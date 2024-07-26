@@ -3,7 +3,6 @@ import { Auxdibot } from '@/interfaces/Auxdibot';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
-import calcXP from '@/util/calcXP';
 import { generateLevelCard } from '@/modules/features/levels/generateLevelCard';
 import handleError from '@/util/handleError';
 
@@ -26,14 +25,13 @@ export const levelsStats = <AuxdibotSubcommand>{
       });
       if (!data)
          return await handleError(auxdibot, 'MEMBER_DATA_NOT_FOUND', 'Member data could not be found!', interaction);
-      const levelXP = calcXP(data.level);
       const leaderboard =
          (await auxdibot.database.servermembers
             .count({
                where: { serverID: interaction.data.guild.id, xp: { gt: data.xp } },
             })
             .catch(() => 0)) + 1;
-      const image = await generateLevelCard(user, data.xp, data.xpTill, data.level, levelXP, leaderboard);
+      const image = await generateLevelCard(user, data.xp, leaderboard);
       return await auxdibot.createReply(interaction, {
          files: [{ attachment: image, name: 'level.png' }],
       });

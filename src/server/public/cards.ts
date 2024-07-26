@@ -28,6 +28,7 @@ const cards = (auxdibot: Auxdibot, app: Express) => {
                   icon_url: discordServer.iconURL({ size: 256 }),
                   members: discordServer.memberCount,
                   acronym: discordServer.nameAcronym,
+                  banner_url: discordServer.bannerURL({ size: 2048 }),
                },
                primary_color: card.background?.color1 ?? '#000000',
                description: card.description,

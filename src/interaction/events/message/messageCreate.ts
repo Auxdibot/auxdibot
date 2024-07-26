@@ -10,6 +10,7 @@ import checkAttachmentsSpam from '@/modules/features/moderation/automod/checkAtt
 import checkInvitesSpam from '@/modules/features/moderation/automod/checkInvitesSpam';
 import { sendLevelMessage } from '@/util/sendLevelMessage';
 import { grantLevelRewards } from '@/modules/features/levels/grantLevelRewards';
+import { calculateLevel } from '@/modules/features/levels/calculateLevel';
 
 export default async function messageCreate(auxdibot: Auxdibot, message: Message) {
    if (message.author.bot) return;
@@ -37,8 +38,9 @@ export default async function messageCreate(auxdibot: Auxdibot, message: Message
       const level = await auxdibot.database.servermembers
          .findFirst({
             where: { serverID: message.guild.id, userID: message.member.id },
+            select: { xp: true },
          })
-         .then((memberData) => memberData.level)
+         .then((memberData) => calculateLevel(memberData.xp))
          .catch(() => undefined);
       const channelMultiplier = server.channel_multipliers.find((i) => i.id == message.channel.id);
       const roleMultiplier =

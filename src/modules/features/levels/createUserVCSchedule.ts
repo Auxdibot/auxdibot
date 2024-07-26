@@ -4,6 +4,7 @@ import { AsyncTask, SimpleIntervalJob } from 'toad-scheduler';
 import awardXP from './awardXP';
 import { sendLevelMessage } from '@/util/sendLevelMessage';
 import { grantLevelRewards } from './grantLevelRewards';
+import { calculateLevel } from './calculateLevel';
 
 export function createUserVCSchedule(auxdibot: Auxdibot, member: GuildMember) {
    const task = new AsyncTask(member.id + ' vclevels', async (taskId) => {
@@ -23,9 +24,9 @@ export function createUserVCSchedule(auxdibot: Auxdibot, member: GuildMember) {
       const level = await auxdibot.database.servermembers
          .findFirst({
             where: { serverID: member.guild.id, userID: member.user.id },
-            select: { level: true },
+            select: { xp: true },
          })
-         .then((memberData) => memberData.level)
+         .then((memberData) => calculateLevel(memberData.xp))
          .catch(() => undefined);
       const randomValue =
          server.voice_xp_range[0] +

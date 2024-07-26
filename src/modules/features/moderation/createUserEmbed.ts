@@ -13,6 +13,7 @@ import {
    Guild,
    PermissionsBitField,
 } from 'discord.js';
+import { calculateLevel } from '../levels/calculateLevel';
 
 export async function createUserEmbed(auxdibot: Auxdibot, guild: Guild, userID: string): Promise<BaseMessageOptions> {
    const server = await findOrCreateServer(auxdibot, guild.id);
@@ -32,7 +33,7 @@ export async function createUserEmbed(auxdibot: Auxdibot, guild: Guild, userID: 
       width: 128,
       height: 128,
    };
-
+   const level = calculateLevel(data?.xp || 0);
    embed.fields = [
       member
          ? {
@@ -49,8 +50,8 @@ export async function createUserEmbed(auxdibot: Auxdibot, guild: Guild, userID: 
                     : ''
               }${
                  data
-                    ? `🏆 Level: **${data.level}** \`${data.xpTill.toLocaleString()}/${calcXP(
-                         data.level,
+                    ? `🏆 Level: **${level}** \`${(data.xp - calcXP(level)).toLocaleString()}/${(
+                         calcXP(level + 1) - calcXP(level)
                       ).toLocaleString()} XP\`
                         ${data.suggestions_banned ? '\n🚫 Suggestions Banned' : ''}${
                          data.reports_banned ? '\n🚫 Reports Banned' : ''

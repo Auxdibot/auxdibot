@@ -46,11 +46,9 @@ export default <AuxdibotSubcommand>{
                         serverID: interaction.guildId,
                         userID: p.id,
                         xp: p.xp,
-                        level: p.level,
                      },
                      update: {
                         xp: p.xp,
-                        level: p.level,
                      },
                   })
                   .catch((x) => {

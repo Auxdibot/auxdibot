@@ -1,22 +1,14 @@
 import { Auxdibot } from '@/interfaces/Auxdibot';
-import calcXP from '@/util/calcXP';
+
+import { calculateLevel } from './calculateLevel';
 
 export default async function takeXP(auxdibot: Auxdibot, serverID: string, userID: string, xp: number) {
-   const member = await auxdibot.database.servermembers.upsert({
-      where: { serverID_userID: { serverID, userID } },
-      update: {},
-      create: { serverID, userID },
-   });
-   member.xp -= xp;
-   member.xpTill -= xp;
-   while (member.xpTill < 0) {
-      member.level--, (member.xpTill += calcXP(member.level));
-   }
    return await auxdibot.database.servermembers
       .update({
          where: { serverID_userID: { serverID, userID } },
-         data: { xp: member.xp, xpTill: member.xpTill, level: member.level },
+         data: { xp: { decrement: xp } },
+         select: { xp: true },
       })
-      .then(() => member.level)
+      .then((member) => calculateLevel(member.xp))
       .catch(() => undefined);
 }
