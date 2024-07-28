@@ -1,4 +1,5 @@
 import { defaultStarLevels } from '@/constants/database/defaultStarLevels';
+import { DEFAULT_LEVELUP_EMBED } from '@/constants/embeds/DefaultEmbeds';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 
 /**
@@ -50,6 +51,10 @@ export async function migrateData(auxdibot: Auxdibot) {
                      data: {
                         message_xp_range: [i.old_message_xp],
                         old_message_xp: null,
+                        level_message: {
+                           content: i.level_message.content ? i.level_message.content : '',
+                           embed: i.level_message.embed ? i.level_message.embed : DEFAULT_LEVELUP_EMBED,
+                        },
                      },
                   });
                }
