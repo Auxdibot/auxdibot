@@ -1,6 +1,7 @@
 import { defaultStarLevels } from '@/constants/database/defaultStarLevels';
 import { DEFAULT_LEVELUP_EMBED } from '@/constants/embeds/DefaultEmbeds';
 import { Auxdibot } from '@/interfaces/Auxdibot';
+import { isEmbedEmpty } from './isEmbedEmpty';
 
 /**
  * Migrate data based off a flag in the environment variables, "MIGRATION"
@@ -53,7 +54,10 @@ export async function migrateData(auxdibot: Auxdibot) {
                         old_message_xp: null,
                         level_message: {
                            content: i.level_message.content ? i.level_message.content : '',
-                           embed: i.level_message.embed ? i.level_message.embed : DEFAULT_LEVELUP_EMBED,
+                           embed:
+                              i.level_message.embed || isEmbedEmpty(i.level_message.embed)
+                                 ? i.level_message.embed
+                                 : DEFAULT_LEVELUP_EMBED,
                         },
                      },
                   });
