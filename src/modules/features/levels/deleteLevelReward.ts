@@ -20,7 +20,7 @@ export default async function deleteLevelReward(auxdibot: Auxdibot, guild: Guild
             type: LogAction.LEVEL_REWARD_DELETED,
             userID: user.id,
             date_unix: Date.now(),
-            description: `Deleted level reward #${id} from your server.`,
+            description: `Deleted level reward #${id + 1} from your server.`,
          });
          return data;
       });
