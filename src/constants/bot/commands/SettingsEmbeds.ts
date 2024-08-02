@@ -83,7 +83,7 @@ export const SettingsEmbeds: { [k: string]: (auxdibot: Auxdibot, servers: server
                   }\`\n` +
                      server.automod_banned_phrases
                         .slice(0, 10)
-                        .reduce((accumulator: string, val: string) => `${accumulator}\r\n* *${val}*`, '') +
+                        .reduce((accumulator: string, val: string) => `${accumulator}\r\n* **\`${val}\`**`, '') +
                      (server.automod_banned_phrases.length > 10
                         ? `\n\nAnd ${server.automod_banned_phrases.length - 10} more...`
                         : '') || 'None',

@@ -3,6 +3,7 @@ import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import handleLog from '@/util/handleLog';
 import { LogAction } from '@prisma/client';
 import { GuildMember } from 'discord.js';
+import deleteLevelReward from './deleteLevelReward';
 
 export async function grantLevelRewards(auxdibot: Auxdibot, member: GuildMember, level: number) {
    const server = await findOrCreateServer(auxdibot, member.guild.id);
@@ -10,13 +11,23 @@ export async function grantLevelRewards(auxdibot: Auxdibot, member: GuildMember,
    if (rewards.length == 0) return;
    for (const reward of rewards) {
       if (!member.roles.cache.has(reward.roleID))
-         await member.roles.add(reward.roleID).catch(() => {
-            handleLog(auxdibot, member.guild, {
-               date_unix: Date.now(),
-               description: `Failed to grant role ${reward.roleID} to ${member.id} at level ${level}. Possibly an error with permissions?`,
-               type: LogAction.ERROR,
-               userID: member.id,
-            });
+         await member.roles.add(reward.roleID).catch(async () => {
+            const roleCheck = await member.guild.roles.fetch(reward.roleID).catch(() => undefined);
+            if (!roleCheck) {
+               deleteLevelReward(
+                  auxdibot,
+                  member.guild,
+                  auxdibot.user,
+                  server.level_rewards.findIndex((i) => i.roleID == reward.roleID),
+               ).catch(() => undefined);
+            } else {
+               handleLog(auxdibot, member.guild, {
+                  date_unix: Date.now(),
+                  description: `Failed to grant role ${reward.roleID} to ${member.id} at level ${level}. Possibly an error with permissions?`,
+                  type: LogAction.ERROR,
+                  userID: member.id,
+               });
+            }
          });
    }
    return;
