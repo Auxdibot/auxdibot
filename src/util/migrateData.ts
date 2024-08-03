@@ -56,18 +56,23 @@ export async function migrateData(auxdibot: Auxdibot) {
                   });
                }
                if (!i.level_message) {
-                  await auxdibot.database.servers.update({
-                     where: { serverID: i.serverID },
-                     data: {
-                        level_message: {
-                           content: i.level_message.content ? i.level_message.content : '',
-                           embed:
-                              i.level_message.embed || isEmbedEmpty(i.level_message.embed)
-                                 ? i.level_message.embed
-                                 : DEFAULT_LEVELUP_EMBED,
+                  console.log('-> ' + i.serverID + ' - does not have level message');
+                  await auxdibot.database.servers
+                     .update({
+                        where: { serverID: i.serverID },
+                        data: {
+                           level_message: {
+                              content: i.level_message?.content ? i.level_message?.content : '',
+                              embed:
+                                 i.level_message?.embed || !isEmbedEmpty(i.level_message?.embed)
+                                    ? i.level_message?.embed
+                                    : DEFAULT_LEVELUP_EMBED,
+                           },
                         },
-                     },
-                  });
+                     })
+                     .then(() => {
+                        console.log('-> Successfully updated level message for ' + i.serverID);
+                     });
                }
             }
          }
