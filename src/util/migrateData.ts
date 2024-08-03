@@ -45,35 +45,33 @@ export async function migrateData(auxdibot: Auxdibot) {
          const all = await auxdibot.database.servers.findMany();
          if (!all) return;
          for (const i of all) {
-            if (i.message_xp_range?.length == 0) {
-               if (i.old_message_xp) {
-                  await auxdibot.database.servers.update({
+            if (i.message_xp_range?.length == 0 && i.old_message_xp) {
+               await auxdibot.database.servers.update({
+                  where: { serverID: i.serverID },
+                  data: {
+                     message_xp_range: [i.old_message_xp],
+                     old_message_xp: null,
+                  },
+               });
+            }
+            if (!i.level_message) {
+               console.log('-> ' + i.serverID + ' - does not have level message');
+               await auxdibot.database.servers
+                  .update({
                      where: { serverID: i.serverID },
                      data: {
-                        message_xp_range: [i.old_message_xp],
-                        old_message_xp: null,
-                     },
-                  });
-               }
-               if (!i.level_message) {
-                  console.log('-> ' + i.serverID + ' - does not have level message');
-                  await auxdibot.database.servers
-                     .update({
-                        where: { serverID: i.serverID },
-                        data: {
-                           level_message: {
-                              content: i.level_message?.content ? i.level_message?.content : '',
-                              embed:
-                                 i.level_message?.embed || !isEmbedEmpty(i.level_message?.embed)
-                                    ? i.level_message?.embed
-                                    : DEFAULT_LEVELUP_EMBED,
-                           },
+                        level_message: {
+                           content: i.level_message?.content ? i.level_message?.content : '',
+                           embed:
+                              i.level_message?.embed || !isEmbedEmpty(i.level_message?.embed)
+                                 ? i.level_message?.embed
+                                 : DEFAULT_LEVELUP_EMBED,
                         },
-                     })
-                     .then(() => {
-                        console.log('-> Successfully updated level message for ' + i.serverID);
-                     });
-               }
+                     },
+                  })
+                  .then(() => {
+                     console.log('-> Successfully updated level message for ' + i.serverID);
+                  });
             }
          }
       }
