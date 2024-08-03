@@ -52,6 +52,13 @@ export async function migrateData(auxdibot: Auxdibot) {
                      data: {
                         message_xp_range: [i.old_message_xp],
                         old_message_xp: null,
+                     },
+                  });
+               }
+               if (!i.level_message) {
+                  await auxdibot.database.servers.update({
+                     where: { serverID: i.serverID },
+                     data: {
                         level_message: {
                            content: i.level_message.content ? i.level_message.content : '',
                            embed:
