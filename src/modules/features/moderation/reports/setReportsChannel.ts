@@ -1,7 +1,7 @@
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import handleLog from '@/util/handleLog';
 import { LogAction } from '@prisma/client';
-import { Channel, Guild } from 'discord.js';
+import { Channel, ChannelType, Guild } from 'discord.js';
 
 export default async function setReportsChannel(
    auxdibot: Auxdibot,
@@ -9,9 +9,9 @@ export default async function setReportsChannel(
    user: { id: string },
    channel?: Channel,
 ) {
-   if (channel && (channel.isDMBased() || !channel.isTextBased()))
-      throw new Error('This is not a valid reports channel!');
-   if (channel && !channel.isDMBased() && guild.id != channel.guildId)
+   console.log(channel);
+   if (channel && !('guild' in channel)) throw new Error('This is not a valid reports channel!');
+   if (channel && 'guild' in channel && channel.guild.id != guild.id)
       throw new Error('This channel is not in this guild!');
    return auxdibot.database.servers
       .update({
@@ -25,7 +25,9 @@ export default async function setReportsChannel(
             userID: user.id,
             date_unix: Date.now(),
             description: `The Reports Channel for this server has been changed to ${
-               channel && !channel.isDMBased() ? `#${channel.name}` : 'none. Reports are now disabled for this server.'
+               channel && channel.type != ChannelType.DM
+                  ? `#${channel.name}`
+                  : 'none. Reports are now disabled for this server.'
             }`,
          });
          return i;

@@ -193,13 +193,11 @@ export const SettingsEmbeds: { [k: string]: (auxdibot: Auxdibot, servers: server
                server.publicize_leaderboard
                   ? `🏆 **Leaderboard**: [View Leaderboard](https://bot.auxdible.me/leaderboard/${server.serverID})`
                   : '**Public Leaderboard Hidden**'
-            }\n\n**Send Level Embed**: ${
+            }\n\n**📝 Levelup Output**: ${
                server.level_embed
                   ? `✅ ${server.level_channel ? `<#${server.level_channel}>` : '`Reply to Message`'}`
                   : '❌'
-            }\n🗒️ **Levelup Channel**: ${server.level_channel ?? '`None (Reply)`'} (${
-               server.level_embed ? '✅ Send Levelup Messages' : "❌ Don't Send Levelup Messages"
-            })\n\n💬 **Message XP Range**: \`${server.message_xp_range.join(
+            }\n\n💬 **Message XP Range**: \`${server.message_xp_range.join(
                ' to ',
             )} XP / message\`\n👋 **Event XP**: \`${server.event_xp_range.join(
                ' to ',
