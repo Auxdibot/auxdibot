@@ -46,7 +46,7 @@ export default async function createStarboard(
          await handleLog(auxdibot, guild, {
             type: LogAction.STARBOARD_CREATED,
             userID: user.id,
-            date_unix: Date.now(),
+            date: new Date(),
             description: `The starboard ${starboard.board_name} has been added to this server for the channel <#${starboard.channelID}>, using the reaction ${starboard.reaction} and ${starboard.count} stars.`,
          });
          if (!i) throw new Error("Couldn't preform that action!");

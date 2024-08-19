@@ -42,7 +42,7 @@ export default function scheduleChannelUnlocks(auxdibot: Auxdibot) {
                      handleLog(auxdibot, guild, {
                         type: LogAction.CHANNEL_UNLOCKED,
                         description: `The channel #${channel.name} has been unlocked because the lock duration has been reached.`,
-                        date_unix: Date.now(),
+                        date: new Date(),
                         userID: auxdibot.user.id,
                      });
                   }

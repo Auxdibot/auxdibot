@@ -19,7 +19,7 @@ export default async function setReportRole(
          await handleLog(auxdibot, guild, {
             type: LogAction.REPORTS_ROLE_CHANGED,
             userID: user.id,
-            date_unix: Date.now(),
+            date: new Date(),
             description: role
                ? `The Reports Role for this server has been changed to ${role.name}`
                : 'Reports role has been unset. No role will be mentioned when a report is created.',

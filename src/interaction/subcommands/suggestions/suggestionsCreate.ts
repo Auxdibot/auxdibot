@@ -58,7 +58,7 @@ export const suggestionsCreate = <AuxdibotSubcommand>{
          messageID: null,
          discussion_thread_id: null,
          handled_reason: null,
-         date_unix: Date.now(),
+         date: new Date(),
       };
       const embed = DEFAULT_SUGGESTION_EMBED;
       const successEmbed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
@@ -104,7 +104,7 @@ export const suggestionsCreate = <AuxdibotSubcommand>{
                userID: interaction.data.member.id,
                description: `${interaction.data.member.user.username} created Suggestion #${suggestion.suggestionID}`,
                type: LogAction.SUGGESTION_CREATED,
-               date_unix: Date.now(),
+               date: new Date(),
             });
          })
          .catch(async () => {

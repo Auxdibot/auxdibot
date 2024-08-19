@@ -14,8 +14,8 @@ export default function scheduleExpirationChecks(auxdibot: Auxdibot) {
                const expired = server.punishments.filter((punishment) => {
                   if (
                      !punishment.expired &&
-                     punishment.expires_date_unix &&
-                     punishment.expires_date_unix <= Date.now()
+                     punishment.expires_date &&
+                     punishment.expires_date.valueOf() <= Date.now()
                   ) {
                      punishment.expired = true;
                      return punishment;
@@ -29,7 +29,7 @@ export default function scheduleExpirationChecks(auxdibot: Auxdibot) {
                         {
                            type: LogAction.PUNISHMENT_EXPIRED,
                            description: `Punishment ID ${expiredPunishment.punishmentID} has expired.`,
-                           date_unix: Date.now(),
+                           date: new Date(),
                            userID: auxdibot.user.id,
                         },
                         [punishmentInfoField(expiredPunishment, true, true)],

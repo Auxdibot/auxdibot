@@ -45,7 +45,7 @@ export const suggestionsDelete = <AuxdibotSubcommand>{
             userID: interaction.data.member.id,
             description: `${interaction.data.member.user.username} deleted Suggestion #${suggestion.suggestionID}`,
             type: LogAction.SUGGESTION_DELETED,
-            date_unix: Date.now(),
+            date: new Date(),
          });
       }
       deleteSuggestion(auxdibot, interaction.data.guild.id, suggestion.suggestionID);

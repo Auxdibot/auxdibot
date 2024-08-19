@@ -34,7 +34,7 @@ export default async function setStarboardReaction(
          await handleLog(auxdibot, guild, {
             type: LogAction.STARBOARD_REACTION_CHANGED,
             userID: user.id,
-            date_unix: Date.now(),
+            date: new Date(),
             description: `The reaction for the starboard \`${boardName}\` has been changed to ${emoji}`,
          });
          if (!i) throw new Error("couldn't preform that action");

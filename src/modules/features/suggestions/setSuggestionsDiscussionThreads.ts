@@ -22,7 +22,7 @@ export default async function setSuggestionsDiscussionThreads(
                await handleLog(auxdibot, guild, {
                   type: LogAction.SUGGESTIONS_THREAD_CREATION_CHANGED,
                   userID: user.id,
-                  date_unix: Date.now(),
+                  date: new Date(),
                   description: `The suggestions discussion thread creation for this server has been changed. (Now: ${
                      i.suggestions_discussion_threads ? 'Create Thread.' : 'Do not create a Thread.'
                   })`,

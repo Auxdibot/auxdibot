@@ -31,7 +31,7 @@ export default async function setStarboardChannel(
          await handleLog(auxdibot, guild, {
             type: LogAction.STARBOARD_CHANNEL_CHANGED,
             userID: user.id,
-            date_unix: Date.now(),
+            date: new Date(),
             description: `The channel for the starboard \`${boardName}\` has been changed to ${
                channel && !channel.isDMBased() ? `#${channel.name}` : 'none. Starboard is now disabled for this server.'
             }`,

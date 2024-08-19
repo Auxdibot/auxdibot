@@ -30,7 +30,7 @@ export default async function addBlacklistedPhrase(
             userID: user.id,
             description: `Added "${blacklisted_phrase}" as a blacklisted phrase.`,
             type: LogAction.AUTOMOD_SETTINGS_CHANGE,
-            date_unix: Date.now(),
+            date: new Date(),
          });
          return i;
       })

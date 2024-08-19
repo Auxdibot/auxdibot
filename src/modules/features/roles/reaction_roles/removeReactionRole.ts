@@ -30,7 +30,7 @@ export default async function removeReactionRole(
                channel && !channel.isDMBased() ? ` in ${channel.name || 'a channel'}` : ''
             }.`,
             type: LogAction.REACTION_ROLE_REMOVED,
-            date_unix: Date.now(),
+            date: new Date(),
          });
          const result = await auxdibot.database.servers.update({
             where: { serverID: guild.id },

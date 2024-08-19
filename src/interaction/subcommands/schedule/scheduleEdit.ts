@@ -67,7 +67,7 @@ export const scheduleEdit = <AuxdibotSubcommand>{
          userID: interaction.data.member.id,
          description: `Edited scheduled message #${index}.`,
          type: LogAction.SCHEDULED_MESSAGE_EDITED,
-         date_unix: Date.now(),
+         date: new Date(),
       });
       const success_embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
       success_embed.title = 'Success!';

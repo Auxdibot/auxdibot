@@ -22,7 +22,7 @@ export async function grantLevelRewards(auxdibot: Auxdibot, member: GuildMember,
                ).catch(() => undefined);
             } else {
                handleLog(auxdibot, member.guild, {
-                  date_unix: Date.now(),
+                  date: new Date(),
                   description: `Failed to grant role ${reward.roleID} to ${member.id} at level ${level}. Possibly an error with permissions?`,
                   type: LogAction.ERROR,
                   userID: member.id,

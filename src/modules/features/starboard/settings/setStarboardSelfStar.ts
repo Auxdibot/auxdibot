@@ -22,7 +22,7 @@ export default async function setStarboardSelfStar(
                await handleLog(auxdibot, guild, {
                   type: LogAction.STARBOARD_SETTINGS_CHANGED,
                   userID: user.id,
-                  date_unix: Date.now(),
+                  date: new Date(),
                   description: `The ability to self-star messages for this server has been changed. (Now: ${
                      i.self_star ? 'Enabled' : 'Disabled'
                   } from ${data.self_star ? 'Enabled' : 'Disabled'})`,

@@ -19,7 +19,7 @@ export default async function deleteRoleMultiplier(auxdibot: Auxdibot, guild: Gu
          handleLog(auxdibot, guild, {
             type: LogAction.MULTIPLIER_DELETED,
             userID: user.id,
-            date_unix: Date.now(),
+            date: new Date(),
             description: `Deleted the role multiplier #${id} (for <@&${multiplier[0]?.id}>) from your server.`,
          });
          return data;

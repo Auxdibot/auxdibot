@@ -23,7 +23,7 @@ export default async function changeInvitesLimit(
                   ? 'Disabled invites filter.'
                   : `The Automod invites limit has been set to ${invites.messages} invites every ${invites.duration} seconds.`,
             type: LogAction.AUTOMOD_SETTINGS_CHANGE,
-            date_unix: Date.now(),
+            date: new Date(),
          });
          return i;
       });

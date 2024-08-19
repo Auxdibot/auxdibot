@@ -22,7 +22,7 @@ export async function addAutoModException(auxdibot: Auxdibot, guild: Guild, role
             userID,
             description: `Added ${role.name} to the AutoMod exception roles.`,
             type: LogAction.AUTOMOD_SETTINGS_CHANGE,
-            date_unix: Date.now(),
+            date: new Date(),
          });
          return i;
       });

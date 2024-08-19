@@ -23,7 +23,7 @@ export default async function changeAttachmentsLimit(
                   ? 'Disabled attachments filter.'
                   : `The Automod attachments limit has been set to ${attachments.messages} attachments every ${attachments.duration} seconds.`,
             type: LogAction.AUTOMOD_SETTINGS_CHANGE,
-            date_unix: Date.now(),
+            date: new Date(),
          });
          return i;
       });

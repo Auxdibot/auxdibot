@@ -41,7 +41,7 @@ export async function calculateTotalStars(
          type: LogAction.ERROR,
          userID: auxdibot.user.id,
          description: `An error occurred while calculating total stars for ${board.board_name}.`,
-         date_unix: Date.now(),
+         date: new Date(),
       });
       return -1;
    }

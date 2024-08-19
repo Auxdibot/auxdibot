@@ -23,7 +23,7 @@ export default async function setLevelChannel(
          await handleLog(auxdibot, guild, {
             type: LogAction.LEVEL_CHANNEL_CHANGED,
             userID: user.id,
-            date_unix: Date.now(),
+            date: new Date(),
             description: `The Level channel for this server has been changed to ${
                channel && !channel.isDMBased()
                   ? `#${channel.name}`

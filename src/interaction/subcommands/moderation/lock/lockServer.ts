@@ -55,7 +55,7 @@ export const lockServer = <AuxdibotSubcommand>{
       handleLog(auxdibot, interaction.guild, {
          type: LogAction.SERVER_LOCKED,
          userID: interaction.user.id,
-         date_unix: Date.now(),
+         date: new Date(),
          description: `The server was locked.`,
       });
       await auxdibot.createReply(interaction, { embeds: [embed] });

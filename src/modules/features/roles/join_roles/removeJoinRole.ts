@@ -31,7 +31,7 @@ export default async function removeJoinRole(
                userID: user.id,
                description: `Removed ${role?.name || `<@&${roleID}>`} from the join roles.`,
                type: LogAction.JOIN_ROLE_REMOVED,
-               date_unix: Date.now(),
+               date: new Date(),
             });
          return data;
       })

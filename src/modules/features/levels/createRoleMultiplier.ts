@@ -30,7 +30,7 @@ export default async function createRoleMultiplier(
          handleLog(auxdibot, guild, {
             type: LogAction.MULTIPLIER_CREATED,
             userID: user.id,
-            date_unix: Date.now(),
+            date: new Date(),
             description: `Created a role multiplier for <@&${multiplier.id}> with a multiplier of \`x${multiplier.multiplier}\`.`,
          });
          return data;

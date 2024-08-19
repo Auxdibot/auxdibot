@@ -31,7 +31,7 @@ export default async function removeStickyRole(
                userID: user.id,
                description: `Removed role ${role?.name ?? `<@&${roleID}>`} from the sticky roles.`,
                type: LogAction.STICKY_ROLE_REMOVED,
-               date_unix: Date.now(),
+               date: new Date(),
             });
          return data;
       })

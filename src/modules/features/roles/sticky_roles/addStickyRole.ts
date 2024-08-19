@@ -33,7 +33,7 @@ export default async function addStickyRole(
                userID: user.id,
                description: `Added ${role.name} to sticky roles.`,
                type: LogAction.STICKY_ROLE_ADDED,
-               date_unix: Date.now(),
+               date: new Date(),
             });
          return data;
       })

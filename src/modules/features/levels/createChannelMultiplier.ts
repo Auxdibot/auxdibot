@@ -30,7 +30,7 @@ export default async function createChannelMultiplier(
          handleLog(auxdibot, guild, {
             type: LogAction.MULTIPLIER_CREATED,
             userID: user.id,
-            date_unix: Date.now(),
+            date: new Date(),
             description: `Created a channel multiplier for <#${multiplier.id}> with a multiplier of \`x${multiplier.multiplier}\`.`,
          });
          return data;

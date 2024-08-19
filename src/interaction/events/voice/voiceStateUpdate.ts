@@ -13,7 +13,7 @@ export default async function voiceStateUpdate(auxdibot: Auxdibot, oldState: Voi
    if (!oldState.serverDeaf && newState.serverDeaf) {
       await handleLog(auxdibot, newState.guild, {
          type: LogAction.MEMBER_DEAFENED,
-         date_unix: Date.now(),
+         date: new Date(),
          description: `${newState.member.user.username} was server deafened.`,
          userID: newState.member.user.id,
       });
@@ -21,7 +21,7 @@ export default async function voiceStateUpdate(auxdibot: Auxdibot, oldState: Voi
    if (!oldState.serverMute && newState.serverMute) {
       await handleLog(auxdibot, newState.guild, {
          type: LogAction.MEMBER_MUTED,
-         date_unix: Date.now(),
+         date: new Date(),
          description: `${newState.member.user.username} was server muted.`,
          userID: newState.member.user.id,
       });
@@ -81,7 +81,7 @@ export default async function voiceStateUpdate(auxdibot: Auxdibot, oldState: Voi
          } catch (x) {
             handleLog(auxdibot, guild, {
                type: LogAction.ERROR,
-               date_unix: Date.now(),
+               date: new Date(),
                description: `An unknown error ocurred attempting to award event XP to the member ${newState.member.user.username}. Please contact support if this issue persists.`,
                userID: newState.member.user.id,
             });
@@ -92,7 +92,7 @@ export default async function voiceStateUpdate(auxdibot: Auxdibot, oldState: Voi
          } catch (x) {
             handleLog(auxdibot, guild, {
                type: LogAction.ERROR,
-               date_unix: Date.now(),
+               date: new Date(),
                description: `An unknown error ocurred attempting to award voice channel XP to the member ${newState.member.user.username}. Please contact support if this issue persists.`,
                userID: newState.member.user.id,
             });

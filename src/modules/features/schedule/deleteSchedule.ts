@@ -20,7 +20,7 @@ export default async function deleteSchedule(
             userID: user.id,
             description: `Deleted scheduled message #${id + 1}.`,
             type: LogAction.SCHEDULED_MESSAGE_REMOVED,
-            date_unix: Date.now(),
+            date: new Date(),
          });
          return await auxdibot.database.servers
             .update({

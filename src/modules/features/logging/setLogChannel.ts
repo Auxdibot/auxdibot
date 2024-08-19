@@ -17,7 +17,7 @@ export default async function setLogChannel(auxdibot: Auxdibot, guild: Guild, us
          await handleLog(auxdibot, guild, {
             type: LogAction.LOG_CHANNEL_CHANGED,
             userID: user.id,
-            date_unix: Date.now(),
+            date: new Date(),
             description: `The Log Channel for this server has been changed to ${
                channel && !channel.isDMBased() ? `#${channel.name}` : 'none. Logs are now disabled for this server.'
             }`,

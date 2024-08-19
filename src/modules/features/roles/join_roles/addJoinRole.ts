@@ -29,7 +29,7 @@ export default async function addJoinRole(
                userID: user.id,
                description: `Added ${role.name} to the join roles.`,
                type: LogAction.JOIN_ROLE_ADDED,
-               date_unix: Date.now(),
+               date: new Date(),
             });
          return data;
       })

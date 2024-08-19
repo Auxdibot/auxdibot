@@ -26,7 +26,7 @@ export default async function messageUpdate(
          newMessage.guild,
          <Log>{
             type: LogAction.MESSAGE_EDITED,
-            date_unix: Date.now(),
+            date: new Date(),
             description: `A message by ${sender.user.username} in #${channel?.name ?? newMessage.channel} was edited.`,
             userID: sender.id,
          },

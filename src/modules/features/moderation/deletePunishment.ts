@@ -24,7 +24,7 @@ export default async function deletePunishment(
             guild,
             {
                type: LogAction.PUNISHMENT_DELETED,
-               date_unix: Date.now(),
+               date: new Date(),
                userID: user.id,
                description: `${user.username} deleted a punishment. (PID: ${punishment.punishmentID})`,
             },

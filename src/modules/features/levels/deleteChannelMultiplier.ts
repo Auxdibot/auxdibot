@@ -24,7 +24,7 @@ export default async function deleteChannelMultiplier(
          handleLog(auxdibot, guild, {
             type: LogAction.MULTIPLIER_DELETED,
             userID: user.id,
-            date_unix: Date.now(),
+            date: new Date(),
             description: `Deleted the channel multiplier #${id} (in <#${multiplier[0]?.id}>) from your server.`,
          });
          return data;

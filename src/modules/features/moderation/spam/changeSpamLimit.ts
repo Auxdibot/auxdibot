@@ -23,7 +23,7 @@ export default async function changeSpamLimit(
                   ? 'Disabled spam filter.'
                   : `The Automod spam limit has been set to ${spam.messages} messages every ${spam.duration} seconds.`,
             type: LogAction.AUTOMOD_SETTINGS_CHANGE,
-            date_unix: Date.now(),
+            date: new Date(),
          });
          return i;
       });

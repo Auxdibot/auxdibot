@@ -5,12 +5,14 @@ export function punishmentInfoField(punishment: Punishment, sendModerator?: bool
    return <EmbedField>{
       name: 'Punishment Info',
       value: `🪪 Punishment ID: \`${punishment.punishmentID}\`\n🕰️ Date: <t:${Math.round(
-         punishment.date_unix / 1000,
+         punishment.date.valueOf() / 1000,
       )}>\n${
          punishment.expired
             ? '📅 Expired'
             : `📅 Expires: ${
-                 !punishment.expires_date_unix ? 'Never' : `<t:${Math.round(punishment.expires_date_unix / 1000)}>`
+                 !punishment.expires_date.valueOf()
+                    ? 'Never'
+                    : `<t:${Math.round(punishment.expires_date.valueOf() / 1000)}>`
               }`
       }\n${sendReason ? `💬 Reason: ${punishment.reason}\n` : ''}⛓️ User: <@${punishment.userID}>\n${
          sendModerator && punishment.moderatorID ? `🧍 Moderator: <@${punishment.moderatorID}>` : ''

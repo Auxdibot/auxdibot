@@ -33,7 +33,7 @@ export const unlockServer = <AuxdibotSubcommand>{
       const log = <Log>{
          type: LogAction.SERVER_UNLOCKED,
          userID: interaction.user.id,
-         date_unix: Date.now(),
+         date: new Date(),
          description: `The server is now unlocked.`,
       };
       handleLog(auxdibot, interaction.guild, log);

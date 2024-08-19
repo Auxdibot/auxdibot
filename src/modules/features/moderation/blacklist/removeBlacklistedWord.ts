@@ -23,7 +23,7 @@ export default async function removeBlacklistedWord(
             userID: user.id,
             description: `Removed "${item[0]}" from the blacklisted phrases.`,
             type: LogAction.AUTOMOD_SETTINGS_CHANGE,
-            date_unix: Date.now(),
+            date: new Date(),
          });
          return data;
       })
