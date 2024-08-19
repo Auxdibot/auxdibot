@@ -66,10 +66,10 @@ export const punishBan = <AuxdibotSubcommand>{
       const banData = <Punishment>{
          type: PunishmentType.BAN,
          reason,
-         date_unix: Date.now(),
+         date: new Date(),
          dmed: false,
          expired: false,
-         expires_date_unix: expires && typeof expires != 'string' ? expires : undefined,
+         expires_date: expires && typeof expires != 'string' ? new Date(expires) : undefined,
          userID: user.id,
          moderatorID: interaction.user.id,
          punishmentID: await incrementPunishmentsTotal(auxdibot, interaction.data.guildData.serverID),

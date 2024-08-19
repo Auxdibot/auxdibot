@@ -22,7 +22,7 @@ export default async function setStarboardStarring(
                await handleLog(auxdibot, guild, {
                   type: LogAction.STARBOARD_SETTINGS_CHANGED,
                   userID: user.id,
-                  date_unix: Date.now(),
+                  date: new Date(),
                   description: `The ability to star messages through a starboard for this server has been changed. (Now: ${
                      i.starboard_star ? 'Enabled' : 'Disabled'
                   } from ${data.starboard_star ? 'Enabled' : 'Disabled'})`,

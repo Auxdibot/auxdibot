@@ -66,7 +66,7 @@ export const reactionRolesAddMessage = <AuxdibotSubcommand>{
                userID: interaction.data.member.id,
                description: `Applied a reaction role to a message in ${message.channel}`,
                type: LogAction.REACTION_ROLE_ADDED,
-               date_unix: Date.now(),
+               date: new Date(),
             });
             return await auxdibot.createReply(interaction, { embeds: [resEmbed] });
          })

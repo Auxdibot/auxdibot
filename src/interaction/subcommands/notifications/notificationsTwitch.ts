@@ -54,7 +54,7 @@ export const notificationsTwitch = <AuxdibotSubcommand>{
             handleLog(auxdibot, interaction.guild, {
                type: LogAction.NOTIFICATION_CREATED,
                userID: interaction.user.id,
-               date_unix: Date.now(),
+               date: new Date(),
                description: description,
             });
             return await auxdibot.createReply(interaction, { embeds: [embed] });

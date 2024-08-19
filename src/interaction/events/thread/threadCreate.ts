@@ -7,7 +7,7 @@ export default async function threadCreate(auxdibot: Auxdibot, thread: ThreadCha
    if (!newlyCreated) return;
    await handleLog(auxdibot, thread.guild, {
       type: LogAction.THREAD_CREATED,
-      date_unix: Date.now(),
+      date: new Date(),
       description: `A thread named "${thread.name}" was created on your server.`,
       userID: auxdibot.user.id,
    });

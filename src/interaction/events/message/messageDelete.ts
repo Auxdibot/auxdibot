@@ -33,7 +33,7 @@ export default async function messageDelete(auxdibot: Auxdibot, message: Message
       await deleteSuggestion(auxdibot, message.guild.id, suggestion.suggestionID);
       await handleLog(auxdibot, message.guild, <Log>{
          type: LogAction.SUGGESTION_DELETED,
-         date_unix: Date.now(),
+         date: new Date(),
          description: `A suggestion message deletion deleted Suggestion #${suggestion.suggestionID}`,
          userID: message?.member?.id ?? auxdibot.user.id,
       });
@@ -59,7 +59,7 @@ export default async function messageDelete(auxdibot: Auxdibot, message: Message
       message.guild,
       <Log>{
          type: LogAction.MESSAGE_DELETED,
-         date_unix: Date.now(),
+         date: new Date(),
          description: `A message by ${sender?.user?.username ?? auxdibot.user.username} in #${
             channel?.name ?? message.channel
          } was deleted${executorCheck ? ` by ${executorCheck.username}` : ''}.`,

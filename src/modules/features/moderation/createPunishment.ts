@@ -85,7 +85,7 @@ export default async function createPunishment(
             {
                userID: punishment.userID,
                description: `${user?.username || punishment.userID} was ${PunishmentValues[punishment.type].action}.`,
-               date_unix: Date.now(),
+               date: new Date(),
                type: PunishmentValues[punishment.type].log,
             },
             [punishmentInfoField(punishment, true, true)],
@@ -113,10 +113,10 @@ export default async function createPunishment(
                      const thresholdPunishment = <Punishment>{
                         type: server.automod_threshold_punishment,
                         reason: 'You have met the warns threshold for this server.',
-                        date_unix: Date.now(),
+                        date: new Date(),
                         dmed: false,
                         expired: false,
-                        expires_date_unix: undefined,
+                        expires_date: undefined,
                         userID: data.userID,
                         moderatorID: user.id,
                         punishmentID: await incrementPunishmentsTotal(auxdibot, guild.id),

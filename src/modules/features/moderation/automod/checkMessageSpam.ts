@@ -15,7 +15,7 @@ export default async function checkMessageSpam(auxdibot: Auxdibot, server: serve
          const punishment = <Punishment>{
             punishmentID: await incrementPunishmentsTotal(auxdibot, server.serverID),
             type: server.automod_spam_punishment.punishment,
-            date_unix: Date.now(),
+            date: new Date(),
             reason: server.automod_spam_punishment.reason || 'You have exceeded the spam limit for this server!',
             userID: message.author.id,
             expired: false,

@@ -45,7 +45,7 @@ export default async function setMuteRole(
          await handleLog(auxdibot, guild, {
             type: LogAction.MUTE_ROLE_CHANGED,
             userID: user.id,
-            date_unix: Date.now(),
+            date: new Date(),
             description: role
                ? `The Mute Role for this server has been changed to ${role.name}`
                : "Mute role has been unset. This server will now use Discord's timeout system for mutes.",

@@ -30,7 +30,7 @@ export default async function handleLog(
             .setAuthor({ name: `Log Action: ${log.type}` })
             .setTitle(LogNames[log.type] || null)
             .setDescription(
-               `${log.description}\n\n🕰️ Date: <t:${Math.round(log.date_unix / 1000)}>${
+               `${log.description}\n\n🕰️ Date: <t:${Math.round(log.date.valueOf() / 1000)}>${
                   log.userID ? `\n🧍 User: <@${log.userID}>` : ''
                }`,
             );

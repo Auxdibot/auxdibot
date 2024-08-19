@@ -36,7 +36,7 @@ export default async function checkBlacklistedWords(auxdibot: Auxdibot, server: 
                      {
                         type: LogAction.MESSAGE_DELETED_AUTOMOD,
                         userID: message.author.id,
-                        date_unix: Date.now(),
+                        date: new Date(),
                         description: `A message was deleted in ${
                            !message.channel.isDMBased() ? message.channel.name : 'a channel'
                         } because it included the blacklisted phrase "${blacklist}"`,
@@ -55,7 +55,7 @@ export default async function checkBlacklistedWords(auxdibot: Auxdibot, server: 
             const punishment = <Punishment>{
                punishmentID: await incrementPunishmentsTotal(auxdibot, server.serverID),
                type: server.automod_banned_phrases_punishment,
-               date_unix: Date.now(),
+               date: new Date(),
                reason: `Usage of blacklisted phrase "${blacklist}"`,
                userID: message.author.id,
                expired: false,
@@ -71,7 +71,7 @@ export default async function checkBlacklistedWords(auxdibot: Auxdibot, server: 
                      {
                         type: LogAction.MESSAGE_DELETED_AUTOMOD,
                         userID: message.author.id,
-                        date_unix: Date.now(),
+                        date: new Date(),
                         description: `A message was deleted in ${
                            !message.channel.isDMBased() ? message.channel.name : 'a channel'
                         } because it included the blacklisted phrase "${blacklist}" (user was ${

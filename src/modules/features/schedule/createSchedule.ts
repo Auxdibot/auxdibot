@@ -26,7 +26,7 @@ export default async function createSchedule(
             userID: user.id,
             description: `Scheduled a message for ${channel && !channel.isDMBased() ? channel.name : 'a channel'}.`,
             type: LogAction.SCHEDULED_MESSAGE_CREATED,
-            date_unix: Date.now(),
+            date: new Date(),
          });
          return scheduledMessage;
       });

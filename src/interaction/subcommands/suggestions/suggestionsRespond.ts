@@ -66,7 +66,7 @@ export const suggestionsRespond = <AuxdibotSubcommand>{
             userID: interaction.data.member.id,
             description: `${interaction.data.member.user.username} deleted Suggestion #${suggestion.suggestionID}`,
             type: LogAction.SUGGESTION_DELETED,
-            date_unix: Date.now(),
+            date: new Date(),
          });
       } else {
          const update = await updateSuggestion(auxdibot, interaction.data.guild.id, suggestion);

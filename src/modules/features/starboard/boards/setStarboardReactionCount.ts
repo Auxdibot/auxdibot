@@ -29,7 +29,7 @@ export default async function setStarboardReactionCount(
          await handleLog(auxdibot, guild, {
             type: LogAction.STARBOARD_REACTION_COUNT_CHANGED,
             userID: user.id,
-            date_unix: Date.now(),
+            date: new Date(),
             description: `The reaction count for the starboard \`${boardName}\` has been changed to ${reactionCount}`,
          });
          if (!i) throw new Error("couldn't preform that action");

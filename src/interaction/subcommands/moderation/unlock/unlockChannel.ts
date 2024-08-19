@@ -51,7 +51,7 @@ export const unlockChannel = <AuxdibotSubcommand>{
       const log = <Log>{
          type: LogAction.CHANNEL_UNLOCKED,
          userID: interaction.user.id,
-         date_unix: Date.now(),
+         date: new Date(),
          description: `#${channel.name} was unlocked.`,
       };
       if (channel.isThread()) {

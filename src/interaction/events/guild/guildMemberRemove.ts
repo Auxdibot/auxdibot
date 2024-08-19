@@ -42,7 +42,7 @@ export default async function guildMemberRemove(auxdibot: Auxdibot, member: Guil
          userID: member.id,
          description: `${member.user.username} left the server! (Total Members: **${member.guild.memberCount}**)`,
          type: LogAction.MEMBER_LEAVE,
-         date_unix: Date.now(),
+         date: new Date(),
       },
       [],
       true,

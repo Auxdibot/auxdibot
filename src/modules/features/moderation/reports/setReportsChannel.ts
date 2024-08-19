@@ -23,7 +23,7 @@ export default async function setReportsChannel(
          await handleLog(auxdibot, guild, {
             type: LogAction.REPORTS_CHANNEL_CHANGED,
             userID: user.id,
-            date_unix: Date.now(),
+            date: new Date(),
             description: `The Reports Channel for this server has been changed to ${
                channel && channel.type != ChannelType.DM
                   ? `#${channel.name}`

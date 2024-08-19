@@ -44,7 +44,7 @@ export default async function createNotification(
             userID: userID,
             description: `A notification created for ${topicUrl}.`,
             type: LogAction.NOTIFICATION_CREATED,
-            date_unix: Date.now(),
+            date: new Date(),
          });
          await auxdibot.subscriber.subscribe(topicUrl, type, auxdibot, guild.id).catch(() => {
             data.notifications.splice(data.notifications.length - 1, 1);

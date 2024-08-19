@@ -43,7 +43,7 @@ export const notificationsDelete = <AuxdibotSubcommand>{
             handleLog(auxdibot, interaction.guild, {
                type: LogAction.NOTIFICATION_DELETED,
                userID: interaction.user.id,
-               date_unix: Date.now(),
+               date: new Date(),
                description: `Deleted notification feed #${index}`,
             });
             return await auxdibot.createReply(interaction, { embeds: [embed] });

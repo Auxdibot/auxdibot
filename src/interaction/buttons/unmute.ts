@@ -70,7 +70,7 @@ export default <AuxdibotButton>{
          {
             userID: user.id,
             description: `${user.username} was unmuted.`,
-            date_unix: Date.now(),
+            date: new Date(),
             type: LogAction.UNMUTE,
          },
          [punishmentInfoField(muted, true, true)],

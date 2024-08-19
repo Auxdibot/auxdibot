@@ -89,7 +89,7 @@ export const reactionRolesEdit = <AuxdibotSubcommand>{
                server.reaction_roles.indexOf(rr) == -1 ? 'Unknown' : server.reaction_roles.indexOf(rr)
             }.`,
             type: LogAction.REACTION_ROLE_EDITED,
-            date_unix: Date.now(),
+            date: new Date(),
          });
          return await auxdibot.createReply(interaction, { embeds: [embed] });
       }
@@ -128,7 +128,7 @@ export const reactionRolesEdit = <AuxdibotSubcommand>{
                server.reaction_roles.indexOf(rr) == -1 ? 'Unknown' : server.reaction_roles.indexOf(rr)
             }.`,
             type: LogAction.REACTION_ROLE_EDITED,
-            date_unix: Date.now(),
+            date: new Date(),
          });
          return await auxdibot.createReply(interaction, { embeds: [embed] });
       } catch (x) {

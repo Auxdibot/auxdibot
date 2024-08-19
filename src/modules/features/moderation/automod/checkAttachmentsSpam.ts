@@ -16,7 +16,7 @@ export default async function checkAttachmentsSpam(auxdibot: Auxdibot, server: s
          const punishment = <Punishment>{
             punishmentID: await incrementPunishmentsTotal(auxdibot, server.serverID),
             type: server.automod_attachments_punishment.punishment,
-            date_unix: Date.now(),
+            date: new Date(),
             reason:
                server.automod_attachments_punishment.reason ||
                'You have exceeded the attachments limit for this server!',

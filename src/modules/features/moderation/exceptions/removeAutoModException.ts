@@ -29,7 +29,7 @@ export async function removeAutoModException(
                      roleIndex + 1
                   } (ID: ${roleID}) from the AutoMod role exceptions.`,
                   type: LogAction.AUTOMOD_SETTINGS_CHANGE,
-                  date_unix: Date.now(),
+                  date: new Date(),
                });
                return i;
             });

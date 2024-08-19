@@ -55,7 +55,7 @@ export default async function messageReactionAdd(
                         type: LogAction.ERROR,
                         userID: user.id,
                         description: `Auxdibot does not have permission to assign the role <@&${rr.role}> to <@${member.id}>.`,
-                        date_unix: Date.now(),
+                        date: new Date(),
                      });
                   }
                });

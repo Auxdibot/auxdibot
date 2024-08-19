@@ -7,7 +7,7 @@ export default async function channelCreate(auxdibot: Auxdibot, channel: Channel
    if (channel.isDMBased()) return;
    await handleLog(auxdibot, channel.guild, {
       type: LogAction.CHANNEL_CREATED,
-      date_unix: Date.now(),
+      date: new Date(),
       description: `A channel named #${channel.name} was created on your server.`,
       userID: auxdibot.user.id,
    });

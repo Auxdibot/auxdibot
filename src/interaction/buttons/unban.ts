@@ -45,7 +45,7 @@ export default <AuxdibotButton>{
          {
             userID: user.id,
             description: `${user.username} was unbanned.`,
-            date_unix: Date.now(),
+            date: new Date(),
             type: LogAction.UNBAN,
          },
          [punishmentInfoField(banned, true, true)],

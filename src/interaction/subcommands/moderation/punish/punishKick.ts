@@ -37,10 +37,10 @@ export const punishKick = <AuxdibotSubcommand>{
       const kickData = <Punishment>{
          type: PunishmentType.KICK,
          reason,
-         date_unix: Date.now(),
+         date: new Date(),
          dmed: false,
          expired: true,
-         expires_date_unix: undefined,
+         expires_date: undefined,
          userID: user.id,
          moderatorID: interaction.user.id,
          punishmentID: await incrementPunishmentsTotal(auxdibot, interaction.data.guildData.serverID),

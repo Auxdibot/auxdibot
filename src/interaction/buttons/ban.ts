@@ -34,10 +34,10 @@ export default <AuxdibotButton>{
       const banData = <Punishment>{
          type: PunishmentType.BAN,
          reason: 'No reason given.',
-         date_unix: Date.now(),
+         date: new Date(),
          dmed: false,
          expired: false,
-         expires_date_unix: undefined,
+         expires_date: undefined,
          userID: user_id,
          moderatorID: interaction.user.id,
          punishmentID: await incrementPunishmentsTotal(auxdibot, interaction.guild.id),

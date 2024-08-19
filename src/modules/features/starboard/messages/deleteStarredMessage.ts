@@ -18,7 +18,7 @@ export default async function deleteStarredMessage(auxdibot: Auxdibot, guild: Gu
          await message.delete().then(async () => {
             await handleLog(auxdibot, guild, <Log>{
                type: LogAction.STARBOARD_MESSAGE_DELETED,
-               date_unix: Date.now(),
+               date: new Date(),
                description: `Deleted a starred message in the starboard \`${starredData.board}\`.`,
                userID: message?.member?.id ?? auxdibot.user.id,
             });

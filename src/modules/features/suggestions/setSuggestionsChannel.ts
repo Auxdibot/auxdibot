@@ -23,7 +23,7 @@ export default async function setSuggestionsChannel(
          await handleLog(auxdibot, guild, {
             type: LogAction.SUGGESTIONS_CHANNEL_CHANGED,
             userID: user.id,
-            date_unix: Date.now(),
+            date: new Date(),
             description: `The Suggestions Channel for this server has been changed to ${
                channel && !channel.isDMBased()
                   ? `#${channel.name}`

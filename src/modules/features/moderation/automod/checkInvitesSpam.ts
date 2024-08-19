@@ -16,7 +16,7 @@ export default async function checkInvitesSpam(auxdibot: Auxdibot, server: serve
          const punishment = <Punishment>{
             punishmentID: await incrementPunishmentsTotal(auxdibot, server.serverID),
             type: server.automod_invites_punishment.punishment,
-            date_unix: Date.now(),
+            date: new Date(),
             reason: server.automod_invites_punishment.reason || 'You have exceeded the invites limit for this server!',
             userID: message.author.id,
             expired: false,

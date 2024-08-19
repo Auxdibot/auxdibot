@@ -37,7 +37,7 @@ export const scheduleRemove = <AuxdibotSubcommand>{
          userID: interaction.data.member.id,
          description: `Deleted scheduled message #${index}.`,
          type: LogAction.SCHEDULED_MESSAGE_REMOVED,
-         date_unix: Date.now(),
+         date: new Date(),
       });
       return await auxdibot.createReply(interaction, { embeds: [successEmbed] });
    },

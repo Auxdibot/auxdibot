@@ -56,7 +56,7 @@ export const purgeUser = <AuxdibotSubcommand>{
                   type: LogAction.MESSAGES_PURGED,
                   userID: interaction.user.id,
                   description: `${interaction.user.username} purged ${i.totalDeleted} messages in #${interaction.channel.name}.`,
-                  date_unix: Date.now(),
+                  date: new Date(),
                },
                [
                   {

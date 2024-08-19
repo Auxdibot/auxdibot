@@ -70,7 +70,7 @@ export async function createUserEmbed(auxdibot: Auxdibot, guild: Guild, userID: 
                return (
                   str +
                   `\n**${type.name}** - PID: ${punishment.punishmentID} - <t:${Math.round(
-                     punishment.date_unix / 1000,
+                     punishment.date.valueOf() / 1000,
                   )}>`
                );
             }, '\u2800'),

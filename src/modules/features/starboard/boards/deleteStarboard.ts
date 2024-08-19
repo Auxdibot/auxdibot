@@ -25,7 +25,7 @@ export default async function deleteStarboard(
          handleLog(auxdibot, guild, {
             type: LogAction.STARBOARD_DELETED,
             userID: user.id,
-            date_unix: Date.now(),
+            date: new Date(),
             description: `Deleted the starboard \`${board_name}\` from your server.`,
          });
          return data;

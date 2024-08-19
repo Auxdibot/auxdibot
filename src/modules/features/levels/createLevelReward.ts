@@ -26,7 +26,7 @@ export default async function createLevelReward(
          handleLog(auxdibot, guild, {
             type: LogAction.LEVEL_REWARD_CREATED,
             userID: user.id,
-            date_unix: Date.now(),
+            date: new Date(),
             description: `Added ${
                guild.roles.cache.get(levelReward.roleID)?.name ?? 'a role'
             } as the level reward for Level ${levelReward.level}`,

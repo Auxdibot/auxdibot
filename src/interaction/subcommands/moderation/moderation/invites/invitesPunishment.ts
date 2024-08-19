@@ -70,7 +70,7 @@ export const invitesPunishment = <AuxdibotSubcommand>{
                userID: interaction.data.member.id,
                description: `The Automod invites spam punishment has been set to ${punishment}`,
                type: LogAction.AUTOMOD_SETTINGS_CHANGE,
-               date_unix: Date.now(),
+               date: new Date(),
             });
             return await auxdibot.createReply(interaction, { embeds: [embed] });
          })

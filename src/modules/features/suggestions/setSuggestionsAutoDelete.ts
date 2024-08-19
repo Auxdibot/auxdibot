@@ -22,7 +22,7 @@ export default async function setSuggestionsAutoDelete(
                await handleLog(auxdibot, guild, {
                   type: LogAction.SUGGESTIONS_AUTO_DELETE_CHANGED,
                   userID: user.id,
-                  date_unix: Date.now(),
+                  date: new Date(),
                   description: `The suggestions auto deletion for this server has been changed. (Now: ${
                      i.suggestions_auto_delete ? 'Delete' : 'Do not Delete'
                   })`,

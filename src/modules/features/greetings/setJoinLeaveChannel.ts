@@ -23,7 +23,7 @@ export default async function setJoinLeaveChannel(
          await handleLog(auxdibot, guild, {
             type: LogAction.JOIN_LEAVE_CHANNEL_CHANGED,
             userID: user.id,
-            date_unix: Date.now(),
+            date: new Date(),
             description: `The Join/Leave channel for this server has been changed to ${
                channel && !channel.isDMBased()
                   ? `#${channel.name}`

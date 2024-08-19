@@ -22,7 +22,7 @@ export const logsLatest = <AuxdibotSubcommand>{
          const name = LogNames[log.type];
          return (
             str +
-            `\n**${name}**\n${log.description}\n🕰️ Date: <t:${Math.round(log.date_unix / 1000)}>\n🧍 User: <@${
+            `\n**${name}**\n${log.description}\n🕰️ Date: <t:${Math.round(log.date.valueOf() / 1000)}>\n🧍 User: <@${
                log.userID
             }>\n`
          );

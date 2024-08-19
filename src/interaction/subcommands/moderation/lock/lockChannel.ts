@@ -76,7 +76,7 @@ export const lockChannel = <AuxdibotSubcommand>{
       const log = <Log>{
          type: LogAction.CHANNEL_LOCKED,
          userID: interaction.user.id,
-         date_unix: Date.now(),
+         date: new Date(),
          description: `#${channel.name} was locked. Reason: ${reason || 'No reason specified.'}`,
       };
       if (channel.isThread()) {

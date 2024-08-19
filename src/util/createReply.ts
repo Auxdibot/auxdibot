@@ -64,7 +64,7 @@ export async function createReply(
                         type: 'ERROR',
                         description: `An error occurred when attempting to run a command.`,
                         userID: interaction.user.id,
-                        date_unix: Date.now(),
+                        date: new Date(),
                      },
                      [
                         {

@@ -67,7 +67,7 @@ export default async function guildMemberAdd(auxdibot: Auxdibot, member: GuildMe
          userID: member.id,
          description: `${member.user.username} joined the server! (Total Members: **${member.guild.memberCount}**)`,
          type: LogAction.MEMBER_JOIN,
-         date_unix: Date.now(),
+         date: new Date(),
       },
       [],
       true,
