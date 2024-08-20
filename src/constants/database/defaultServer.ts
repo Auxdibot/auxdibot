@@ -12,6 +12,7 @@ export const defaultServer: Partial<servers> = {
    join_embed: DEFAULT_JOIN_EMBED as APIEmbed,
    leave_embed: DEFAULT_LEAVE_EMBED as APIEmbed,
    level_message: { content: '', embed: DEFAULT_LEVELUP_EMBED as APIEmbed },
+   disabled_modules: ['Levels'],
    suggestions: [],
    punishments: [],
    starred_messages: [],
