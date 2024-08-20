@@ -1,7 +1,7 @@
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import addTimestampToDate from '@/util/addTimestampToDate';
-import durationToTimestamp from '@/util/durationToTimestamp';
+
 import parsePlaceholders from '@/util/parsePlaceholder';
 import { APIEmbed } from 'discord.js';
 import { AsyncTask, SimpleIntervalJob } from 'toad-scheduler';
@@ -16,23 +16,6 @@ export default function scheduleRunSchedules(auxdibot: Auxdibot) {
             const server = await findOrCreateServer(auxdibot, guild.id);
             if (server) {
                for (const schedule of server.scheduled_messages) {
-                  let scheduleChanged = false;
-                  if (schedule.old_last_run_unix && !schedule.last_run) {
-                     schedule.last_run = new Date(schedule.old_last_run_unix);
-                     scheduleChanged = true;
-                  }
-                  if (schedule.old_interval_unix && !schedule.interval_timestamp) {
-                     schedule.interval_timestamp = durationToTimestamp(schedule.old_interval_unix);
-                     scheduleChanged = true;
-                     if (!schedule.interval_timestamp) {
-                        scheduleChanged = false;
-                        server.scheduled_messages.splice(server.scheduled_messages.indexOf(schedule), 1);
-                        await auxdibot.database.servers.update({
-                           where: { serverID: server.serverID },
-                           data: { scheduled_messages: server.scheduled_messages },
-                        });
-                     }
-                  }
                   let addedDate = addTimestampToDate(schedule.last_run, schedule.interval_timestamp);
                   if (addedDate.valueOf() <= now.valueOf()) {
                      while (addTimestampToDate(addedDate, schedule.interval_timestamp).valueOf() < now.valueOf()) {
@@ -66,11 +49,6 @@ export default function scheduleRunSchedules(auxdibot: Auxdibot) {
                            })
                            .catch((x) => console.log(x));
                      }
-                  } else if (scheduleChanged) {
-                     await auxdibot.database.servers.update({
-                        where: { serverID: server.serverID },
-                        data: { scheduled_messages: server.scheduled_messages },
-                     });
                   }
                }
             }

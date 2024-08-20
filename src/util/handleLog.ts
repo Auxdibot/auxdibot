@@ -17,7 +17,7 @@ import { EmbedBuilder, EmbedField, Guild, TextChannel } from 'discord.js';
 export default async function handleLog(
    auxdibot: Auxdibot,
    guild: Guild,
-   log: Log,
+   log: Omit<Log, 'old_date_unix'>,
    fields?: EmbedField[],
    use_user_avatar?: boolean,
 ) {

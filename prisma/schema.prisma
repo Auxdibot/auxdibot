@@ -128,19 +128,19 @@ enum LogAction {
 }
 
 type Punishment {
-  type              PunishmentType
-  expired           Boolean        @default(false)
+  type                  PunishmentType
+  expired               Boolean        @default(false)
   // Deprecated
-  old_date_unix         Int?        @default(0) @db.Long @map("date_unix")
-  old_expires_date_unix Int?       @db.Long @map("expires_date_unix")
+  old_date_unix         Int?           @default(0) @map("date_unix") @db.Long
+  old_expires_date_unix Int?           @map("expires_date_unix") @db.Long
   // Deprecated
-  date DateTime @default(now())
-  expires_date DateTime?
-  reason            String         @default("")
-  dmed              Boolean        @default(false)
-  userID            String
-  moderatorID       String?
-  punishmentID      Int
+  date                  DateTime       @default(now())
+  expires_date          DateTime?
+  reason                String         @default("")
+  dmed                  Boolean        @default(false)
+  userID                String
+  moderatorID           String?
+  punishmentID          Int
 }
 
 type LevelReward {
@@ -172,10 +172,12 @@ type ReactionRole {
 }
 
 type Log {
-  type        LogAction
-  userID      String
-  date        DateTime @default(now())
-  description String    @default("")
+  type          LogAction
+  userID        String
+  date          DateTime? @default(now())
+  // Deprecated.
+  old_date_unix Int?      @default(0) @map("date_unix") @db.Long
+  description   String    @default("")
 }
 
 type StarredMessage {
@@ -217,7 +219,7 @@ type Suggestion {
   creatorID            String          @default("")
   status               SuggestionState @default(WAITING)
   // Deprecated
-  old_date_unix        Int?         @default(0) @db.Long @map("date_unix")
+  old_date_unix        Int?            @map("date_unix")
   // Deprecated
   date                 DateTime?       @default(now())
   content              String          @default("")
@@ -228,10 +230,6 @@ type Suggestion {
 
 type ScheduledMessage {
   channelID          String
-  // Deprecated
-  old_last_run_unix  Int?      @map("last_run_unix")
-  old_interval_unix  Int?      @map("interval_unix")
-  // Deprecated
   interval_timestamp String    @default("1d")
   last_run           DateTime? @default(now())
   times_run          Int?
@@ -325,15 +323,11 @@ model servermembers {
   userID             String
   serverID           String
   warns              Int      @default(0)
-  // deprecated, unneeded
-  old_level          Int?     @default(0) @map("level")
   in_server          Boolean  @default(true)
   sticky_roles       String[] @default([])
   suggestions_banned Boolean? @default(false)
   reports_banned     Boolean? @default(false)
   xp                 Int?     @default(0)
-  // deprecated, unneeded
-  old_xpTill         Int?     @default(0) @map("xpTill")
 
   @@unique([serverID, userID])
 }
@@ -360,9 +354,6 @@ model servers {
   suggestions_updates_channel       String?
   suggestions_auto_delete           Boolean              @default(true)
   suggestions_discussion_threads    Boolean              @default(true)
-  // Deprecated, replaced with message_xp
-  old_message_xp                    Int?                 @map("message_xp")
-  // Deprecated, replaced with message_xp
   message_xp_range                  Int[]                @default([20])
   voice_xp_range                    Int[]                @default([5])
   starboard_xp_range                Int[]                @default([50])
@@ -379,11 +370,6 @@ model servers {
   self_star                         Boolean              @default(true)
   starboard_star                    Boolean              @default(true)
   starred_messages                  StarredMessage[]
-  // deprecated, replaced with StarboardBoardData
-  old_starboard_channel             String?              @map("starboard_channel")
-  old_starboard_reaction            String?              @map("starboard_reaction")
-  old_starboard_reaction_count      Int?                 @map("starboard_reaction_count")
-  // deprecated, replaced with StarboardBoardData
   total_starred_messages            Int                  @default(0)
   total_stars                       Int                  @default(0)
   logs                              Log[]
