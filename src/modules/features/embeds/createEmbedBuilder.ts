@@ -1,6 +1,9 @@
 import { CustomEmojis } from '@/constants/bot/CustomEmojis';
+import { PlaceholderData } from '@/constants/embeds/PlaceholderData';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import { BuildSession } from '@/interfaces/messages/BuildSession';
+import { isEmbedEmpty } from '@/util/isEmbedEmpty';
+import parsePlaceholders from '@/util/parsePlaceholder';
 import {
    ActionRowBuilder,
    APIEmbed,
@@ -20,13 +23,29 @@ export async function createEmbedBuilder(
    session?: BuildSession,
 ) {
    async function sendEmbed(content?: string, embed?: APIEmbed) {
+      const parsedEmbed =
+         embed &&
+         JSON.parse(
+            await parsePlaceholders(auxdibot, JSON.stringify(embed), {
+               ...PlaceholderData,
+               guild: interaction.guild,
+               member: interaction.user,
+            }).catch(() => JSON.stringify(embed)),
+         );
+      const parsedContent =
+         content &&
+         (await parsePlaceholders(auxdibot, content, {
+            ...PlaceholderData,
+            guild: interaction.guild,
+            member: interaction.user,
+         }).catch(() => content));
       const opts = {
          content: `## ${
             CustomEmojis.MESSAGES
          } **Embed Builder**\n\n-# Use the buttons below to reset the embed, view the placeholders list, or submit the embed. Select an embed component to modify using the dropdown menu below.\n\`\`\`‎\`\`\`\n${
-            content ?? ''
-         }\n${embed ? '' : '*No Embed Content*'}`,
-         embeds: embed ? [embed] : undefined,
+            parsedContent ?? ''
+         }\n${parsedEmbed ? '' : '*No Embed Content*'}`,
+         embeds: parsedEmbed ? [parsedEmbed] : undefined,
          components: [row.toJSON(), selectRow.toJSON(), fieldsRow.toJSON()],
       };
       return await (message ? message.edit(opts) : auxdibot.createReply(interaction, opts));
@@ -105,8 +124,10 @@ export async function createEmbedBuilder(
          .setLabel('Add Field')
          .setStyle(ButtonStyle.Secondary),
    );
-
-   return await sendEmbed(session?.content, session?.embed as APIEmbed)
+   return await sendEmbed(
+      session?.content,
+      session?.embed && !isEmbedEmpty(session.embed as never) ? (session.embed as APIEmbed) : undefined,
+   )
       .then(async (res) => {
          let ctx = res;
          if (ctx && 'interaction' in ctx && 'replied' in ctx.interaction) {
@@ -115,13 +136,14 @@ export async function createEmbedBuilder(
          if (ctx && 'guildId' in ctx) {
             auxdibot.build_sessions.set(`${ctx.guildId}:${ctx.channelId}:${ctx.id}`, {
                embed: session?.embed ?? null,
+               content: session?.content ?? '',
                last_interaction: new Date(),
                userID: interaction.user.id,
             });
          }
       })
       .catch((x) => {
-         console.log(x);
+         console.error(x);
          sendEmbed(undefined, {
             title: '⚠️ ERROR ⚠️',
             description:

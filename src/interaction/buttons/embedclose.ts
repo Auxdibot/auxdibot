@@ -9,7 +9,6 @@ export default <AuxdibotButton>{
    name: 'embedclose',
    command: 'embed build',
    async execute(auxdibot: Auxdibot, interaction: MessageComponentInteraction) {
-      console.log(`${interaction.guildId}:${interaction.channelId}:${interaction.message.id}`);
       const session = auxdibot.build_sessions.get(
          `${interaction.guildId}:${interaction.channelId}:${interaction.message.id}`,
       );
