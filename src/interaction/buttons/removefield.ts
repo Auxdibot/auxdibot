@@ -12,7 +12,7 @@ import handleError from '@/util/handleError';
 
 export default <AuxdibotButton>{
    module: Modules['Messages'],
-   name: 'embedfetch',
+   name: 'removefield',
    command: 'embed build',
    async execute(auxdibot: Auxdibot, interaction: MessageComponentInteraction) {
       const [, id] = interaction.customId.split('-');
@@ -35,17 +35,17 @@ export default <AuxdibotButton>{
             interaction,
          );
       }
-      const modal = new ModalBuilder().setCustomId(`embedfetch-${id}`).setTitle('Fetch Embed');
-
-      const row = new ActionRowBuilder<TextInputBuilder>().addComponents(
-         new TextInputBuilder()
-            .setCustomId('message_link')
-            .setLabel('Message Link')
-            .setStyle(TextInputStyle.Short)
-            .setRequired(true)
-            .setPlaceholder('Auxdibot will fetch the first embed from this message.'),
+      const modal = new ModalBuilder().setCustomId(`removefield-${id}`).setTitle('Remove Embed Field');
+      modal.addComponents(
+         new ActionRowBuilder<TextInputBuilder>().addComponents(
+            new TextInputBuilder()
+               .setCustomId('field_index')
+               .setLabel('Field Position')
+               .setStyle(TextInputStyle.Short)
+               .setRequired(true)
+               .setPlaceholder('The position of the field to remove. (1-25)'),
+         ),
       );
-      modal.addComponents(row);
       interaction.showModal(modal);
    },
 };
