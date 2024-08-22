@@ -5,7 +5,7 @@ import { Auxdibot } from '@/interfaces/Auxdibot';
 import handleError from '@/util/handleError';
 
 export default <AuxdibotButton>{
-   module: Modules['Embeds'],
+   module: Modules['Messages'],
    name: 'embedclose',
    command: 'embed build',
    async execute(auxdibot: Auxdibot, interaction: MessageComponentInteraction) {
