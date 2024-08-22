@@ -21,6 +21,7 @@ import createSubscribers from './modules/features/notifications/createSubscriber
 import { createReply } from './util/createReply';
 import { migrateData } from './util/migrateData';
 import scheduleStarboardTimeoutClear from './modules/features/starboard/scheduleStarboardTimeoutClear';
+import createBuildSessionSchedule from './modules/features/embeds/createBuildSessionSchedule';
 
 const TOKEN = process.env.DISCORD_BOT_TOKEN;
 const CLIENT_ID = process.env.DISCORD_BOT_CLIENT_ID;
@@ -63,6 +64,7 @@ const CLIENT_ID = process.env.DISCORD_BOT_CLIENT_ID;
    auxdibot.invites_detections = new Collection();
    auxdibot.attachments_detections = new Collection();
    auxdibot.starboard_timeout = new Collection();
+   auxdibot.build_sessions = new Collection();
    auxdibot.level_events = [];
    auxdibot.scheduler = new ToadScheduler();
    auxdibot.subscriber = new Subscriber();
@@ -153,6 +155,7 @@ const CLIENT_ID = process.env.DISCORD_BOT_CLIENT_ID;
    scheduleChannelUnlocks(auxdibot);
    scheduleClearMessageCache(auxdibot);
    scheduleStarboardTimeoutClear(auxdibot);
+   createBuildSessionSchedule(auxdibot);
    auxdibot.subscriber.twitchInit().then(() => createSubscribers(auxdibot));
 
    console.log('-> Logging into client...');

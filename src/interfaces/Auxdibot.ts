@@ -17,6 +17,7 @@ import AuxdibotSelectMenu from './menus/AuxdibotSelectMenu';
 import AuxdibotModal from './modals/AuxdibotModal';
 import Subscriber from '@/modules/features/notifications/Subscriber';
 import { AuxdibotReplyOptions } from './AuxdibotReplyOptions';
+import { BuildSession } from './messages/BuildSession';
 /**
  * Represents the Auxdibot interface.
  * @interface Auxdibot
@@ -84,7 +85,10 @@ export interface Auxdibot extends Client {
     * Subscriber for handling notifications in Auxdibot.
     */
    subscriber: Subscriber;
-
+   /**
+    * Keeps track of all embed building sessions for Auxdibot.
+    */
+   build_sessions: Collection<string, BuildSession>;
    /**
     * Object containing color values used in Auxdibot.
     */
