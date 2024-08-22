@@ -317,6 +317,12 @@ type Multiplier {
   multiplier Float
 }
 
+type StoredEmbed {
+  id      String
+  embed   APIEmbed?
+  content String?
+}
+
 model servermembers {
   id                 String   @id @default(auto()) @map("_id") @db.ObjectId
   v                  Int?     @map("__v")
@@ -396,6 +402,7 @@ model servers {
   report_role                       String?
   automod_role_exceptions           String[]             @default([])
   locked_channels                   ChannelLock[]
+  stored_embeds                     StoredEmbed[]
 
   @@unique([serverID])
 }
