@@ -20,9 +20,7 @@ export default <AuxdibotCommand>{
          builder
             .setName('build')
             .setDescription("Build a Discord Embed using Auxdibot's Embed Builder.")
-            .addStringOption((builder) =>
-               builder.setName('id').setDescription('The ID to use for the Embed.').setRequired(true),
-            ),
+            .addStringOption((builder) => builder.setName('id').setDescription('The ID to use for the Embed.')),
       )
 
       .addSubcommand((builder) =>
@@ -109,7 +107,7 @@ export default <AuxdibotCommand>{
    info: {
       module: Modules['Messages'],
       description: 'Create or edit a Discord Embed with Auxdibot, as well as obtain the JSON data of any Embed.',
-      usageExample: '/embed (create|edit|edit_json|json|parameters)',
+      usageExample: '/embed (build|create|edit|edit_json|json|parameters)',
       permissionsRequired: [PermissionFlagsBits.ManageMessages],
    },
    subcommands: [buildEmbed, createEmbed, createEmbedJSON, editEmbed, editEmbedJSON, getEmbedJSON, embedParameters],

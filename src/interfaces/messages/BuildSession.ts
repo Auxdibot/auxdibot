@@ -5,4 +5,5 @@ export interface BuildSession {
    embed: Partial<APIEmbed>;
    content?: string;
    last_interaction: Date;
+   webhook_url: string;
 }
