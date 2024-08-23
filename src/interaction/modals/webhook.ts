@@ -7,7 +7,7 @@ import { createEmbedBuilder } from '@/modules/features/embeds/createEmbedBuilder
 
 export default <AuxdibotModal>{
    module: Modules['Messages'],
-   name: 'addfield',
+   name: 'webhook',
    command: 'embed build',
    async execute(auxdibot: Auxdibot, interaction: ModalSubmitInteraction) {
       const [, id] = interaction.customId.split('-');
@@ -31,36 +31,15 @@ export default <AuxdibotModal>{
          );
       }
       await interaction.deferReply();
-      const fieldTitle = interaction.fields.getTextInputValue('field_title'),
-         fieldValue = interaction.fields.getTextInputValue('field_value'),
-         fieldInline = interaction.fields.getTextInputValue('field_inline');
 
-      if (!fieldTitle || !fieldValue) {
-         return handleError(
-            auxdibot,
-            'MISSING_FIELD',
-            'Both the field title and field value are required!',
-            interaction,
-         );
+      const webhookURL = interaction.fields.getTextInputValue('webhook_url');
+      if (!/https:\/\/discord.com\/api\/webhooks\/[^\s\/]+?(?=\b)/.test(webhookURL)) {
+         return handleError(auxdibot, 'INVALID_WEBHOOK_URL', 'The provided webhook URL is invalid!', interaction);
       }
-
-      session.embed?.fields
-         ? session.embed.fields.push({
-              name: fieldTitle,
-              value: fieldValue,
-              inline: fieldInline.toLowerCase() === 'yes',
-           })
-         : (session.embed = {
-              ...(session?.embed ?? {}),
-              fields: [
-                 {
-                    name: fieldTitle,
-                    value: fieldValue,
-                    inline: fieldInline.toLowerCase() === 'yes',
-                 },
-              ],
-           });
-      await createEmbedBuilder(auxdibot, interaction, id, interaction.message, session)
+      await createEmbedBuilder(auxdibot, interaction, id, interaction.message, {
+         ...session,
+         webhook_url: webhookURL,
+      })
          .then(() => interaction.deleteReply().catch(() => undefined))
          .catch(() => undefined);
    },

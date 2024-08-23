@@ -15,8 +15,8 @@ export const buildEmbed = <AuxdibotSubcommand>{
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;
-      const id = interaction.options.getString('id', true);
-      if (id.match(/[^a-zA-Z0-9_]/g) !== null) {
+      const id = interaction.options.getString('id');
+      if (id && id.match(/[^a-zA-Z0-9_]/g) !== null) {
          return handleError(
             auxdibot,
             'INVALID_ID',

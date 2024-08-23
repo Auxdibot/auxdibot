@@ -18,59 +18,41 @@ import {
 export async function createEmbedBuilder(
    auxdibot: Auxdibot,
    interaction: BaseInteraction,
-   id: string,
+   id?: string,
    message?: Message,
    session?: BuildSession,
 ) {
-   async function sendEmbed(content?: string, embed?: APIEmbed) {
-      const parsedEmbed =
-         embed &&
-         JSON.parse(
-            await parsePlaceholders(auxdibot, JSON.stringify(embed), {
-               ...PlaceholderData,
-               guild: interaction.guild,
-               member: interaction.user,
-            }).catch(() => JSON.stringify(embed)),
-         );
-      const parsedContent =
-         content &&
-         (await parsePlaceholders(auxdibot, content, {
-            ...PlaceholderData,
-            guild: interaction.guild,
-            member: interaction.user,
-         }).catch(() => content));
-      const opts = {
-         content: `## ${
-            CustomEmojis.MESSAGES
-         } **Embed Builder**\n\n-# Use the buttons below to reset the embed, view the placeholders list, or submit the embed. Select an embed component to modify using the dropdown menu below.\n\`\`\`‎\`\`\`\n${
-            parsedContent ?? ''
-         }\n${parsedEmbed ? '' : '*No Embed Content*'}`,
-         embeds: parsedEmbed ? [parsedEmbed] : undefined,
-         components: [row.toJSON(), selectRow.toJSON(), fieldsRow.toJSON()],
-      };
-      return await (message ? message.edit(opts) : auxdibot.createReply(interaction, opts));
-   }
+   const idPost = id ? `-${id}` : '';
    const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
-      new ButtonBuilder().setCustomId(`embedclose-${id}`).setLabel('Close').setStyle(ButtonStyle.Danger),
+      new ButtonBuilder().setCustomId(`embedclose${idPost}`).setLabel('Close').setStyle(ButtonStyle.Danger),
       new ButtonBuilder()
-         .setCustomId(`placeholders`)
+         .setCustomId(`placeholders${idPost}`)
          .setEmoji(CustomEmojis.LOGGING)
          .setLabel('Placeholders List')
          .setStyle(ButtonStyle.Secondary),
       new ButtonBuilder()
-         .setCustomId(`embedfetch-${id}`)
+         .setCustomId(`embedfetch${idPost}`)
          .setEmoji(CustomEmojis.LINK)
          .setLabel('Fetch Embed')
          .setStyle(ButtonStyle.Secondary),
       new ButtonBuilder()
-         .setCustomId(`embedsubmit-${id}`)
+         .setCustomId(`post${idPost}`)
          .setEmoji(CustomEmojis.MESSAGES)
-         .setLabel('Store')
-         .setStyle(ButtonStyle.Primary),
+         .setLabel('Post Embed')
+         .setStyle(ButtonStyle.Success),
    );
+   if (id != 'undefined' && id) {
+      row.addComponents(
+         new ButtonBuilder()
+            .setCustomId(`embedsubmit${idPost}`)
+            .setEmoji(CustomEmojis.BOLT)
+            .setLabel('Store')
+            .setStyle(ButtonStyle.Primary),
+      );
+   }
    const selectRow = new ActionRowBuilder<StringSelectMenuBuilder>().addComponents(
       new StringSelectMenuBuilder()
-         .setCustomId(`embedmodify-${id}`)
+         .setCustomId(`embedmodify${idPost}`)
          .setPlaceholder('Select an embed component to modify.')
          .setOptions(
             new StringSelectMenuOptionBuilder()
@@ -109,7 +91,7 @@ export async function createEmbedBuilder(
    );
    const fieldsRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
       new ButtonBuilder()
-         .setCustomId(`removefield-${id}`)
+         .setCustomId(`removefield${idPost}`)
          .setEmoji('➖')
          .setLabel('Remove Field')
          .setStyle(ButtonStyle.Secondary),
@@ -119,11 +101,45 @@ export async function createEmbedBuilder(
          .setLabel(`${session?.embed?.fields?.length ?? 0}/25 Fields`)
          .setStyle(ButtonStyle.Primary),
       new ButtonBuilder()
-         .setCustomId(`addfield-${id}`)
+         .setCustomId(`addfield${idPost}`)
          .setEmoji('➕')
          .setLabel('Add Field')
          .setStyle(ButtonStyle.Secondary),
+      new ButtonBuilder()
+         .setCustomId(`webhook${idPost}`)
+         .setEmoji(CustomEmojis.USER)
+         .setLabel('Add Webhook')
+         .setStyle(ButtonStyle.Success),
    );
+   async function sendEmbed(content?: string, embed?: APIEmbed) {
+      const parsedEmbed =
+         embed &&
+         JSON.parse(
+            await parsePlaceholders(auxdibot, JSON.stringify(embed), {
+               ...PlaceholderData,
+               guild: interaction.guild,
+               member: interaction.user,
+            }).catch(() => JSON.stringify(embed)),
+         );
+      const parsedContent =
+         content &&
+         (await parsePlaceholders(auxdibot, content, {
+            ...PlaceholderData,
+            guild: interaction.guild,
+            member: interaction.user,
+         }).catch(() => content));
+      const opts = {
+         content: `## ${
+            CustomEmojis.MESSAGES
+         } **Embed Builder**\n\n-# Use the buttons below to reset the embed, view the placeholders list, or submit the embed. Select an embed component to modify using the dropdown menu below.\n\`\`\`‎\`\`\`\n${
+            session?.webhook_url ? '-# You are using a webhook URL for this embed.\n\n' : ''
+         }${parsedContent ?? ''}\n${parsedEmbed ? '' : '*No Embed Content*'}`,
+         embeds: parsedEmbed ? [parsedEmbed] : undefined,
+         components: [row.toJSON(), fieldsRow.toJSON(), selectRow.toJSON()],
+      };
+      return await (message ? message.edit(opts) : auxdibot.createReply(interaction, opts));
+   }
+
    return await sendEmbed(
       session?.content,
       session?.embed && !isEmbedEmpty(session.embed as never) ? (session.embed as APIEmbed) : undefined,
@@ -139,6 +155,7 @@ export async function createEmbedBuilder(
                content: session?.content ?? '',
                last_interaction: new Date(),
                userID: interaction.user.id,
+               webhook_url: session?.webhook_url ?? '',
             });
          }
       })
