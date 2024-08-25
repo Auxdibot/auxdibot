@@ -61,37 +61,73 @@ export default async function refreshInteractions(auxdibot: Auxdibot, rest: REST
    /********************************************************************************/
    // Declare buttons
    console.log('-> Declaring button interactions...');
-   const buttonFiles = fs.readdirSync(path.join(__dirname, '/buttons')).filter(isCommandFile);
-   for (const file of buttonFiles) {
-      const fileRequire = await import(`./buttons/${file}`);
-      if (fileRequire.default) {
+   const buttonFiles = [
+      {
+         dir: '',
+         files: fs.readdirSync(path.join(__dirname, '/buttons')).filter(isCommandFile),
+      },
+   ];
+   for (const packageString of PACKAGES) {
+      const packageFile = path.join(__dirname, '/buttons', packageString);
+      if (fs.existsSync(packageFile)) {
+         buttonFiles.push({ dir: packageString, files: fs.readdirSync(packageFile).filter(isCommandFile) });
+      }
+   }
+   for (const packageFile of buttonFiles) {
+      for (const file of packageFile.files) {
+         const fileRequire = await import(`./buttons/${packageFile.dir}/${file}`);
          if (auxdibot.buttons) {
             auxdibot.buttons.set(fileRequire.default.name, fileRequire.default);
          }
       }
    }
+   console.log(`-> Refreshed ${auxdibot.buttons.size} buttons.`);
    /********************************************************************************/
    // Declare select menus
    console.log('-> Declaring select menu interactions...');
-   const selectMenuFiles = fs.readdirSync(path.join(__dirname, '/menus')).filter(isCommandFile);
-   for (const file of selectMenuFiles) {
-      const fileRequire = await import(`./menus/${file}`);
-      if (fileRequire.default) {
+   const selectMenuFiles = [
+      {
+         dir: '',
+         files: fs.readdirSync(path.join(__dirname, '/menus')).filter(isCommandFile),
+      },
+   ];
+   for (const packageString of PACKAGES) {
+      const packageFile = path.join(__dirname, '/menus', packageString);
+      if (fs.existsSync(packageFile)) {
+         selectMenuFiles.push({ dir: packageString, files: fs.readdirSync(packageFile).filter(isCommandFile) });
+      }
+   }
+   for (const packageFile of selectMenuFiles) {
+      for (const file of packageFile.files) {
+         const fileRequire = await import(`./menus/${packageFile.dir}/${file}`);
          if (auxdibot.select_menus) {
             auxdibot.select_menus.set(fileRequire.default.name, fileRequire.default);
          }
       }
    }
+   console.log(`-> Refreshed ${auxdibot.select_menus.size} buttons.`);
    /********************************************************************************/
    // Declare modals
    console.log('-> Declaring modal interactions...');
-   const modalFiles = fs.readdirSync(path.join(__dirname, '/modals')).filter(isCommandFile);
-   for (const file of modalFiles) {
-      const fileRequire = await import(`./modals/${file}`);
-      if (fileRequire.default) {
+   const modalFiles = [
+      {
+         dir: '',
+         files: fs.readdirSync(path.join(__dirname, '/modals')).filter(isCommandFile),
+      },
+   ];
+   for (const packageString of PACKAGES) {
+      const packageFile = path.join(__dirname, '/modals', packageString);
+      if (fs.existsSync(packageFile)) {
+         modalFiles.push({ dir: packageString, files: fs.readdirSync(packageFile).filter(isCommandFile) });
+      }
+   }
+   for (const packageFile of modalFiles) {
+      for (const file of packageFile.files) {
+         const fileRequire = await import(`./modals/${packageFile.dir}/${file}`);
          if (auxdibot.modals) {
             auxdibot.modals.set(fileRequire.default.name, fileRequire.default);
          }
       }
    }
+   console.log(`-> Refreshed ${auxdibot.modals.size} buttons.`);
 }
