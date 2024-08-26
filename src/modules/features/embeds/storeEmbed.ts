@@ -4,7 +4,14 @@ import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import { testLimit } from '@/util/testLimit';
 import { APIEmbed, Guild } from 'discord.js';
 
-export async function storeEmbed(auxdibot: Auxdibot, guild: Guild, id: string, embed?: APIEmbed, content?: string) {
+export async function storeEmbed(
+   auxdibot: Auxdibot,
+   guild: Guild,
+   id: string,
+   embed?: APIEmbed,
+   content?: string,
+   webhook_url?: string,
+) {
    const server = await findOrCreateServer(auxdibot, guild.id);
    if (!testLimit(server.stored_embeds, Limits.STORED_EMBED_LIMIT)) {
       throw new Error('You have reached the maximum number of stored embeds');
@@ -44,6 +51,10 @@ export async function storeEmbed(auxdibot: Auxdibot, guild: Guild, id: string, e
    if (content && content.length > 2000) {
       throw new Error('Message content cannot exceed 2000 characters');
    }
+   if (webhook_url && !/https:\/\/discord.com\/api\/webhooks\/[^\s\/]+?(?=\b)/.test(webhook_url)) {
+      throw new Error('Invalid webhook url');
+   }
+
    return await auxdibot.database.servers.update({
       where: {
          serverID: guild.id,
@@ -75,6 +86,8 @@ export async function storeEmbed(auxdibot: Auxdibot, guild: Guild, id: string, e
                   url: embed?.url,
                },
                content,
+               webhook_url,
+               date_created: new Date(),
             },
          },
       },

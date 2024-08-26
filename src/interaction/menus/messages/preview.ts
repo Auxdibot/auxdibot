@@ -19,6 +19,9 @@ export default <AuxdibotSelectMenu>{
 
       const embedId = interaction.values[0];
       const embed = server.stored_embeds.find((embed) => embed.id === embedId);
+      if (!embed) {
+         return handleError(auxdibot, 'EMBED_NOT_FOUND', 'Embed not found!', interaction);
+      }
       const button = new ActionRowBuilder<ButtonBuilder>().addComponents(
          new ButtonBuilder().setCustomId(`dummy`).setLabel('Embed Preview').setStyle(ButtonStyle.Secondary),
       );

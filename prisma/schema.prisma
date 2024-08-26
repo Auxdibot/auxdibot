@@ -125,6 +125,8 @@ enum LogAction {
   NOTIFICATION_CREATED
   NOTIFICATION_DELETED
   COMMAND_RULES_CHANGED
+  EMBED_STORED
+  EMBED_DELETED
 }
 
 type Punishment {
@@ -318,9 +320,11 @@ type Multiplier {
 }
 
 type StoredEmbed {
-  id      String
-  embed   APIEmbed?
-  content String?
+  id           String
+  embed        APIEmbed?
+  content      String?
+  webhook_url  String?
+  date_created DateTime  @default(now())
 }
 
 model servermembers {

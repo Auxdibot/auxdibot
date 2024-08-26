@@ -4,6 +4,7 @@ import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandD
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 import handleError from '@/util/handleError';
+import { isEmbedEmpty } from '@/util/isEmbedEmpty';
 import { ActionRowBuilder, EmbedBuilder, StringSelectMenuBuilder } from 'discord.js';
 
 export const embedList = <AuxdibotSubcommand>{
@@ -24,7 +25,15 @@ export const embedList = <AuxdibotSubcommand>{
             (server.stored_embeds.length > 0
                ? server.stored_embeds
                     .map((embed, index) => {
-                       return `**${index + 1})** \`${embed.id}\``;
+                       return `**${index + 1})** \`${embed.id}\`\n🕰️ Date Created: <t:${Math.round(
+                          embed.date_created.valueOf() / 1000,
+                       )}>\n${
+                          embed.embed && !isEmbedEmpty(embed.embed)
+                             ? embed.content
+                                ? '📖 Contains Embed & Content'
+                                : '📝 Contains Embed'
+                             : '💬 Contains Content'
+                       }\n${embed.webhook_url ? `[Webhook URL](${embed.webhook_url})` : ''}`;
                     })
                     .join('\n\n')
                : '*No embeds have been stored on this server.*'),
@@ -45,13 +54,18 @@ export const embedList = <AuxdibotSubcommand>{
             .setPlaceholder('Select an embed to preview')
             .setMaxValues(1),
       );
-      return await auxdibot.createReply(interaction, { embeds: [embed], components: [selectRow] }).catch(() => {
-         return handleError(
-            auxdibot,
-            'EMBED_LIST_ERROR',
-            'There was an error fetching the list of embeds!',
-            interaction,
-         );
-      });
+      return await auxdibot
+         .createReply(interaction, {
+            embeds: [embed],
+            components: server.stored_embeds.length > 0 ? [selectRow] : undefined,
+         })
+         .catch(() => {
+            return handleError(
+               auxdibot,
+               'EMBED_LIST_ERROR',
+               'There was an error fetching the list of embeds!',
+               interaction,
+            );
+         });
    },
 };
