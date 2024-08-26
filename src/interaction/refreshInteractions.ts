@@ -105,7 +105,7 @@ export default async function refreshInteractions(auxdibot: Auxdibot, rest: REST
          }
       }
    }
-   console.log(`-> Refreshed ${auxdibot.select_menus.size} buttons.`);
+   console.log(`-> Refreshed ${auxdibot.select_menus.size} select menus.`);
    /********************************************************************************/
    // Declare modals
    console.log('-> Declaring modal interactions...');
@@ -129,5 +129,5 @@ export default async function refreshInteractions(auxdibot: Auxdibot, rest: REST
          }
       }
    }
-   console.log(`-> Refreshed ${auxdibot.modals.size} buttons.`);
+   console.log(`-> Refreshed ${auxdibot.modals.size} modals.`);
 }

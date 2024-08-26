@@ -58,13 +58,13 @@ export async function storeEmbed(auxdibot: Auxdibot, guild: Guild, id: string, e
                   color: embed?.color,
                   fields: embed?.fields,
                   footer: embed?.footer,
-                  thumbnail: embed.thumbnail && {
+                  thumbnail: embed?.thumbnail && {
                      url: embed?.thumbnail?.url,
                      height: embed?.thumbnail?.height,
                      width: embed?.thumbnail?.width,
                      proxy_url: embed?.thumbnail?.proxy_url,
                   },
-                  image: embed.image && {
+                  image: embed?.image && {
                      url: embed?.image?.url,
                      height: embed?.image?.height,
                      width: embed?.image?.width,

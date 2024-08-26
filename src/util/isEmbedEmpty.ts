@@ -1,6 +1,6 @@
 import { APIEmbed } from '@prisma/client';
 
-export const isEmbedEmpty = (embed?: APIEmbed) =>
+export const isEmbedEmpty = (embed?: Partial<APIEmbed>) =>
    !embed ||
    (!embed.author?.name &&
       !embed.title &&
