@@ -16,6 +16,8 @@ export const embedList = <AuxdibotSubcommand>{
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;
+      await interaction.deferReply();
+
       const server = interaction.data.guildData;
 
       const embed = new EmbedBuilder().setColor(auxdibot.colors.info).setTitle('📝 Embeds List');

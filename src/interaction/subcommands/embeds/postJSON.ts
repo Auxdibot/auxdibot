@@ -9,12 +9,12 @@ import parsePlaceholders from '@/util/parsePlaceholder';
 import { EmbedBuilder } from '@discordjs/builders';
 import { APIEmbed, ChannelType } from 'discord.js';
 
-export const createEmbedJSON = <AuxdibotSubcommand>{
-   name: 'create_json',
+export const postJSON = <AuxdibotSubcommand>{
+   name: 'post_json',
    info: {
       module: Modules['Messages'],
-      usageExample: '/embed create_json (channel) (json) [webhook_url]',
-      description: 'Create an embed with Auxdibot using valid Discord Embed JSON data.',
+      usageExample: '/embed post_json (channel) (json) [webhook_url]',
+      description: 'Create an embed using valid Discord Embed JSON data.',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

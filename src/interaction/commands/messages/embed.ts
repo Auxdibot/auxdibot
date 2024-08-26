@@ -3,15 +3,16 @@ import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import dotenv from 'dotenv';
 import createEmbedParameters from '@/util/createEmbedParameters';
 import Modules from '@/constants/bot/commands/Modules';
-import { createEmbed } from '../../subcommands/embeds/createEmbed';
-import { createEmbedJSON } from '../../subcommands/embeds/createEmbedJSON';
-import { editEmbed } from '../../subcommands/embeds/editEmbed';
+import { postCommand } from '../../subcommands/embeds/postCommand';
+import { postJSON } from '../../subcommands/embeds/postJSON';
+import { editCommand } from '../../subcommands/embeds/editCommand';
 import { editEmbedJSON } from '../../subcommands/embeds/editEmbedJSON';
 import { getEmbedJSON } from '../../subcommands/embeds/getEmbedJSON';
 import { embedParameters } from '@/interaction/subcommands/embeds/embedParameters';
 import { buildEmbed } from '@/interaction/subcommands/embeds/buildEmbed';
 import { embedList } from '@/interaction/subcommands/embeds/embedList';
 import { embedDelete } from '@/interaction/subcommands/embeds/deleteEmbed';
+import { postEmbed } from '@/interaction/subcommands/embeds/postEmbed';
 
 dotenv.config();
 export default <AuxdibotCommand>{
@@ -34,10 +35,25 @@ export default <AuxdibotCommand>{
             ),
       )
       .addSubcommand((builder) =>
+         builder
+            .setName('post')
+            .setDescription('Post a stored embed using its ID.')
+            .addChannelOption((option) =>
+               option
+                  .setName('channel')
+                  .setDescription('The channel to post the embed in.')
+                  .addChannelTypes(ChannelType.GuildText)
+                  .setRequired(true),
+            )
+            .addStringOption((option) =>
+               option.setName('id').setDescription('The ID of the Embed to post.').setRequired(true),
+            ),
+      )
+      .addSubcommand((builder) =>
          createEmbedParameters(
             builder
-               .setName('create')
-               .setDescription('Create an embed with Auxdibot.')
+               .setName('post_command')
+               .setDescription('Post an embed using command parameters.')
                .addChannelOption((option) =>
                   option
                      .setName('channel')
@@ -51,8 +67,8 @@ export default <AuxdibotCommand>{
       )
       .addSubcommand((builder) =>
          builder
-            .setName('create_json')
-            .setDescription('Create an embed with Auxdibot using valid Discord Embed JSON data.')
+            .setName('post_json')
+            .setDescription('Post an embed using valid Discord Embed JSON data.')
             .addChannelOption((option) =>
                option
                   .setName('channel')
@@ -73,8 +89,8 @@ export default <AuxdibotCommand>{
       .addSubcommand((builder) =>
          createEmbedParameters(
             builder
-               .setName('edit')
-               .setDescription('Edit an existing Embed by Auxdibot.')
+               .setName('edit_command')
+               .setDescription('Edit an existing Embed using command parameters.')
                .addStringOption((option) =>
                   option
                      .setName('message_id')
@@ -86,7 +102,7 @@ export default <AuxdibotCommand>{
       .addSubcommand((builder) =>
          builder
             .setName('edit_json')
-            .setDescription('Edit an existing Embed by Auxdibot using valid Discord Embed JSON data.')
+            .setDescription('Edit an existing Embed using valid Discord Embed JSON data.')
             .addStringOption((option) =>
                option
                   .setName('message_id')
@@ -117,19 +133,21 @@ export default <AuxdibotCommand>{
    info: {
       module: Modules['Messages'],
       description: 'Create or edit a Discord Embed with Auxdibot, as well as obtain the JSON data of any Embed.',
-      usageExample: '/embed (build|list|delete|create|edit|edit_json|json|parameters)',
+      usageExample:
+         '/embed (build|list|delete|post|post_command|post_json|edit|edit_command|edit_json|json|parameters)',
       permissionsRequired: [PermissionFlagsBits.ManageMessages],
    },
    subcommands: [
       buildEmbed,
-      createEmbed,
-      createEmbedJSON,
-      editEmbed,
+      postCommand,
+      postJSON,
+      editCommand,
       editEmbedJSON,
       getEmbedJSON,
       embedParameters,
       embedList,
       embedDelete,
+      postEmbed,
    ],
    async execute() {
       return;

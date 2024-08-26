@@ -1,10 +1,11 @@
-import { AnySelectMenuInteraction, APIEmbed } from 'discord.js';
+import { AnySelectMenuInteraction } from 'discord.js';
 import Modules from '@/constants/bot/commands/Modules';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import handleError from '@/util/handleError';
 import AuxdibotSelectMenu from '@/interfaces/menus/AuxdibotSelectMenu';
 import sendEmbed from '@/modules/features/embeds/sendEmbed';
 import { createEmbedBuilder } from '@/modules/features/embeds/createEmbedBuilder';
+import parsePlaceholders from '@/util/parsePlaceholder';
 
 export default <AuxdibotSelectMenu>{
    module: Modules['Messages'],
@@ -38,8 +39,18 @@ export default <AuxdibotSelectMenu>{
       if (!channel) {
          return handleError(auxdibot, 'CHANNEL_NOT_FOUND', 'The channel you selected could not be found!', interaction);
       }
-
-      await sendEmbed(channel, session?.content, session?.embed as APIEmbed, session?.webhook_url)
+      const placeholderContext = {
+         guild: interaction.guild,
+         member: await interaction.guild.members.fetch(interaction.member.user.id).catch(() => interaction.user),
+      };
+      await sendEmbed(
+         channel,
+         session?.content ? await parsePlaceholders(auxdibot, session.content, placeholderContext) : '',
+         session?.embed
+            ? JSON.parse(await parsePlaceholders(auxdibot, JSON.stringify(session.embed), placeholderContext))
+            : undefined,
+         session?.webhook_url,
+      )
          .catch((x) => {
             handleError(
                auxdibot,

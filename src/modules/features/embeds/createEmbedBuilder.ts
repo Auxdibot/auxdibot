@@ -134,7 +134,7 @@ export async function createEmbedBuilder(
          } **Embed Builder**\n\n-# Use the buttons below to reset the embed, view the placeholders list, or submit the embed. Select an embed component to modify using the dropdown menu below.\n\`\`\`‎\`\`\`\n${
             session?.webhook_url ? '-# You are using a webhook URL for this embed.\n\n' : ''
          }${parsedContent ?? ''}\n${parsedEmbed ? '' : '*No Embed Content*'}`,
-         embeds: parsedEmbed ? [parsedEmbed] : undefined,
+         embeds: parsedEmbed ? [parsedEmbed] : [],
          components: [row.toJSON(), fieldsRow.toJSON(), selectRow.toJSON()],
       };
       return await (message ? message.edit(opts) : auxdibot.createReply(interaction, opts));
