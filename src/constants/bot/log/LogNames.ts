@@ -69,4 +69,6 @@ export const LogNames: { [k in LogAction]?: string } = {
    NOTIFICATION_CREATED: '📬 Notification Created',
    NOTIFICATION_DELETED: '📬 Notification Deleted',
    COMMAND_RULES_CHANGED: '📜 Command Rules Changed',
+   EMBED_STORED: '📝 Embed Created',
+   EMBED_DELETED: '🗑️ Embed Deleted',
 };

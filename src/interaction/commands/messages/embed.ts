@@ -11,6 +11,7 @@ import { getEmbedJSON } from '../../subcommands/embeds/getEmbedJSON';
 import { embedParameters } from '@/interaction/subcommands/embeds/embedParameters';
 import { buildEmbed } from '@/interaction/subcommands/embeds/buildEmbed';
 import { embedList } from '@/interaction/subcommands/embeds/embedList';
+import { embedDelete } from '@/interaction/subcommands/embeds/deleteEmbed';
 
 dotenv.config();
 export default <AuxdibotCommand>{
@@ -24,6 +25,14 @@ export default <AuxdibotCommand>{
             .addStringOption((builder) => builder.setName('id').setDescription('The ID to use for the Embed.')),
       )
       .addSubcommand((builder) => builder.setName('list').setDescription('List every stored embed in the server.'))
+      .addSubcommand((builder) =>
+         builder
+            .setName('delete')
+            .setDescription('Delete a stored embed from the server.')
+            .addStringOption((option) =>
+               option.setName('id').setDescription('The ID of the Embed to delete.').setRequired(true),
+            ),
+      )
       .addSubcommand((builder) =>
          createEmbedParameters(
             builder
@@ -108,7 +117,7 @@ export default <AuxdibotCommand>{
    info: {
       module: Modules['Messages'],
       description: 'Create or edit a Discord Embed with Auxdibot, as well as obtain the JSON data of any Embed.',
-      usageExample: '/embed (build|list|create|edit|edit_json|json|parameters)',
+      usageExample: '/embed (build|list|delete|create|edit|edit_json|json|parameters)',
       permissionsRequired: [PermissionFlagsBits.ManageMessages],
    },
    subcommands: [
@@ -120,6 +129,7 @@ export default <AuxdibotCommand>{
       getEmbedJSON,
       embedParameters,
       embedList,
+      embedDelete,
    ],
    async execute() {
       return;

@@ -41,6 +41,7 @@ export default <AuxdibotButton>{
          id,
          session.embed && !isEmbedEmpty(session?.embed) ? (session.embed as APIEmbed) : undefined,
          session.content,
+         session?.webhook_url,
       ).then(() => {
          auxdibot.build_sessions.delete(`${interaction.guildId}:${interaction.channelId}:${interaction.message.id}`);
          const cancel = new EmbedBuilder()
