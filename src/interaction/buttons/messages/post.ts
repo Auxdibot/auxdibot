@@ -1,6 +1,8 @@
 import AuxdibotButton from '@/interfaces/buttons/AuxdibotButton';
 import {
    ActionRowBuilder,
+   ButtonBuilder,
+   ButtonStyle,
    ChannelSelectMenuBuilder,
    ChannelType,
    EmbedBuilder,
@@ -56,11 +58,18 @@ export default <AuxdibotButton>{
             .setMaxValues(1)
             .setPlaceholder('What channel would you like this embed to be posted to?'),
       );
+      const buttonRow = new ActionRowBuilder<ButtonBuilder>().addComponents(
+         new ButtonBuilder().setCustomId(`back-${id}`).setLabel('Go Back').setStyle(ButtonStyle.Danger),
+         new ButtonBuilder()
+            .setCustomId(`edit-${id}`)
+            .setLabel('Add to Existing Message')
+            .setStyle(ButtonStyle.Secondary),
+      );
       interaction.message
          .edit({
             content: '',
             embeds: [postEmbed],
-            components: [channelRow],
+            components: [buttonRow, channelRow],
          })
          .catch(() => undefined);
       return interaction

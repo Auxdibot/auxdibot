@@ -9,12 +9,13 @@ import handleError from '@/util/handleError';
 import parsePlaceholders from '@/util/parsePlaceholder';
 import { EmbedBuilder } from '@discordjs/builders';
 
-export const editEmbed = <AuxdibotSubcommand>{
-   name: 'edit',
+export const editCommand = <AuxdibotSubcommand>{
+   name: 'edit_command',
    info: {
       module: Modules['Messages'],
-      usageExample: '/embed edit (message_id) [...embed parameters]',
-      description: 'Edit an existing Embed by Auxdibot.',
+      usageExample: '/embed edit_command (message_id) [...embed parameters]',
+      description:
+         'Edit an existing Embed using command parameters. (View `/embed parameters` for a detailed description of embed parameters.)',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;
