@@ -1,10 +1,12 @@
-import { ActionRowBuilder, AnySelectMenuInteraction, APIEmbed, ButtonBuilder, ButtonStyle } from 'discord.js';
+import { ActionRowBuilder, AnySelectMenuInteraction, ButtonBuilder, ButtonStyle } from 'discord.js';
 import Modules from '@/constants/bot/commands/Modules';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import handleError from '@/util/handleError';
 import AuxdibotSelectMenu from '@/interfaces/menus/AuxdibotSelectMenu';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import { isEmbedEmpty } from '@/util/isEmbedEmpty';
+import parsePlaceholders from '@/util/parsePlaceholder';
+import { PlaceholderData } from '@/constants/embeds/PlaceholderData';
 
 export default <AuxdibotSelectMenu>{
    module: Modules['Messages'],
@@ -27,11 +29,15 @@ export default <AuxdibotSelectMenu>{
       );
       if (interaction.message.editable)
          await interaction.message.edit({ components: [interaction.message.components[0]] }).catch(() => undefined);
+      const apiEmbed =
+         embed?.embed && !isEmbedEmpty(embed.embed)
+            ? JSON.parse(await parsePlaceholders(auxdibot, JSON.stringify(embed.embed), PlaceholderData))
+            : undefined;
       return await auxdibot
          .createReply(interaction, {
-            embeds: embed?.embed && !isEmbedEmpty(embed.embed) ? [embed.embed as APIEmbed] : undefined,
+            embeds: apiEmbed ? [apiEmbed] : undefined,
             components: [button],
-            content: embed.content ?? '',
+            content: embed?.content ? await parsePlaceholders(auxdibot, embed.content, PlaceholderData) : undefined,
             ephemeral: true,
          })
          .catch(() => {

@@ -6,6 +6,7 @@ import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 import argumentsToEmbedParameters from '@/util/argumentsToEmbedParameters';
 import { getMessage } from '@/util/getMessage';
 import handleError from '@/util/handleError';
+import { isEmbedEmpty } from '@/util/isEmbedEmpty';
 import parsePlaceholders from '@/util/parsePlaceholder';
 import { EmbedBuilder } from '@discordjs/builders';
 
@@ -65,7 +66,7 @@ export const editCommand = <AuxdibotSubcommand>{
 
          await message.edit({
             ...(content ? { content: await parsePlaceholders(auxdibot, content, { guild, member: sender }) } : {}),
-            embeds: [embed],
+            embeds: embed && !isEmbedEmpty(embed as never) ? [embed] : undefined,
          });
       } catch (x) {
          return await handleError(

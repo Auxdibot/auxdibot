@@ -13,6 +13,7 @@ import { buildEmbed } from '@/interaction/subcommands/embeds/buildEmbed';
 import { embedList } from '@/interaction/subcommands/embeds/embedList';
 import { embedDelete } from '@/interaction/subcommands/embeds/deleteEmbed';
 import { postEmbed } from '@/interaction/subcommands/embeds/postEmbed';
+import { editEmbed } from '@/interaction/subcommands/embeds/editEmbed';
 
 dotenv.config();
 export default <AuxdibotCommand>{
@@ -87,6 +88,20 @@ export default <AuxdibotCommand>{
             ),
       )
       .addSubcommand((builder) =>
+         builder
+            .setName('edit')
+            .setDescription('Edit an existing Embed.')
+            .addStringOption((option) =>
+               option
+                  .setName('message_id')
+                  .setDescription('The message ID of the Embed. (Copy ID of message with Developer Mode.)')
+                  .setRequired(true),
+            )
+            .addStringOption((option) =>
+               option.setName('id').setDescription('The ID of the stored Embed to use for editing.').setRequired(true),
+            ),
+      )
+      .addSubcommand((builder) =>
          createEmbedParameters(
             builder
                .setName('edit_command')
@@ -148,6 +163,7 @@ export default <AuxdibotCommand>{
       embedList,
       embedDelete,
       postEmbed,
+      editEmbed,
    ],
    async execute() {
       return;
