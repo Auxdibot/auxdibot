@@ -10,6 +10,7 @@ import { editEmbedJSON } from '../../subcommands/embeds/editEmbedJSON';
 import { getEmbedJSON } from '../../subcommands/embeds/getEmbedJSON';
 import { embedParameters } from '@/interaction/subcommands/embeds/embedParameters';
 import { buildEmbed } from '@/interaction/subcommands/embeds/buildEmbed';
+import { embedList } from '@/interaction/subcommands/embeds/embedList';
 
 dotenv.config();
 export default <AuxdibotCommand>{
@@ -22,7 +23,7 @@ export default <AuxdibotCommand>{
             .setDescription("Build a Discord Embed using Auxdibot's Embed Builder.")
             .addStringOption((builder) => builder.setName('id').setDescription('The ID to use for the Embed.')),
       )
-
+      .addSubcommand((builder) => builder.setName('list').setDescription('List every stored embed in the server.'))
       .addSubcommand((builder) =>
          createEmbedParameters(
             builder
@@ -107,10 +108,19 @@ export default <AuxdibotCommand>{
    info: {
       module: Modules['Messages'],
       description: 'Create or edit a Discord Embed with Auxdibot, as well as obtain the JSON data of any Embed.',
-      usageExample: '/embed (build|create|edit|edit_json|json|parameters)',
+      usageExample: '/embed (build|list|create|edit|edit_json|json|parameters)',
       permissionsRequired: [PermissionFlagsBits.ManageMessages],
    },
-   subcommands: [buildEmbed, createEmbed, createEmbedJSON, editEmbed, editEmbedJSON, getEmbedJSON, embedParameters],
+   subcommands: [
+      buildEmbed,
+      createEmbed,
+      createEmbedJSON,
+      editEmbed,
+      editEmbedJSON,
+      getEmbedJSON,
+      embedParameters,
+      embedList,
+   ],
    async execute() {
       return;
    },

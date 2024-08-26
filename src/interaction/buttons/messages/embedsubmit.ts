@@ -4,6 +4,7 @@ import Modules from '@/constants/bot/commands/Modules';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import handleError from '@/util/handleError';
 import { storeEmbed } from '@/modules/features/embeds/storeEmbed';
+import { isEmbedEmpty } from '@/util/isEmbedEmpty';
 
 export default <AuxdibotButton>{
    module: Modules['Messages'],
@@ -34,7 +35,13 @@ export default <AuxdibotButton>{
          return handleError(auxdibot, 'NO_CONTENT', 'You must provide content or an embed to store!', interaction);
       }
       await interaction.deferReply();
-      return storeEmbed(auxdibot, interaction.guild, id, session.embed as APIEmbed, session.content).then(() => {
+      return storeEmbed(
+         auxdibot,
+         interaction.guild,
+         id,
+         session.embed && !isEmbedEmpty(session?.embed) ? (session.embed as APIEmbed) : undefined,
+         session.content,
+      ).then(() => {
          auxdibot.build_sessions.delete(`${interaction.guildId}:${interaction.channelId}:${interaction.message.id}`);
          const cancel = new EmbedBuilder()
             .setColor(auxdibot.colors.accept)
@@ -49,7 +56,7 @@ export default <AuxdibotButton>{
             .catch(() => undefined);
          return auxdibot.createReply(interaction, {
             content: `# Stored Embed\nID: \`${id}\`\n\n${session.content ?? ''}`,
-            embeds: session?.embed ? [session?.embed as APIEmbed] : undefined,
+            embeds: session?.embed && !isEmbedEmpty(session?.embed) ? [session?.embed as APIEmbed] : undefined,
             ephemeral: true,
          });
       });
