@@ -1,7 +1,6 @@
 import { ChannelType, SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import dotenv from 'dotenv';
-import createEmbedParameters from '@/util/createEmbedParameters';
 import Modules from '@/constants/bot/commands/Modules';
 import { notificationsYoutube } from '@/interaction/subcommands/notifications/notificationsYoutube';
 import { notificationsDelete } from '@/interaction/subcommands/notifications/notificationsDelete';
@@ -15,53 +14,65 @@ export default <AuxdibotCommand>{
       .setName('notifications')
       .setDescription('Create notifications for your favorite social media/RSS feeds.')
       .addSubcommand((builder) =>
-         createEmbedParameters(
-            builder
-               .setName('youtube')
-               .setDescription('Listen for youtube channel uploads using Auxdibot.')
-               .addChannelOption((option) =>
-                  option
-                     .setName('channel')
-                     .setDescription('The channel to post the feed in.')
-                     .addChannelTypes(ChannelType.GuildText)
-                     .setRequired(true),
-               )
-               .addStringOption((option) =>
-                  option.setName('handle').setDescription('Youtube channel handle (ex. @Auxdible)').setRequired(true),
-               ),
-         ),
+         builder
+            .setName('youtube')
+            .setDescription('Listen for youtube channel uploads using Auxdibot.')
+            .addChannelOption((option) =>
+               option
+                  .setName('channel')
+                  .setDescription('The channel to post the feed in.')
+                  .addChannelTypes(ChannelType.GuildText)
+                  .setRequired(true),
+            )
+            .addStringOption((option) =>
+               option
+                  .setName('id')
+                  .setDescription('The ID of the stored embed to use. (/embed storage list)')
+                  .setRequired(true),
+            )
+            .addStringOption((option) =>
+               option.setName('handle').setDescription('Youtube channel handle (ex. @Auxdible)').setRequired(true),
+            ),
       )
       .addSubcommand((builder) =>
-         createEmbedParameters(
-            builder
-               .setName('rss')
-               .setDescription('Create a RSS feed listener using Auxdibot.')
-               .addChannelOption((option) =>
-                  option
-                     .setName('channel')
-                     .setDescription('The channel to post the feed in.')
-                     .addChannelTypes(ChannelType.GuildText)
-                     .setRequired(true),
-               )
-               .addStringOption((option) => option.setName('url').setDescription('RSS feed url').setRequired(true)),
-         ),
+         builder
+            .setName('rss')
+            .setDescription('Create a RSS feed listener using Auxdibot.')
+            .addChannelOption((option) =>
+               option
+                  .setName('channel')
+                  .setDescription('The channel to post the feed in.')
+                  .addChannelTypes(ChannelType.GuildText)
+                  .setRequired(true),
+            )
+            .addStringOption((option) =>
+               option
+                  .setName('id')
+                  .setDescription('The ID of the stored embed to use. (/embed storage list)')
+                  .setRequired(true),
+            )
+            .addStringOption((option) => option.setName('url').setDescription('RSS feed url').setRequired(true)),
       )
       .addSubcommand((builder) =>
-         createEmbedParameters(
-            builder
-               .setName('twitch')
-               .setDescription('Listen for streams on Twitch using Auxdibot.')
-               .addChannelOption((option) =>
-                  option
-                     .setName('channel')
-                     .setDescription('The channel to post the feed in.')
-                     .addChannelTypes(ChannelType.GuildText)
-                     .setRequired(true),
-               )
-               .addStringOption((option) =>
-                  option.setName('username').setDescription('Twitch channel username (ex. auxdible)').setRequired(true),
-               ),
-         ),
+         builder
+            .setName('twitch')
+            .setDescription('Listen for streams on Twitch using Auxdibot.')
+            .addChannelOption((option) =>
+               option
+                  .setName('channel')
+                  .setDescription('The channel to post the feed in.')
+                  .addChannelTypes(ChannelType.GuildText)
+                  .setRequired(true),
+            )
+            .addStringOption((option) =>
+               option
+                  .setName('id')
+                  .setDescription('The ID of the stored embed to use. (/embed storage list)')
+                  .setRequired(true),
+            )
+            .addStringOption((option) =>
+               option.setName('username').setDescription('Twitch channel username (ex. auxdible)').setRequired(true),
+            ),
       )
       .addSubcommand((builder) =>
          builder

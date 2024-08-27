@@ -4,12 +4,8 @@ import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandD
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 import createNotification from '@/modules/features/notifications/createNotification';
-import argumentsToEmbedParameters from '@/util/argumentsToEmbedParameters';
 import handleError from '@/util/handleError';
-import handleLog from '@/util/handleLog';
-import { toAPIEmbed } from '@/util/toAPIEmbed';
-import { LogAction } from '@prisma/client';
-import { ChannelType, EmbedBuilder } from 'discord.js';
+import { APIEmbed, ChannelType, EmbedBuilder } from 'discord.js';
 
 export const notificationsTwitch = <AuxdibotSubcommand>{
    name: 'twitch',
@@ -25,19 +21,20 @@ export const notificationsTwitch = <AuxdibotSubcommand>{
          ChannelType.GuildAnnouncement,
       ]);
       const username = interaction.options.getString('username', true);
-      const content = interaction.options.getString('content');
-      const parameters = argumentsToEmbedParameters(interaction);
+      const id = interaction.options.getString('id', true);
+      const stored = interaction.data.guildData.stored_embeds.find((i) => i.id === id);
+      if (!stored) return handleError(auxdibot, 'EMBED_NOT_FOUND', 'Embed not found!', interaction);
+      const { content, embed } = stored;
       try {
-         const apiEmbed = toAPIEmbed(parameters);
          return await createNotification(
             auxdibot,
             interaction.guild,
             channel,
             username,
-            content || apiEmbed
+            content || embed
                ? {
                     content: content?.replace(/\\n/g, '\n'),
-                    embed: apiEmbed,
+                    embed: embed as APIEmbed,
                  }
                : {
                     content: '> 🎦 Twitch Stream Online\n\n{%FEED_LINK%}',
@@ -51,12 +48,6 @@ export const notificationsTwitch = <AuxdibotSubcommand>{
             const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.title = '📬 Created Notification Feed';
             embed.description = description;
-            handleLog(auxdibot, interaction.guild, {
-               type: LogAction.NOTIFICATION_CREATED,
-               userID: interaction.user.id,
-               date: new Date(),
-               description: description,
-            });
             return await auxdibot.createReply(interaction, { embeds: [embed] });
          });
       } catch (x) {

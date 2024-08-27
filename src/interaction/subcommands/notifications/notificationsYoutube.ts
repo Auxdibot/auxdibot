@@ -5,12 +5,8 @@ import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInt
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 import createNotification from '@/modules/features/notifications/createNotification';
 import { getChannelId } from '@/modules/features/notifications/getChannelId';
-import argumentsToEmbedParameters from '@/util/argumentsToEmbedParameters';
 import handleError from '@/util/handleError';
-import handleLog from '@/util/handleLog';
-import { toAPIEmbed } from '@/util/toAPIEmbed';
-import { LogAction } from '@prisma/client';
-import { ChannelType, EmbedBuilder } from 'discord.js';
+import { APIEmbed, ChannelType, EmbedBuilder } from 'discord.js';
 export const notificationsYoutube = <AuxdibotSubcommand>{
    name: 'youtube',
    info: {
@@ -25,24 +21,24 @@ export const notificationsYoutube = <AuxdibotSubcommand>{
          ChannelType.GuildAnnouncement,
       ]);
       const handle = interaction.options.getString('handle', true);
-      const content = interaction.options.getString('content');
-      const parameters = argumentsToEmbedParameters(interaction);
+      const id = interaction.options.getString('id', true);
+      const stored = interaction.data.guildData.stored_embeds.find((i) => i.id === id);
+      if (!stored) return handleError(auxdibot, 'EMBED_NOT_FOUND', 'Embed not found!', interaction);
+      const { content, embed } = stored;
       try {
          const youtubeChannel = await getChannelId(handle);
          if (!youtubeChannel) {
             return await handleError(auxdibot, 'CHANNEL_NOT_FOUND', 'That channel does not exist!', interaction);
          }
-
-         const apiEmbed = toAPIEmbed(parameters);
          return await createNotification(
             auxdibot,
             interaction.guild,
             channel,
             `https://www.youtube.com/feeds/videos.xml?channel_id=${youtubeChannel.id}`,
-            content || apiEmbed
+            content || embed
                ? {
                     content: content?.replace(/\\n/g, '\n'),
-                    embed: apiEmbed,
+                    embed: embed as APIEmbed,
                  }
                : {
                     content: '> ▶️ New YouTube Upload\n\n{%FEED_LINK%}',
@@ -60,12 +56,6 @@ export const notificationsYoutube = <AuxdibotSubcommand>{
             const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.title = '📬 Created Notification Feed';
             embed.description = description;
-            handleLog(auxdibot, interaction.guild, {
-               type: LogAction.NOTIFICATION_CREATED,
-               userID: interaction.user.id,
-               date: new Date(),
-               description: description,
-            });
             return await auxdibot.createReply(interaction, { embeds: [embed] });
          });
       } catch (x) {

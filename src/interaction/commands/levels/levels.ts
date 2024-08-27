@@ -13,7 +13,6 @@ import { levelsSetMessageXP } from '../../subcommands/levels/levelsSetMessageXP'
 import { levelsToggleEmbed } from '@/interaction/subcommands/levels/levelsToggleEmbed';
 import { levelsChannel } from '@/interaction/subcommands/levels/levelsChannel';
 import { resetAllLevels } from '@/interaction/subcommands/levels/resetAllLevels';
-import createEmbedParameters from '@/util/createEmbedParameters';
 import { levelMessage } from '@/interaction/subcommands/levels/levelMessage';
 import { levelReset } from '@/interaction/subcommands/levels/levelReset';
 import { levelPreview } from '@/interaction/subcommands/levels/levelPreview';
@@ -208,9 +207,14 @@ export default <AuxdibotCommand>{
             .setName('message')
             .setDescription('Message related commands')
             .addSubcommand((builder) =>
-               createEmbedParameters(
-                  builder.setName('set').setDescription('Set the message to be sent when a user levels up.'),
-               ),
+               builder
+                  .setName('set')
+                  .setDescription('Set the message to be sent when a user levels up.')
+                  .addStringOption((argBuilder) =>
+                     argBuilder
+                        .setName('id')
+                        .setDescription('The ID of the stored embed to use. (/embed storage list)'),
+                  ),
             )
             .addSubcommand((builder) => builder.setName('reset').setDescription('Reset the message to the default.'))
             .addSubcommand((builder) =>
@@ -333,8 +337,7 @@ export default <AuxdibotCommand>{
    info: {
       module: Modules['Levels'],
       description: 'Change settings for leveling on this server.',
-      usageExample:
-         '/levels (stats|rewards|message_xp|toggle_embed|channel) (level|leaderboard) (add|remove) (award|remove|reset|reset_all)',
+      usageExample: '/levels (settings|message|multipliers|data|rewards|xp|stats)',
       permissionsRequired: [PermissionFlagsBits.Administrator],
    },
    subcommands: [
