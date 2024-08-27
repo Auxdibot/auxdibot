@@ -5,6 +5,7 @@ import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInt
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 import handleError from '@/util/handleError';
 import parsePlaceholders from '@/util/parsePlaceholder';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 
 export const levelPreview = <AuxdibotSubcommand>{
    name: 'preview',
@@ -18,8 +19,11 @@ export const levelPreview = <AuxdibotSubcommand>{
       if (!interaction.data) return;
       const server = interaction.data.guildData;
       try {
+         const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
+            new ButtonBuilder().setStyle(ButtonStyle.Secondary).setLabel('Embed Preview').setCustomId('dummy'),
+         );
          return await auxdibot.createReply(interaction, {
-            content: `**EMBED PREVIEW**\r\n${
+            content: `${
                (await parsePlaceholders(auxdibot, server.level_message?.content, {
                   guild: interaction.data.guild,
                   member: interaction.data.member,
@@ -39,6 +43,8 @@ export const levelPreview = <AuxdibotSubcommand>{
                     ],
                  }
                : {}),
+            ephemeral: true,
+            components: [row],
          });
       } catch (x) {
          console.error(x);

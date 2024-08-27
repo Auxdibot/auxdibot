@@ -1,8 +1,9 @@
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import { GenericFeed } from '@/interfaces/notifications/GenericFeed';
+import handleLog from '@/util/handleLog';
 import parsePlaceholders from '@/util/parsePlaceholder';
-import { Notification } from '@prisma/client';
-import { Guild } from 'discord.js';
+import { LogAction, Notification } from '@prisma/client';
+import { Channel, ChannelType, Guild } from 'discord.js';
 
 export default async function publishNotification(
    auxdibot: Auxdibot,
@@ -10,9 +11,9 @@ export default async function publishNotification(
    notification: Notification,
    data?: GenericFeed,
 ) {
-   const channel = guild.channels.cache.get(notification.channelID);
-   if (!channel || !channel.isTextBased()) return;
-   channel
+   const channel: Channel | undefined = await guild.channels.fetch(notification.channelID).catch(() => undefined);
+   if (!channel || (channel.type != ChannelType.GuildAnnouncement && channel.type != ChannelType.GuildText)) return;
+   return await channel
       .send({
          content: await parsePlaceholders(auxdibot, notification.message.content, { guild, feed_data: data }),
          embeds: notification.message.embed
@@ -26,5 +27,12 @@ export default async function publishNotification(
               ]
             : undefined,
       })
-      .catch(() => undefined);
+      .catch(() => {
+         handleLog(auxdibot, guild, {
+            date: new Date(),
+            description: `Failed to send notification to ${channel.id} for feed topic${notification.topicURL}.`,
+            type: LogAction.ERROR,
+            userID: auxdibot.user.id,
+         });
+      });
 }

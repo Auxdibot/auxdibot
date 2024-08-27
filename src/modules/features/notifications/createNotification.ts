@@ -42,7 +42,7 @@ export default async function createNotification(
       .then(async (data) => {
          handleLog(auxdibot, guild, {
             userID: userID,
-            description: `A notification created for ${topicUrl}.`,
+            description: `A notification has been created for ${topicUrl}.`,
             type: LogAction.NOTIFICATION_CREATED,
             date: new Date(),
          });

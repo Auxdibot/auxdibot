@@ -5,6 +5,8 @@ import { Auxdibot } from '@/interfaces/Auxdibot';
 import handleError from '@/util/handleError';
 import { storeEmbed } from '@/modules/features/embeds/storeEmbed';
 import { isEmbedEmpty } from '@/util/isEmbedEmpty';
+import parsePlaceholders from '@/util/parsePlaceholder';
+import { PlaceholderData } from '@/constants/embeds/PlaceholderData';
 
 export default <AuxdibotButton>{
    module: Modules['Messages'],
@@ -42,7 +44,7 @@ export default <AuxdibotButton>{
          session.embed && !isEmbedEmpty(session?.embed) ? (session.embed as APIEmbed) : undefined,
          session.content,
          session?.webhook_url,
-      ).then(() => {
+      ).then(async () => {
          auxdibot.build_sessions.delete(`${interaction.guildId}:${interaction.channelId}:${interaction.message.id}`);
          const cancel = new EmbedBuilder()
             .setColor(auxdibot.colors.accept)
@@ -55,9 +57,20 @@ export default <AuxdibotButton>{
                components: [],
             })
             .catch(() => undefined);
+         const placeholderData = {
+            ...PlaceholderData,
+            guild: interaction.guild,
+            member: await interaction.guild.members.fetch(interaction.member.user.id).catch(() => interaction.user),
+         };
+         const apiEmbed =
+            session?.embed && !isEmbedEmpty(session?.embed)
+               ? JSON.parse(await parsePlaceholders(auxdibot, JSON.stringify(session?.embed), placeholderData))
+               : undefined;
          return auxdibot.createReply(interaction, {
-            content: `# Stored Embed\nID: \`${id}\`\n\n${session.content ?? ''}`,
-            embeds: session?.embed && !isEmbedEmpty(session?.embed) ? [session?.embed as APIEmbed] : undefined,
+            content: `# Stored Embed\nID: \`${id}\`\n\n${
+               session.content ? await parsePlaceholders(auxdibot, session.content, placeholderData) : ''
+            }`,
+            embeds: apiEmbed ? [apiEmbed] : undefined,
             ephemeral: true,
          });
       });

@@ -182,7 +182,7 @@ export default async function parsePlaceholders(
       ...(feed_data
          ? {
               [Placeholders.FEED_TITLE]: feed_data.title ?? '',
-              [Placeholders.FEED_CONTENT]: feed_data.content.replaceAll(/\\/g, '\\\\').replaceAll(/"/g, '\\"') ?? '',
+              [Placeholders.FEED_CONTENT]: feed_data.content?.replaceAll(/\\/g, '\\\\').replaceAll(/"/g, '\\"') ?? '',
               [Placeholders.FEED_LINK]: feed_data.link ?? '',
               [Placeholders.FEED_AUTHOR]: feed_data.author ?? '',
               [Placeholders.FEED_DATE]: new Date(feed_data.date).toDateString(),

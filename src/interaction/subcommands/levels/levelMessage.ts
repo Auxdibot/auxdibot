@@ -3,12 +3,9 @@ import { Auxdibot } from '@/interfaces/Auxdibot';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
-import { toAPIEmbed } from '@/util/toAPIEmbed';
-import argumentsToEmbedParameters from '@/util/argumentsToEmbedParameters';
 import handleError from '@/util/handleError';
 import parsePlaceholders from '@/util/parsePlaceholder';
 import { EmbedBuilder } from '@discordjs/builders';
-import { APIEmbed } from '@prisma/client';
 import setLevelMessage from '@/modules/features/levels/setLevelMessage';
 
 export const levelMessage = <AuxdibotSubcommand>{
@@ -17,28 +14,42 @@ export const levelMessage = <AuxdibotSubcommand>{
    info: {
       module: Modules['Levels'],
       description:
-         "Set the levelup message. (Use %LEVEL_FROM% for the user's previous level and %LEVEL_TO% for the user's new level)",
-      usageExample: '/level message [...embed parameters]',
+         "Set the levelup message. (See /embed storage list for stored embeds, Use %LEVEL_FROM% for the user's previous level and %LEVEL_TO% for the user's new level)",
+      usageExample: '/level message set (id)',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;
       const server = interaction.data.guildData;
-      const content = interaction.options.getString('content');
-      const parameters = argumentsToEmbedParameters(interaction);
+      const id = interaction.options.getString('id');
+      if (!id) {
+         await setLevelMessage(auxdibot, server.serverID);
+         const success = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
+         success.title = 'Success!';
+         success.description = `Cleared the levelup message.`;
+         return await auxdibot.createReply(interaction, { embeds: [success] });
+      }
+      const stored = server.stored_embeds.find((i) => i.id === id);
+      if (!stored) return handleError(auxdibot, 'EMBED_NOT_FOUND', 'Embed not found!', interaction);
+      const { content, embed } = stored;
       try {
-         const newEmbed = toAPIEmbed(parameters) as APIEmbed;
          if (interaction.channel && interaction.channel.isTextBased())
             await interaction.channel.send({
-               content: `Here's a preview of the new levelup message!\n${
-                  (await parsePlaceholders(auxdibot, content, {
-                     guild: interaction.data.guild,
-                     member: interaction.data.member,
-                     levelup: { from: 0, to: 1 },
-                  })) || ''
+               content: `Here's a preview of the new levelup message!${
+                  !/level\_(from|to)/i.test(content) && !/level\_(from|to)/i.test(JSON.stringify(embed))
+                     ? "\n\n**⚠️ WARNING**: There are no level placeholders in this message! Level data may not be clear to users. Use `%LEVEL_FROM%` and `%LEVEL_TO%` to display the user's leveling status."
+                     : ''
+               }\n${
+                  (content &&
+                     (await parsePlaceholders(auxdibot, content, {
+                        guild: interaction.data.guild,
+                        member: interaction.data.member,
+                        levelup: { from: 0, to: 1 },
+                     }))) ||
+                  ''
                }`,
-               embeds: newEmbed && [
+               embeds: embed && [
                   JSON.parse(
-                     await parsePlaceholders(auxdibot, JSON.stringify(newEmbed), {
+                     await parsePlaceholders(auxdibot, JSON.stringify(embed), {
                         guild: interaction.data.guild,
                         member: interaction.data.member,
                         levelup: { from: 0, to: 1 },
@@ -46,11 +57,11 @@ export const levelMessage = <AuxdibotSubcommand>{
                   ),
                ],
             });
-         await setLevelMessage(auxdibot, server.serverID, newEmbed, content);
-         const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
-         embed.title = 'Success!';
-         embed.description = `Set the levelup message.`;
-         await auxdibot.createReply(interaction, { embeds: [embed] });
+         await setLevelMessage(auxdibot, server.serverID, embed, content);
+         const success = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
+         success.title = 'Success!';
+         success.description = `Set the levelup message.`;
+         await auxdibot.createReply(interaction, { embeds: [success] });
       } catch (x) {
          console.log(x);
          return await handleError(auxdibot, 'EMBED_SEND_ERROR', 'There was an error sending that embed!', interaction);
