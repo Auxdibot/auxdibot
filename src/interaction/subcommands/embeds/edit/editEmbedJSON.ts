@@ -9,10 +9,11 @@ import parsePlaceholders from '@/util/parsePlaceholder';
 import { EmbedBuilder } from '@discordjs/builders';
 
 export const editEmbedJSON = <AuxdibotSubcommand>{
-   name: 'edit_json',
+   name: 'json',
+   group: 'edit',
    info: {
       module: Modules['Messages'],
-      usageExample: '/embed edit_json (message_id) (json)',
+      usageExample: '/embed edit json (message_id) (json)',
       description: 'Edit an existing Embed by Auxdibot using valid Discord Embed JSON data.',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
@@ -20,6 +21,7 @@ export const editEmbedJSON = <AuxdibotSubcommand>{
       const message_id = interaction.options.getString('message_id', true);
       const json = interaction.options.getString('json', true);
       const guild = interaction.data.guild;
+      await interaction.deferReply();
       const message = await getMessage(guild, message_id);
       if (!message) return await handleError(auxdibot, 'MESSAGE_NOT_FOUND', "Couldn't find that message!", interaction);
       if (message.embeds.length <= 0)

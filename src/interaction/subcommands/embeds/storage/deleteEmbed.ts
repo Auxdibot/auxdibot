@@ -9,9 +9,10 @@ import { EmbedBuilder } from 'discord.js';
 
 export const embedDelete = <AuxdibotSubcommand>{
    name: 'delete',
+   group: 'storage',
    info: {
       module: Modules['Messages'],
-      usageExample: '/embed delete (id)',
+      usageExample: '/embed storage delete (id)',
       description: 'Delete a stored embed from the server.',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {

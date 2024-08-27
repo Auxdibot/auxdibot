@@ -11,10 +11,11 @@ import parsePlaceholders from '@/util/parsePlaceholder';
 import { EmbedBuilder } from '@discordjs/builders';
 
 export const editCommand = <AuxdibotSubcommand>{
-   name: 'edit_command',
+   name: 'command',
+   group: 'edit',
    info: {
       module: Modules['Messages'],
-      usageExample: '/embed edit_command (message_id) [...embed parameters]',
+      usageExample: '/embed edit command (message_id) [...embed parameters]',
       description:
          'Edit an existing Embed using command parameters. (View `/embed parameters` for a detailed description of embed parameters.)',
    },
@@ -22,6 +23,7 @@ export const editCommand = <AuxdibotSubcommand>{
       if (!interaction.data) return;
       const message_id = interaction.options.getString('message_id', true);
       const guild = interaction.data.guild;
+      await interaction.deferReply();
       const message = await getMessage(guild, message_id);
       const content = interaction.options.getString('content')?.replace(/\\n/g, '\n') || '';
       const parameters = argumentsToEmbedParameters(interaction);
