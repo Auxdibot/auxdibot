@@ -5,20 +5,25 @@ import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInt
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 import handleError from '@/util/handleError';
 import parsePlaceholders from '@/util/parsePlaceholder';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 
 export const leavePreview = <AuxdibotSubcommand>{
    name: 'preview',
+   group: 'leave',
    info: {
       module: Modules['Greetings'],
       description: 'Preview the leave message.',
-      usageExample: '/leave preview',
+      usageExample: '/greetings leave preview',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;
       const settings = interaction.data.guildData;
       try {
+         const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
+            new ButtonBuilder().setStyle(ButtonStyle.Secondary).setLabel('Embed Preview').setCustomId('dummy'),
+         );
          return await auxdibot.createReply(interaction, {
-            content: `**EMBED PREVIEW**\r\n${settings.leave_text || ''}`,
+            content: `${settings.leave_text || ''}`,
             ...(Object.entries(settings.leave_embed || {}).length != 0
                ? {
                     embeds: [
@@ -31,6 +36,8 @@ export const leavePreview = <AuxdibotSubcommand>{
                     ],
                  }
                : {}),
+            components: [row],
+            ephemeral: true,
          });
       } catch (x) {
          return await handleError(

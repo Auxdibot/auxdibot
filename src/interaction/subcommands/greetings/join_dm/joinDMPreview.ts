@@ -5,20 +5,25 @@ import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInt
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 import handleError from '@/util/handleError';
 import parsePlaceholders from '@/util/parsePlaceholder';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 
 export const joinDMPreview = <AuxdibotSubcommand>{
    name: 'preview',
+   group: 'join_dm',
    info: {
       module: Modules['Greetings'],
       description: 'Preview the join DM message.',
-      usageExample: '/join_dm preview',
+      usageExample: '/greetings join_dm preview',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;
       const settings = interaction.data.guildData;
       try {
+         const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
+            new ButtonBuilder().setStyle(ButtonStyle.Secondary).setLabel('Embed Preview').setCustomId('dummy'),
+         );
          return await auxdibot.createReply(interaction, {
-            content: `**EMBED PREVIEW**\r\n${settings.join_dm_text || ''}`,
+            content: `${settings.join_dm_text || ''}`,
             ...(Object.entries(settings.join_dm_embed || {}).length != 0
                ? {
                     embeds: [
@@ -31,6 +36,8 @@ export const joinDMPreview = <AuxdibotSubcommand>{
                     ],
                  }
                : {}),
+            components: [row],
+            ephemeral: true,
          });
       } catch (x) {
          return await handleError(
