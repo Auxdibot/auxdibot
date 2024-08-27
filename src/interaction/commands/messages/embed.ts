@@ -14,6 +14,8 @@ import { embedList } from '@/interaction/subcommands/embeds/embedList';
 import { embedDelete } from '@/interaction/subcommands/embeds/deleteEmbed';
 import { postEmbed } from '@/interaction/subcommands/embeds/postEmbed';
 import { editEmbed } from '@/interaction/subcommands/embeds/editEmbed';
+import { storeCommand } from '@/interaction/subcommands/embeds/storeCommand';
+import { storeJSON } from '@/interaction/subcommands/embeds/storeJSON';
 
 dotenv.config();
 export default <AuxdibotCommand>{
@@ -25,6 +27,38 @@ export default <AuxdibotCommand>{
             .setName('build')
             .setDescription("Build a Discord Embed using Auxdibot's Embed Builder.")
             .addStringOption((builder) => builder.setName('id').setDescription('The ID to use for the Embed.')),
+      )
+      .addSubcommand((builder) =>
+         createEmbedParameters(
+            builder
+               .setName('store_command')
+               .setDescription('Store an Embed using command parameters.')
+               .addStringOption((option) =>
+                  option.setName('id').setDescription('The ID to use for the Embed.').setRequired(true),
+               ),
+         ).addStringOption((option) =>
+            option.setName('webhook_url').setDescription('The Webhook URL to use for sending the Embed. (Optional)'),
+         ),
+      )
+      .addSubcommand((builder) =>
+         builder
+            .setName('store_json')
+            .setDescription('Store an Embed using command parameters.')
+            .addStringOption((option) =>
+               option.setName('id').setDescription('The ID to use for the Embed.').setRequired(true),
+            )
+            .addStringOption((option) =>
+               option
+                  .setName('json')
+                  .setDescription('The JSON data to use for creating the Discord Embed.')
+                  .setRequired(true),
+            )
+            .addStringOption((option) =>
+               option.setName('content').setDescription('The message content to send with the embed. (Optional)'),
+            )
+            .addStringOption((option) =>
+               option.setName('webhook_url').setDescription('The Webhook URL to use for sending the Embed. (Optional)'),
+            ),
       )
       .addSubcommand((builder) => builder.setName('list').setDescription('List every stored embed in the server.'))
       .addSubcommand((builder) =>
@@ -164,6 +198,8 @@ export default <AuxdibotCommand>{
       embedDelete,
       postEmbed,
       editEmbed,
+      storeCommand,
+      storeJSON,
    ],
    async execute() {
       return;

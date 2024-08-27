@@ -24,6 +24,9 @@ export const buildEmbed = <AuxdibotSubcommand>{
             interaction,
          );
       }
+      if (id.length > 64) {
+         return handleError(auxdibot, 'INVALID_ID', 'The embed ID must be 64 characters or less.', interaction);
+      }
       if (interaction.data.guildData.stored_embeds?.find((embed) => embed.id === id)) {
          return handleError(auxdibot, 'DUPLICATE_ID', 'An embed with that ID already exists!', interaction);
       }
