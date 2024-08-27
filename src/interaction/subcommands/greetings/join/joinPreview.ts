@@ -5,20 +5,25 @@ import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInt
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 import handleError from '@/util/handleError';
 import parsePlaceholders from '@/util/parsePlaceholder';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from 'discord.js';
 
 export const joinPreview = <AuxdibotSubcommand>{
    name: 'preview',
+   group: 'join',
    info: {
       module: Modules['Greetings'],
       description: 'Preview the join message.',
-      usageExample: '/join preview',
+      usageExample: '/greetings join preview',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;
       const server = interaction.data.guildData;
       try {
+         const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
+            new ButtonBuilder().setStyle(ButtonStyle.Secondary).setLabel('Embed Preview').setCustomId('dummy'),
+         );
          return await auxdibot.createReply(interaction, {
-            content: `**EMBED PREVIEW**\r\n${server.join_text || ''}`,
+            content: `${server.join_text || ''}`,
             ...(Object.entries(server.join_embed || {}).length != 0
                ? {
                     embeds: [
@@ -31,6 +36,8 @@ export const joinPreview = <AuxdibotSubcommand>{
                     ],
                  }
                : {}),
+            ephemeral: true,
+            components: [row],
          });
       } catch (x) {
          return await handleError(
