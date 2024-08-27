@@ -3,19 +3,19 @@ import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import dotenv from 'dotenv';
 import createEmbedParameters from '@/util/createEmbedParameters';
 import Modules from '@/constants/bot/commands/Modules';
-import { postCommand } from '../../subcommands/embeds/postCommand';
-import { postJSON } from '../../subcommands/embeds/postJSON';
-import { editCommand } from '../../subcommands/embeds/editCommand';
-import { editEmbedJSON } from '../../subcommands/embeds/editEmbedJSON';
+import { postCommand } from '../../subcommands/embeds/post/postCommand';
+import { postJSON } from '../../subcommands/embeds/post/postJSON';
+import { editCommand } from '../../subcommands/embeds/edit/editCommand';
+import { editEmbedJSON } from '../../subcommands/embeds/edit/editEmbedJSON';
 import { getEmbedJSON } from '../../subcommands/embeds/getEmbedJSON';
 import { embedParameters } from '@/interaction/subcommands/embeds/embedParameters';
-import { buildEmbed } from '@/interaction/subcommands/embeds/buildEmbed';
-import { embedList } from '@/interaction/subcommands/embeds/embedList';
-import { embedDelete } from '@/interaction/subcommands/embeds/deleteEmbed';
-import { postEmbed } from '@/interaction/subcommands/embeds/postEmbed';
-import { editEmbed } from '@/interaction/subcommands/embeds/editEmbed';
-import { storeCommand } from '@/interaction/subcommands/embeds/storeCommand';
-import { storeJSON } from '@/interaction/subcommands/embeds/storeJSON';
+import { embedBuilder } from '@/interaction/subcommands/embeds/embedBuilder';
+import { embedList } from '@/interaction/subcommands/embeds/storage/embedList';
+import { embedDelete } from '@/interaction/subcommands/embeds/storage/deleteEmbed';
+import { postEmbed } from '@/interaction/subcommands/embeds/post/postEmbed';
+import { editEmbed } from '@/interaction/subcommands/embeds/edit/editEmbed';
+import { storeEmbedWithCommand } from '@/interaction/subcommands/embeds/storage/storeEmbedWithCommand';
+import { storeEmbedWithJSON } from '@/interaction/subcommands/embeds/storage/storeEmbedWithJSON';
 
 dotenv.config();
 export default <AuxdibotCommand>{
@@ -24,145 +24,173 @@ export default <AuxdibotCommand>{
       .setDescription('Create or edit a Discord Embed with Auxdibot, as well as obtain the JSON data of any Embed.')
       .addSubcommand((builder) =>
          builder
-            .setName('build')
-            .setDescription("Build a Discord Embed using Auxdibot's Embed Builder.")
+            .setName('builder')
+            .setDescription("Create a Discord Embed using Auxdibot's Embed Builder.")
             .addStringOption((builder) => builder.setName('id').setDescription('The ID to use for the Embed.')),
       )
-      .addSubcommand((builder) =>
-         createEmbedParameters(
-            builder
-               .setName('store_command')
-               .setDescription('Store an Embed using command parameters.')
-               .addStringOption((option) =>
-                  option.setName('id').setDescription('The ID to use for the Embed.').setRequired(true),
+      .addSubcommandGroup((group) =>
+         group
+            .setName('storage')
+            .setDescription('Store, list, or delete stored Embeds.')
+            .addSubcommand((builder) =>
+               createEmbedParameters(
+                  builder
+                     .setName('command')
+                     .setDescription('Create an Embed using command parameters.')
+                     .addStringOption((option) =>
+                        option.setName('id').setDescription('The ID to use for the Embed.').setRequired(true),
+                     ),
+               ).addStringOption((option) =>
+                  option
+                     .setName('webhook_url')
+                     .setDescription('The Webhook URL to use for sending the Embed. (Optional)'),
                ),
-         ).addStringOption((option) =>
-            option.setName('webhook_url').setDescription('The Webhook URL to use for sending the Embed. (Optional)'),
-         ),
-      )
-      .addSubcommand((builder) =>
-         builder
-            .setName('store_json')
-            .setDescription('Store an Embed using command parameters.')
-            .addStringOption((option) =>
-               option.setName('id').setDescription('The ID to use for the Embed.').setRequired(true),
             )
-            .addStringOption((option) =>
-               option
+            .addSubcommand((builder) =>
+               builder
                   .setName('json')
-                  .setDescription('The JSON data to use for creating the Discord Embed.')
-                  .setRequired(true),
+                  .setDescription('Store an Embed using command parameters.')
+                  .addStringOption((option) =>
+                     option.setName('id').setDescription('The ID to use for the Embed.').setRequired(true),
+                  )
+                  .addStringOption((option) =>
+                     option
+                        .setName('json')
+                        .setDescription('The JSON data to use for creating the Discord Embed.')
+                        .setRequired(true),
+                  )
+                  .addStringOption((option) =>
+                     option.setName('content').setDescription('The message content to send with the embed. (Optional)'),
+                  )
+                  .addStringOption((option) =>
+                     option
+                        .setName('webhook_url')
+                        .setDescription('The Webhook URL to use for sending the Embed. (Optional)'),
+                  ),
             )
-            .addStringOption((option) =>
-               option.setName('content').setDescription('The message content to send with the embed. (Optional)'),
+            .addSubcommand((builder) =>
+               builder.setName('list').setDescription('List every stored embed in the server.'),
             )
-            .addStringOption((option) =>
-               option.setName('webhook_url').setDescription('The Webhook URL to use for sending the Embed. (Optional)'),
+            .addSubcommand((builder) =>
+               builder
+                  .setName('delete')
+                  .setDescription('Delete a stored embed from the server.')
+                  .addStringOption((option) =>
+                     option.setName('id').setDescription('The ID of the Embed to delete.').setRequired(true),
+                  ),
             ),
       )
-      .addSubcommand((builder) => builder.setName('list').setDescription('List every stored embed in the server.'))
-      .addSubcommand((builder) =>
-         builder
-            .setName('delete')
-            .setDescription('Delete a stored embed from the server.')
-            .addStringOption((option) =>
-               option.setName('id').setDescription('The ID of the Embed to delete.').setRequired(true),
-            ),
-      )
-      .addSubcommand((builder) =>
-         builder
+      .addSubcommandGroup((group) =>
+         group
             .setName('post')
-            .setDescription('Post a stored embed using its ID.')
-            .addChannelOption((option) =>
-               option
-                  .setName('channel')
-                  .setDescription('The channel to post the embed in.')
-                  .addChannelTypes(ChannelType.GuildText)
-                  .setRequired(true),
+            .setDescription('Post an embed to a channel.')
+            .addSubcommand((builder) =>
+               builder
+                  .setName('embed')
+                  .setDescription('Post a stored embed using its ID.')
+                  .addChannelOption((option) =>
+                     option
+                        .setName('channel')
+                        .setDescription('The channel to post the embed in.')
+                        .addChannelTypes(ChannelType.GuildText)
+                        .setRequired(true),
+                  )
+                  .addStringOption((option) =>
+                     option.setName('id').setDescription('The ID of the Embed to post.').setRequired(true),
+                  ),
             )
-            .addStringOption((option) =>
-               option.setName('id').setDescription('The ID of the Embed to post.').setRequired(true),
-            ),
-      )
-      .addSubcommand((builder) =>
-         createEmbedParameters(
-            builder
-               .setName('post_command')
-               .setDescription('Post an embed using command parameters.')
-               .addChannelOption((option) =>
+            .addSubcommand((builder) =>
+               createEmbedParameters(
+                  builder
+                     .setName('command')
+                     .setDescription('Post an embed using command parameters.')
+                     .addChannelOption((option) =>
+                        option
+                           .setName('channel')
+                           .setDescription('The channel to post the embed in.')
+                           .addChannelTypes(ChannelType.GuildText, ChannelType.GuildAnnouncement)
+                           .setRequired(true),
+                     ),
+               ).addStringOption((option) =>
                   option
-                     .setName('channel')
-                     .setDescription('The channel to post the embed in.')
-                     .addChannelTypes(ChannelType.GuildText, ChannelType.GuildAnnouncement)
-                     .setRequired(true),
+                     .setName('webhook_url')
+                     .setDescription('The Webhook URL to use for sending the Embed. (Optional)'),
                ),
-         ).addStringOption((option) =>
-            option.setName('webhook_url').setDescription('The Webhook URL to use for sending the Embed. (Optional)'),
-         ),
-      )
-      .addSubcommand((builder) =>
-         builder
-            .setName('post_json')
-            .setDescription('Post an embed using valid Discord Embed JSON data.')
-            .addChannelOption((option) =>
-               option
-                  .setName('channel')
-                  .setDescription('The channel to post the embed in.')
-                  .addChannelTypes(ChannelType.GuildText)
-                  .setRequired(true),
             )
-            .addStringOption((option) =>
-               option
+            .addSubcommand((builder) =>
+               builder
                   .setName('json')
-                  .setDescription('The JSON data to use for creating the Discord Embed.')
-                  .setRequired(true),
-            )
-            .addStringOption((option) =>
-               option.setName('webhook_url').setDescription('The Webhook URL to use for sending the Embed. (Optional)'),
+                  .setDescription('Post an embed using valid Discord Embed JSON data.')
+                  .addChannelOption((option) =>
+                     option
+                        .setName('channel')
+                        .setDescription('The channel to post the embed in.')
+                        .addChannelTypes(ChannelType.GuildText)
+                        .setRequired(true),
+                  )
+                  .addStringOption((option) =>
+                     option
+                        .setName('json')
+                        .setDescription('The JSON data to use for creating the Discord Embed.')
+                        .setRequired(true),
+                  )
+                  .addStringOption((option) =>
+                     option
+                        .setName('webhook_url')
+                        .setDescription('The Webhook URL to use for sending the Embed. (Optional)'),
+                  ),
             ),
       )
-      .addSubcommand((builder) =>
-         builder
+      .addSubcommandGroup((group) =>
+         group
             .setName('edit')
-            .setDescription('Edit an existing Embed.')
-            .addStringOption((option) =>
-               option
-                  .setName('message_id')
-                  .setDescription('The message ID of the Embed. (Copy ID of message with Developer Mode.)')
-                  .setRequired(true),
+            .setDescription('Edit an existing message sent by Auxdibot.')
+            .addSubcommand((builder) =>
+               builder
+                  .setName('embed')
+                  .setDescription('Add a stored embed to a message using its ID.')
+                  .addStringOption((option) =>
+                     option
+                        .setName('message_id')
+                        .setDescription('The message ID of the message. (Copy ID of message with Developer Mode.)')
+                        .setRequired(true),
+                  )
+                  .addStringOption((option) =>
+                     option
+                        .setName('id')
+                        .setDescription('The ID of the stored Embed to use for the message')
+                        .setRequired(true),
+                  ),
             )
-            .addStringOption((option) =>
-               option.setName('id').setDescription('The ID of the stored Embed to use for editing.').setRequired(true),
-            ),
-      )
-      .addSubcommand((builder) =>
-         createEmbedParameters(
-            builder
-               .setName('edit_command')
-               .setDescription('Edit an existing Embed using command parameters.')
-               .addStringOption((option) =>
-                  option
-                     .setName('message_id')
-                     .setDescription('The message ID of the Embed. (Copy ID of message with Developer Mode.)')
-                     .setRequired(true),
+            .addSubcommand((builder) =>
+               createEmbedParameters(
+                  builder
+                     .setName('command')
+                     .setDescription('Edit an existing Embed using command parameters.')
+                     .addStringOption((option) =>
+                        option
+                           .setName('message_id')
+                           .setDescription('The message ID of the message. (Copy ID of message with Developer Mode.)')
+                           .setRequired(true),
+                     ),
                ),
-         ),
-      )
-      .addSubcommand((builder) =>
-         builder
-            .setName('edit_json')
-            .setDescription('Edit an existing Embed using valid Discord Embed JSON data.')
-            .addStringOption((option) =>
-               option
-                  .setName('message_id')
-                  .setDescription('The message ID of the Embed. (Copy ID of message with Developer Mode.)')
-                  .setRequired(true),
             )
-            .addStringOption((option) =>
-               option
+            .addSubcommand((builder) =>
+               builder
                   .setName('json')
-                  .setDescription('The JSON data to use for creating the Discord Embed.')
-                  .setRequired(true),
+                  .setDescription('Edit an existing Embed using valid Discord Embed JSON data.')
+                  .addStringOption((option) =>
+                     option
+                        .setName('message_id')
+                        .setDescription('The message ID of the message. (Copy ID of message with Developer Mode.)')
+                        .setRequired(true),
+                  )
+                  .addStringOption((option) =>
+                     option
+                        .setName('json')
+                        .setDescription('The JSON data to use for creating the Discord Embed.')
+                        .setRequired(true),
+                  ),
             ),
       )
       .addSubcommand((builder) =>
@@ -172,7 +200,7 @@ export default <AuxdibotCommand>{
             .addStringOption((option) =>
                option
                   .setName('message_id')
-                  .setDescription('The message ID of the Embed. (Copy ID of message with Developer Mode.)')
+                  .setDescription('The message ID of the message. (Copy ID of message with Developer Mode.)')
                   .setRequired(true),
             ),
       )
@@ -182,12 +210,10 @@ export default <AuxdibotCommand>{
    info: {
       module: Modules['Messages'],
       description: 'Create or edit a Discord Embed with Auxdibot, as well as obtain the JSON data of any Embed.',
-      usageExample:
-         '/embed (build|list|delete|post|post_command|post_json|edit|edit_command|edit_json|json|parameters)',
+      usageExample: '/embed (builder|storage|post|edit|json|parameters)',
       permissionsRequired: [PermissionFlagsBits.ManageMessages],
    },
    subcommands: [
-      buildEmbed,
       postCommand,
       postJSON,
       editCommand,
@@ -198,8 +224,9 @@ export default <AuxdibotCommand>{
       embedDelete,
       postEmbed,
       editEmbed,
-      storeCommand,
-      storeJSON,
+      embedBuilder,
+      storeEmbedWithCommand,
+      storeEmbedWithJSON,
    ],
    async execute() {
       return;

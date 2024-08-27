@@ -18,7 +18,7 @@ export const embedParameters = <AuxdibotSubcommand>{
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       const embed = new EmbedBuilder().setColor(auxdibot.colors.info).toJSON();
       embed.title = `${CustomEmojis.MESSAGES} Embed Parameters`;
-      embed.url = `https://bot.auxdible.me/docs/embeds`;
+      embed.url = `https://docs.auxdibot.xyz/modules/embeds/#embed-parameters`;
       embed.description = `Below are parameters used to build Discord Embeds with Auxdibot, filling the position of the \`...embed parameters\` in any command.`;
       embed.fields = [
          {

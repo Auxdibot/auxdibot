@@ -6,12 +6,12 @@ import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 import { createEmbedBuilder } from '@/modules/features/embeds/createEmbedBuilder';
 import handleError from '@/util/handleError';
 
-export const buildEmbed = <AuxdibotSubcommand>{
-   name: 'build',
+export const embedBuilder = <AuxdibotSubcommand>{
+   name: 'builder',
    info: {
       module: Modules['Messages'],
-      usageExample: '/embed build (id)',
-      description: "Build an embed using Auxdibot's Embed Builder.",
+      usageExample: '/embed builder [id]',
+      description: "Post, edit, or store an embed using Auxdibot's Embed Builder.",
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;
@@ -24,7 +24,7 @@ export const buildEmbed = <AuxdibotSubcommand>{
             interaction,
          );
       }
-      if (id.length > 64) {
+      if (id && id.length > 64) {
          return handleError(auxdibot, 'INVALID_ID', 'The embed ID must be 64 characters or less.', interaction);
       }
       if (interaction.data.guildData.stored_embeds?.find((embed) => embed.id === id)) {

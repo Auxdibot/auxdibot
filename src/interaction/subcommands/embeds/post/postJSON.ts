@@ -10,17 +10,19 @@ import { EmbedBuilder } from '@discordjs/builders';
 import { APIEmbed, ChannelType } from 'discord.js';
 
 export const postJSON = <AuxdibotSubcommand>{
-   name: 'post_json',
+   name: 'json',
+   group: 'post',
    info: {
       module: Modules['Messages'],
       usageExample: '/embed post_json (channel) (json) [webhook_url]',
-      description: 'Create an embed using valid Discord Embed JSON data.',
+      description: 'Post an embed using valid Discord Embed JSON data.',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;
       const channel = interaction.options.getChannel('channel', true, [ChannelType.GuildText]);
       const json = interaction.options.getString('json', true);
       const webhook_url = interaction.options.getString('webhook_url');
+      await interaction.deferReply();
       try {
          const apiEmbed = JSON.parse(
             await parsePlaceholders(auxdibot, json, { guild: interaction.data.guild, member: interaction.data.member }),

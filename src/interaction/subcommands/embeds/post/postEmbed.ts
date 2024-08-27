@@ -10,7 +10,8 @@ import { ChannelType } from 'discord.js';
 import sendEmbed from '@/modules/features/embeds/sendEmbed';
 
 export const postEmbed = <AuxdibotSubcommand>{
-   name: 'post',
+   name: 'embed',
+   group: 'post',
    info: {
       module: Modules['Messages'],
       usageExample: '/embed post (channel) (id)',
@@ -21,6 +22,7 @@ export const postEmbed = <AuxdibotSubcommand>{
       const channel = interaction.options.getChannel('channel', true, [ChannelType.GuildText]);
       const id = interaction.options.getString('id', true);
       const embed = interaction.data.guildData.stored_embeds.find((i) => i.id === id);
+      await interaction.deferReply();
       try {
          const apiEmbed = embed?.embed
             ? JSON.parse(

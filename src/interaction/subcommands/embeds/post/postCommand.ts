@@ -12,12 +12,13 @@ import { ChannelType } from 'discord.js';
 import sendEmbed from '@/modules/features/embeds/sendEmbed';
 
 export const postCommand = <AuxdibotSubcommand>{
-   name: 'post_command',
+   name: 'command',
+   group: 'post',
    info: {
       module: Modules['Messages'],
-      usageExample: '/embed post_command (channel) [...embed parameters] [webhook_url]',
+      usageExample: '/embed post command (channel) [...embed parameters] [webhook_url]',
       description:
-         'Create an embed using command parameters. (View `/embed parameters` for a detailed description of embed parameters.)',
+         'Post an embed using command parameters. (View `/embed parameters` for a detailed description of embed parameters.)',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;
@@ -25,7 +26,7 @@ export const postCommand = <AuxdibotSubcommand>{
       const content = interaction.options.getString('content')?.replace(/\\n/g, '\n') || '';
       const webhook_url = interaction.options.getString('webhook_url');
       const parameters = argumentsToEmbedParameters(interaction);
-
+      await interaction.deferReply();
       try {
          const apiEmbed = toAPIEmbed(
             JSON.parse(

@@ -18,6 +18,7 @@ export const getEmbedJSON = <AuxdibotSubcommand>{
       if (!interaction.data) return;
       const message_id = interaction.options.getString('message_id', true);
       const guild = interaction.data.guild;
+      await interaction.deferReply();
       const message = await getMessage(guild, message_id);
       if (!message) return await handleError(auxdibot, 'MESSAGE_NOT_FOUND', "Couldn't find that message!", interaction);
       if (message.embeds.length <= 0)

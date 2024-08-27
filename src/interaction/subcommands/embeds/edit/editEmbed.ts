@@ -9,11 +9,12 @@ import { EmbedBuilder } from '@discordjs/builders';
 import { getMessage } from '@/util/getMessage';
 import { isEmbedEmpty } from '@/util/isEmbedEmpty';
 export const editEmbed = <AuxdibotSubcommand>{
-   name: 'edit',
+   name: 'embed',
+   group: 'edit',
    info: {
       module: Modules['Messages'],
-      usageExample: '/embed edit (message id) (id)',
-      description: 'Post a stored embed using its ID.',
+      usageExample: '/embed edit edmit (message id) (id)',
+      description: 'Add a stored embed to a message using its ID.',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;
@@ -21,6 +22,7 @@ export const editEmbed = <AuxdibotSubcommand>{
       const embed = interaction.data.guildData.stored_embeds.find((i) => i.id === id);
       const message_id = interaction.options.getString('message_id', true);
       const guild = interaction.data.guild;
+      await interaction.deferReply();
       const message = await getMessage(guild, message_id);
       if (!message) return await handleError(auxdibot, 'MESSAGE_NOT_FOUND', "Couldn't find that message!", interaction);
       try {

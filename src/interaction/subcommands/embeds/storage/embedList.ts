@@ -9,9 +9,10 @@ import { ActionRowBuilder, EmbedBuilder, StringSelectMenuBuilder } from 'discord
 
 export const embedList = <AuxdibotSubcommand>{
    name: 'list',
+   group: 'storage',
    info: {
       module: Modules['Messages'],
-      usageExample: '/embed list',
+      usageExample: '/embed storage list',
       description: 'List every stored embed in the server.',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
