@@ -3,8 +3,6 @@ import { Auxdibot } from '@/interfaces/Auxdibot';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
-import { toAPIEmbed } from '@/util/toAPIEmbed';
-import argumentsToEmbedParameters from '@/util/argumentsToEmbedParameters';
 import handleError from '@/util/handleError';
 import { EmbedBuilder } from '@discordjs/builders';
 import { ChannelType } from 'discord.js';
@@ -17,7 +15,7 @@ export const scheduleMessage = <AuxdibotSubcommand>{
    name: 'message',
    info: {
       module: Modules['Messages'],
-      usageExample: '/schedule message (channel) (interval) [times_to_run] [start_date] [...embed parameters]',
+      usageExample: '/schedule message (channel) (interval) (id) [times_to_run] [start_date]',
       description: 'Schedule a message using Auxdibot.',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
@@ -25,6 +23,7 @@ export const scheduleMessage = <AuxdibotSubcommand>{
       const channel = interaction.options.getChannel('channel', true, [ChannelType.GuildText]),
          interval = interaction.options.getString('interval', true),
          times_to_run = interaction.options.getNumber('times_to_run'),
+         id = interaction.options.getString('id', true),
          start_date = interaction.options.getString('start_date');
       if (interaction.data.guildData.scheduled_messages.length >= Limits.SCHEDULE_LIMIT) {
          return await handleError(
@@ -56,13 +55,14 @@ export const scheduleMessage = <AuxdibotSubcommand>{
       if (!(startDate instanceof Date && !isNaN(startDate.valueOf())) && start_date) {
          return await handleError(auxdibot, 'INVALID_DATE', 'The start date provided is invalid!', interaction);
       }
-      const content = interaction.options.getString('content')?.replace(/\\n/g, '\n') || '';
-      const parameters = argumentsToEmbedParameters(interaction);
+      const stored = interaction.data.guildData.stored_embeds.find((i) => i.id === id);
+      if (!stored) return handleError(auxdibot, 'EMBED_NOT_FOUND', 'Embed not found!', interaction);
+      const { content, embed } = stored;
       try {
          const scheduledMessage = <ScheduledMessage>{
             interval_timestamp: interval,
             message: content,
-            embed: toAPIEmbed(parameters),
+            embed: embed,
             last_run: new Date(
                (startDate instanceof Date && !isNaN(startDate.valueOf()) ? startDate.valueOf() : Date.now()) - duration,
             ),

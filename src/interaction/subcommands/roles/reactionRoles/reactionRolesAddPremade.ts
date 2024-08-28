@@ -1,31 +1,33 @@
 import Modules from '@/constants/bot/commands/Modules';
+import Limits from '@/constants/database/Limits';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
-import argumentsToEmbedParameters from '@/util/argumentsToEmbedParameters';
-import handleError from '@/util/handleError';
-import parsePlaceholders from '@/util/parsePlaceholder';
-import { EmbedBuilder } from '@discordjs/builders';
-import { ChannelType } from 'discord.js';
 import addReactionRole from '@/modules/features/roles/reaction_roles/addReactionRole';
+import handleError from '@/util/handleError';
+import handleLog from '@/util/handleLog';
 import { testLimit } from '@/util/testLimit';
-import Limits from '@/constants/database/Limits';
-import { ReactionRoleType } from '@prisma/client';
+import { EmbedBuilder } from '@discordjs/builders';
+import { LogAction, ReactionRoleType } from '@prisma/client';
+import { ChannelType } from 'discord.js';
 
-export const reactionRolesAddEmbed = <AuxdibotSubcommand>{
-   name: 'add_embed',
+export const reactionRolesAddPremade = <AuxdibotSubcommand>{
+   name: 'add_premade',
    info: {
       module: Modules['Roles'],
-      description: 'Add a reaction role to the server with custom Embed parameters.',
-      usageExample: '/reaction_roles add_embed (channel) (roles) [type] (id)',
+      description: 'Add a reaction role to the server with a premade embed.',
+      usageExample: '/reaction_roles add_premade (channel) (roles) [type]',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;
       const channel = interaction.options.getChannel('channel', true, [ChannelType.GuildText]),
          roles = interaction.options.getString('roles', true),
-         id = interaction.options.getString('id', true),
-         type = interaction.options.getString('type', false) || 'DEFAULT';
+         title = interaction.options.getString('title') || 'React to receive roles!',
+         type = interaction.options.getString('type', false) || 'DEFAULT',
+         webhook_url = interaction.options.getString('webhook_url');
+      const split = roles.split(' ');
+      const builder = [];
       if (!testLimit(interaction.data.guildData.reaction_roles, Limits.REACTION_ROLE_DEFAULT_LIMIT)) {
          return await handleError(
             auxdibot,
@@ -37,12 +39,6 @@ export const reactionRolesAddEmbed = <AuxdibotSubcommand>{
       if (!ReactionRoleType[type]) {
          return await handleError(auxdibot, 'INVALID_TYPE', 'This is not a valid reaction role type!', interaction);
       }
-      const stored = interaction.data.guildData.stored_embeds.find((i) => i.id === id);
-      if (!stored) return handleError(auxdibot, 'EMBED_NOT_FOUND', 'Embed not found!', interaction);
-      const { content, embed, webhook_url } = stored;
-
-      const split = roles.split(' ');
-      const builder = [];
       while (split.length) {
          const [emoji, roleID] = split.splice(0, 2);
          builder.push({ emoji, roleID });
@@ -55,25 +51,14 @@ export const reactionRolesAddEmbed = <AuxdibotSubcommand>{
             interaction,
          );
       }
-      const parameters = argumentsToEmbedParameters(interaction);
       addReactionRole(
          auxdibot,
          interaction.guild,
          channel,
-         parameters.title,
+         title,
          builder,
-         JSON.parse(
-            await parsePlaceholders(auxdibot, JSON.stringify(embed), {
-               guild: interaction.data.guild,
-               member: interaction.data.member,
-            }),
-         ),
-         content
-            ? await parsePlaceholders(auxdibot, JSON.stringify(content), {
-                 guild: interaction.data.guild,
-                 member: interaction.data.member,
-              })
-            : undefined,
+         undefined,
+         undefined,
          ReactionRoleType[type],
          webhook_url,
       )
@@ -81,13 +66,19 @@ export const reactionRolesAddEmbed = <AuxdibotSubcommand>{
             const resEmbed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             resEmbed.title = '👈 Created Reaction Role';
             resEmbed.description = `Created a reaction role in ${channel}`;
+            handleLog(auxdibot, interaction.data.guild, {
+               userID: interaction.data.member.id,
+               description: `Created a reaction role in ${channel.name}`,
+               type: LogAction.REACTION_ROLE_ADDED,
+               date: new Date(),
+            });
             return await auxdibot.createReply(interaction, { embeds: [resEmbed] });
          })
-         .catch(async (x) => {
+         .catch((x) => {
             handleError(
                auxdibot,
                'REACTION_ROLE_CREATE_ERROR',
-               typeof x.message == 'string' ? x.message : "Couldn't delete that reaction role!",
+               typeof x.message == 'string' ? x.message : "Couldn't create that reaction role!",
                interaction,
             );
          });

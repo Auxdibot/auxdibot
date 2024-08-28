@@ -2,8 +2,8 @@ import { SlashCommandBuilder, ChannelType, SlashCommandSubcommandBuilder, Permis
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import createEmbedParameters from '@/util/createEmbedParameters';
 import Modules from '@/constants/bot/commands/Modules';
+import { reactionRolesAddPremade } from '../../subcommands/roles/reactionRoles/reactionRolesAddPremade';
 import { reactionRolesAdd } from '../../subcommands/roles/reactionRoles/reactionRolesAdd';
-import { reactionRolesAddEmbed } from '../../subcommands/roles/reactionRoles/reactionRolesAddEmbed';
 import { reactionRolesAddJSON } from '../../subcommands/roles/reactionRoles/reactionRolesAddJSON';
 import { reactionRolesEdit } from '../../subcommands/roles/reactionRoles/reactionRolesEdit';
 import { reactionRolesList } from '../../subcommands/roles/reactionRoles/reactionRolesList';
@@ -26,8 +26,8 @@ export default <AuxdibotCommand>{
       .addSubcommand((builder) =>
          createRoleTypes(
             builder
-               .setName('add')
-               .setDescription('Add a reaction role to the server.')
+               .setName('add_premade')
+               .setDescription('Add a reaction role to the server using a preconfigured embed.')
                .addChannelOption((argBuilder) =>
                   argBuilder
                      .setName('channel')
@@ -134,7 +134,7 @@ export default <AuxdibotCommand>{
       .addSubcommand((builder) =>
          createRoleTypes(
             builder
-               .setName('add_embed')
+               .setName('add')
                .setDescription('Add a reaction role to the server with an Embed you stored.')
                .addChannelOption((argBuilder) =>
                   argBuilder
@@ -200,15 +200,15 @@ export default <AuxdibotCommand>{
    info: {
       module: Modules['Roles'],
       description: 'Create, edit, remove, or list the currently active reaction roles.',
-      usageExample: '/reaction_roles (add|add_custom|add_json|add_message|remove|edit|list)',
+      usageExample: '/reaction_roles (add|add_custom|add_json|add_message|add_premade|remove|edit|list)',
       permissionsRequired: [PermissionFlagsBits.ManageRoles, PermissionFlagsBits.ManageMessages],
    },
    subcommands: [
-      reactionRolesAdd,
+      reactionRolesAddPremade,
       reactionRolesAddCustom,
       reactionRolesAddJSON,
       reactionRolesAddMessage,
-      reactionRolesAddEmbed,
+      reactionRolesAdd,
       reactionRolesEdit,
       reactionRolesList,
       reactionRolesRemove,
