@@ -3,7 +3,7 @@ import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import createEmbedParameters from '@/util/createEmbedParameters';
 import Modules from '@/constants/bot/commands/Modules';
 import { reactionRolesAdd } from '../../subcommands/roles/reactionRoles/reactionRolesAdd';
-import { reactionRolesAddCustom } from '../../subcommands/roles/reactionRoles/reactionRolesAddCustom';
+import { reactionRolesAddEmbed } from '../../subcommands/roles/reactionRoles/reactionRolesAddEmbed';
 import { reactionRolesAddJSON } from '../../subcommands/roles/reactionRoles/reactionRolesAddJSON';
 import { reactionRolesEdit } from '../../subcommands/roles/reactionRoles/reactionRolesEdit';
 import { reactionRolesList } from '../../subcommands/roles/reactionRoles/reactionRolesList';
@@ -11,6 +11,7 @@ import { reactionRolesRemove } from '../../subcommands/roles/reactionRoles/react
 import { ReactionRoleType } from '@prisma/client';
 import { ReactionRoleTypeNames } from '@/constants/bot/roles/ReactionRoleTypeNames';
 import { reactionRolesAddMessage } from '@/interaction/subcommands/roles/reactionRoles/reactionRolesAddMessage';
+import { reactionRolesAddCustom } from '@/interaction/subcommands/roles/reactionRoles/reactionRolesAddCustom';
 const createRoleTypes = (builder: SlashCommandSubcommandBuilder) =>
    builder.addStringOption((builder) =>
       builder
@@ -131,6 +132,32 @@ export default <AuxdibotCommand>{
          ),
       )
       .addSubcommand((builder) =>
+         createRoleTypes(
+            builder
+               .setName('add_embed')
+               .setDescription('Add a reaction role to the server with an Embed you stored.')
+               .addChannelOption((argBuilder) =>
+                  argBuilder
+                     .setName('channel')
+                     .setDescription('The channel to put the reaction role embed in.')
+                     .addChannelTypes(ChannelType.GuildText)
+                     .setRequired(true),
+               )
+               .addStringOption((argBuilder) =>
+                  argBuilder
+                     .setName('roles')
+                     .setDescription('Space between emoji & role. (ex. [emoji] [role] [...emoji2] [...role2])')
+                     .setRequired(true),
+               )
+               .addStringOption((argBuilder) =>
+                  argBuilder
+                     .setName('id')
+                     .setDescription('The ID of the stored embed. (Use /embeds storage list)')
+                     .setRequired(true),
+               ),
+         ),
+      )
+      .addSubcommand((builder) =>
          builder
             .setName('remove')
             .setDescription('Remove a reaction role from the server.')
@@ -181,6 +208,7 @@ export default <AuxdibotCommand>{
       reactionRolesAddCustom,
       reactionRolesAddJSON,
       reactionRolesAddMessage,
+      reactionRolesAddEmbed,
       reactionRolesEdit,
       reactionRolesList,
       reactionRolesRemove,

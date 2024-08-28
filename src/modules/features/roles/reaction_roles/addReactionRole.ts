@@ -24,6 +24,10 @@ export default async function addReactionRole(
 
    const reactionsAndRoles = await parseReactionsAndRoles(auxdibot, guild, reactions);
    if (reactionsAndRoles.length == 0) throw new Error('invalid reactions and roles');
+   for (const reaction of reactionsAndRoles) {
+      if (!reaction.role) throw new Error('invalid role given for reaction role');
+      if (!reaction.emoji) throw new Error('invalid emoji given for reaction role');
+   }
    if (!channel || !channel.isTextBased()) throw new Error('invalid channel');
    let message = null;
    if (webhook_url && !channel.isDMBased() && !channel.isThread()) {
