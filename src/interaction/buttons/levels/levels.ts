@@ -28,7 +28,7 @@ export default <AuxdibotButton>{
       const image = await generateLevelCard(user, data.xp, leaderboard);
       const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
          new ButtonBuilder()
-            .setURL(`${process.env.SITE_URL}/leaderboard/${interaction.guild.id}`)
+            .setURL(`${process.env.BOT_HOMEPAGE}/leaderboard/${interaction.guild.id}`)
             .setEmoji(CustomEmojis.LEVELS)
             .setLabel('Leaderboard')
             .setStyle(ButtonStyle.Link),

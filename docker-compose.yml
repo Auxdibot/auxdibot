@@ -14,7 +14,7 @@ services:
             BOT_HOMEPAGE: ${BOT_HOMEPAGE}
             BOT_STATUS_MESSAGE: ${BOT_STATUS_MESSAGE}
             AUTH_SECRET: ${AUTH_SECRET}
-            SITE_URL: ${SITE_URL}
+            API_URL: ${API_URL}
             YOUTUBE_API_KEY: ${YOUTUBE_API_KEY}
             HMAC_SECRET: ${HMAC_SECRET}
             TWITCH_CLIENT_ID: ${TWITCH_CLIENT_ID}

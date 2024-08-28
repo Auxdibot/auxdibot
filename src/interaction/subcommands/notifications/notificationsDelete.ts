@@ -6,8 +6,6 @@ import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInt
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 import deleteNotification from '@/modules/features/notifications/deleteNotification';
 import handleError from '@/util/handleError';
-import handleLog from '@/util/handleLog';
-import { LogAction } from '@prisma/client';
 import { EmbedBuilder } from 'discord.js';
 
 export const notificationsDelete = <AuxdibotSubcommand>{
@@ -40,12 +38,6 @@ export const notificationsDelete = <AuxdibotSubcommand>{
                   }`,
                },
             ];
-            handleLog(auxdibot, interaction.guild, {
-               type: LogAction.NOTIFICATION_DELETED,
-               userID: interaction.user.id,
-               date: new Date(),
-               description: `Deleted notification feed #${index}`,
-            });
             return await auxdibot.createReply(interaction, { embeds: [embed] });
          })
          .catch(() =>

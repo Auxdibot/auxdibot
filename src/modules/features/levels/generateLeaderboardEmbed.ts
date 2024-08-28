@@ -49,7 +49,7 @@ export async function generateLeaderboardEmbed(auxdibot: Auxdibot, guild: Guild,
       server.publicize_leaderboard &&
          new ActionRowBuilder<ButtonBuilder>().addComponents(
             new ButtonBuilder()
-               .setURL(`${process.env.SITE_URL}/leaderboard/${guild.id}`)
+               .setURL(`${process.env.BOT_HOMEPAGE}/leaderboard/${guild.id}`)
                .setEmoji(CustomEmojis.BOLT)
                .setLabel('View Leaderboard')
                .setStyle(ButtonStyle.Link),

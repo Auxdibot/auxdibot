@@ -23,7 +23,7 @@ import leaderboard from './public/leaderboard';
 export default async function server(auxdibot: Auxdibot) {
    const app = express();
 
-   const corsOrigins = ['https://bot.auxdible.me', 'http://localhost:3000', process.env.SITE_URL];
+   const corsOrigins = ['https://bot.auxdible.me', 'http://localhost:3000', process.env.BOT_HOMEPAGE];
 
    app.use(cors({ origins: corsOrigins }));
    app.use(bodyParser.urlencoded({ extended: true }));

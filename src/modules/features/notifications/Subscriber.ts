@@ -20,9 +20,13 @@ export default class Subscriber {
          )
          .then((data) => {
             this.twitch_access_token = data.data.access_token;
+            console.log('-> Twitch access token obtained.');
             return this.twitch_access_token;
          })
-         .catch(() => undefined);
+         .catch((x) => {
+            console.error("!-> Couldn't get Twitch access token.");
+            console.error(x);
+         });
       this.clearInactiveTwitchSubscriptions();
       return data;
    }
@@ -176,7 +180,7 @@ export default class Subscriber {
          },
          transport: {
             method: 'webhook',
-            callback: `${process.env.SITE_URL}/api/v1/notifications/callbacks/twitch`,
+            callback: `${process.env.API_URL}/notifications/callbacks/twitch`,
             secret: process.env.HMAC_SECRET,
          },
       };
