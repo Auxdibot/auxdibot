@@ -15,33 +15,32 @@ export default <AuxdibotCommand>{
       .setName('schedule')
       .setDescription('Schedule embeds, cancel schedules, and list schedules with Auxdibot.')
       .addSubcommand((builder) =>
-         createEmbedParameters(
-            builder
-               .setName('message')
-               .setDescription('Schedule a message using Auxdibot.')
-               .addChannelOption((option) =>
-                  option
-                     .setName('channel')
-                     .setDescription('The channel to post the embed in.')
-                     .addChannelTypes(ChannelType.GuildText)
-                     .setRequired(true),
-               )
-               .addStringOption((option) =>
-                  option.setName('interval').setDescription('Interval as a timestamp').setRequired(true),
-               )
-               .addNumberOption((option) =>
-                  option
-                     .setName('times_to_run')
-                     .setDescription('Times to run this schedule. Leave empty for infinite.'),
-               )
-               .addStringOption((option) =>
-                  option
-                     .setName('start_date')
-                     .setDescription(
-                        'The date to start running the schedule (normal date, ISO date, unix timestamp, etc.)',
-                     ),
-               ),
-         ),
+         builder
+            .setName('message')
+            .setDescription('Schedule a message using Auxdibot.')
+            .addChannelOption((option) =>
+               option
+                  .setName('channel')
+                  .setDescription('The channel to post the embed in.')
+                  .addChannelTypes(ChannelType.GuildText)
+                  .setRequired(true),
+            )
+            .addStringOption((option) =>
+               option.setName('interval').setDescription('Interval as a timestamp').setRequired(true),
+            )
+            .addStringOption((option) =>
+               option.setName('id').setDescription('The ID of the stored embed').setRequired(true),
+            )
+            .addNumberOption((option) =>
+               option.setName('times_to_run').setDescription('Times to run this schedule. Leave empty for infinite.'),
+            )
+            .addStringOption((option) =>
+               option
+                  .setName('start_date')
+                  .setDescription(
+                     'The date to start running the schedule (normal date, ISO date, unix timestamp, etc.)',
+                  ),
+            ),
       )
       .addSubcommand((builder) =>
          createEmbedParameters(

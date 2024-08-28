@@ -59,7 +59,7 @@ export const notificationsRoute = (auxdibot: Auxdibot) => {
                         .then(async () => {
                            publishNotification(auxdibot, guild, i, data).catch(() => undefined);
                         })
-                        .catch((x) => {
+                        .catch(() => {
                            return undefined;
                         });
                   }
