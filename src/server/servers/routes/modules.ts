@@ -18,9 +18,7 @@ const modules = (auxdibot: Auxdibot, router: Router) => {
             return auxdibot.database.servers
                .findFirst({ where: { serverID: req.guild.id }, select: { serverID: true, disabled_modules: true } })
                .then(async (data) =>
-                  data
-                     ? res.json({ ...req.guildData, data })
-                     : res.status(404).json({ error: "couldn't find that server" }),
+                  data ? res.json({ data }) : res.status(404).json({ error: "couldn't find that server" }),
                )
                .catch((x) => {
                   console.error(x);

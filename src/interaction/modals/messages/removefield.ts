@@ -11,7 +11,6 @@ export default <AuxdibotModal>{
    command: 'embed build',
    async execute(auxdibot: Auxdibot, interaction: ModalSubmitInteraction) {
       const [, id] = interaction.customId.split('-');
-      console.log('TEST');
       const session = auxdibot.build_sessions.get(
          `${interaction.guildId}:${interaction.channelId}:${interaction.message.id}`,
       );
