@@ -9,13 +9,12 @@ const router = Router();
 const placeholders = () => {
    router.get('/', (req, res) => {
       const context = req.query['context'];
-      console.log(context);
       return res.json({
          placeholders: !context
             ? PlaceholdersData
             : Object.keys(PlaceholdersData)
                  .filter((key) =>
-                    (Array.isArray('context') ? !Array(context).includes('*') : context != '*')
+                    (Array.isArray(context) ? !Array.from([...context]).includes('*') : context != '*')
                        ? PlaceholdersData[key].context === context ||
                          (Array.isArray(context) && context.includes(PlaceholdersData[key].context))
                        : true,
