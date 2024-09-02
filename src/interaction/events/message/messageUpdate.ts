@@ -19,7 +19,7 @@ export default async function messageUpdate(
    /*
    Message Log
    */
-   if (oldMessage.content != newMessage.content) {
+   if (oldMessage.content != newMessage.content && oldMessage.content && newMessage.content) {
       const channel = await newMessage.channel.fetch().catch(() => undefined);
       await handleLog(
          auxdibot,
