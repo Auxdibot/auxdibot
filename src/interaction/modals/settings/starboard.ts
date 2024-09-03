@@ -1,4 +1,4 @@
-import { EmbedBuilder, ModalSubmitInteraction } from 'discord.js';
+import { EmbedBuilder, ModalSubmitInteraction, PermissionFlagsBits } from 'discord.js';
 import Modules from '@/constants/bot/commands/Modules';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import AuxdibotModal from '@/interfaces/modals/AuxdibotModal';
@@ -21,7 +21,17 @@ export default <AuxdibotModal>{
          starboardCount = interaction.fields.getTextInputValue('starboard_count');
       await interaction.deferReply();
       try {
-         const channel = undefined;
+         const channel = await interaction.guild.channels
+            .create({
+               name: starboardChannel,
+               permissionOverwrites: [
+                  {
+                     id: interaction.guild.roles.everyone.id,
+                     deny: [PermissionFlagsBits.SendMessages],
+                  },
+               ],
+            })
+            .catch(() => null);
          if (server.disabled_modules.includes('Starboard'))
             await toggleModule(auxdibot, interaction.guild, 'Starboard', true);
          await createStarboard(auxdibot, interaction.guild, interaction.user, {
@@ -39,6 +49,7 @@ export default <AuxdibotModal>{
          }\n*(A message must obtain ${starboardCount} ${starboardReaction} reactions in order to appear on the starboard)*\n\nStarboard has been configured. You can add another starboard by running the command \`/starboard board create\` or change the starboard settings by running the commands \`/starboard settings self_star\` and \`/starboard settings starboard_star\`.`;
          return await auxdibot.createReply(interaction, { embeds: [embed] });
       } catch (x) {
+         console.error(x);
          handleError(
             auxdibot,
             'STARBOARD_SETUP_FAILURE',

@@ -30,16 +30,13 @@ export async function sendLevelMessage(
             const channel = member.guild.channels.cache.get(server.level_channel);
             if (channel && channel.isTextBased())
                await channel.send({
-                  content:
-                     `${member}` +
-                     (server.level_message?.content
-                        ? '\n' +
-                          (await parsePlaceholders(auxdibot, server.level_message.content, {
-                             guild: member.guild,
-                             member: member,
-                             levelup: { from: level, to: newLevel },
-                          }))
-                        : ''),
+                  content: server.level_message?.content
+                     ? await parsePlaceholders(auxdibot, server.level_message.content, {
+                          guild: member.guild,
+                          member: member,
+                          levelup: { from: level, to: newLevel },
+                       })
+                     : '',
                   embeds: embed && [embed as APIEmbed],
                });
          } else {
@@ -57,16 +54,13 @@ export async function sendLevelMessage(
             else if (context.textChannel) {
                await context.textChannel.send({
                   embeds: embed && [embed as APIEmbed],
-                  content:
-                     `${member}` +
-                     (server.level_message?.content
-                        ? '\n' +
-                          (await parsePlaceholders(auxdibot, server.level_message.content, {
-                             guild: member.guild,
-                             member: member,
-                             levelup: { from: level, to: newLevel },
-                          }))
-                        : ''),
+                  content: server.level_message?.content
+                     ? await parsePlaceholders(auxdibot, server.level_message.content, {
+                          guild: member.guild,
+                          member: member,
+                          levelup: { from: level, to: newLevel },
+                       })
+                     : '',
                });
             }
          }
