@@ -30,7 +30,8 @@ export default async function createStarboard(
       throw new Error('A starboard with that name already exists.');
    if (starboard.board_name.match(/[^a-zA-Z0-9_]/g) !== null)
       throw new Error('Board name must only contain alphanumeric characters and underscores.');
-   if (!guild.channels.cache.has(starboard.channelID)) throw new Error('Invalid channel provided.');
+   if (!(await guild.channels.fetch(starboard.channelID).catch(() => undefined)))
+      throw new Error('Invalid channel provided.');
    if (starboard.star_levels.length > 5) throw new Error('Star levels must have a maximum of 5 levels.');
    if (!testLimit(server.starboard_boards, Limits.STARBOARD_BOARD_LIMIT))
       throw new Error('You have reached the maximum amount of starboards allowed on this server.');

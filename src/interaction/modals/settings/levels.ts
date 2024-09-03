@@ -65,7 +65,7 @@ export default <AuxdibotModal>{
             eventResult ? `✅ \`${eventResult.event_xp_range?.join(' to ')} XP\` per event` : '❌'
          }\nMessage XP: ${
             voiceResult ? `✅ \`${voiceResult.voice_xp_range?.join(' to ')} XP\` per minute in VC` : '❌'
-         }\nMessage XP: ${
+         }\nStarboard XP: ${
             starboardResult
                ? `✅ \`${starboardResult.starboard_xp_range?.join(' to ')} XP\` per message on starboard`
                : '❌'

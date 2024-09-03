@@ -97,7 +97,7 @@ export default async function createStarredMessage(
             data: { starred_messages: { push: starredData } },
          })
          .catch(() => message.delete());
-      if (!(server.event_xp_range[0] == 0 && !server.event_xp_range[1]) && starredMessage.member) {
+      if (!(server.starboard_xp_range[0] == 0 && !server.starboard_xp_range[1]) && starredMessage.member) {
          const level = await auxdibot.database.servermembers
             .findFirst({
                where: { serverID: guild.id, userID: starredMessage.member.id },
@@ -132,7 +132,9 @@ export default async function createStarredMessage(
             await sendLevelMessage(auxdibot, starredMessage.member, level, newLevel, {
                message: starredMessage,
                textChannel: !starredMessage.channel.isDMBased() && starredMessage.channel,
-            }).catch(() => undefined);
+            }).catch((x) => {
+               console.error(x);
+            });
             await grantLevelRewards(auxdibot, starredMessage.member, newLevel).catch(() => undefined);
          }
       }
