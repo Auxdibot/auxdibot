@@ -112,7 +112,7 @@ const embeds = (auxdibot: Auxdibot, router: Router) => {
 
                const embed = req.body['embed'] ? (JSON.parse(req.body.embed) satisfies APIEmbed) : undefined;
                const content = req.body['content'];
-               const webhook = req.body['webhook'];
+               const webhook = req.body['webhook_url'];
                if (!content && (!embed || isEmbedEmpty(embed)))
                   return res.status(400).json({ error: 'Missing parameters.' });
                await storeEmbed(auxdibot, req.guild, req.params['embedID'], embed, content, webhook)
