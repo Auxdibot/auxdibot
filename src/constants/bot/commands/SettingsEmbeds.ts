@@ -15,7 +15,7 @@ export const SettingsEmbeds: { [k: string]: (auxdibot: Auxdibot, servers: server
       new EmbedBuilder()
          .setTitle(`${CustomEmojis.BOLT} General Settings`)
          .setDescription(
-            `You can edit and view these settings further on [Auxdibot's Dashboard](https://bot.auxdible.me)\n\n🗒️ **Log Channel**: ${
+            `You can edit and view these settings further on [Auxdibot's Dashboard](https://auxdibot.xyz)\n\n🗒️ **Log Channel**: ${
                server.log_channel ? `<#${server.log_channel}>` : '`None`'
             }\n\n${card ? `🖼️ **Server Card**: [View](${process.env.BOT_HOMEPAGE}/cards/${server.serverID})` : ''}`,
          )
@@ -49,7 +49,7 @@ export const SettingsEmbeds: { [k: string]: (auxdibot: Auxdibot, servers: server
          .setTitle(`${CustomEmojis.MODERATION} Moderation Settings`)
          .setColor(auxdibot.colors.info)
          .setDescription(
-            `You can edit and view these settings further on [Auxdibot's Dashboard](https://bot.auxdible.me)\n\n🔇 **Mute Role**: ${
+            `You can edit and view these settings further on [Auxdibot's Dashboard](https://auxdibot.xyz)\n\n🔇 **Mute Role**: ${
                server.mute_role ? `<@&${server.mute_role}>` : '`None`'
             }`,
          )
@@ -147,9 +147,7 @@ export const SettingsEmbeds: { [k: string]: (auxdibot: Auxdibot, servers: server
       new EmbedBuilder()
          .setTitle(`${CustomEmojis.ROLES} Roles Settings`)
          .setColor(auxdibot.colors.info)
-         .setDescription(
-            `You can edit and view these settings further on [Auxdibot's Dashboard](https://bot.auxdible.me)`,
-         )
+         .setDescription(`You can edit and view these settings further on [Auxdibot's Dashboard](https://auxdibot.xyz)`)
          .addFields(
             {
                name: '👋 Join Roles',
@@ -172,7 +170,7 @@ export const SettingsEmbeds: { [k: string]: (auxdibot: Auxdibot, servers: server
          .setTitle(`${CustomEmojis.GREETINGS} Greetings Help`)
          .setColor(auxdibot.colors.info)
          .setDescription(
-            `You can edit and view these settings further on [Auxdibot's Dashboard](https://bot.auxdible.me)\n\n👋 **Greetings Channel**: <#${server.join_leave_channel}>`,
+            `You can edit and view these settings further on [Auxdibot's Dashboard](https://auxdibot.xyz)\n\n👋 **Greetings Channel**: <#${server.join_leave_channel}>`,
          )
          .addFields({
             name: 'Greetings',
@@ -189,9 +187,9 @@ export const SettingsEmbeds: { [k: string]: (auxdibot: Auxdibot, servers: server
          .setTitle(`${CustomEmojis.LEVELS} Levels Settings`)
          .setColor(auxdibot.colors.info)
          .setDescription(
-            `You can edit and view these settings further on [Auxdibot's Dashboard](https://bot.auxdible.me)\n\n${
+            `You can edit and view these settings further on [Auxdibot's Dashboard](https://auxdibot.xyz)\n\n${
                server.publicize_leaderboard
-                  ? `🏆 **Leaderboard**: [View Leaderboard](https://bot.auxdible.me/leaderboard/${server.serverID})`
+                  ? `🏆 **Leaderboard**: [View Leaderboard](https://auxdibot.xyz/leaderboard/${server.serverID})`
                   : '**Public Leaderboard Hidden**'
             }\n\n**📝 Levelup Output**: ${
                server.level_embed
@@ -247,7 +245,7 @@ export const SettingsEmbeds: { [k: string]: (auxdibot: Auxdibot, servers: server
          .setTitle(`${CustomEmojis.SUGGESTIONS} Suggestions Settings`)
          .setColor(auxdibot.colors.info)
          .setDescription(
-            `You can edit and view these settings further on [Auxdibot's Dashboard](https://bot.auxdible.me)\n\n❓ **Suggestions Channel**: ${
+            `You can edit and view these settings further on [Auxdibot's Dashboard](https://auxdibot.xyz)\n\n❓ **Suggestions Channel**: ${
                server.suggestions_channel ? `<#${server.suggestions_channel}>` : '`None`'
             }\n📝 **Suggestions Updates Channel**: ${
                server.suggestions_updates_channel ? `<#${server.suggestions_updates_channel}>` : '`None`'
@@ -266,7 +264,7 @@ export const SettingsEmbeds: { [k: string]: (auxdibot: Auxdibot, servers: server
       new EmbedBuilder()
          .setTitle(`${CustomEmojis.STARBOARD} Starboard Settings`)
          .setDescription(
-            `You can edit and view these settings further on [Auxdibot's Dashboard](https://bot.auxdible.me)\n\n🌟 Self Star: \`${
+            `You can edit and view these settings further on [Auxdibot's Dashboard](https://auxdibot.xyz)\n\n🌟 Self Star: \`${
                server.self_star ? 'Enabled' : 'Disabled'
             }\`\n\n💫 Starboard Starring: \`${server.starboard_star ? 'Enabled' : 'Disabled'}\``,
          )
@@ -287,9 +285,7 @@ export const SettingsEmbeds: { [k: string]: (auxdibot: Auxdibot, servers: server
    messages: (auxdibot, server) =>
       new EmbedBuilder()
          .setTitle(`${CustomEmojis.MESSAGES} Message Settings`)
-         .setDescription(
-            `You can edit and view these settings further on [Auxdibot's Dashboard](https://bot.auxdible.me)`,
-         )
+         .setDescription(`You can edit and view these settings further on [Auxdibot's Dashboard](https://auxdibot.xyz)`)
          .setFields(
             {
                name: '🕰️ Scheduled Messages',

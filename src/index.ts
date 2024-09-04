@@ -44,7 +44,7 @@ const CLIENT_ID = process.env.DISCORD_BOT_CLIENT_ID;
             {
                type: ActivityType.Custom,
                name: 'Auxdibot',
-               url: 'https://bot.auxdible.me',
+               url: 'https://auxdibot.xyz',
                state: `⌚ Loading...`,
             },
          ],
@@ -96,12 +96,12 @@ const CLIENT_ID = process.env.DISCORD_BOT_CLIENT_ID;
          .setFields(
             {
                name: 'Where do I start?',
-               value: `Auxdibot features two amazing ways for administrators to start learning how to use Auxdibot!\n\n\ ${CustomEmojis.HELP} - The \`/help all\` slash command.\n ${CustomEmojis.DOCS} - The [official Auxdibot documentation](${process.env.BOT_HOMEPAGE}/docs)`,
+               value: `Auxdibot features two amazing ways for administrators to start learning how to use Auxdibot!\n\n\ ${CustomEmojis.HELP} - The \`/help all\` slash command.\n ${CustomEmojis.DOCS} - The [official Auxdibot documentation](${process.env.DOCS_HOMEPAGE})`,
                inline: true,
             },
             {
                name: 'How do I set up Auxdibot?',
-               value: "Auxdibot comes ready-to-use straight from the moment the bot joins your server! Auxdibot can be set up automatically by running `/setup auto` to create channels for every feature on your server or you can use Auxdibot's commands to tweak the settings for your server and `/settings view` to see your changes.",
+               value: "Auxdibot comes ready-to-use straight from the moment the bot joins your server! Auxdibot can be set up automatically by running the `/setup` commands to configure Auxdibot on your server. Alternatively, you can use Auxdibot's commands to tweak the settings for your server and `/settings view` to see your changes.",
                inline: true,
             },
          ),
@@ -128,7 +128,7 @@ const CLIENT_ID = process.env.DISCORD_BOT_CLIENT_ID;
                {
                   type: ActivityType.Custom,
                   name: 'Auxdibot',
-                  url: 'https://bot.auxdible.me',
+                  url: 'https://auxdibot.xyz',
                   state: `${message} | ${guilds} servers`,
                },
             ],

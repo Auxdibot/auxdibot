@@ -1,6 +1,6 @@
 <div align="center" id="header">
-   <a href="https://bot.auxdible.me">
-      <img src="https://bot.auxdible.me/logo.png" alt="Auxdibot logo" style="padding-bottom: 2rem;" width=186/>
+   <a href="https://auxdibot.xyz">
+      <img src="https://auxdibot.xyz/logo.png" alt="Auxdibot logo" style="padding-bottom: 2rem;" width=186/>
    </a>
    
    <div id="badges">
@@ -53,7 +53,7 @@ Auxdibot is a Discord bot project founded and maintained by Auxdible. Auxdibot f
 
 Auxdibot uses Discord's slash command system. If you want to run any command you must prefix it with a `/` and ensure you are running one of Auxdibot's commands.
 
-_Additionally, you can automatically setup Auxdibot for your server using the `/setup auto` command!_
+_Additionally, you can automatically setup Auxdibot for your server using the `/setup` commands!_
 
 ## Features
 

@@ -23,7 +23,7 @@ import leaderboard from './public/leaderboard';
 export default async function server(auxdibot: Auxdibot) {
    const app = express();
 
-   const corsOrigins = ['https://bot.auxdible.me', 'http://localhost:3000', process.env.BOT_HOMEPAGE];
+   const corsOrigins = ['https://auxdibot.xyz', 'http://localhost:3000', process.env.BOT_HOMEPAGE];
 
    app.use(cors({ origins: corsOrigins }));
    app.use(bodyParser.urlencoded({ extended: true }));
@@ -85,9 +85,9 @@ export default async function server(auxdibot: Auxdibot) {
       console.log(`-> Express server is up at port ${port}`);
    });
    if (process.env.NODE_ENV == 'production') {
-      const privkey = await readFile('/etc/letsencrypt/live/bot.auxdible.me/privkey.pem', 'utf8'),
-         cert = await readFile('/etc/letsencrypt/live/bot.auxdible.me/cert.pem', 'utf8'),
-         chain = await readFile('/etc/letsencrypt/live/bot.auxdible.me/chain.pem', 'utf8');
+      const privkey = await readFile('/etc/letsencrypt/live/auxdibot.xyz/privkey.pem', 'utf8'),
+         cert = await readFile('/etc/letsencrypt/live/auxdibot.xyz/cert.pem', 'utf8'),
+         chain = await readFile('/etc/letsencrypt/live/auxdibot.xyz/chain.pem', 'utf8');
 
       const creds = {
          key: privkey,
