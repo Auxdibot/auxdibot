@@ -47,8 +47,7 @@ const cards = (auxdibot: Auxdibot, app: Express) => {
                   owner?.badges.includes(UserBadge.OLD_USER) && 'OLD_OWNER',
                ].filter((i) => i),
                channel: channel &&
-                  channel.type == ChannelType.GuildText &&
-                  !channel.isDMBased() && {
+                  channel.type == ChannelType.GuildText && {
                      name: channel.name,
                      messages: await channel.messages
                         .fetch({ limit: 3 })

@@ -15,9 +15,9 @@ export default async function setStarboardChannel(
       board = server.starboard_boards.find((i) => i.board_name == boardName);
 
    if (!board) throw new Error('Could not find the specified board!');
-   if (channel && (channel.isDMBased() || channel.type != ChannelType.GuildText))
+   if (channel && (channel.type == ChannelType.DM || channel.type != ChannelType.GuildText))
       throw new Error('This is not a valid Starboard channel!');
-   if (channel && !channel.isDMBased() && guild.id != channel.guildId)
+   if (channel && 'guildId' in channel && channel.guildId != guild.id)
       throw new Error('This channel is not in this guild!');
 
    board.channelID = channel.id;
@@ -33,7 +33,9 @@ export default async function setStarboardChannel(
             userID: user.id,
             date: new Date(),
             description: `The channel for the starboard \`${boardName}\` has been changed to ${
-               channel && !channel.isDMBased() ? `#${channel.name}` : 'none. Starboard is now disabled for this server.'
+               channel && channel.type != ChannelType.DM
+                  ? `#${channel.name}`
+                  : 'none. Starboard is now disabled for this server.'
             }`,
          });
          return i;

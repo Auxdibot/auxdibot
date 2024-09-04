@@ -1,4 +1,4 @@
-import { Message } from 'discord.js';
+import { ChannelType, Message } from 'discord.js';
 import Modules from '@/constants/bot/commands/Modules';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import { Auxdibot } from '@/interfaces/Auxdibot';
@@ -15,7 +15,7 @@ import { calculateLevel } from '@/modules/features/levels/calculateLevel';
 export default async function messageCreate(auxdibot: Auxdibot, message: Message) {
    if (message.author.bot) return;
    const sender = message.member;
-   if (!sender || !message.guild || message.channel.isDMBased()) return;
+   if (!sender || !message.guild || message.channel.type == ChannelType.DM) return;
    const server = await findOrCreateServer(auxdibot, message.guild.id);
    cacheMessage(auxdibot, message);
    /*
@@ -65,7 +65,7 @@ export default async function messageCreate(auxdibot: Auxdibot, message: Message
             server.global_multiplier,
       );
       if (newLevel && level && newLevel > level) {
-         if (!message.member) return;
+         if (!message.member || message.channel.type == ChannelType.GroupDM) return;
          await sendLevelMessage(auxdibot, message.member, level, newLevel, {
             message: message,
             textChannel: message.channel,

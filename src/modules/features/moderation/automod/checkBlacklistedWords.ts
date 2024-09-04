@@ -1,6 +1,6 @@
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import { LogAction, Punishment, PunishmentType, servers } from '@prisma/client';
-import { EmbedBuilder, Message } from 'discord.js';
+import { ChannelType, EmbedBuilder, Message } from 'discord.js';
 import createPunishment from '../createPunishment';
 import handleLog from '@/util/handleLog';
 import incrementPunishmentsTotal from '../incrementPunishmentsTotal';
@@ -38,7 +38,7 @@ export default async function checkBlacklistedWords(auxdibot: Auxdibot, server: 
                         userID: message.author.id,
                         date: new Date(),
                         description: `A message was deleted in ${
-                           !message.channel.isDMBased() ? message.channel.name : 'a channel'
+                           message.channel.type != ChannelType.DM ? message.channel.name : 'a channel'
                         } because it included the blacklisted phrase "${blacklist}"`,
                      },
                      [
@@ -73,7 +73,7 @@ export default async function checkBlacklistedWords(auxdibot: Auxdibot, server: 
                         userID: message.author.id,
                         date: new Date(),
                         description: `A message was deleted in ${
-                           !message.channel.isDMBased() ? message.channel.name : 'a channel'
+                           message.channel.type != ChannelType.DM ? message.channel.name : 'a channel'
                         } because it included the blacklisted phrase "${blacklist}" (user was ${
                            PunishmentValues[server.automod_banned_phrases_punishment].action
                         })`,

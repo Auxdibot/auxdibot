@@ -9,10 +9,11 @@ export default async function setSuggestionsUpdatesChannel(
    user: { id: string },
    channel?: Channel,
 ) {
-   if (channel && (channel.isDMBased() || channel.type != ChannelType.GuildText))
+   if (channel && channel.type != ChannelType.GuildText)
       throw new Error('This is not a valid Suggestions Updates channel!');
-   if (channel && !channel.isDMBased() && guild.id != channel.guildId)
+   if (channel && 'guildId' in channel && channel.guildId != guild.id)
       throw new Error('This channel is not in this guild!');
+
    return auxdibot.database.servers
       .update({
          where: { serverID: guild.id },
@@ -25,7 +26,7 @@ export default async function setSuggestionsUpdatesChannel(
             userID: user.id,
             date: new Date(),
             description: `The Suggestions Update Channel for this server has been changed to ${
-               channel && !channel.isDMBased()
+               channel && channel.type != ChannelType.DM
                   ? `#${channel.name}`
                   : 'none. Updates will not be broadcast on this server.'
             }`,

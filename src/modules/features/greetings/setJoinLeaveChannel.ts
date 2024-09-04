@@ -9,9 +9,9 @@ export default async function setJoinLeaveChannel(
    user: { id: string },
    channel?: Channel,
 ) {
-   if (channel && (channel.isDMBased() || channel.type != ChannelType.GuildText))
+   if (channel && (channel.type == ChannelType.DM || channel.type != ChannelType.GuildText))
       throw new Error('This is not a valid Join/Leave channel!');
-   if (channel && !channel.isDMBased() && guild.id != channel.guildId)
+   if (channel && 'guildId' in channel && guild.id != channel.guildId)
       throw new Error('This channel is not in this guild!');
    return auxdibot.database.servers
       .update({
@@ -25,7 +25,7 @@ export default async function setJoinLeaveChannel(
             userID: user.id,
             date: new Date(),
             description: `The Join/Leave channel for this server has been changed to ${
-               channel && !channel.isDMBased()
+               channel && channel.type != ChannelType.DM
                   ? `#${channel.name}`
                   : 'none. Join/Leave greetings are now disabled on this server.'
             }`,

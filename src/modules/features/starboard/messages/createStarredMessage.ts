@@ -140,7 +140,10 @@ export default async function createStarredMessage(
             if (!starredMessage.member) return;
             await sendLevelMessage(auxdibot, starredMessage.member, level, newLevel, {
                message: starredMessage,
-               textChannel: !starredMessage.channel.isDMBased() && starredMessage.channel,
+               textChannel:
+                  starredMessage.channel.type != ChannelType.DM &&
+                  starredMessage.channel.type != ChannelType.GroupDM &&
+                  starredMessage.channel,
             }).catch((x) => {
                console.error(x);
             });

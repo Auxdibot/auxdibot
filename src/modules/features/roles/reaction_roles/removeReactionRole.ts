@@ -27,7 +27,7 @@ export default async function removeReactionRole(
          await handleLog(auxdibot, guild, {
             userID: user?.id ?? auxdibot.user.id,
             description: `Deleted a reaction role${
-               channel && !channel.isDMBased() ? ` in ${channel.name || 'a channel'}` : ''
+               channel && channel.type != ChannelType.DM ? ` in ${channel.name || 'a channel'}` : ''
             }.`,
             type: LogAction.REACTION_ROLE_REMOVED,
             date: new Date(),

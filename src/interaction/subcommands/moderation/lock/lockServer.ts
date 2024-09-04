@@ -61,10 +61,7 @@ export const lockServer = <AuxdibotSubcommand>{
       await auxdibot.createReply(interaction, { embeds: [embed] });
       const channels = await interaction.guild.channels.fetch();
       for (const channel of channels.values()) {
-         if (
-            !channel.isDMBased() &&
-            (channel.type == ChannelType.GuildText || channel.type == ChannelType.GuildVoice)
-         ) {
+         if (channel.type == ChannelType.GuildText || channel.type == ChannelType.GuildVoice) {
             const lock = <ChannelLock>{
                channelID: channel.id,
                expiration_date,

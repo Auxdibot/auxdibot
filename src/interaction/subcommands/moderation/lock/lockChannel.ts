@@ -31,7 +31,6 @@ export const lockChannel = <AuxdibotSubcommand>{
          ]) || interaction.channel;
       const reason = interaction.options.getString('reason'),
          duration = interaction.options.getString('duration');
-      if (channel.isDMBased()) return;
       if (!(await testDiscordPermission(auxdibot, interaction, PermissionsBitField.Flags.ManageChannels, channel))) {
          const noPermissionEmbed = new EmbedBuilder().setColor(auxdibot.colors.denied).toJSON();
          noPermissionEmbed.title = '⛔ No Permission!';

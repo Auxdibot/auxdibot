@@ -3,7 +3,7 @@ import { Auxdibot } from '@/interfaces/Auxdibot';
 import handleLog from '@/util/handleLog';
 import { testLimit } from '@/util/testLimit';
 import { LogAction, ScheduledMessage } from '@prisma/client';
-import { Channel, Guild } from 'discord.js';
+import { Channel, ChannelType, Guild } from 'discord.js';
 
 export default async function createSchedule(
    auxdibot: Auxdibot,
@@ -24,7 +24,9 @@ export default async function createSchedule(
          });
          await handleLog(auxdibot, guild, {
             userID: user.id,
-            description: `Scheduled a message for ${channel && !channel.isDMBased() ? channel.name : 'a channel'}.`,
+            description: `Scheduled a message for ${
+               channel && channel.type != ChannelType.DM ? channel.name : 'a channel'
+            }.`,
             type: LogAction.SCHEDULED_MESSAGE_CREATED,
             date: new Date(),
          });

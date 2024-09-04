@@ -27,7 +27,6 @@ export const unlockChannel = <AuxdibotSubcommand>{
             ChannelType.GuildForum,
             ChannelType.GuildVoice,
          ]) || interaction.channel;
-      if (channel.isDMBased()) return;
       if (!(await testDiscordPermission(auxdibot, interaction, PermissionsBitField.Flags.ManageChannels))) {
          const noPermissionEmbed = new EmbedBuilder().setColor(auxdibot.colors.denied).toJSON();
          noPermissionEmbed.title = '⛔ No Permission!';
