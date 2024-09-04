@@ -38,7 +38,7 @@ export default async function slashCreate(auxdibot: Auxdibot, interaction: ChatI
       command.subcommands?.find((subcommand) =>
          subcommand && subcommandArgs.length > 1
             ? subcommand.name == subcommandArgs[1] && subcommand.group == subcommandArgs[0]
-            : subcommand.name == subcommandArgs[0],
+            : subcommand.name == subcommandArgs[0] && subcommand.group == null,
       ) || command;
    if (server && server.disabled_modules.find((item) => item == commandData.info.module.name))
       return await auxdibot.createReply(interaction, { embeds: [auxdibot.embeds.disabled.toJSON()] });

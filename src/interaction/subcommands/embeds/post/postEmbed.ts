@@ -14,7 +14,7 @@ export const postEmbed = <AuxdibotSubcommand>{
    group: 'post',
    info: {
       module: Modules['Messages'],
-      usageExample: '/embed post (channel) (id)',
+      usageExample: '/embed post embed (channel) (id)',
       description: 'Post a stored embed using its ID.',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
