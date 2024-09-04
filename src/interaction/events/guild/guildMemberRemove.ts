@@ -1,4 +1,4 @@
-import { APIEmbed, GuildMember, PartialGuildMember } from 'discord.js';
+import { APIEmbed, ChannelType, GuildMember, PartialGuildMember } from 'discord.js';
 import parsePlaceholders from '@/util/parsePlaceholder';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import { Auxdibot } from '@/interfaces/Auxdibot';
@@ -11,7 +11,7 @@ export default async function guildMemberRemove(auxdibot: Auxdibot, member: Guil
    const server = await findOrCreateServer(auxdibot, member.guild.id);
    if (server.join_leave_channel && server.disabled_modules.indexOf('Greetings') == -1) {
       member.guild.channels.fetch(server.join_leave_channel).then(async (channel) => {
-         if (channel && channel.isTextBased()) {
+         if (channel && channel.type == ChannelType.GuildText) {
             if (server.leave_text || server.leave_embed) {
                channel
                   .send({

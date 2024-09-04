@@ -1,6 +1,13 @@
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
-import { BaseInteraction, InteractionReplyOptions, InteractionResponse, Message, MessagePayload } from 'discord.js';
+import {
+   BaseInteraction,
+   ChannelType,
+   InteractionReplyOptions,
+   InteractionResponse,
+   Message,
+   MessagePayload,
+} from 'discord.js';
 import { AuxdibotReplyOptions } from '../interfaces/AuxdibotReplyOptions';
 import handleLog from './handleLog';
 
@@ -43,7 +50,7 @@ export async function createReply(
                   commandPermission?.channel_output,
             )
             .catch(() => undefined);
-         if (channel && channel.isTextBased()) {
+         if (channel && channel.type == ChannelType.GuildText) {
             return channel
                .send(new MessagePayload(channel, data))
                .then((msg) => {

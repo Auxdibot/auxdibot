@@ -8,17 +8,19 @@ export default async function buttonCreate(auxdibot: Auxdibot, interaction: Butt
    if (auxdibot.buttons) {
       const button = auxdibot.buttons.get(interaction.customId.split('-')[0]);
       if (button) {
-         if (server?.disabled_modules.find((item) => item == button.module.name))
+         if (server && server.disabled_modules.find((item) => item == button.module.name))
             return await auxdibot.createReply(interaction, { embeds: [auxdibot.embeds.disabled.toJSON()] });
          const splitCommand = button?.command?.split(' ');
          if (button.command) {
-            const permissionTest = await testCommandPermission(
-               auxdibot,
-               interaction,
-               interaction.guildId,
-               splitCommand[0],
-               splitCommand[1] ? splitCommand.slice(1) : [],
-            );
+            const permissionTest = interaction.guildId
+               ? await testCommandPermission(
+                    auxdibot,
+                    interaction,
+                    interaction.guildId,
+                    splitCommand[0],
+                    splitCommand[1] ? splitCommand.slice(1) : [],
+                 )
+               : true;
             if (permissionTest !== true) {
                const noPermissionEmbed = new EmbedBuilder().setColor(auxdibot.colors.denied).toJSON();
                noPermissionEmbed.title = '⛔ Access Denied';

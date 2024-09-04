@@ -1,4 +1,4 @@
-import { Guild, Message, TextChannel } from 'discord.js';
+import { ChannelType, Guild, Message, TextChannel } from 'discord.js';
 
 /**
  * Retrieves a message from a guild's channels based on the provided message ID.
@@ -9,7 +9,7 @@ import { Guild, Message, TextChannel } from 'discord.js';
 export async function getMessage(guild: Guild, message_id: string) {
    return await guild.channels.cache.reduce(async (accumulator: Promise<Message<boolean> | undefined>, channel) => {
       const msg = await accumulator;
-      if (channel.isTextBased() && !msg) {
+      if (channel.type == ChannelType.GuildText && !msg) {
          return Promise.resolve(
             (channel as TextChannel).messages
                .fetch(message_id)

@@ -1,6 +1,6 @@
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import { UserBadge } from '@prisma/client';
-import { Channel } from 'discord.js';
+import { Channel, ChannelType } from 'discord.js';
 import { Express } from 'express';
 /*
    Cards
@@ -47,7 +47,7 @@ const cards = (auxdibot: Auxdibot, app: Express) => {
                   owner?.badges.includes(UserBadge.OLD_USER) && 'OLD_OWNER',
                ].filter((i) => i),
                channel: channel &&
-                  channel.isTextBased() &&
+                  channel.type == ChannelType.GuildText &&
                   !channel.isDMBased() && {
                      name: channel.name,
                      messages: await channel.messages

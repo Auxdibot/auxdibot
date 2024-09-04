@@ -3,7 +3,7 @@ import { Auxdibot } from '@/interfaces/Auxdibot';
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import Modules from '@/constants/bot/commands/Modules';
-import { EmbedBuilder, PermissionsBitField } from 'discord.js';
+import { ChannelType, EmbedBuilder, PermissionsBitField } from 'discord.js';
 import { createLock } from '@/modules/features/moderation/lock/createLock';
 import { ChannelLock, LogAction } from '@prisma/client';
 import timestampToDuration from '@/util/timestampToDuration';
@@ -61,7 +61,10 @@ export const lockServer = <AuxdibotSubcommand>{
       await auxdibot.createReply(interaction, { embeds: [embed] });
       const channels = await interaction.guild.channels.fetch();
       for (const channel of channels.values()) {
-         if (!channel.isDMBased() && channel.isTextBased()) {
+         if (
+            !channel.isDMBased() &&
+            (channel.type == ChannelType.GuildText || channel.type == ChannelType.GuildVoice)
+         ) {
             const lock = <ChannelLock>{
                channelID: channel.id,
                expiration_date,
@@ -71,7 +74,7 @@ export const lockServer = <AuxdibotSubcommand>{
                .edit(interaction.guild.roles.everyone, {
                   SendMessages: false,
                   SendMessagesInThreads: false,
-                  ...(channel.isVoiceBased()
+                  ...(channel.type == ChannelType.GuildVoice
                      ? {
                           Connect: false,
                        }

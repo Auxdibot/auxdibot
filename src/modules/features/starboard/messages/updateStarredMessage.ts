@@ -2,7 +2,15 @@ import { DEFAULT_STARBOARD_MESSAGE_EMBED } from '@/constants/embeds/DefaultEmbed
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import parsePlaceholders from '@/util/parsePlaceholder';
 import { StarboardBoardData, StarredMessage } from '@prisma/client';
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, Guild, GuildBasedChannel } from 'discord.js';
+import {
+   ActionRowBuilder,
+   ButtonBuilder,
+   ButtonStyle,
+   ChannelType,
+   EmbedBuilder,
+   Guild,
+   GuildBasedChannel,
+} from 'discord.js';
 import { defaultStarLevels } from '@/constants/database/defaultStarLevels';
 import { getMessage } from '@/util/getMessage';
 export default async function updateStarredMessage(
@@ -17,7 +25,7 @@ export default async function updateStarredMessage(
    const starboard_channel: GuildBasedChannel | undefined = await guild.channels
       .fetch(board.channelID)
       .catch(() => undefined);
-   if (!starboard_channel || !starboard_channel.isTextBased()) return;
+   if (!starboard_channel || starboard_channel.type != ChannelType.GuildText) return;
    const message = await starboard_channel.messages.fetch(starredData.starboard_message_id).catch(() => undefined);
 
    const starLevelsSorted = board.star_levels.sort((a, b) => b.stars - a.stars);

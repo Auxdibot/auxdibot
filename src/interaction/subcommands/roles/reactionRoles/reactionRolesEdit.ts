@@ -11,6 +11,7 @@ import handleLog from '@/util/handleLog';
 import parsePlaceholders from '@/util/parsePlaceholder';
 import { EmbedBuilder } from '@discordjs/builders';
 import { LogAction } from '@prisma/client';
+import { ChannelType } from 'discord.js';
 
 export const reactionRolesEdit = <AuxdibotSubcommand>{
    name: 'edit',
@@ -42,7 +43,7 @@ export const reactionRolesEdit = <AuxdibotSubcommand>{
       }
       const message_channel = rr.channelID ? interaction.data.guild.channels.cache.get(rr.channelID) : undefined;
       const message =
-         message_channel && message_channel.isTextBased()
+         message_channel && message_channel.type == ChannelType.GuildText
             ? message_channel.messages.cache.get(rr.messageID)
             : await getMessage(interaction.data.guild, rr.messageID);
       if (!message) {

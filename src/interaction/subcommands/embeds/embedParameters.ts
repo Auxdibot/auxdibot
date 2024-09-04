@@ -13,7 +13,7 @@ export const embedParameters = <AuxdibotSubcommand>{
       usageExample: '/embed parameters',
       description: 'View the Embed parameters used to build Discord Embeds.',
       allowedDefault: true,
-      dmableCommand: true,
+      global: true,
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       const embed = new EmbedBuilder().setColor(auxdibot.colors.info).toJSON();

@@ -12,7 +12,7 @@ import { CustomEmojis } from '@/constants/bot/CustomEmojis';
 
 const subcommandToBrief = (command: AuxdibotCommand, group: string, sub: AuxdibotSubcommand) =>
    `\n\n> /${command.data.name}${group != 'undefined' ? ` ${group}` : ''}${sub ? ` ${sub.name}` : ''}\n${
-      sub.info.dmableCommand ? '💬 DMs' : ''
+      sub.info.global ? '💬 DMs' : ''
    } ${command.info.allowedDefault ? '✅ Allowed by default' : ''}\n*${sub.info.description}*\n\`Usage: ${
       sub.info.usageExample
    }\``;
@@ -24,7 +24,7 @@ export const commandInfo = <AuxdibotSubcommand>{
       description: "View a command or subcommand's usage and description.",
       usageExample: '/help command (command) [subcommand]',
       allowedDefault: true,
-      dmableCommand: true,
+      global: true,
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<BaseAuxdibotCommandData>) {
       const command_name = interaction.options.getString('command', true);
@@ -54,7 +54,7 @@ export const commandInfo = <AuxdibotSubcommand>{
          helpSubcommandEmbed.author = { name: 'Subcommand Info' };
          helpSubcommandEmbed.description = `${subcommand.info.description}\n\n\**Usage**: \`${
             subcommand.info.usageExample
-         }\`\n${subcommand.info.dmableCommand ? '\n💬 This subcommand can be used in DMs' : ''}${
+         }\`\n${subcommand.info.global ? '\n💬 This subcommand can be used in DMs' : ''}${
             subcommand.info.allowedDefault ? '\n✅ This subcommand is allowed by default.' : ''
          }`;
          return await auxdibot.createReply(interaction, {
@@ -69,7 +69,7 @@ export const commandInfo = <AuxdibotSubcommand>{
       helpCommandEmbed.title = `❔ /${command.data.name} Info`;
       helpCommandEmbed.author = { name: 'Command Info' };
       helpCommandEmbed.description = `${command.info.description}\n\n\**Usage**: \`${command.info.usageExample}\`\n${
-         command.info.dmableCommand ? '\n💬 This command can be used in DMs' : ''
+         command.info.global ? '\n💬 This command can be used in DMs' : ''
       }${command.info.allowedDefault ? '\n✅ This command is allowed by default.' : ''}${
          subcommands['undefined']
             ? subcommands['undefined'].reduce(

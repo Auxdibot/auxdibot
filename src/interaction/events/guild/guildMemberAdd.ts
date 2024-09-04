@@ -1,4 +1,4 @@
-import { APIEmbed, GuildMember } from 'discord.js';
+import { APIEmbed, ChannelType, GuildMember } from 'discord.js';
 import parsePlaceholders from '@/util/parsePlaceholder';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import { Auxdibot } from '@/interfaces/Auxdibot';
@@ -11,7 +11,7 @@ export default async function guildMemberAdd(auxdibot: Auxdibot, member: GuildMe
    const server = await findOrCreateServer(auxdibot, member.guild.id);
    if (server.join_leave_channel && server.disabled_modules.indexOf('Greetings') == -1) {
       member.guild.channels.fetch(server.join_leave_channel).then(async (channel) => {
-         if (channel && channel.isTextBased()) {
+         if (channel && channel.type == ChannelType.GuildText) {
             if (server.join_embed || server.join_text) {
                await channel
                   .send({

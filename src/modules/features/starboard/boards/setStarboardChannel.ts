@@ -2,7 +2,7 @@ import { Auxdibot } from '@/interfaces/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import handleLog from '@/util/handleLog';
 import { LogAction } from '@prisma/client';
-import { Channel, Guild } from 'discord.js';
+import { Channel, ChannelType, Guild } from 'discord.js';
 
 export default async function setStarboardChannel(
    auxdibot: Auxdibot,
@@ -15,7 +15,7 @@ export default async function setStarboardChannel(
       board = server.starboard_boards.find((i) => i.board_name == boardName);
 
    if (!board) throw new Error('Could not find the specified board!');
-   if (channel && (channel.isDMBased() || !channel.isTextBased()))
+   if (channel && (channel.isDMBased() || channel.type != ChannelType.GuildText))
       throw new Error('This is not a valid Starboard channel!');
    if (channel && !channel.isDMBased() && guild.id != channel.guildId)
       throw new Error('This channel is not in this guild!');

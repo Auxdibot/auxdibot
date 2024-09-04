@@ -1,5 +1,5 @@
 import { Auxdibot } from '@/interfaces/Auxdibot';
-import { Guild, Message } from 'discord.js';
+import { ChannelType, Guild, Message } from 'discord.js';
 import { parseReactionsAndRoles } from './parseReactionsAndRoles';
 import applyReactionRoles from './applyReactionRoles';
 import { ReactionRoleType } from '@prisma/client';
@@ -16,7 +16,8 @@ export async function applyReactionsToMessages(
 ) {
    const reactionsAndRoles = await parseReactionsAndRoles(auxdibot, guild, reactions);
    if (reactionsAndRoles.length == 0) throw new Error('invalid reactions and roles');
-   if (!message || !message.channel.isTextBased() || message.guild != guild) throw new Error('invalid message');
+   if (!message || message.channel.type != ChannelType.GuildText || message.guild != guild)
+      throw new Error('invalid message');
    applyReactionRoles(message.id, message.channel, reactionsAndRoles, type ?? ReactionRoleType.DEFAULT);
    return auxdibot.database.servers
       .update({

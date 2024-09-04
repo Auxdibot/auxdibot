@@ -6,5 +6,5 @@ export default interface CommandInfo {
    description: string;
    allowedDefault?: boolean;
    permissionsRequired?: bigint[];
-   dmableCommand?: boolean;
+   global?: boolean;
 }

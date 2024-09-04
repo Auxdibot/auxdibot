@@ -5,6 +5,7 @@ import {
    ButtonBuilder,
    ButtonStyle,
    Channel,
+   ChannelType,
    StringSelectMenuBuilder,
    StringSelectMenuOptionBuilder,
 } from 'discord.js';
@@ -15,7 +16,7 @@ export default async function applyReactionRoles(
    reactionsAndRoles: ReactionsAndRolesBuilder[],
    type: ReactionRoleType,
 ) {
-   if (!channel.isTextBased()) return;
+   if (channel.type != ChannelType.GuildText) return;
    const message = msgID ? await channel.messages.fetch(msgID) : null;
    if (!message) return;
    let rows: ActionRowBuilder<ButtonBuilder | StringSelectMenuBuilder>[] = [

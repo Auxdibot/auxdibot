@@ -6,7 +6,16 @@ import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import parsePlaceholders from '@/util/parsePlaceholder';
 import { testLimit } from '@/util/testLimit';
 import { StarboardBoardData } from '@prisma/client';
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, Guild, Message, PartialMessage } from 'discord.js';
+import {
+   ActionRowBuilder,
+   ButtonBuilder,
+   ButtonStyle,
+   ChannelType,
+   EmbedBuilder,
+   Guild,
+   Message,
+   PartialMessage,
+} from 'discord.js';
 import awardXP from '../../levels/awardXP';
 import { sendLevelMessage } from '@/util/sendLevelMessage';
 import { grantLevelRewards } from '../../levels/grantLevelRewards';
@@ -26,7 +35,7 @@ export default async function createStarredMessage(
    )
       return;
    const starboard_channel = guild.channels.cache.get(board.channelID);
-   if (!starboard_channel || !starboard_channel.isTextBased()) return;
+   if (!starboard_channel || starboard_channel.type != ChannelType.GuildText) return;
    const starLevelsSorted = board.star_levels.sort((a, b) => b.stars - a.stars);
    const starLevel = starLevelsSorted.find((i) => count >= board.count * i.stars) ??
       starLevelsSorted[0] ?? { ...defaultStarLevels[defaultStarLevels.length - 1], message_reaction: board.reaction };

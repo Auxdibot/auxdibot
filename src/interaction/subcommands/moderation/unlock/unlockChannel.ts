@@ -54,7 +54,7 @@ export const unlockChannel = <AuxdibotSubcommand>{
          date: new Date(),
          description: `#${channel.name} was unlocked.`,
       };
-      if (channel.isThread()) {
+      if (channel.type == ChannelType.PublicThread) {
          return await channel
             .setLocked(false)
             .then(async () => {
@@ -72,11 +72,14 @@ export const unlockChannel = <AuxdibotSubcommand>{
                );
             });
       }
+      if (channel.type != ChannelType.GuildVoice && channel.type != ChannelType.GuildText) {
+         return handleError(auxdibot, 'ERROR_NOT_UNLOCKABLE', "Auxdibot couldn't unlock this channel!", interaction);
+      }
       return await channel.permissionOverwrites
          .edit(interaction.guild.roles.everyone, {
             SendMessages: true,
             SendMessagesInThreads: true,
-            ...(channel.isVoiceBased()
+            ...(channel.type == ChannelType.GuildVoice
                ? {
                     Connect: true,
                  }

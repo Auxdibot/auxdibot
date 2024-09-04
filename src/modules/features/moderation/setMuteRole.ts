@@ -1,7 +1,7 @@
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import handleLog from '@/util/handleLog';
 import { LogAction } from '@prisma/client';
-import { APIRole, Guild, Role } from 'discord.js';
+import { APIRole, ChannelType, Guild, Role } from 'discord.js';
 
 export default async function setMuteRole(
    auxdibot: Auxdibot,
@@ -13,7 +13,7 @@ export default async function setMuteRole(
    if (guildRole) {
       await guildRole.setPermissions([], 'Clearing all permissions.').catch(() => undefined);
       guild.channels.cache.forEach((r) => {
-         if (r.isDMBased() || r.isThread() || !guildRole) return;
+         if (r.type != ChannelType.GuildText && r.type != ChannelType.GuildVoice) return;
          r.permissionOverwrites
             .create(guildRole, {
                SendMessages: false,
@@ -27,7 +27,7 @@ export default async function setMuteRole(
                ChangeNickname: false,
             })
             .catch(() => undefined);
-         if (r.isVoiceBased())
+         if (r.type == ChannelType.GuildVoice)
             r.permissionOverwrites
                .create(guildRole, {
                   Connect: false,

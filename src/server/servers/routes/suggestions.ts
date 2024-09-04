@@ -9,6 +9,7 @@ import setSuggestionsUpdatesChannel from '@/modules/features/suggestions/setSugg
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import checkAuthenticated from '@/server/checkAuthenticated';
 import checkGuildOwnership from '@/server/checkGuildOwnership';
+import { ChannelType } from 'discord.js';
 import { Router } from 'express';
 /*
    Suggestions
@@ -55,7 +56,7 @@ const suggestions = (auxdibot: Auxdibot, router: Router) => {
          if (!suggestion) return res.status(404).json({ error: 'invalid suggestion' });
          const channel = req.guild.channels.cache.get(server.suggestions_channel);
          if (!channel) return res.status(404).json({ error: 'There is no suggestions channel!' });
-         if (!channel.isTextBased())
+         if (channel.type != ChannelType.GuildText)
             return res.status(400).json({ error: 'The suggestions channel is not a text channel!' });
          const msg = await channel.messages.fetch(suggestion.messageID).catch(() => undefined);
          if (msg) await msg.delete().catch(() => undefined);

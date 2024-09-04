@@ -1,9 +1,10 @@
-import { Channel, APIEmbed, WebhookClient } from 'discord.js';
+import { Channel, APIEmbed, WebhookClient, ChannelType } from 'discord.js';
 
 export default async function sendEmbed(channel: Channel, content?: string, embed?: APIEmbed, webhook_url?: string) {
-   if (!channel || !channel.isTextBased()) throw new Error("Can't send an embed to a non-text-based channel!");
+   if (!channel || (channel.type != ChannelType.GuildText && channel.type != ChannelType.GuildVoice))
+      throw new Error("Can't send an embed to a non-text-based channel!");
 
-   if (webhook_url && !channel.isDMBased() && !channel.isThread()) {
+   if (webhook_url && !channel.isDMBased()) {
       if (!webhook_url.startsWith('https://discord.com/api/webhooks/')) throw new Error('Invalid Webhook URL!');
       const webhooks = await channel.fetchWebhooks().catch(() => {
          throw new Error('Auxdibot does not have permission to manage/view Webhooks in this channel!');

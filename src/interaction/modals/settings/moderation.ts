@@ -1,4 +1,4 @@
-import { EmbedBuilder, ModalSubmitInteraction, OverwriteResolvable } from 'discord.js';
+import { ChannelType, EmbedBuilder, ModalSubmitInteraction, OverwriteResolvable } from 'discord.js';
 import Modules from '@/constants/bot/commands/Modules';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import AuxdibotModal from '@/interfaces/modals/AuxdibotModal';
@@ -33,13 +33,13 @@ export default <AuxdibotModal>{
                color: 'DarkRed',
             });
             interaction.guild.channels.cache.forEach((r) => {
-               if (r.isDMBased() || r.isThread() || !muteRole) return;
+               if ((r.type != ChannelType.GuildText && r.type != ChannelType.GuildVoice) || !muteRole) return;
                r.permissionOverwrites.create(muteRole, {
                   SendMessages: false,
                   SendMessagesInThreads: false,
                   AddReactions: false,
                });
-               if (r.isVoiceBased())
+               if (r.type == ChannelType.GuildVoice)
                   r.permissionOverwrites.create(muteRole, {
                      Connect: false,
                   });

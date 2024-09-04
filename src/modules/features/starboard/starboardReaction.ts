@@ -2,6 +2,7 @@ import Modules from '@/constants/bot/commands/Modules';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import {
+   ChannelType,
    Guild,
    GuildBasedChannel,
    Message,
@@ -52,7 +53,7 @@ export async function starboardReaction(
 
    if (reaction.message.author.id == user.id && !server.self_star) return;
    const channel: GuildBasedChannel | undefined = await guild.channels.fetch(board.channelID).catch(() => undefined);
-   if (!channel || !channel.isTextBased()) return;
+   if (!channel || channel.type != ChannelType.GuildText) return;
    const starboard_message: Message<true> | undefined = starred_message?.starboard_message_id
       ? await channel.messages.fetch(starred_message?.starboard_message_id).catch(() => undefined)
       : undefined;

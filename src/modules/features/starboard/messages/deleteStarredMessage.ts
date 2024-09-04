@@ -2,7 +2,7 @@ import { Auxdibot } from '@/interfaces/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import handleLog from '@/util/handleLog';
 import { Log, LogAction, StarredMessage } from '@prisma/client';
-import { Guild, GuildBasedChannel } from 'discord.js';
+import { ChannelType, Guild, GuildBasedChannel } from 'discord.js';
 
 export default async function deleteStarredMessage(auxdibot: Auxdibot, guild: Guild, starredData: StarredMessage) {
    const server = await findOrCreateServer(auxdibot, guild.id);
@@ -11,7 +11,7 @@ export default async function deleteStarredMessage(auxdibot: Auxdibot, guild: Gu
    const starboard_channel: GuildBasedChannel | undefined = await guild.channels
       .fetch(board.channelID)
       .catch(() => undefined);
-   if (!starboard_channel || !starboard_channel.isTextBased()) return;
+   if (!starboard_channel || starboard_channel.type != ChannelType.GuildText) return;
    const message = await starboard_channel.messages.fetch(starredData?.starboard_message_id).catch(() => undefined);
    try {
       if (message)

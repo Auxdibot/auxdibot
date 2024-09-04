@@ -7,7 +7,7 @@ import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 import setLevelMessage from '@/modules/features/levels/setLevelMessage';
 import handleError from '@/util/handleError';
 import parsePlaceholders from '@/util/parsePlaceholder';
-import { EmbedBuilder } from 'discord.js';
+import { ChannelType, EmbedBuilder } from 'discord.js';
 
 export const levelReset = <AuxdibotSubcommand>{
    name: 'reset',
@@ -22,7 +22,7 @@ export const levelReset = <AuxdibotSubcommand>{
       const server = interaction.data.guildData;
 
       try {
-         if (interaction.channel && interaction.channel.isTextBased())
+         if (interaction.channel && interaction.channel.type == ChannelType.GuildText)
             await interaction.channel.send({
                content: `Here's a preview of the new levelup message!`,
                embeds: [

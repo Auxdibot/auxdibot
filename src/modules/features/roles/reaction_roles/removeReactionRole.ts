@@ -1,7 +1,7 @@
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import handleLog from '@/util/handleLog';
 import { LogAction, ReactionRole } from '@prisma/client';
-import { Guild, Message } from 'discord.js';
+import { ChannelType, Guild, Message } from 'discord.js';
 
 export default async function removeReactionRole(
    auxdibot: Auxdibot,
@@ -19,7 +19,7 @@ export default async function removeReactionRole(
          if (!reactionRole) throw new Error("couldn't find that reaction role");
          const channel = auxdibot.channels.cache.get(reactionRole.channelID);
          const message: Message =
-            channel && channel.isTextBased()
+            channel && channel.type == ChannelType.GuildText
                ? await channel.messages.fetch(reactionRole.messageID).catch(() => undefined)
                : undefined;
 

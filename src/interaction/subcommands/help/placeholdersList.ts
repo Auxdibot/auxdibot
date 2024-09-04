@@ -13,7 +13,7 @@ export const placeholdersList = <AuxdibotSubcommand>{
       description: "View Auxdibot's placeholders.",
       usageExample: '/help placeholders',
       allowedDefault: true,
-      dmableCommand: true,
+      global: true,
    },
    async execute(
       auxdibot: Auxdibot,

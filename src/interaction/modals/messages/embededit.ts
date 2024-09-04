@@ -1,4 +1,4 @@
-import { Message, ModalSubmitInteraction } from 'discord.js';
+import { ChannelType, Message, ModalSubmitInteraction } from 'discord.js';
 import Modules from '@/constants/bot/commands/Modules';
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import AuxdibotModal from '@/interfaces/modals/AuxdibotModal';
@@ -40,7 +40,7 @@ export default <AuxdibotModal>{
       const [, channelId, messageId] = messageUrlParts;
 
       const channel = await auxdibot.channels.fetch(channelId).catch(() => undefined);
-      if (!channel || !channel.isTextBased()) {
+      if (!channel || channel.type != ChannelType.GuildText) {
          return handleError(
             auxdibot,
             'INVALID_CHANNEL',

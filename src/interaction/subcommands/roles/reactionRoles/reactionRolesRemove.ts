@@ -7,6 +7,7 @@ import removeReactionRole from '@/modules/features/roles/reaction_roles/removeRe
 import { getMessage } from '@/util/getMessage';
 import handleError from '@/util/handleError';
 import { EmbedBuilder } from '@discordjs/builders';
+import { ChannelType } from 'discord.js';
 
 export const reactionRolesRemove = <AuxdibotSubcommand>{
    name: 'remove',
@@ -36,7 +37,7 @@ export const reactionRolesRemove = <AuxdibotSubcommand>{
       }
       const message_channel = rr.channelID ? interaction.data.guild.channels.cache.get(rr.channelID) : undefined;
       const message =
-         message_channel && message_channel.isTextBased()
+         message_channel && message_channel.type == ChannelType.GuildText
             ? message_channel.messages.cache.get(rr.messageID)
             : await getMessage(interaction.data.guild, rr.messageID);
       removeReactionRole(auxdibot, interaction.guild, server.reaction_roles.indexOf(rr), interaction.user)

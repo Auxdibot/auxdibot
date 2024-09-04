@@ -9,6 +9,7 @@ import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import { deleteStoredEmbed } from '@/modules/features/embeds/deleteStoredEmbed';
 import { storeEmbed } from '@/modules/features/embeds/storeEmbed';
 import { isEmbedEmpty } from '@/util/isEmbedEmpty';
+import { ChannelType } from 'discord.js';
 
 /*
    Embeds
@@ -55,7 +56,8 @@ const embeds = (auxdibot: Auxdibot, router: Router) => {
                        await parsePlaceholders(auxdibot, req.body['embed'], { guild: req.guild }),
                     ) satisfies APIEmbed)
                   : undefined;
-               if (!channel || !channel.isTextBased()) return res.status(400).json({ error: 'Invalid channel.' });
+               if (!channel || channel.type != ChannelType.GuildText)
+                  return res.status(400).json({ error: 'Invalid channel.' });
                const webhook_url = req.body['webhook_url'];
                return sendEmbed(
                   channel,

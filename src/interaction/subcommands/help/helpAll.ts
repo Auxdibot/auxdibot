@@ -15,7 +15,7 @@ export const helpAll = <AuxdibotSubcommand>{
       description: "View Auxdibot's help menu, containing all the information you need to know.",
       usageExample: '/help all',
       allowedDefault: true,
-      dmableCommand: true,
+      global: false,
    },
    async execute(
       auxdibot: Auxdibot,

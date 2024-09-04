@@ -13,7 +13,7 @@ import handleLog from '@/util/handleLog';
 import parsePlaceholders from '@/util/parsePlaceholder';
 import { EmbedBuilder } from '@discordjs/builders';
 import { LogAction, SuggestionState } from '@prisma/client';
-import { GuildBasedChannel, Message } from 'discord.js';
+import { ChannelType, GuildBasedChannel, Message } from 'discord.js';
 
 export const suggestionsRespond = <AuxdibotSubcommand>{
    name: 'respond',
@@ -41,7 +41,7 @@ export const suggestionsRespond = <AuxdibotSubcommand>{
          ? interaction.data.guild.channels.cache.get(server.suggestions_channel)
          : undefined;
       const message = suggestion.messageID
-         ? message_channel && message_channel.isTextBased()
+         ? message_channel && message_channel.type == ChannelType.GuildText
             ? await message_channel.messages.fetch(suggestion.messageID)
             : await getMessage(interaction.data.guild, suggestion.messageID)
          : undefined;
@@ -78,7 +78,7 @@ export const suggestionsRespond = <AuxdibotSubcommand>{
          const channel: GuildBasedChannel | undefined = await interaction.data.guild.channels
             .fetch(server.suggestions_updates_channel)
             .catch(() => undefined);
-         if (channel && channel.isTextBased()) {
+         if (channel && channel.type == ChannelType.GuildText) {
             const embed = JSON.parse(
                await parsePlaceholders(auxdibot, JSON.stringify(DEFAULT_SUGGESTION_UPDATE_EMBED), {
                   guild: interaction.data.guild,
@@ -93,7 +93,7 @@ export const suggestionsRespond = <AuxdibotSubcommand>{
          const channel: GuildBasedChannel | undefined = await interaction.data.guild.channels
             .fetch(server.suggestions_channel)
             .catch(() => undefined);
-         if (channel && channel.isTextBased()) {
+         if (channel && channel.type == ChannelType.GuildText) {
             const embed = JSON.parse(
                await parsePlaceholders(auxdibot, JSON.stringify(DEFAULT_SUGGESTION_EMBED), {
                   guild: interaction.data.guild,

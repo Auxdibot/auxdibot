@@ -1,6 +1,6 @@
 import { Auxdibot } from '@/interfaces/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
-import { APIEmbed, GuildMember, GuildTextBasedChannel, Message } from 'discord.js';
+import { APIEmbed, ChannelType, GuildMember, GuildTextBasedChannel, Message } from 'discord.js';
 import parsePlaceholders from './parsePlaceholder';
 
 type LevelMessageContext = {
@@ -28,7 +28,7 @@ export async function sendLevelMessage(
             );
          if (server.level_channel) {
             const channel = member.guild.channels.cache.get(server.level_channel);
-            if (channel && channel.isTextBased())
+            if (channel && channel.type == ChannelType.GuildText)
                await channel.send({
                   content: server.level_message?.content
                      ? await parsePlaceholders(auxdibot, server.level_message.content, {

@@ -79,7 +79,7 @@ export const lockChannel = <AuxdibotSubcommand>{
          date: new Date(),
          description: `#${channel.name} was locked. Reason: ${reason || 'No reason specified.'}`,
       };
-      if (channel.isThread()) {
+      if (channel.type == ChannelType.PublicThread) {
          return await channel
             .setLocked(true, reason)
             .then(async () => {
@@ -92,11 +92,14 @@ export const lockChannel = <AuxdibotSubcommand>{
                await handleError(auxdibot, 'ERROR_NOT_LOCKABLE', "Auxdibot couldn't lock this channel!", interaction);
             });
       }
+      if (channel.type != ChannelType.GuildVoice && channel.type != ChannelType.GuildText) {
+         return handleError(auxdibot, 'ERROR_NOT_LOCKABLE', "Auxdibot couldn't lock this channel!", interaction);
+      }
       return await channel.permissionOverwrites
          .edit(interaction.guild.roles.everyone, {
             SendMessages: false,
             SendMessagesInThreads: false,
-            ...(channel.isVoiceBased()
+            ...(channel.type == ChannelType.GuildVoice
                ? {
                     Connect: false,
                  }

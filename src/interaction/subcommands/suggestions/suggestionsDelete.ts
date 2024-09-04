@@ -9,7 +9,7 @@ import handleError from '@/util/handleError';
 import handleLog from '@/util/handleLog';
 import { EmbedBuilder } from '@discordjs/builders';
 import { LogAction } from '@prisma/client';
-import { GuildBasedChannel } from 'discord.js';
+import { ChannelType, GuildBasedChannel } from 'discord.js';
 
 export const suggestionsDelete = <AuxdibotSubcommand>{
    name: 'delete',
@@ -30,7 +30,7 @@ export const suggestionsDelete = <AuxdibotSubcommand>{
          ? interaction.data.guild.channels.cache.get(server.suggestions_channel)
          : undefined;
       const message = suggestion.messageID
-         ? message_channel && message_channel.isTextBased()
+         ? message_channel && message_channel.type == ChannelType.GuildText
             ? await message_channel.messages.fetch(suggestion.messageID)
             : await getMessage(interaction.data.guild, suggestion.messageID)
          : undefined;

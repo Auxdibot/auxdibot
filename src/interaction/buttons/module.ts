@@ -9,6 +9,7 @@ export default <AuxdibotButton>{
    name: 'module',
    command: 'help all',
    allowedDefault: true,
+   global: true,
    async execute(auxdibot: Auxdibot, interaction: MessageComponentInteraction) {
       const [, module] = interaction.customId.split('-');
       if (!(module in HelpEmbeds)) return;

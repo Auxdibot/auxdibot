@@ -3,7 +3,7 @@ import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import addTimestampToDate from '@/util/addTimestampToDate';
 
 import parsePlaceholders from '@/util/parsePlaceholder';
-import { APIEmbed } from 'discord.js';
+import { APIEmbed, ChannelType } from 'discord.js';
 import { AsyncTask, SimpleIntervalJob } from 'toad-scheduler';
 
 export default function scheduleRunSchedules(auxdibot: Auxdibot) {
@@ -31,7 +31,7 @@ export default function scheduleRunSchedules(auxdibot: Auxdibot) {
                         data: { scheduled_messages: server.scheduled_messages },
                      });
                      const channel = schedule.channelID ? guild.channels.cache.get(schedule.channelID) : undefined;
-                     if (channel.isTextBased()) {
+                     if (channel.type == ChannelType.GuildText) {
                         await channel
                            .send({
                               content: `${schedule.message || ''}`,

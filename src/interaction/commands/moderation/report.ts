@@ -1,6 +1,6 @@
 import { Auxdibot } from './../../../interfaces/Auxdibot';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
-import { EmbedBuilder, GuildBasedChannel, SlashCommandBuilder } from 'discord.js';
+import { ChannelType, EmbedBuilder, GuildBasedChannel, SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import Modules from '@/constants/bot/commands/Modules';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
@@ -50,7 +50,7 @@ export default <AuxdibotCommand>{
             true,
          );
       }
-      if (!channel.isTextBased() || channel.isVoiceBased() || channel.isThread()) {
+      if (channel.type != ChannelType.GuildText) {
          return handleError(
             auxdibot,
             'INVALID_REPORT_CHANNEL',

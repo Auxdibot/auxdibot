@@ -13,6 +13,7 @@ import parsePlaceholders from '@/util/parsePlaceholder';
 import { testLimit } from '@/util/testLimit';
 import { EmbedBuilder } from '@discordjs/builders';
 import { LogAction, Suggestion, SuggestionState } from '@prisma/client';
+import { ChannelType } from 'discord.js';
 
 export const suggestionsCreate = <AuxdibotSubcommand>{
    name: 'create',
@@ -41,7 +42,7 @@ export const suggestionsCreate = <AuxdibotSubcommand>{
       const suggestions_channel = server.suggestions_channel
          ? await interaction.data.guild.channels.fetch(server.suggestions_channel)
          : undefined;
-      if (!suggestions_channel || !suggestions_channel.isTextBased()) {
+      if (!suggestions_channel || suggestions_channel.type != ChannelType.GuildText) {
          return await handleError(
             auxdibot,
             'SUGGESTIONS_CHANNEL_NOT_FOUND',

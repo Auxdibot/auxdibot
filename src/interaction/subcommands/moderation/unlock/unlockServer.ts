@@ -3,7 +3,7 @@ import { Auxdibot } from '@/interfaces/Auxdibot';
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import Modules from '@/constants/bot/commands/Modules';
-import { EmbedBuilder, PermissionsBitField } from 'discord.js';
+import { ChannelType, EmbedBuilder, PermissionsBitField } from 'discord.js';
 import { deleteLock } from '@/modules/features/moderation/lock/deleteLock';
 import handleLog from '@/util/handleLog';
 import { Log, LogAction } from '@prisma/client';
@@ -40,7 +40,7 @@ export const unlockServer = <AuxdibotSubcommand>{
       await auxdibot.createReply(interaction, { embeds: [embed] });
       for (const locked of server.locked_channels) {
          const channel = await interaction.guild.channels.fetch(locked.channelID);
-         if (channel.isThread()) {
+         if (channel.type == ChannelType.PublicThread) {
             return await channel
                .setLocked(false)
                .then(async () => {
@@ -48,11 +48,12 @@ export const unlockServer = <AuxdibotSubcommand>{
                })
                .catch(async () => undefined);
          }
+         if (channel.type != ChannelType.GuildVoice && channel.type != ChannelType.GuildText) continue;
          return await channel.permissionOverwrites
             .edit(interaction.guild.roles.everyone, {
                SendMessages: true,
                SendMessagesInThreads: true,
-               ...(channel.isVoiceBased()
+               ...(channel.type == ChannelType.GuildVoice
                   ? {
                        Connect: true,
                     }

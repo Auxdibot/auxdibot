@@ -7,6 +7,7 @@ import handleError from '@/util/handleError';
 import parsePlaceholders from '@/util/parsePlaceholder';
 import { EmbedBuilder } from '@discordjs/builders';
 import setJoinEmbed from '@/modules/features/greetings/setJoinEmbed';
+import { ChannelType } from 'discord.js';
 
 export const joinMessage = <AuxdibotSubcommand>{
    name: 'message',
@@ -31,7 +32,7 @@ export const joinMessage = <AuxdibotSubcommand>{
       if (!stored) return handleError(auxdibot, 'EMBED_NOT_FOUND', 'Embed not found!', interaction);
       const { content, embed } = stored;
       try {
-         if (interaction.channel && interaction.channel.isTextBased())
+         if (interaction.channel && interaction.channel.type == ChannelType.GuildText)
             await interaction.channel.send({
                content: `Here's a preview of the new join embed!\n${content || ''}`,
                embeds: [

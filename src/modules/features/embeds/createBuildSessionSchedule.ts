@@ -1,4 +1,5 @@
 import { Auxdibot } from '@/interfaces/Auxdibot';
+import { ChannelType } from 'discord.js';
 import { AsyncTask, SimpleIntervalJob } from 'toad-scheduler';
 export default function createBuildSessionSchedule(auxdibot: Auxdibot) {
    const task = new AsyncTask(
@@ -12,7 +13,7 @@ export default function createBuildSessionSchedule(auxdibot: Auxdibot) {
                continue;
             }
             const channel = guild.channels.cache.get(channelID);
-            if (!channel || !channel.isTextBased()) {
+            if (!channel || channel.type != ChannelType.GuildText) {
                auxdibot.build_sessions.delete(session);
                continue;
             }

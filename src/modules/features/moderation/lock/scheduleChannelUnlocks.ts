@@ -4,6 +4,7 @@ import handleLog from '@/util/handleLog';
 import { LogAction } from '@prisma/client';
 import { AsyncTask, SimpleIntervalJob } from 'toad-scheduler';
 import { deleteLock } from './deleteLock';
+import { ChannelType } from 'discord.js';
 export default function scheduleChannelUnlocks(auxdibot: Auxdibot) {
    const task = new AsyncTask(
       'channel unlocks',
@@ -20,17 +21,17 @@ export default function scheduleChannelUnlocks(auxdibot: Auxdibot) {
                if (expired) {
                   for (const expiredLock of expired) {
                      const channel = await guild.channels.fetch(expiredLock.channelID);
-                     if (channel.isThread()) {
+                     if (channel.type == ChannelType.PublicThread) {
                         await channel
                            .setLocked(false)
                            .then(async () => undefined)
                            .catch(async () => undefined);
-                     } else {
+                     } else if (channel.type == ChannelType.GuildVoice || channel.type == ChannelType.GuildText) {
                         await channel.permissionOverwrites
                            .edit(guild.roles.everyone, {
                               SendMessages: true,
                               SendMessagesInThreads: true,
-                              ...(channel.isVoiceBased()
+                              ...(channel.type == ChannelType.GuildVoice
                                  ? {
                                       Connect: true,
                                    }
