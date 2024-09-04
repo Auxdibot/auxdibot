@@ -14,7 +14,7 @@ export const postJSON = <AuxdibotSubcommand>{
    group: 'post',
    info: {
       module: Modules['Messages'],
-      usageExample: '/embed post_json (channel) (json) [webhook_url]',
+      usageExample: '/embed post json (channel) (json) [webhook_url]',
       description: 'Post an embed using valid Discord Embed JSON data.',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
