@@ -1,7 +1,6 @@
 import { ChannelType, SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import dotenv from 'dotenv';
-import createEmbedParameters from '@/util/createEmbedParameters';
 import Modules from '@/constants/bot/commands/Modules';
 import { scheduleMessage } from '@/interaction/subcommands/schedule/scheduleMessage';
 import { scheduleList } from '@/interaction/subcommands/schedule/scheduleList';
@@ -43,29 +42,28 @@ export default <AuxdibotCommand>{
             ),
       )
       .addSubcommand((builder) =>
-         createEmbedParameters(
-            builder
-               .setName('edit')
-               .setDescription('Edit a scheduled message using Auxdibot.')
-               .addNumberOption((option) =>
-                  option
-                     .setName('index')
-                     .setDescription('The index of the scheduled message to edit. (See /schedule list)')
-                     .setRequired(true),
-               )
-               .addChannelOption((option) =>
-                  option
-                     .setName('channel')
-                     .setDescription('The channel to post the embed in.')
-                     .addChannelTypes(ChannelType.GuildText, ChannelType.GuildAnnouncement),
-               )
-               .addStringOption((option) => option.setName('interval').setDescription('Interval as a timestamp'))
-               .addNumberOption((option) =>
-                  option
-                     .setName('times_to_run')
-                     .setDescription('Times to run this schedule. Leave empty for infinite.'),
-               ),
-         ),
+         builder
+            .setName('edit')
+            .setDescription('Edit a scheduled message using Auxdibot.')
+            .addNumberOption((option) =>
+               option
+                  .setName('index')
+                  .setDescription('The index of the scheduled message to edit. (See /schedule list)')
+                  .setRequired(true),
+            )
+            .addChannelOption((option) =>
+               option
+                  .setName('channel')
+                  .setDescription('The channel to post the embed in.')
+                  .addChannelTypes(ChannelType.GuildText, ChannelType.GuildAnnouncement),
+            )
+            .addStringOption((option) => option.setName('id').setDescription('The ID of the stored embed'))
+            .addStringOption((option) => option.setName('interval').setDescription('Interval as a timestamp'))
+            .addNumberOption((option) =>
+               option
+                  .setName('times_to_run')
+                  .setDescription('Times to run this schedule. Leave empty or set to 0 for infinite.'),
+            ),
       )
       .addSubcommand((builder) => builder.setName('list').setDescription('List the schedules running on your server.'))
       .addSubcommand((builder) =>

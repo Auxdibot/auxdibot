@@ -3,20 +3,18 @@ import { Auxdibot } from '@/interfaces/Auxdibot';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
-import argumentsToEmbedParameters from '@/util/argumentsToEmbedParameters';
 import handleError from '@/util/handleError';
 import handleLog from '@/util/handleLog';
 import timestampToDuration from '@/util/timestampToDuration';
-import { toAPIEmbed } from '@/util/toAPIEmbed';
 import { EmbedBuilder } from '@discordjs/builders';
-import { APIEmbed, LogAction } from '@prisma/client';
+import { LogAction } from '@prisma/client';
 import { ChannelType } from 'discord.js';
 
 export const scheduleEdit = <AuxdibotSubcommand>{
    name: 'edit',
    info: {
       module: Modules['Messages'],
-      usageExample: '/schedule edit (index) [channel] [timestamp] [times_to_run] [...embed parameters]',
+      usageExample: '/schedule edit (index) [channel] [id] [timestamp] [times_to_run]',
       description: 'Edit an existing Schedule by Auxdibot.',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
@@ -28,14 +26,20 @@ export const scheduleEdit = <AuxdibotSubcommand>{
             ChannelType.GuildText,
             ChannelType.GuildAnnouncement,
          ]);
-      const parameters = argumentsToEmbedParameters(interaction);
+      const id = interaction.options.getString('id');
       const server = interaction.data.guildData;
 
       const schedule = server.scheduled_messages.find((_val, valIndex) => valIndex == index - 1);
       if (!schedule) {
          return await handleError(auxdibot, 'SCHEDULE_NOT_FOUND', "Couldn't find that schedule!", interaction);
       }
-      if (Object.keys(parameters).find((i) => !!parameters[i])) schedule.embed = toAPIEmbed(parameters) as APIEmbed;
+      if (id) {
+         const stored = interaction.data.guildData.stored_embeds.find((i) => i.id === id);
+         if (!stored) return handleError(auxdibot, 'EMBED_NOT_FOUND', 'Embed not found!', interaction);
+         const { content, embed } = stored;
+         schedule.embed = embed;
+         schedule.message = content;
+      }
       if (interval) {
          const duration = timestampToDuration(interval);
 
@@ -58,6 +62,7 @@ export const scheduleEdit = <AuxdibotSubcommand>{
          schedule.interval_timestamp = interval;
       }
       if (times_to_run) schedule.times_to_run = times_to_run;
+      if (times_to_run === 0) schedule.times_to_run = undefined;
       if (channel) schedule.channelID = channel.id;
       await auxdibot.database.servers.update({
          where: { serverID: server.serverID },
