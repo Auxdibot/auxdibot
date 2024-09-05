@@ -52,7 +52,8 @@ export async function generateLeaderboardEmbed(auxdibot: Auxdibot, guild: Guild,
                .setURL(`${process.env.BOT_HOMEPAGE}/leaderboard/${guild.id}`)
                .setEmoji(CustomEmojis.BOLT)
                .setLabel('View Leaderboard')
-               .setStyle(ButtonStyle.Link),
+               .setStyle(ButtonStyle.Link)
+               .setDisabled(!server.publicize_leaderboard),
          ),
    ].filter((i) => i);
    return { embed, row };
