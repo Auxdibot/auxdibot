@@ -39,7 +39,8 @@ export const levelsStats = <AuxdibotSubcommand>{
             .setURL(`${process.env.BOT_HOMEPAGE}/leaderboard/${interaction.data.guild.id}`)
             .setEmoji(CustomEmojis.LEVELS)
             .setLabel('Leaderboard')
-            .setStyle(ButtonStyle.Link),
+            .setStyle(ButtonStyle.Link)
+            .setDisabled(!interaction.data.guildData.publicize_leaderboard),
          new ButtonBuilder()
             .setCustomId('levelembed-' + user.id)
             .setLabel('View Legacy Embed')
