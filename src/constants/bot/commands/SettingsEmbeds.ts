@@ -172,15 +172,19 @@ export const SettingsEmbeds: { [k: string]: (auxdibot: Auxdibot, servers: server
          .setTitle(`${CustomEmojis.GREETINGS} Greetings Help`)
          .setColor(auxdibot.colors.info)
          .setDescription(
-            `You can edit and view these settings further on [Auxdibot's Dashboard](https://bot.auxdible.me)\n\n👋 **Greetings Channel**: <#${server.join_leave_channel}>`,
+            `You can edit and view these settings further on [Auxdibot's Dashboard](https://bot.auxdible.me)\n\n👋 **Greetings Channel**: ${
+               server.join_leave_channel ? `<#${server.join_leave_channel}>` : '`None`'
+            }`,
          )
          .addFields({
             name: 'Greetings',
-            value: `**Join Message** (/join): ${
+            value: `**Join Message** (/greetings join): ${
                server.join_embed || server.join_text ? '`Set`' : '`Not Set`'
-            }\n**Join DM Message** (/join_dm): ${
+            }\n**Join DM Message** (/greetings join_dm): ${
                server.join_dm_embed || server.join_dm_text ? '`Set`' : '`Not Set`'
-            }\n**Leave Message** (/leave): ${server.leave_embed || server.leave_text ? '`Set`' : '`Not Set`'}`,
+            }\n**Leave Message** (/greetings leave): ${
+               server.leave_embed || server.leave_text ? '`Set`' : '`Not Set`'
+            }`,
          })
          .toJSON(),
 
