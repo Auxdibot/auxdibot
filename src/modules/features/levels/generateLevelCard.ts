@@ -73,15 +73,15 @@ export async function generateLevelCard(user: User, xp: number, leaderboard: num
    ctx.save();
 
    const avatar = await loadImage(user.avatarURL({ size: 256 }));
-   const avatarY = (canvas.height - avatar.height) / 2;
+   const avatarY = (canvas.height - 256) / 2;
    const avatarX = 50;
    ctx.beginPath();
-   ctx.arc(avatarX + avatar.width / 2, avatarY + avatar.height / 2, avatar.width / 2, 0, Math.PI * 2, true);
+   ctx.arc(avatarX + 256 / 2, avatarY + 256 / 2, 256 / 2, 0, Math.PI * 2, true);
    ctx.closePath();
    ctx.clip();
    ctx.strokeStyle = '#dddddd';
    ctx.lineWidth = 7;
-   ctx.drawImage(avatar, avatarX, avatarY, avatar.width, avatar.height);
+   ctx.drawImage(avatar, avatarX, avatarY, 256, 256);
    ctx.stroke();
    ctx.restore();
    /*
@@ -93,7 +93,7 @@ export async function generateLevelCard(user: User, xp: number, leaderboard: num
    ctx.fillStyle = '#ffffff';
    ctx.textAlign = 'left';
    const username = user.username.length > 16 ? user.username.slice(0, 16) + '...' : user.username;
-   ctx.fillText(username, avatarX + avatar.width + 40, canvas.height / 2 + 20);
+   ctx.fillText(username, avatarX + 256 + 40, canvas.height / 2 + 20);
    ctx.restore();
    /*
    Create progress bar
@@ -101,7 +101,7 @@ export async function generateLevelCard(user: User, xp: number, leaderboard: num
    ctx.save();
    const progressBarWidth = 800;
    const progressBarHeight = 50;
-   const progressBarX = avatarX + avatar.width + 40;
+   const progressBarX = avatarX + 256 + 40;
    const progressBarY = canvas.height / 2 + 50;
 
    const progress = xpTill / nextLevelXP;
