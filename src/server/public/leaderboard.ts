@@ -24,7 +24,7 @@ const leaderboard = (auxdibot: Auxdibot, app: Express) => {
          if (!data.publicize_leaderboard) return res.status(403).json({ error: 'leaderboard is private' });
          const count = await generateLeaderboardCount(auxdibot, server);
          const leaderboard = await (
-            await generateLevelLeaderboard(auxdibot, data.serverID, limit, start)
+            await generateLevelLeaderboard(auxdibot, server, limit, start)
          ).reduce(async (acc, i) => {
             const user = await auxdibot.users.fetch(i.userID).catch(() => undefined);
             if (!user) return acc;

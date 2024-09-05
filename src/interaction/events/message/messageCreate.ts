@@ -31,6 +31,7 @@ export default async function messageCreate(auxdibot: Auxdibot, message: Message
    }
 
    if (server.message_xp_range[0] <= 0 && server.message_xp_range.length <= 1) return;
+   if (message.member.user.bot) return;
    /*
    Leveling
    */
@@ -55,6 +56,7 @@ export default async function messageCreate(auxdibot: Auxdibot, message: Message
          (server.message_xp_range[1]
             ? Math.floor(Math.random() * (server.message_xp_range[1] - server.message_xp_range[0] + 1))
             : 0);
+
       const newLevel = await awardXP(
          auxdibot,
          message.guild.id,

@@ -10,7 +10,7 @@ const TROPHIES = ['🏆', '🥈', '🥉'];
 
 export async function generateLeaderboardEmbed(auxdibot: Auxdibot, guild: Guild, start = 0, limit = 20) {
    const server = await findOrCreateServer(auxdibot, guild.id);
-   const leaderboard = await generateLevelLeaderboard(auxdibot, server.serverID, limit, start);
+   const leaderboard = await generateLevelLeaderboard(auxdibot, guild, limit, start);
    const embed = new EmbedBuilder().setColor(auxdibot.colors.levels).toJSON();
    const total = await generateLeaderboardCount(auxdibot, guild);
    embed.title = `${CustomEmojis.LEVELS} Levels Leaderboard`;

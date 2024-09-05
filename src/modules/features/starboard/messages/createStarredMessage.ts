@@ -97,7 +97,12 @@ export default async function createStarredMessage(
             data: { starred_messages: { push: starredData } },
          })
          .catch(() => message.delete());
-      if (!(server.starboard_xp_range[0] == 0 && !server.starboard_xp_range[1]) && starredMessage.member) {
+
+      if (
+         !(server.starboard_xp_range[0] == 0 && !server.starboard_xp_range[1]) &&
+         starredMessage.member &&
+         !starredMessage.member.user.bot
+      ) {
          const level = await auxdibot.database.servermembers
             .findFirst({
                where: { serverID: guild.id, userID: starredMessage.member.id },
