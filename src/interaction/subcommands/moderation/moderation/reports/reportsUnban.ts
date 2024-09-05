@@ -27,6 +27,9 @@ export const reportsUnban = <AuxdibotSubcommand>{
          noPermissionEmbed.description = `This user has a higher role than you or owns this server!`;
          return await auxdibot.createReply(interaction, { embeds: [noPermissionEmbed] });
       }
+      if (member.user.bot) {
+         return await handleError(auxdibot, 'ERROR_APP', 'This is a Discord application!', interaction);
+      }
       await auxdibot.database.servermembers.upsert({
          where: { serverID_userID: { serverID: interaction.data.guild.id, userID: user.id } },
          update: { reports_banned: false },

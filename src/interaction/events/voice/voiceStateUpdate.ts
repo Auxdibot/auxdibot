@@ -27,6 +27,7 @@ export default async function voiceStateUpdate(auxdibot: Auxdibot, oldState: Voi
       });
    }
    if (oldState.channelId == newState.channelId) return;
+   if (newState.member.user.bot) return;
    if (oldState.channelId == null) {
       const guild = newState.guild;
 

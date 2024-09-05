@@ -9,6 +9,7 @@ import { calculateLevel } from './calculateLevel';
 export function createUserVCSchedule(auxdibot: Auxdibot, member: GuildMember) {
    const task = new AsyncTask(member.id + ' vclevels', async (taskId) => {
       member = await member.fetch().catch(() => undefined);
+      if (member.user.bot) return;
       const server = await auxdibot.database.servers
          .findFirst({ where: { serverID: member.guild.id } })
          .catch(() => undefined);

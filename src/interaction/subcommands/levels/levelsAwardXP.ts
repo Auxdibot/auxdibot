@@ -22,6 +22,9 @@ export const levelsAwardXP = <AuxdibotSubcommand>{
       const member = interaction.data.guild.members.cache.get(user.id);
       if (!member)
          return await handleError(auxdibot, 'MEMBER_NOT_IN_SERVER', 'This user is not in the server!', interaction);
+      if (member.user.bot) {
+         return await handleError(auxdibot, 'ERROR_APP', 'This is a Discord application!', interaction);
+      }
       awardXP(auxdibot, interaction.data.guildData.serverID, user.id, Math.round(xp));
       const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
       embed.description = `Successfully awarded ${member} ${xp.toLocaleString()} XP.`;

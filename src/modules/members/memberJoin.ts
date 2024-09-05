@@ -6,6 +6,7 @@ export default async function memberJoin(
    serverID: string,
    member: GuildMember | PartialGuildMember,
 ) {
+   if (member.user.bot) return;
    const memberData = await auxdibot.database.servermembers.upsert({
       where: { serverID_userID: { userID: member.id, serverID } },
       update: { in_server: true },
