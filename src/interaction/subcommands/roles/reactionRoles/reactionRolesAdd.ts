@@ -17,7 +17,7 @@ export const reactionRolesAdd = <AuxdibotSubcommand>{
    name: 'add',
    info: {
       module: Modules['Roles'],
-      description: 'Add a reaction role to the server with custom Embed parameters.',
+      description: '	Add a reaction role to the server with a pre-existing Stored Embed.',
       usageExample: '/reaction_roles add (channel) (roles) [type] (id)',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
