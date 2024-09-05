@@ -5,7 +5,6 @@ import Modules from '@/constants/bot/commands/Modules';
 import { reactionRolesAddPremade } from '../../subcommands/roles/reactionRoles/reactionRolesAddPremade';
 import { reactionRolesAdd } from '../../subcommands/roles/reactionRoles/reactionRolesAdd';
 import { reactionRolesAddJSON } from '../../subcommands/roles/reactionRoles/reactionRolesAddJSON';
-import { reactionRolesEdit } from '../../subcommands/roles/reactionRoles/reactionRolesEdit';
 import { reactionRolesList } from '../../subcommands/roles/reactionRoles/reactionRolesList';
 import { reactionRolesRemove } from '../../subcommands/roles/reactionRoles/reactionRolesRemove';
 import { ReactionRoleType } from '@prisma/client';
@@ -172,35 +171,11 @@ export default <AuxdibotCommand>{
                   ),
             ),
       )
-      .addSubcommand((builder) =>
-         createEmbedParameters(
-            builder
-               .setName('edit')
-               .setDescription('Edit a reaction role embed on this server.')
-               .addStringOption((argBuilder) =>
-                  argBuilder.setName('message_id').setDescription('The message id of the reaction role.'),
-               )
-               .addNumberOption((argBuilder) =>
-                  argBuilder
-                     .setName('index')
-                     .setDescription(
-                        'The index of the reaction role, which is the placement of the item on /reaction_roles list.',
-                     ),
-               )
-               .addStringOption((argBuilder) =>
-                  argBuilder
-                     .setName('json')
-                     .setDescription(
-                        'The JSON for the Discord Embed attached to the reaction role. (overrides embed parameters)',
-                     ),
-               ),
-         ),
-      )
       .addSubcommand((builder) => builder.setName('list').setDescription('List the reaction roles on this server.')),
    info: {
       module: Modules['Roles'],
       description: 'Create, edit, remove, or list the currently active reaction roles.',
-      usageExample: '/reaction_roles (add|add_custom|add_json|add_message|add_premade|remove|edit|list)',
+      usageExample: '/reaction_roles (add|add_custom|add_json|add_message|add_premade|remove|list)',
       permissionsRequired: [PermissionFlagsBits.ManageRoles, PermissionFlagsBits.ManageMessages],
    },
    subcommands: [
@@ -209,7 +184,6 @@ export default <AuxdibotCommand>{
       reactionRolesAddJSON,
       reactionRolesAddMessage,
       reactionRolesAdd,
-      reactionRolesEdit,
       reactionRolesList,
       reactionRolesRemove,
    ],
