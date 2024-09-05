@@ -38,8 +38,10 @@ export default async function messageUpdate(
                } ([Original Message](https://discord.com/channels/${newMessage.guildId}/${newMessage.channelId}/${
                   newMessage.id
                }))${
-                  oldMessage.content ? `\n\n**Old Message** \n\`\`\`${oldMessage.content}\`\`\`` : ''
-               }\n\n**New Message** \n\`\`\`${newMessage.cleanContent}\`\`\``,
+                  oldMessage.content
+                     ? `\n\n**Old Message** \n\`\`\`${oldMessage.content.replaceAll('`', '')}\`\`\``
+                     : ''
+               }\n\n**New Message** \n\`\`\`${newMessage.cleanContent.replaceAll('`', '')}\`\`\``,
                inline: false,
             },
          ],

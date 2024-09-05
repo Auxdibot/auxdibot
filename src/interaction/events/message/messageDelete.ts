@@ -70,7 +70,7 @@ export default async function messageDelete(auxdibot: Auxdibot, message: Message
             name: 'Deleted Message',
             value: `${executorCheck ? `Executor: ${executorCheck}` : ''}\nAuthor: ${message.author}\nChannel: ${
                message.channel
-            }\n\n**Deleted Content** \n\`\`\`${message.cleanContent}\`\`\``,
+            }\n\n**Deleted Content** \n\`\`\`${message.cleanContent.replaceAll('`', '')}\`\`\``,
             inline: false,
          },
       ],
