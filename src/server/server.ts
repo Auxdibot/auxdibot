@@ -18,14 +18,28 @@ import { notificationsRoute } from './notifications';
 import rateLimiter from './rateLimiter';
 import placeholders from './placeholders/placeholders';
 import commandsList from './servers/routes/commands_list';
-import { topggRoute } from './topgg';
 import leaderboard from './public/leaderboard';
+import { Webhook } from '@top-gg/sdk';
+import helmet from 'helmet';
+const webhook = new Webhook(process.env.TOPGG_AUTH, {
+   error(x) {
+      console.error('AN ERROR OCCURRED');
+      console.error(x);
+   },
+});
+
 export default async function server(auxdibot: Auxdibot) {
    const app = express();
 
-   const corsOrigins = ['https://bot.auxdible.me', 'http://localhost:3000', process.env.BOT_HOMEPAGE];
+   const corsOrigins = [
+      'https://bot.auxdible.me',
+      'http://localhost:3000',
+      process.env.BOT_HOMEPAGE,
+      '159.203.105.187',
+   ];
 
    app.use(cors({ origins: corsOrigins }));
+
    app.use(bodyParser.urlencoded({ extended: true }));
    app.use(
       session({
@@ -39,7 +53,16 @@ export default async function server(auxdibot: Auxdibot) {
    app.use(passport.session());
    app.use(rateLimiter);
    initDiscord(auxdibot);
-
+   app.use(
+      helmet({
+         contentSecurityPolicy: {
+            directives: {
+               defaultSrc: ["'self'"],
+               connectSrc: ["'self'", ...corsOrigins],
+            },
+         },
+      }),
+   );
    passport.serializeUser((user: Strategy.Profile, cb) => {
       return cb(null, {
          ...user,
@@ -65,7 +88,17 @@ export default async function server(auxdibot: Auxdibot) {
    app.use('/servers', serversRoute(auxdibot));
    app.use('/notifications', notificationsRoute(auxdibot));
    app.use('/placeholders', placeholders());
-   app.use('/dblwebhook', topggRoute(auxdibot));
+   app.post(
+      '/dblwebhook',
+      webhook.listener(async (vote) => {
+         if (!vote.user) return;
+         await auxdibot.database.users.upsert({
+            where: { userID: vote.user },
+            update: { voted_date: new Date() },
+            create: { userID: vote.user, voted_date: new Date() },
+         });
+      }),
+   );
    app.get(
       '/user',
       (req, res, next) => checkAuthenticated(req, res, next),
