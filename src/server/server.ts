@@ -39,7 +39,17 @@ export default async function server(auxdibot: Auxdibot) {
    ];
 
    app.use(cors({ origins: corsOrigins }));
-
+   app.post(
+      '/dblwebhook',
+      webhook.listener(async (vote, req) => {
+         if (!vote.user) return;
+         await auxdibot.database.users.upsert({
+            where: { userID: vote.user },
+            update: { voted_date: new Date() },
+            create: { userID: vote.user, voted_date: new Date() },
+         });
+      }),
+   );
    app.use(bodyParser.urlencoded({ extended: true }));
    app.use(
       session({
@@ -53,6 +63,7 @@ export default async function server(auxdibot: Auxdibot) {
    app.use(passport.session());
    app.use(rateLimiter);
    initDiscord(auxdibot);
+
    app.use(
       helmet({
          contentSecurityPolicy: {
@@ -88,17 +99,7 @@ export default async function server(auxdibot: Auxdibot) {
    app.use('/servers', serversRoute(auxdibot));
    app.use('/notifications', notificationsRoute(auxdibot));
    app.use('/placeholders', placeholders());
-   app.post(
-      '/dblwebhook',
-      webhook.listener(async (vote) => {
-         if (!vote.user) return;
-         await auxdibot.database.users.upsert({
-            where: { userID: vote.user },
-            update: { voted_date: new Date() },
-            create: { userID: vote.user, voted_date: new Date() },
-         });
-      }),
-   );
+
    app.get(
       '/user',
       (req, res, next) => checkAuthenticated(req, res, next),
