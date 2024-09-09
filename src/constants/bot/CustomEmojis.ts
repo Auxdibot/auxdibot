@@ -24,4 +24,6 @@ export const CustomEmojis = {
    TWITCH: '<:twitch:1281639163719979018>',
    RSS: '<:rss:1281638927161229332>',
    PREMIUM: '<:premium:1281638815542280242>',
+   STORAGE: '<:storage:1282069928068775946>',
+   SETTINGS: '<:settings:1282069952651853956>',
 };
