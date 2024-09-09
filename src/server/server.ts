@@ -21,6 +21,7 @@ import commandsList from './servers/routes/commands_list';
 import leaderboard from './public/leaderboard';
 import { Webhook } from '@top-gg/sdk';
 import helmet from 'helmet';
+import { announceRoute } from './admin/announcement';
 const webhook = new Webhook(process.env.TOPGG_AUTH, {
    error(x) {
       console.error('AN ERROR OCCURRED');
@@ -41,7 +42,7 @@ export default async function server(auxdibot: Auxdibot) {
    app.use(cors({ origins: corsOrigins }));
    app.post(
       '/dblwebhook',
-      webhook.listener(async (vote, req) => {
+      webhook.listener(async (vote) => {
          if (!vote.user) return;
          await auxdibot.database.users.upsert({
             where: { userID: vote.user },
@@ -99,7 +100,7 @@ export default async function server(auxdibot: Auxdibot) {
    app.use('/servers', serversRoute(auxdibot));
    app.use('/notifications', notificationsRoute(auxdibot));
    app.use('/placeholders', placeholders());
-
+   app.use('/admin_announcement', announceRoute(auxdibot));
    app.get(
       '/user',
       (req, res, next) => checkAuthenticated(req, res, next),

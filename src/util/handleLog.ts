@@ -3,7 +3,7 @@ import { Auxdibot } from '@/interfaces/Auxdibot';
 import updateLog from '@/modules/logs/updateLog';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import { Log } from '@prisma/client';
-import { EmbedBuilder, EmbedField, Guild, TextChannel } from 'discord.js';
+import { ChannelType, EmbedBuilder, EmbedField, Guild } from 'discord.js';
 
 /**
  * Handles a log entry for Auxdibot.
@@ -39,9 +39,11 @@ export default async function handleLog(
          }
          if (log.type == 'ERROR') {
             logEmbed.setColor(auxdibot.colors.denied);
+         } else if (log.type == 'AUXDIBOT_ANNOUNCEMENT') {
+            logEmbed.setColor(auxdibot.colors.default);
          }
          if (use_user_avatar && log.userID) {
-            const user = guild.client.users.cache.get(log.userID);
+            const user = await guild.client.users.fetch(log.userID).catch(() => undefined);
             if (user) {
                const avatar = user.avatarURL({ size: 128 });
                if (avatar) {
@@ -49,9 +51,9 @@ export default async function handleLog(
                }
             }
          }
-         const logChannel = guild.channels.cache.get(server.log_channel) as TextChannel | undefined;
-         if (!logChannel) return log;
-         await logChannel.send({ embeds: [logEmbed] });
+         const logChannel = await guild.channels.fetch(server.log_channel).catch(() => undefined);
+         if (!logChannel || logChannel.type != ChannelType.GuildText) return log;
+         await logChannel.send({ embeds: [logEmbed] }).catch(() => undefined);
          return log;
       })
       .catch(() => undefined);
