@@ -1,4 +1,5 @@
 import { LogAction } from '@prisma/client';
+import { CustomEmojis } from '../CustomEmojis';
 
 export const LogNames: { [k in LogAction]?: string } = {
    ERROR: '⛔ Error',
@@ -71,4 +72,5 @@ export const LogNames: { [k in LogAction]?: string } = {
    COMMAND_RULES_CHANGED: '📜 Command Rules Changed',
    EMBED_STORED: '📝 Embed Created',
    EMBED_DELETED: '🗑️ Embed Deleted',
+   AUXDIBOT_ANNOUNCEMENT: `${CustomEmojis.AUXDIBOT} Auxdibot Announcement`,
 };
