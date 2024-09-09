@@ -10,7 +10,7 @@ export const announceRoute = (auxdibot: Auxdibot) => {
       '/',
       async (req, res, next) => {
          const authorization = req.headers.authorization;
-         if (!process.env.ANNOUNCEMENT_SECRET || authorization !== process.env.ANNOUNCEMENT_SECRET) {
+         if (!process.env.ANNOUNCEMENT_SECRET || authorization != process.env.ANNOUNCEMENT_SECRET) {
             return res.status(401).json({ error: 'unauthorized' });
          }
          return next();
