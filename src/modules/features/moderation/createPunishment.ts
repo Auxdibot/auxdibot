@@ -26,13 +26,13 @@ export default async function createPunishment(
          data: { punishments: server.punishments },
       });
    }
-   if (punishment.reason.length > 500) throw new Error('Your punishment reason is too long!');
+   if (punishment.reason?.length > 500) throw new Error('Your punishment reason is too long!');
    const dmEmbed = new EmbedBuilder().setColor(auxdibot.colors.punishment).toJSON();
    dmEmbed.title = PunishmentValues[punishment.type].name;
    dmEmbed.description = `You were ${PunishmentValues[punishment.type].action} on ${guild ? guild.name : 'Server'}.`;
    dmEmbed.fields = [punishmentInfoField(punishment, server.punishment_send_moderator, server.punishment_send_reason)];
    punishment.dmed = await user
-      .send({ embeds: [dmEmbed] })
+      ?.send({ embeds: [dmEmbed] })
       .then(() => true)
       .catch(() => false);
    switch (punishment.type) {
@@ -91,7 +91,7 @@ export default async function createPunishment(
             [punishmentInfoField(punishment, true, true)],
             true,
          );
-         auxdibot.createReply(interaction, { embeds: [embed] });
+         if (interaction) auxdibot.createReply(interaction, { embeds: [embed] });
          if (punishment.type == PunishmentType.WARN) {
             await auxdibot.database.servermembers
                .update({

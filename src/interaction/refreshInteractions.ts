@@ -6,7 +6,7 @@ import path from 'path';
 const isCommandFile = (file: string) =>
    file.endsWith('.js') || (process.env.NODE_ENV == 'DEVELOPMENT' && file.endsWith('.ts'));
 export default async function refreshInteractions(auxdibot: Auxdibot, rest: REST, CLIENT_ID: string) {
-   console.log('-> Declaring commands...');
+   console.log('-> Declaring application commands...');
    const commands = [];
    const PACKAGES = [
       'general',
@@ -46,12 +46,35 @@ export default async function refreshInteractions(auxdibot: Auxdibot, rest: REST
          }
       }
    }
+   const contextMenuFiles = [
+      {
+         dir: '',
+         files: fs.readdirSync(path.join(__dirname, '/contexts')).filter(isCommandFile),
+      },
+   ];
+   for (const packageString of PACKAGES) {
+      const packageFile = path.join(__dirname, '/contexts', packageString);
+      if (fs.existsSync(packageFile)) {
+         contextMenuFiles.push({ dir: packageString, files: fs.readdirSync(packageFile).filter(isCommandFile) });
+      }
+   }
+   for (const packageFile of contextMenuFiles) {
+      for (const file of packageFile.files) {
+         const fileRequire = await import(`./contexts/${packageFile.dir}/${file}`);
+         if (fileRequire.default.data) {
+            commands.push(fileRequire.default.data);
+            if (auxdibot.context_menus) {
+               auxdibot.context_menus.set(fileRequire.default.data?.name, fileRequire.default);
+            }
+         }
+      }
+   }
    rest
       .put(Routes.applicationCommands(CLIENT_ID), {
          body: commands,
       })
       .then(() => {
-         console.log(`-> Refreshed ${commands.length} slash commands.`);
+         console.log(`-> Refreshed ${commands.length} application commands.`);
       })
       .catch((x) => {
          console.error('! -> Failed to load commands!');

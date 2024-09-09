@@ -21,11 +21,15 @@ import voiceStateUpdate from './voice/voiceStateUpdate';
 import selectMenuCreate from './interaction/selectMenuCreate';
 import modalSubmit from './interaction/modalSubmit';
 import { eventDelete } from './events/eventDelete';
+import { guildAuditLogEntryCreate } from './guild/guildAuditLogEntryCreate';
+import { guildMemberUpdate } from './guild/guildMemberUpdate';
+import contextCreate from './interaction/contextCreate';
 
 export default function listenEvents(auxdibot: Auxdibot) {
    auxdibot.once('ready', () => onReady(auxdibot));
    auxdibot.on('interactionCreate', (interaction: BaseInteraction) => {
       if (interaction.isButton()) buttonCreate(auxdibot, interaction);
+      else if (interaction.isContextMenuCommand()) contextCreate(auxdibot, interaction);
       else if (interaction.isChatInputCommand()) slashCreate(auxdibot, interaction);
       else if (interaction.isAnySelectMenu()) selectMenuCreate(auxdibot, interaction);
       else if (interaction.isModalSubmit()) modalSubmit(auxdibot, interaction);
@@ -34,6 +38,7 @@ export default function listenEvents(auxdibot: Auxdibot) {
    auxdibot.on('guildDelete', (guild) => guildDelete(auxdibot, guild));
    auxdibot.on('guildMemberAdd', (member) => guildMemberAdd(auxdibot, member));
    auxdibot.on('guildMemberRemove', (member) => guildMemberRemove(auxdibot, member));
+   auxdibot.on('guildMemberUpdate', (oldMember, newMember) => guildMemberUpdate(auxdibot, oldMember, newMember));
    auxdibot.on('messageCreate', (message) => messageCreate(auxdibot, message));
    auxdibot.on('messageUpdate', (oldMessage, newMessage) => messageUpdate(auxdibot, oldMessage, newMessage));
    auxdibot.on('messageDelete', (message) => messageDelete(auxdibot, message));
@@ -46,4 +51,5 @@ export default function listenEvents(auxdibot: Auxdibot) {
    auxdibot.on('channelDelete', (channel) => channelDelete(auxdibot, channel));
    auxdibot.on('voiceStateUpdate', (oldState, newState) => voiceStateUpdate(auxdibot, oldState, newState));
    auxdibot.on('guildScheduledEventDelete', (event) => eventDelete(auxdibot, event));
+   auxdibot.on('guildAuditLogEntryCreate', (entry, guild) => guildAuditLogEntryCreate(auxdibot, entry, guild));
 }

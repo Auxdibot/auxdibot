@@ -18,6 +18,7 @@ import AuxdibotModal from './modals/AuxdibotModal';
 import Subscriber from '@/modules/features/notifications/Subscriber';
 import { AuxdibotReplyOptions } from './AuxdibotReplyOptions';
 import { BuildSession } from './messages/BuildSession';
+import { AuxdibotContextMenu } from './contexts/AuxdibotContextMenu';
 /**
  * Represents the Auxdibot interface.
  * @interface Auxdibot
@@ -43,6 +44,10 @@ export interface Auxdibot extends Client {
     * Collection of select menus registered in Auxdibot.
     */
    select_menus: Collection<string, AuxdibotSelectMenu>;
+   /**
+    * Collection of context menus registered in Auxdibot.
+    */
+   context_menus: Collection<string, AuxdibotContextMenu>;
 
    /**
     * Prisma client for database operations.
