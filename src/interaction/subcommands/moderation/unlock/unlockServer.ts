@@ -39,7 +39,8 @@ export const unlockServer = <AuxdibotSubcommand>{
       handleLog(auxdibot, interaction.guild, log);
       await auxdibot.createReply(interaction, { embeds: [embed] });
       for (const locked of server.locked_channels) {
-         const channel = await interaction.guild.channels.fetch(locked.channelID);
+         const channel = await interaction.guild.channels.fetch(locked.channelID).catch(() => undefined);
+         if (!channel) continue;
          if (channel.isThread()) {
             return await channel
                .setLocked(false)

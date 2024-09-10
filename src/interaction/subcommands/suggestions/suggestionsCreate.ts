@@ -39,7 +39,7 @@ export const suggestionsCreate = <AuxdibotSubcommand>{
          );
       }
       const suggestions_channel = server.suggestions_channel
-         ? await interaction.data.guild.channels.fetch(server.suggestions_channel)
+         ? await interaction.data.guild.channels.fetch(server.suggestions_channel).catch(() => undefined)
          : undefined;
       if (!suggestions_channel || !suggestions_channel.isTextBased()) {
          return await handleError(

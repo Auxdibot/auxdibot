@@ -10,29 +10,32 @@ export default async function guildMemberAdd(auxdibot: Auxdibot, member: GuildMe
    if (!member) return;
    const server = await findOrCreateServer(auxdibot, member.guild.id);
    if (server.join_leave_channel && server.disabled_modules.indexOf('Greetings') == -1) {
-      member.guild.channels.fetch(server.join_leave_channel).then(async (channel) => {
-         if (channel && channel.isTextBased()) {
-            if (server.join_embed || server.join_text) {
-               await channel
-                  .send({
-                     content: `${server.join_text || ''}`,
-                     ...(Object.entries(server.join_embed || {}).length != 0
-                        ? {
-                             embeds: [
-                                JSON.parse(
-                                   await parsePlaceholders(auxdibot, JSON.stringify(server.join_embed), {
-                                      guild: member.guild,
-                                      member,
-                                   }),
-                                ) as APIEmbed,
-                             ],
-                          }
-                        : {}),
-                  })
-                  .catch((x) => console.error(x));
+      member.guild.channels
+         .fetch(server.join_leave_channel)
+         .then(async (channel) => {
+            if (channel && channel.isTextBased()) {
+               if (server.join_embed || server.join_text) {
+                  await channel
+                     .send({
+                        content: `${server.join_text || ''}`,
+                        ...(Object.entries(server.join_embed || {}).length != 0
+                           ? {
+                                embeds: [
+                                   JSON.parse(
+                                      await parsePlaceholders(auxdibot, JSON.stringify(server.join_embed), {
+                                         guild: member.guild,
+                                         member,
+                                      }),
+                                   ) as APIEmbed,
+                                ],
+                             }
+                           : {}),
+                     })
+                     .catch((x) => console.error(x));
+               }
             }
-         }
-      });
+         })
+         .catch(() => undefined);
    }
    if ((server.join_dm_embed || server.join_dm_text) && server.disabled_modules.indexOf('Greetings') == -1) {
       await member
