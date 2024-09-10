@@ -21,7 +21,7 @@ export async function guildAuditLogEntryCreate(
    if (action == AuditLogEvent.MemberKick || action == AuditLogEvent.MemberBanAdd) {
       const { targetId, executorId } = entry;
       const punishment = server.punishments.find(
-         (i) => i.userID == targetId && i.date.valueOf() < Date.now() + 2000 && i.date.valueOf() > Date.now() - 2000,
+         (i) => i.userID == targetId && i.date.valueOf() < Date.now() + 5000 && i.date.valueOf() > Date.now() - 5000,
       );
       if (!punishment) {
          const user = await auxdibot.users.fetch(targetId).catch(() => undefined);
