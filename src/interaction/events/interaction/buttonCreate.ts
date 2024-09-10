@@ -11,7 +11,7 @@ export default async function buttonCreate(auxdibot: Auxdibot, interaction: Butt
          if (server?.disabled_modules.find((item) => item == button.module.name))
             return await auxdibot.createReply(interaction, { embeds: [auxdibot.embeds.disabled.toJSON()] });
          const splitCommand = button?.command?.split(' ');
-         if (button.command) {
+         if (button.command && interaction.guildId) {
             const permissionTest = await testCommandPermission(
                auxdibot,
                interaction,
@@ -19,6 +19,7 @@ export default async function buttonCreate(auxdibot: Auxdibot, interaction: Butt
                splitCommand[0],
                splitCommand[1] ? splitCommand.slice(1) : [],
             );
+
             if (permissionTest !== true) {
                const noPermissionEmbed = new EmbedBuilder().setColor(auxdibot.colors.denied).toJSON();
                noPermissionEmbed.title = '⛔ Access Denied';

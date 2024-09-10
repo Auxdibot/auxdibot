@@ -7,6 +7,7 @@ import handleLog from '@/util/handleLog';
 import removeReactionRole from '@/modules/features/roles/reaction_roles/removeReactionRole';
 import deleteStarredMessage from '@/modules/features/starboard/messages/deleteStarredMessage';
 export default async function messageDelete(auxdibot: Auxdibot, message: Message<boolean> | PartialMessage) {
+   if (!message.guild) return;
    const sender = message.member;
    // weird bandaid for checking if it's the bot deleting messages
    const deletionEntryCheck: GuildAuditLogs<AuditLogEvent.MessageDelete> | undefined = await message.guild
