@@ -10,29 +10,32 @@ export default async function guildMemberRemove(auxdibot: Auxdibot, member: Guil
    if (!member) return;
    const server = await findOrCreateServer(auxdibot, member.guild.id);
    if (server.join_leave_channel && server.disabled_modules.indexOf('Greetings') == -1) {
-      member.guild.channels.fetch(server.join_leave_channel).then(async (channel) => {
-         if (channel && channel.isTextBased()) {
-            if (server.leave_text || server.leave_embed) {
-               channel
-                  .send({
-                     content: `${server.leave_text || ''}`,
-                     ...(Object.entries(server.leave_embed || {}).length != 0
-                        ? {
-                             embeds: [
-                                JSON.parse(
-                                   await parsePlaceholders(auxdibot, JSON.stringify(server.leave_embed), {
-                                      guild: member.guild,
-                                      member,
-                                   }),
-                                ) as APIEmbed,
-                             ],
-                          }
-                        : {}),
-                  })
-                  .catch(() => undefined);
+      member.guild.channels
+         .fetch(server.join_leave_channel)
+         .then(async (channel) => {
+            if (channel && channel.isTextBased()) {
+               if (server.leave_text || server.leave_embed) {
+                  channel
+                     .send({
+                        content: `${server.leave_text || ''}`,
+                        ...(Object.entries(server.leave_embed || {}).length != 0
+                           ? {
+                                embeds: [
+                                   JSON.parse(
+                                      await parsePlaceholders(auxdibot, JSON.stringify(server.leave_embed), {
+                                         guild: member.guild,
+                                         member,
+                                      }),
+                                   ) as APIEmbed,
+                                ],
+                             }
+                           : {}),
+                     })
+                     .catch(() => undefined);
+               }
             }
-         }
-      });
+         })
+         .catch(() => undefined);
    }
    memberLeave(auxdibot, member.guild.id, member);
    await handleLog(

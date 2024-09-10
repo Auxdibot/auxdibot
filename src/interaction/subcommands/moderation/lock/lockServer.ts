@@ -59,7 +59,7 @@ export const lockServer = <AuxdibotSubcommand>{
          description: `The server was locked.`,
       });
       await auxdibot.createReply(interaction, { embeds: [embed] });
-      const channels = await interaction.guild.channels.fetch();
+      const channels = await interaction.guild.channels.fetch().catch(() => []);
       for (const channel of channels.values()) {
          if (!channel.isDMBased() && channel.isTextBased()) {
             const lock = <ChannelLock>{

@@ -10,7 +10,8 @@ export default async function massroleMembers(
    give: boolean,
    user?: { id: string },
 ) {
-   const members = await guild.members.fetch();
+   const members = await guild.members.fetch().catch(() => undefined);
+   if (!members) return 0;
    members.forEach((member) => {
       if (
          user.id != member.id &&

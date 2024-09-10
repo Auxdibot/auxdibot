@@ -19,7 +19,8 @@ export default function scheduleChannelUnlocks(auxdibot: Auxdibot) {
                });
                if (expired) {
                   for (const expiredLock of expired) {
-                     const channel = await guild.channels.fetch(expiredLock.channelID);
+                     const channel = await guild.channels.fetch(expiredLock.channelID).catch(() => undefined);
+                     if (!channel) continue;
                      if (channel.isThread()) {
                         await channel
                            .setLocked(false)

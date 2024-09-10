@@ -1,7 +1,7 @@
 import { Auxdibot } from '@/interfaces/Auxdibot';
 
 export default async function fetchAnalytics(auxdibot: Auxdibot) {
-   await auxdibot.guilds.fetch();
+   await auxdibot.guilds.fetch().catch(() => null);
    const analytics = {
       servers: auxdibot.guilds.cache.size,
       members: auxdibot.guilds.cache.reduce((acc, i) => acc + i.memberCount, 0),
