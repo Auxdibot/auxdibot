@@ -13,7 +13,7 @@ import _ from 'lodash';
 export const SettingsEmbeds: { [k: string]: (auxdibot: Auxdibot, servers: servers, ...args: any[]) => APIEmbed } = {
    general: (auxdibot, server, card?: servercards) =>
       new EmbedBuilder()
-         .setTitle(`${CustomEmojis.BOLT} General Settings`)
+         .setTitle(`${CustomEmojis.SETTINGS} General Settings`)
          .setDescription(
             `You can edit and view these settings further on [Auxdibot's Dashboard](https://bot.auxdible.me)\n\n🗒️ **Log Channel**: ${
                server.log_channel ? `<#${server.log_channel}>` : '`None`'

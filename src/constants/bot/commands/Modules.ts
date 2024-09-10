@@ -11,7 +11,7 @@ const Modules = {
       name: 'Settings',
       description:
          'Module for changing and viewing server settings, as well as disabling or enabling specific features.',
-      emoji: CustomEmojis.BOLT,
+      emoji: CustomEmojis.SETTINGS,
    },
    Messages: <AuxdibotFeatureModule>{
       name: 'Messages',

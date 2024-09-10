@@ -19,7 +19,7 @@ export const HelpEmbeds: { [k: string]: (auxdibot: Auxdibot) => APIEmbed } = {
          .toJSON(),
    settings: (auxdibot) =>
       new EmbedBuilder()
-         .setTitle(`${CustomEmojis.BOLT} Settings Help`)
+         .setTitle(`${CustomEmojis.SETTINGS} Settings Help`)
          .setColor(auxdibot.colors.default)
          .setDescription(
             "Auxdibot has a built in suite of easy-to-navigate settings, allowing administrators to customize every behavior of Auxdibot.\n\nAdministrators can view their server's configuration with `/settings view`, displaying every setting on your server.\n\nAuxdibot also features a built-in logging system, logging every action on your server to a text channel! You can setup the channel where logs are sent with `/logs channel [channel, leave empty to disable logs]`. You can additionally filter an action from showing up in your log channel using `/logs filter [log action]`. You can view a list of log actions with `/logs actions`. If you want to view the last 10 logs on your server, you can use `/logs latest`.\n\nIf you don't like one of Auxdibot's modules or one of Auxdibot's modules is conflicting with another bot, it can be disabled and enabled using the `/modules` command. Disabling a feature will disable all Auxdibot commands attached to that module and disable any recurring actions for that module on your server.",

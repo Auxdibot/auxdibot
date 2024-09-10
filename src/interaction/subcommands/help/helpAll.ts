@@ -6,7 +6,7 @@ import { DMAuxdibotCommandData, GuildAuxdibotCommandData } from '@/interfaces/co
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 import { EmbedBuilder } from '@discordjs/builders';
-import { ActionRowBuilder, ButtonBuilder } from 'discord.js';
+import { ActionRowBuilder, StringSelectMenuBuilder } from 'discord.js';
 
 export const helpAll = <AuxdibotSubcommand>{
    name: 'all',
@@ -43,54 +43,73 @@ export const helpAll = <AuxdibotSubcommand>{
       embed.thumbnail = {
          url: `${process.env.BOT_HOMEPAGE}/logo.png`,
       };
-      const modulesRow1 = new ActionRowBuilder<ButtonBuilder>().addComponents(
-            new ButtonBuilder()
-               .setStyle(1)
-               .setCustomId('module-general')
-               .setLabel('General')
-               .setEmoji(CustomEmojis.AUXDIBOT),
-            new ButtonBuilder()
-               .setStyle(1)
-               .setCustomId('module-settings')
-               .setLabel('Settings')
-               .setEmoji(CustomEmojis.BOLT),
-            new ButtonBuilder()
-               .setStyle(1)
-               .setCustomId('module-moderation')
-               .setLabel('Moderation')
-               .setEmoji(CustomEmojis.MODERATION),
-            new ButtonBuilder()
-               .setStyle(1)
-               .setCustomId('module-messages')
-               .setLabel('Messages')
-               .setEmoji(CustomEmojis.MESSAGES),
-            new ButtonBuilder()
-               .setStyle(1)
-               .setCustomId('module-greetings')
-               .setLabel('Greetings')
-               .setEmoji(CustomEmojis.GREETINGS),
-         ),
-         modulesRow2 = new ActionRowBuilder<ButtonBuilder>().addComponents(
-            new ButtonBuilder().setStyle(1).setCustomId('module-roles').setLabel('Roles').setEmoji(CustomEmojis.ROLES),
-            new ButtonBuilder()
-               .setStyle(1)
-               .setCustomId('module-levels')
-               .setLabel('Levels')
-               .setEmoji(CustomEmojis.LEVELS),
-            new ButtonBuilder()
-               .setStyle(1)
-               .setCustomId('module-suggestions')
-               .setLabel('Suggestions')
-               .setEmoji(CustomEmojis.SUGGESTIONS),
-            new ButtonBuilder()
-               .setStyle(1)
-               .setCustomId('module-starboard')
-               .setLabel('Starboard')
-               .setEmoji(CustomEmojis.STARBOARD),
-         );
+      const modulesRow = new ActionRowBuilder<StringSelectMenuBuilder>()
+         .addComponents(
+            new StringSelectMenuBuilder()
+               .setCustomId('help')
+               .setMaxValues(1)
+               .setPlaceholder('Select a module to view more info...')
+               .addOptions(
+                  {
+                     value: 'general',
+                     label: 'General',
+                     description: "Auxdibot's general commands and information.",
+                     emoji: CustomEmojis.AUXDIBOT,
+                  },
+                  {
+                     value: 'settings',
+                     label: 'Settings',
+                     description: "Commands to modify settings for Auxdibot's modules.",
+                     emoji: CustomEmojis.SETTINGS,
+                  },
+                  {
+                     value: 'moderation',
+                     label: 'Moderation',
+                     description: "Commands to moderate your server's members.",
+                     emoji: CustomEmojis.MODERATION,
+                  },
+                  {
+                     value: 'messages',
+                     label: 'Messages',
+                     description: 'Commands to create messages with extended features.',
+                     emoji: CustomEmojis.MESSAGES,
+                  },
+                  {
+                     value: 'greetings',
+                     label: 'Greetings',
+                     description: "Commands to manage your server's welcome messages.",
+                     emoji: CustomEmojis.GREETINGS,
+                  },
+                  {
+                     value: 'roles',
+                     label: 'Roles',
+                     description: "Commands to manage your server's roles.",
+                     emoji: CustomEmojis.ROLES,
+                  },
+                  {
+                     value: 'levels',
+                     label: 'Levels',
+                     description: "Commands to manage your server's leveling system.",
+                     emoji: CustomEmojis.LEVELS,
+                  },
+                  {
+                     value: 'suggestions',
+                     label: 'Suggestions',
+                     description: "Commands to manage your server's suggestion system.",
+                     emoji: CustomEmojis.SUGGESTIONS,
+                  },
+                  {
+                     value: 'starboard',
+                     label: 'Starboard',
+                     description: "Commands to manage your server's starboards.",
+                     emoji: CustomEmojis.STARBOARD,
+                  },
+               ),
+         )
+         .toJSON();
       return await auxdibot.createReply(interaction, {
          embeds: [embed],
-         components: [modulesRow1, modulesRow2, promoRow.toJSON()],
+         components: [modulesRow, promoRow.toJSON()],
       });
    },
 };

@@ -11,7 +11,7 @@ export default async function modalSubmit(auxdibot: Auxdibot, interaction: Modal
          if (server?.disabled_modules.find((item) => item == modal.module.name))
             return await auxdibot.createReply(interaction, { embeds: [auxdibot.embeds.disabled.toJSON()] });
          const splitCommand = modal?.command?.split(' ');
-         if (modal.command) {
+         if (modal.command && interaction.guildId) {
             const permissionTest = await testCommandPermission(
                auxdibot,
                interaction,
