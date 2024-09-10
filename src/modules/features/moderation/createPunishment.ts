@@ -65,7 +65,9 @@ export default async function createPunishment(
             if (!duration || !Number(duration)) {
                throw new Error('Permanent punishment date with no mute role!');
             }
-            await member.timeout(duration, punishment.reason);
+            await member.timeout(duration, punishment.reason).catch(() => {
+               throw new Error('Could not mute user, possibly due to lack of permission!');
+            });
          }
          break;
    }
