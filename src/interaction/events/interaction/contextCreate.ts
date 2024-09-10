@@ -29,7 +29,7 @@ export default async function contextCreate(auxdibot: Auxdibot, interaction: Con
       );
 
    if (interaction.guild) {
-      if (command.command) {
+      if (command.command && interaction.guildId) {
          const permissionTest = await testCommandPermission(
             auxdibot,
             interaction,

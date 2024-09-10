@@ -6,7 +6,7 @@ import { Auxdibot } from '@/interfaces/Auxdibot';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
-import { ActionRowBuilder, ButtonBuilder } from 'discord.js';
+import { ActionRowBuilder, StringSelectMenuBuilder } from 'discord.js';
 
 export const settingsView = <AuxdibotSubcommand>{
    name: 'view',
@@ -20,53 +20,67 @@ export const settingsView = <AuxdibotSubcommand>{
       const server = interaction.data.guildData;
       const card = auxdibot.database.servercards.findFirst({ where: { serverID: server.serverID } });
 
-      const modulesRow1 = new ActionRowBuilder<ButtonBuilder>().addComponents(
-            new ButtonBuilder()
-               .setStyle(1)
-               .setCustomId('settings-general')
-               .setLabel('Settings')
-               .setEmoji(CustomEmojis.BOLT),
-            new ButtonBuilder()
-               .setStyle(1)
-               .setCustomId('settings-moderation')
-               .setLabel('Moderation')
-               .setEmoji(CustomEmojis.MODERATION),
-            new ButtonBuilder()
-               .setStyle(1)
-               .setCustomId('settings-roles')
-               .setLabel('Roles')
-               .setEmoji(CustomEmojis.ROLES),
-            new ButtonBuilder()
-               .setStyle(1)
-               .setCustomId('settings-messages')
-               .setLabel('Messages')
-               .setEmoji(CustomEmojis.MESSAGES),
-            new ButtonBuilder()
-               .setStyle(1)
-               .setCustomId('settings-greetings')
-               .setLabel('Greetings')
-               .setEmoji(CustomEmojis.GREETINGS),
-         ),
-         modulesRow2 = new ActionRowBuilder<ButtonBuilder>().addComponents(
-            new ButtonBuilder()
-               .setStyle(1)
-               .setCustomId('settings-levels')
-               .setLabel('Levels')
-               .setEmoji(CustomEmojis.LEVELS),
-            new ButtonBuilder()
-               .setStyle(1)
-               .setCustomId('settings-suggestions')
-               .setLabel('Suggestions')
-               .setEmoji(CustomEmojis.SUGGESTIONS),
-            new ButtonBuilder()
-               .setStyle(1)
-               .setCustomId('settings-starboard')
-               .setLabel('Starboard')
-               .setEmoji(CustomEmojis.STARBOARD),
-         );
+      const modulesRow = new ActionRowBuilder<StringSelectMenuBuilder>()
+         .addComponents(
+            new StringSelectMenuBuilder()
+               .setCustomId('settings')
+               .setMaxValues(1)
+               .setPlaceholder('Select a module to view settings...')
+               .addOptions(
+                  {
+                     value: 'general',
+                     label: 'Settings',
+                     description: 'General settings for Auxdibot.',
+                     emoji: CustomEmojis.SETTINGS,
+                  },
+                  {
+                     value: 'moderation',
+                     label: 'Moderation',
+                     description: "Settings for Auxdibot's moderation features.",
+                     emoji: CustomEmojis.MODERATION,
+                  },
+                  {
+                     value: 'messages',
+                     label: 'Messages',
+                     description: 'Settings for Scheduled Messages and Notification Feeds.',
+                     emoji: CustomEmojis.MESSAGES,
+                  },
+                  {
+                     value: 'greetings',
+                     label: 'Greetings',
+                     description: "Settings for Auxdibot's greeting messages.",
+                     emoji: CustomEmojis.GREETINGS,
+                  },
+                  {
+                     value: 'roles',
+                     label: 'Roles',
+                     description: 'Settings for Join Roles, Reaction Roles and Sticky Roles.',
+                     emoji: CustomEmojis.ROLES,
+                  },
+                  {
+                     value: 'levels',
+                     label: 'Levels',
+                     description: "Settings for Auxdibot's leveling system.",
+                     emoji: CustomEmojis.LEVELS,
+                  },
+                  {
+                     value: 'suggestions',
+                     label: 'Suggestions',
+                     description: "Settings for Auxdibot's suggestion system.",
+                     emoji: CustomEmojis.SUGGESTIONS,
+                  },
+                  {
+                     value: 'starboard',
+                     label: 'Starboard',
+                     description: "Settings for Auxdibot's starboard system.",
+                     emoji: CustomEmojis.STARBOARD,
+                  },
+               ),
+         )
+         .toJSON();
       return await auxdibot.createReply(interaction, {
          embeds: [SettingsEmbeds['general'](auxdibot, server, card)],
-         components: [modulesRow1, modulesRow2, promoRow],
+         components: [modulesRow, promoRow],
       });
    },
 };

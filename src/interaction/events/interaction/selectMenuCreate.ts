@@ -12,7 +12,7 @@ export default async function selectMenuCreate(auxdibot: Auxdibot, interaction: 
             return await auxdibot.createReply(interaction, { embeds: [auxdibot.embeds.disabled.toJSON()] });
 
          const splitCommand = select_menu?.command?.split(' ');
-         if (select_menu.command) {
+         if (select_menu.command && interaction.guildId) {
             const permissionTest = await testCommandPermission(
                auxdibot,
                interaction,
