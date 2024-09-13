@@ -9,6 +9,6 @@ export default async function threadCreate(auxdibot: Auxdibot, thread: ThreadCha
       type: LogAction.THREAD_CREATED,
       date: new Date(),
       description: `A thread named "${thread.name}" was created on your server.`,
-      userID: auxdibot.user.id,
+      userID: thread.ownerId ?? auxdibot.user.id,
    });
 }

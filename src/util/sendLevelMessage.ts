@@ -2,6 +2,7 @@ import { Auxdibot } from '@/interfaces/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import { APIEmbed, GuildMember, GuildTextBasedChannel, Message } from 'discord.js';
 import parsePlaceholders from './parsePlaceholder';
+import Modules from '@/constants/bot/commands/Modules';
 
 type LevelMessageContext = {
    message?: Message;
@@ -15,6 +16,8 @@ export async function sendLevelMessage(
    context: LevelMessageContext,
 ) {
    const server = await findOrCreateServer(auxdibot, member.guild.id);
+   if (server.disabled_modules.includes(Modules['Levels'].name)) return;
+
    try {
       if (server.level_embed) {
          const embed =
