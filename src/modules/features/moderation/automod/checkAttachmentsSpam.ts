@@ -26,7 +26,7 @@ export default async function checkAttachmentsSpam(auxdibot: Auxdibot, server: s
             dmed: false,
          };
          auxdibot.attachments_detections.set([message.guildId, BigInt(Date.now())], previousMessages);
-         await createPunishment(auxdibot, message.guild, punishment, undefined, message.author);
+         await createPunishment(auxdibot, message.guild, punishment, undefined, message.author).catch(() => undefined);
       }
    }
 }

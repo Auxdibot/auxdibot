@@ -23,7 +23,7 @@ export default async function checkMessageSpam(auxdibot: Auxdibot, server: serve
             dmed: false,
          };
          auxdibot.spam_detections.set([message.guildId, BigInt(Date.now())], previousMessages);
-         await createPunishment(auxdibot, message.guild, punishment, undefined, message.author);
+         await createPunishment(auxdibot, message.guild, punishment, undefined, message.author).catch(() => undefined);
       }
    }
 }
