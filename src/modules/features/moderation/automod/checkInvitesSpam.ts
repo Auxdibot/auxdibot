@@ -24,7 +24,7 @@ export default async function checkInvitesSpam(auxdibot: Auxdibot, server: serve
             dmed: false,
          };
          auxdibot.invites_detections.set([message.guildId, BigInt(Date.now())], previousMessages);
-         await createPunishment(auxdibot, message.guild, punishment, undefined, message.author);
+         await createPunishment(auxdibot, message.guild, punishment, undefined, message.author).catch(() => undefined);
       }
    }
 }
