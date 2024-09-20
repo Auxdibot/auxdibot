@@ -28,11 +28,20 @@ import { levelsSetGlobalMultiplier } from '@/interaction/subcommands/levels/leve
 import { levelsSetStarboardXP } from '@/interaction/subcommands/levels/levelsSetStarboardXP';
 import { levelsSetVoiceXP } from '@/interaction/subcommands/levels/levelsSetVoiceXP';
 import { levelsLeaderboardVisibility } from '@/interaction/subcommands/levels/levelsLeaderboardVisibility';
+import levelsDisableMessages from '@/interaction/subcommands/levels/levelsDisableMessages';
 
 export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
       .setName('levels')
       .setDescription('Change settings for leveling on this server.')
+      .addSubcommand((builder) =>
+         builder
+            .setName('disable_messages')
+            .setDescription('Disable levelup messages sent by Auxdibot to you.')
+            .addBooleanOption((argBuilder) =>
+               argBuilder.setName('disabled').setDescription('Whether to disable levelup messages.').setRequired(true),
+            ),
+      )
       .addSubcommandGroup((group) =>
          group
             .setName('xp')
@@ -337,7 +346,7 @@ export default <AuxdibotCommand>{
    info: {
       module: Modules['Levels'],
       description: 'Change settings for leveling on this server.',
-      usageExample: '/levels (settings|message|multipliers|data|rewards|xp|stats)',
+      usageExample: '/levels (settings|message|multipliers|data|rewards|xp|stats|disable_messages)',
       permissionsRequired: [PermissionFlagsBits.Administrator],
    },
    subcommands: [
@@ -368,6 +377,7 @@ export default <AuxdibotCommand>{
       levelsSetStarboardXP,
       levelsSetVoiceXP,
       levelsLeaderboardVisibility,
+      levelsDisableMessages,
    ],
    async execute() {
       return;

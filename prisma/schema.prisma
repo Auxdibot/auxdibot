@@ -329,16 +329,17 @@ type StoredEmbed {
 }
 
 model servermembers {
-  id                 String   @id @default(auto()) @map("_id") @db.ObjectId
-  v                  Int?     @map("__v")
-  userID             String
-  serverID           String
-  warns              Int      @default(0)
-  in_server          Boolean  @default(true)
-  sticky_roles       String[] @default([])
-  suggestions_banned Boolean? @default(false)
-  reports_banned     Boolean? @default(false)
-  xp                 Int?     @default(0)
+  id                     String   @id @default(auto()) @map("_id") @db.ObjectId
+  v                      Int?     @map("__v")
+  userID                 String
+  serverID               String
+  warns                  Int      @default(0)
+  in_server              Boolean  @default(true)
+  sticky_roles           String[] @default([])
+  suggestions_banned     Boolean? @default(false)
+  reports_banned         Boolean? @default(false)
+  xp                     Int?     @default(0)
+  level_message_disabled Boolean? @default(false)
 
   @@unique([serverID, userID])
 }
