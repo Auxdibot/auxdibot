@@ -106,6 +106,7 @@ export interface Auxdibot extends Client {
       log: number;
       reaction_role: number;
       levels: number;
+      premium: number;
       suggestions: {
          WAITING: number;
          DENIED: number;
@@ -122,6 +123,7 @@ export interface Auxdibot extends Client {
       welcome: EmbedBuilder;
       disabled: EmbedBuilder;
       error: EmbedBuilder;
+      voted: EmbedBuilder;
    };
 
    /**
