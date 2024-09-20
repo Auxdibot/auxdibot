@@ -22,6 +22,7 @@ import leaderboard from './public/leaderboard';
 import { Webhook } from '@top-gg/sdk';
 import helmet from 'helmet';
 import { announceRoute } from './admin/announcement';
+import { CustomEmojis } from '@/constants/bot/CustomEmojis';
 const webhook = new Webhook(process.env.TOPGG_AUTH, {
    error(x) {
       console.error('AN ERROR OCCURRED');
@@ -44,11 +45,31 @@ export default async function server(auxdibot: Auxdibot) {
       '/dblwebhook',
       webhook.listener(async (vote) => {
          if (!vote.user) return;
-         await auxdibot.database.users.upsert({
-            where: { userID: vote.user },
-            update: { voted_date: new Date() },
-            create: { userID: vote.user, voted_date: new Date() },
-         });
+         console.log('VOTE -> Vote Received for user ' + vote.user);
+         try {
+            await auxdibot.database.users.upsert({
+               where: { userID: vote.user },
+               update: { voted_date: new Date() },
+               create: { userID: vote.user, voted_date: new Date() },
+            });
+            const user = await auxdibot.users.fetch(vote.user);
+            if (!user) return;
+            user.send({
+               embeds: [
+                  auxdibot.embeds.voted
+                     .setAuthor({
+                        name: user.tag,
+                        iconURL: user.displayAvatarURL({ size: 256 }),
+                     })
+                     .toJSON(),
+               ],
+               content: `# ${CustomEmojis.PREMIUM} Vote Received`,
+            });
+         } catch (x) {
+            console.log('!!!! VOTE ERROR !!!!');
+            console.error(x);
+            console.log('!!!! VOTE ERROR !!!!');
+         }
       }),
    );
    app.use(bodyParser.urlencoded({ extended: true }));

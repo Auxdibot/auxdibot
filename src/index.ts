@@ -78,6 +78,7 @@ const CLIENT_ID = process.env.DISCORD_BOT_CLIENT_ID;
       log: 0xf9f3d2,
       reaction_role: 0xf3c810,
       levels: 0xf1c71b,
+      premium: 0xeab308,
       suggestions: {
          WAITING: 0x5c5c5c,
          DENIED: 0xcc3131,
@@ -114,6 +115,12 @@ const CLIENT_ID = process.env.DISCORD_BOT_CLIENT_ID;
          .setColor(auxdibot.colors.denied)
          .setTitle('⛔ Error!')
          .setDescription('An error occurred trying to do this. Try again later!'),
+      voted: new EmbedBuilder()
+         .setColor(auxdibot.colors.premium)
+         .setTitle('Vote Received - Top.GG')
+         .setDescription(
+            'Thank you for supporting Auxdibot on Top.GG! You have received temporary benefits for voting.',
+         ),
    };
    auxdibot.getMembers = async function () {
       return await this.guilds.cache.reduce(
