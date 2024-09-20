@@ -28,6 +28,7 @@ export default function initDiscord(auxdibot: Auxdibot) {
                   select: {
                      badges: true,
                      userID: true,
+                     voted_date: true,
                   },
                })
                .then(async (data) => {
