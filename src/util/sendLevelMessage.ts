@@ -15,8 +15,15 @@ export async function sendLevelMessage(
    newLevel: number,
    context: LevelMessageContext,
 ) {
+   console.log('new level ' + newLevel);
    const server = await findOrCreateServer(auxdibot, member.guild.id);
-   if (server.disabled_modules.includes(Modules['Levels'].name)) return;
+   const memberData = await auxdibot.database.servermembers
+      .findFirst({
+         where: { serverID: member.guild.id, userID: member.id },
+         select: { level_message_disabled: true },
+      })
+      .catch(() => undefined);
+   if (server.disabled_modules.includes(Modules['Levels'].name) || memberData?.level_message_disabled) return;
 
    try {
       if (server.level_embed) {
@@ -33,13 +40,17 @@ export async function sendLevelMessage(
             const channel = member.guild.channels.cache.get(server.level_channel);
             if (channel && channel.isTextBased())
                await channel.send({
-                  content: server.level_message?.content
-                     ? await parsePlaceholders(auxdibot, server.level_message.content, {
-                          guild: member.guild,
-                          member: member,
-                          levelup: { from: level, to: newLevel },
-                       })
-                     : '',
+                  content:
+                     (newLevel <= 2
+                        ? '-# You can disable levelup messages for yourself with the `/levels disable_messages` command.\n'
+                        : '') +
+                     (server.level_message?.content
+                        ? await parsePlaceholders(auxdibot, server.level_message.content, {
+                             guild: member.guild,
+                             member: member,
+                             levelup: { from: level, to: newLevel },
+                          })
+                        : ''),
                   embeds: embed && [embed as APIEmbed],
                });
          } else {
@@ -47,23 +58,30 @@ export async function sendLevelMessage(
                await context.message.reply({
                   embeds: embed && [embed as APIEmbed],
                   content:
-                     server.level_message?.content &&
-                     (await parsePlaceholders(auxdibot, server.level_message.content, {
-                        guild: member.guild,
-                        member: member,
-                        levelup: { from: level, to: newLevel },
-                     })),
+                     (newLevel <= 2
+                        ? '-# You can disable levelup messages for yourself with the `/levels disable_messages` command.\n'
+                        : '') +
+                     (server.level_message?.content &&
+                        (await parsePlaceholders(auxdibot, server.level_message.content, {
+                           guild: member.guild,
+                           member: member,
+                           levelup: { from: level, to: newLevel },
+                        }))),
                });
             else if (context.textChannel) {
                await context.textChannel.send({
                   embeds: embed && [embed as APIEmbed],
-                  content: server.level_message?.content
-                     ? await parsePlaceholders(auxdibot, server.level_message.content, {
-                          guild: member.guild,
-                          member: member,
-                          levelup: { from: level, to: newLevel },
-                       })
-                     : '',
+                  content:
+                     (newLevel <= 2
+                        ? '-# You can disable levelup messages for yourself with the `/levels disable_messages` command.\n'
+                        : '') +
+                     (server.level_message?.content
+                        ? await parsePlaceholders(auxdibot, server.level_message.content, {
+                             guild: member.guild,
+                             member: member,
+                             levelup: { from: level, to: newLevel },
+                          })
+                        : ''),
                });
             }
          }

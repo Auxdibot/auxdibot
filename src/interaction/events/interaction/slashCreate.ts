@@ -14,8 +14,20 @@ export default async function slashCreate(auxdibot: Auxdibot, interaction: ChatI
 
    const interactionData: AuxdibotCommandInteraction<GuildAuxdibotCommandData | DMAuxdibotCommandData> = interaction;
    const server = interaction.guild ? await findOrCreateServer(auxdibot, interaction.guild.id) : undefined;
+
+   const subcommandArgs = [
+      interaction.options.getSubcommandGroup(false),
+      interaction.options.getSubcommand(false),
+   ].filter((i) => i);
+
+   const commandData =
+      command.subcommands?.find((subcommand) =>
+         subcommand && subcommandArgs.length > 1
+            ? subcommand.name == subcommandArgs[1] && subcommand.group == subcommandArgs[0]
+            : subcommand.name == subcommandArgs[0] && subcommand.group == null,
+      ) || command;
    if (!interaction.guild) {
-      if (!command.info.dmableCommand) {
+      if (!command.info.dmableCommand && !commandData.info.dmableCommand) {
          const discordServerOnlyEmbed = new EmbedBuilder().setColor(auxdibot.colors.denied).toJSON();
          discordServerOnlyEmbed.title = '⛔ Nope!';
          discordServerOnlyEmbed.description = `This command can only be used in Discord Servers!`;
@@ -29,17 +41,6 @@ export default async function slashCreate(auxdibot: Auxdibot, interaction: ChatI
          user: interaction.user,
       };
    }
-   const subcommandArgs = [
-      interaction.options.getSubcommandGroup(false),
-      interaction.options.getSubcommand(false),
-   ].filter((i) => i);
-
-   const commandData =
-      command.subcommands?.find((subcommand) =>
-         subcommand && subcommandArgs.length > 1
-            ? subcommand.name == subcommandArgs[1] && subcommand.group == subcommandArgs[0]
-            : subcommand.name == subcommandArgs[0] && subcommand.group == null,
-      ) || command;
    if (server && server.disabled_modules.find((item) => item == commandData.info.module.name))
       return await auxdibot.createReply(interaction, { embeds: [auxdibot.embeds.disabled.toJSON()] });
    if (interaction.guild) {
