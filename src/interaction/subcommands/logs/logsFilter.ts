@@ -18,7 +18,10 @@ export const logsFilter = <AuxdibotSubcommand>{
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;
       const key = interaction.options.getString('action', true);
-      const logAction: LogAction | undefined = LogAction[key];
+      const act = Object.keys(LogAction).find(
+         (k) => k == key || k.split('_').join(' ').toLowerCase() == key.toLowerCase(),
+      );
+      const logAction: LogAction | undefined = LogAction[act] as LogAction;
       if (!logAction)
          return await handleError(auxdibot, 'ACTION_NOT_FOUND', "That log action couldn't be found!", interaction);
 
