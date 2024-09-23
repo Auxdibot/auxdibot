@@ -1,5 +1,5 @@
 import { Auxdibot } from '@/Auxdibot';
-import { Punishment, servers } from '@prisma/client';
+import { LogAction, Punishment, servers } from '@prisma/client';
 import { Message } from 'discord.js';
 import createPunishment from '../createPunishment';
 import incrementPunishmentsTotal from '../incrementPunishmentsTotal';
@@ -26,7 +26,20 @@ export default async function checkAttachmentsSpam(auxdibot: Auxdibot, server: s
             dmed: false,
          };
          auxdibot.attachments_detections.set([message.guildId, BigInt(Date.now())], previousMessages);
-         await createPunishment(auxdibot, message.guild, punishment, undefined, message.author).catch(() => undefined);
+         await createPunishment(auxdibot, message.guild, punishment, undefined, message.author).catch((x) => {
+            auxdibot.log(
+               message.guild,
+               {
+                  type: LogAction.ERROR,
+                  date: new Date(),
+                  description: `Failed to create punishment for ${message.author.tag} (${message.author.id})`,
+                  userID: message.author.id,
+               },
+               {
+                  fields: [{ name: 'Error Message', value: x.message, inline: false }],
+               },
+            );
+         });
       }
    }
 }

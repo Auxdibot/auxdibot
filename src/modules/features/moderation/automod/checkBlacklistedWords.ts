@@ -88,9 +88,20 @@ export default async function checkBlacklistedWords(auxdibot: Auxdibot, server: 
                         ],
                      },
                   );
-                  await createPunishment(auxdibot, message.guild, punishment, undefined, message.author).catch(
-                     () => undefined,
-                  );
+                  await createPunishment(auxdibot, message.guild, punishment, undefined, message.author).catch((x) => {
+                     auxdibot.log(
+                        message.guild,
+                        {
+                           type: LogAction.ERROR,
+                           date: new Date(),
+                           description: `Failed to create punishment for ${message.author.tag} (${message.author.id})`,
+                           userID: message.author.id,
+                        },
+                        {
+                           fields: [{ name: 'Error Message', value: x.message, inline: false }],
+                        },
+                     );
+                  });
                })
                .catch(() => undefined);
          }
