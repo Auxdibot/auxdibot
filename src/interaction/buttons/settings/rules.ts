@@ -1,7 +1,7 @@
 import AuxdibotButton from '@/interfaces/buttons/AuxdibotButton';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageComponentInteraction } from 'discord.js';
 import Modules from '@/constants/bot/commands/Modules';
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import { createCommandListEmbed } from '@/modules/features/commands/createCommandListEmbed';
 

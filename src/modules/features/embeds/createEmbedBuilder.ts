@@ -1,6 +1,6 @@
 import { CustomEmojis } from '@/constants/bot/CustomEmojis';
 import { PlaceholderData } from '@/constants/embeds/PlaceholderData';
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import { BuildSession } from '@/interfaces/messages/BuildSession';
 import { isEmbedEmpty } from '@/util/isEmbedEmpty';
 import parsePlaceholders from '@/util/parsePlaceholder';

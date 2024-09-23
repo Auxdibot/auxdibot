@@ -1,4 +1,4 @@
-import { Auxdibot } from '../../../../interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import { ChannelLock, servers } from '@prisma/client';
 
 export async function createLock(auxdibot: Auxdibot, server: servers, lock: ChannelLock) {

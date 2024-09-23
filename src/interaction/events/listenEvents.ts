@@ -1,4 +1,4 @@
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import onReady from './client/onReady';
 import { BaseInteraction } from 'discord.js';
 import buttonCreate from './interaction/buttonCreate';

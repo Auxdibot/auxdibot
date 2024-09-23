@@ -1,4 +1,4 @@
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 

@@ -1,4 +1,4 @@
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 
 export default async function fetchAnalytics(auxdibot: Auxdibot) {
    await auxdibot.guilds.fetch().catch(() => null);

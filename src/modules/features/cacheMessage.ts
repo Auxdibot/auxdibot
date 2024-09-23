@@ -1,4 +1,4 @@
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import { Message } from 'discord.js';
 
 export function cacheMessage(auxdibot: Auxdibot, message: Message) {

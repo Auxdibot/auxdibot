@@ -1,4 +1,4 @@
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import { APIEmbed } from '@prisma/client';
 
 export default async function setLeaveEmbed(auxdibot: Auxdibot, serverID: string, embed?: APIEmbed, text?: string) {

@@ -1,4 +1,4 @@
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import addJoinRole from '@/modules/features/roles/join_roles/addJoinRole';
 import removeJoinRole from '@/modules/features/roles/join_roles/removeJoinRole';
 import checkAuthenticated from '@/server/checkAuthenticated';

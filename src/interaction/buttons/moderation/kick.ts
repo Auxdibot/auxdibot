@@ -2,7 +2,7 @@ import AuxdibotButton from '@/interfaces/buttons/AuxdibotButton';
 import { EmbedBuilder, GuildMember, MessageComponentInteraction } from 'discord.js';
 import canExecute from '@/util/canExecute';
 import Modules from '@/constants/bot/commands/Modules';
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import incrementPunishmentsTotal from '@/modules/features/moderation/incrementPunishmentsTotal';
 import { Punishment, PunishmentType } from '@prisma/client';
 import createPunishment from '@/modules/features/moderation/createPunishment';

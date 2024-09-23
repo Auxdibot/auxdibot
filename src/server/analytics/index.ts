@@ -1,4 +1,4 @@
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import fetchAnalytics from '@/modules/analytics/fetchAnalytics';
 import express from 'express';
 

@@ -1,6 +1,6 @@
 import { EmbedBuilder, AnySelectMenuInteraction } from 'discord.js';
 import Modules from '@/constants/bot/commands/Modules';
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import handleError from '@/util/handleError';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import AuxdibotSelectMenu from '@/interfaces/menus/AuxdibotSelectMenu';

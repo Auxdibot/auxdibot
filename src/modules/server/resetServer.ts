@@ -1,5 +1,5 @@
 import { defaultServer } from '../../constants/database/defaultServer';
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import { Guild } from 'discord.js';
 import deleteServer from './deleteServer';
 

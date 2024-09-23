@@ -1,4 +1,4 @@
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import createSchedule from '@/modules/features/schedule/createSchedule';
 import deleteSchedule from '@/modules/features/schedule/deleteSchedule';
 import checkAuthenticated from '@/server/checkAuthenticated';

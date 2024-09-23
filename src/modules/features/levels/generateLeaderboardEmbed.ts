@@ -1,5 +1,5 @@
 import { CustomEmojis } from '@/constants/bot/CustomEmojis';
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, Guild } from 'discord.js';
 import generateLevelLeaderboard from './generateLevelLeaderboard';

@@ -1,4 +1,4 @@
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import changeAttachmentsLimit from '@/modules/features/moderation/attachments/changeAttachmentsLimit';
 import addBlacklistedPhrase from '@/modules/features/moderation/blacklist/addBlacklistedPhrase';
 import removeBlacklistedWord from '@/modules/features/moderation/blacklist/removeBlacklistedWord';

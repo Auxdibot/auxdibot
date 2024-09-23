@@ -1,6 +1,6 @@
 import { EmbedBuilder, APIEmbed } from 'discord.js';
 import { CustomEmojis } from '../CustomEmojis';
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import Modules from './Modules';
 import { servercards, servers } from '@prisma/client';
 import { PunishmentValues } from '../punishments/PunishmentValues';

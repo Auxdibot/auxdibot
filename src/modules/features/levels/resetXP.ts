@@ -1,4 +1,4 @@
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 
 export default async function resetXP(auxdibot: Auxdibot, serverID: string, userID: string) {
    return await auxdibot.database.servermembers.upsert({

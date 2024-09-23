@@ -1,5 +1,5 @@
 import { Role } from 'discord.js';
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 export default async function roleDelete(auxdibot: Auxdibot, role: Role) {
    const server = await findOrCreateServer(auxdibot, role.guild.id);

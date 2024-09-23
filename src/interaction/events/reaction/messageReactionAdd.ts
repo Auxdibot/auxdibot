@@ -1,6 +1,6 @@
 import { GuildMember, MessageReaction, PartialMessageReaction, PartialUser, User } from 'discord.js';
 import Modules from '@/constants/bot/commands/Modules';
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import handleLog from '@/util/handleLog';
 import { LogAction } from '@prisma/client';

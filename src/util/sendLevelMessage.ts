@@ -1,4 +1,4 @@
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import { APIEmbed, GuildMember, GuildTextBasedChannel, Message } from 'discord.js';
 import parsePlaceholders from './parsePlaceholder';

@@ -1,5 +1,5 @@
 import { defaultStarLevels } from '@/constants/database/defaultStarLevels';
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import handleLog from '@/util/handleLog';
 import { validateEmoji } from '@/util/validateEmoji';

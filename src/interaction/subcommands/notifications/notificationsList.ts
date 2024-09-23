@@ -1,6 +1,6 @@
 import { FeedNames } from './../../../constants/bot/notifications/FeedNames';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
-import { Auxdibot } from './../../../interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import Modules from '@/constants/bot/commands/Modules';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';

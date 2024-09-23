@@ -1,5 +1,5 @@
 import { AnySelectMenuInteraction, EmbedBuilder } from 'discord.js';
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import { testCommandPermission } from '@/util/testCommandPermission';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 

@@ -1,4 +1,4 @@
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import { Punishment, PunishmentType } from '@prisma/client';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import { testLimit } from '@/util/testLimit';

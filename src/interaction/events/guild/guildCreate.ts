@@ -1,5 +1,5 @@
 import { Guild } from 'discord.js';
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import { promoRow } from '@/constants/bot/promoRow';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 

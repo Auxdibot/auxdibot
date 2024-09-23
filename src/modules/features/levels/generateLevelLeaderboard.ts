@@ -1,4 +1,4 @@
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import { Guild } from 'discord.js';
 
 export default async function generateLevelLeaderboard(auxdibot: Auxdibot, guild: Guild, limit = 1000, start = 0) {

@@ -4,7 +4,7 @@ import CommandInfo from './CommandInfo';
 import { AuxdibotSubcommand } from './AuxdibotSubcommand';
 import AuxdibotCommandInteraction from './AuxdibotCommandInteraction';
 import { BaseAuxdibotCommandData } from './AuxdibotCommandData';
-import { Auxdibot } from '../Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 
 interface AuxdibotCommand {
    data:

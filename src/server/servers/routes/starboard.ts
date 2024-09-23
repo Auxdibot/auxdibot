@@ -1,5 +1,5 @@
 import { defaultStarLevels } from '@/constants/database/defaultStarLevels';
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import createStarboard from '@/modules/features/starboard/boards/createStarboard';
 import deleteStarboard from '@/modules/features/starboard/boards/deleteStarboard';
 import setStarboardChannel from '@/modules/features/starboard/boards/setStarboardChannel';

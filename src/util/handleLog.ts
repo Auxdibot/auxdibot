@@ -1,5 +1,5 @@
 import { LogNames } from '@/constants/bot/log/LogNames';
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import updateLog from '@/modules/logs/updateLog';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import { Log } from '@prisma/client';

@@ -1,5 +1,5 @@
 import { AuditLogEvent, GuildAuditLogs, Message, PartialMessage, User } from 'discord.js';
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import deleteSuggestion from '@/modules/features/suggestions/deleteSuggestion';
 import { Log, LogAction } from '@prisma/client';

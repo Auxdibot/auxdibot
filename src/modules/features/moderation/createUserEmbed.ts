@@ -1,6 +1,6 @@
 import { CustomEmojis } from '@/constants/bot/CustomEmojis';
 import { PunishmentValues } from '@/constants/bot/punishments/PunishmentValues';
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import calcXP from '@/util/calcXP';
 import { PunishmentType } from '@prisma/client';

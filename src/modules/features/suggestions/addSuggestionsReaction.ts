@@ -1,5 +1,5 @@
 import Limits from '@/constants/database/Limits';
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import { testLimit } from '@/util/testLimit';
 import { Guild } from 'discord.js';
 import emojiRegex from 'emoji-regex';

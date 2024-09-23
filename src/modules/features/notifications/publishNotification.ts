@@ -1,4 +1,4 @@
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import { GenericFeed } from '@/interfaces/notifications/GenericFeed';
 import handleLog from '@/util/handleLog';
 import parsePlaceholders from '@/util/parsePlaceholder';

@@ -1,4 +1,4 @@
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import { findCommand } from '@/modules/features/commands/findCommand';
 import { updateCommandPermissions } from '@/modules/features/commands/updateCommandPermissions';
 import checkAuthenticated from '@/server/checkAuthenticated';

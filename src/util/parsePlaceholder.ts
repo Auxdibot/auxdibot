@@ -3,7 +3,7 @@ import { PunishmentValues } from '@/constants/bot/punishments/PunishmentValues';
 import { SuggestionStateName } from '@/constants/bot/suggestions/SuggestionStateName';
 import { StarredMessage, Suggestion } from '@prisma/client';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import { GenericFeed } from '@/interfaces/notifications/GenericFeed';
 import Placeholders from '@/constants/bot/placeholders/Placeholders';
 import { getMessage } from './getMessage';

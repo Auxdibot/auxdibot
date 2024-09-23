@@ -1,4 +1,4 @@
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import { CommandPermission } from '@prisma/client';
 import { EmbedBuilder } from 'discord.js';
 

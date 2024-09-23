@@ -1,5 +1,5 @@
 import { Log } from '@prisma/client';
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import findOrCreateServer from '../server/findOrCreateServer';
 import { testLimit } from '@/util/testLimit';
 import Limits from '@/constants/database/Limits';

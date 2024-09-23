@@ -1,6 +1,6 @@
 // Commented out prior to adding DJS new version
 
-/*import { Auxdibot } from '@/interfaces/Auxdibot';
+/*import { Auxdibot } from '@/Auxdibot';
 import { Guild } from 'discord.js';
 
 

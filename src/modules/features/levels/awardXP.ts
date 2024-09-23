@@ -1,4 +1,4 @@
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import { calculateLevel } from './calculateLevel';
 
 export default async function awardXP(auxdibot: Auxdibot, serverID: string, userID: string, xp: number) {

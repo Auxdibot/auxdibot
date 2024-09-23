@@ -1,4 +1,4 @@
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import { ReactionRoleType } from '@prisma/client';
 import { Channel, EmbedBuilder, Guild, APIEmbed, WebhookClient } from 'discord.js';
 import { parseReactionsAndRoles } from './parseReactionsAndRoles';

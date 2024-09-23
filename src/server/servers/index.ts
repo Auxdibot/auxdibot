@@ -1,4 +1,4 @@
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import express from 'express';
 import checkAuthenticated from '../checkAuthenticated';
 import log from './routes/log';

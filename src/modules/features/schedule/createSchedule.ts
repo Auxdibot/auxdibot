@@ -1,5 +1,5 @@
 import Limits from '@/constants/database/Limits';
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import handleLog from '@/util/handleLog';
 import { testLimit } from '@/util/testLimit';
 import { LogAction, ScheduledMessage } from '@prisma/client';

@@ -1,5 +1,5 @@
 import { EmbedBuilder, ContextMenuCommandInteraction } from 'discord.js';
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import { testCommandPermission } from '@/util/testCommandPermission';
 import handleError from '@/util/handleError';
