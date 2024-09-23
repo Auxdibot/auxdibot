@@ -130,7 +130,20 @@ export default async function createPunishment(
                            data: { warns: 0 },
                         })
                         .then(async () => {
-                           return await createPunishment(auxdibot, guild, thresholdPunishment, interaction, user);
+                           return await createPunishment(auxdibot, guild, thresholdPunishment, interaction, user).catch(
+                              (x) => {
+                                 auxdibot.log(
+                                    guild,
+                                    {
+                                       type: 'ERROR',
+                                       date: new Date(),
+                                       description: `Failed to create punishment for ${user.tag} (${user.id})`,
+                                       userID: user.id,
+                                    },
+                                    { fields: [{ name: 'Error Message', value: x.message, inline: false }] },
+                                 );
+                              },
+                           );
                         });
                   }
                });

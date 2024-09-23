@@ -2,7 +2,7 @@ import { Auxdibot } from '@/Auxdibot';
 import createPunishment from '@/modules/features/moderation/createPunishment';
 import incrementPunishmentsTotal from '@/modules/features/moderation/incrementPunishmentsTotal';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
-import { PunishmentType } from '@prisma/client';
+import { LogAction, PunishmentType } from '@prisma/client';
 import {
    AuditLogEvent,
    Guild,
@@ -44,7 +44,20 @@ export async function guildAuditLogEntryCreate(
             null,
             user,
             'permanent',
-         );
+         ).catch((x) => {
+            auxdibot.log(
+               guild,
+               {
+                  type: LogAction.ERROR,
+                  date: new Date(),
+                  description: `Failed to create punishment for ${user?.tag ?? targetId} (${targetId})`,
+                  userID: user?.id ?? targetId,
+               },
+               {
+                  fields: [{ name: 'Error Message', value: x.message, inline: false }],
+               },
+            );
+         });
       }
    }
 }

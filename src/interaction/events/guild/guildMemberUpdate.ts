@@ -43,7 +43,20 @@ export async function guildMemberUpdate(
                undefined,
                newMember.user,
                newMember.communicationDisabledUntilTimestamp - Date.now(),
-            );
+            ).catch((x) => {
+               auxdibot.log(
+                  newMember.guild,
+                  {
+                     type: LogAction.ERROR,
+                     date: new Date(),
+                     description: `Failed to create punishment for ${newMember.user.tag} (${newMember.id})`,
+                     userID: newMember.id,
+                  },
+                  {
+                     fields: [{ name: 'Error Message', value: x.message, inline: false }],
+                  },
+               );
+            });
          }
       }
    } else if (!server.mute_role) {

@@ -377,6 +377,13 @@ export class Auxdibot extends Client {
          return null;
       });
    }
+   /**
+    * Logs an action to the server's log channel.
+    * @param guild The guild to log the action in.
+    * @param log The log to be added to the server's log channel.
+    * @param options Additional options for the log.
+    * @returns A promise that resolves to the log that was added to the server's log channel.
+    */
    async log(guild: Guild, log: Omit<Log, 'old_date_unix'>, { fields, user_avatar }: LogOptions = {}) {
       const server = await findOrCreateServer(this, guild.id);
       if (server.filtered_logs.indexOf(log.type) != -1) return;
@@ -414,6 +421,11 @@ export class Auxdibot extends Client {
          })
          .catch(() => undefined);
    }
+   /**
+    * Checks if a user has voted in the last week.
+    * @param userID The ID of the user to check if they have voted.
+    * @returns A boolean indicating if the user has voted in the last week.
+    */
    async hasVoted(userID: string) {
       return await this.database.users
          .findFirst({ where: { userID }, select: { voted_date: true } })
