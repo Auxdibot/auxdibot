@@ -59,7 +59,7 @@ export const commandInfo = <AuxdibotSubcommand>{
          }`;
          return await auxdibot.createReply(interaction, {
             embeds: [helpSubcommandEmbed],
-            components: [promoRow.toJSON()],
+            components: [(await promoRow(auxdibot, interaction.guild?.ownerId ?? interaction.user.id)).toJSON()],
             ephemeral: true,
          });
       }
@@ -87,7 +87,7 @@ export const commandInfo = <AuxdibotSubcommand>{
          }));
       return await auxdibot.createReply(interaction, {
          embeds: [helpCommandEmbed],
-         components: [promoRow.toJSON()],
+         components: [(await promoRow(auxdibot, interaction.guild?.ownerId)).toJSON()],
          ephemeral: true,
       });
    },

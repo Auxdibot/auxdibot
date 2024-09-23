@@ -7,7 +7,6 @@ import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 import addReactionRole from '@/modules/features/roles/reaction_roles/addReactionRole';
 import handleError from '@/util/handleError';
 import parsePlaceholders from '@/util/parsePlaceholder';
-import { testLimit } from '@/util/testLimit';
 import { EmbedBuilder } from '@discordjs/builders';
 import { APIEmbed, ReactionRoleType } from '@prisma/client';
 import { ChannelType } from 'discord.js';
@@ -27,7 +26,13 @@ export const reactionRolesAddJSON = <AuxdibotSubcommand>{
          type = interaction.options.getString('type', false) || 'DEFAULT',
          webhook_url = interaction.options.getString('webhook_url');
 
-      if (!testLimit(interaction.data.guildData.reaction_roles, Limits.REACTION_ROLE_DEFAULT_LIMIT)) {
+      if (
+         !(await auxdibot.testLimit(
+            interaction.data.guildData.reaction_roles,
+            Limits.REACTION_ROLE_DEFAULT_LIMIT,
+            interaction.guild.ownerId,
+         ))
+      ) {
          return await handleError(
             auxdibot,
             'REACTION_ROLES_LIMIT_EXCEEDED',

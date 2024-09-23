@@ -1,7 +1,6 @@
 import { Auxdibot } from '@/Auxdibot';
 import { Channel, APIEmbed, Guild } from 'discord.js';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
-import { testLimit } from '@/util/testLimit';
 import Limits from '@/constants/database/Limits';
 import { FeedType, LogAction } from '@prisma/client';
 
@@ -15,7 +14,7 @@ export default async function createNotification(
    userID?: string,
 ) {
    const server = await findOrCreateServer(auxdibot, guild.id);
-   if (!testLimit(server.notifications, Limits.NOTIFICATIONS_LIMIT)) {
+   if (!(await auxdibot.testLimit(server.notifications, Limits.NOTIFICATIONS_LIMIT))) {
       throw new Error('You have too many notifications!');
    }
    const topic = await auxdibot.subscriber.testFeed(topicUrl).catch(() => {

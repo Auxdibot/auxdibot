@@ -2,7 +2,6 @@ import { Auxdibot } from '@/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import { CommandPermission } from '@prisma/client';
 import { findCommand } from './findCommand';
-import { testLimit } from '@/util/testLimit';
 import Limits from '@/constants/database/Limits';
 import { removeCommandPermission } from './removeCommandPermission';
 
@@ -15,7 +14,7 @@ export async function updateCommandPermissions(
    remove?: boolean,
 ): Promise<CommandPermission | undefined> {
    const server = await findOrCreateServer(auxdibot, guildId);
-
+   const guild = await auxdibot.guilds.fetch(guildId).catch(() => undefined);
    const cmd = findCommand(auxdibot, command, subcommand);
    if (!cmd) return undefined;
 
@@ -96,15 +95,33 @@ export async function updateCommandPermissions(
       }
    }
 
-   if (!testLimit(commandPermissions.blacklist_channels, Limits.COMMAND_PERMISSIONS_ITEM_LIMIT))
+   if (
+      !(await auxdibot.testLimit(
+         commandPermissions.blacklist_channels,
+         Limits.COMMAND_PERMISSIONS_ITEM_LIMIT,
+         guild?.ownerId,
+      ))
+   )
       throw new Error('Blacklist channels limit reached.');
-   if (!testLimit(commandPermissions.roles, Limits.COMMAND_PERMISSIONS_ITEM_LIMIT))
+   if (!(await auxdibot.testLimit(commandPermissions.roles, Limits.COMMAND_PERMISSIONS_ITEM_LIMIT, guild?.ownerId)))
       throw new Error('Roles limit reached.');
-   if (!testLimit(commandPermissions.blacklist_roles, Limits.COMMAND_PERMISSIONS_ITEM_LIMIT))
+   if (
+      !(await auxdibot.testLimit(
+         commandPermissions.blacklist_roles,
+         Limits.COMMAND_PERMISSIONS_ITEM_LIMIT,
+         guild?.ownerId,
+      ))
+   )
       throw new Error('Blacklist roles limit reached.');
-   if (!testLimit(commandPermissions.permission_bypass_roles, Limits.COMMAND_PERMISSIONS_ITEM_LIMIT))
+   if (
+      !(await auxdibot.testLimit(
+         commandPermissions.permission_bypass_roles,
+         Limits.COMMAND_PERMISSIONS_ITEM_LIMIT,
+         guild?.ownerId,
+      ))
+   )
       throw new Error('Permission bypass roles limit reached.');
-   if (!testLimit(commandPermissions.channels, Limits.COMMAND_PERMISSIONS_ITEM_LIMIT))
+   if (!(await auxdibot.testLimit(commandPermissions.channels, Limits.COMMAND_PERMISSIONS_ITEM_LIMIT, guild?.ownerId)))
       throw new Error('Channels limit reached.');
 
    return await auxdibot.database.servers

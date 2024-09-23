@@ -10,7 +10,6 @@ import incrementSuggestionsTotal from '@/modules/features/suggestions/incrementS
 import handleError from '@/util/handleError';
 
 import parsePlaceholders from '@/util/parsePlaceholder';
-import { testLimit } from '@/util/testLimit';
 import { EmbedBuilder } from '@discordjs/builders';
 import { LogAction, Suggestion, SuggestionState } from '@prisma/client';
 
@@ -91,8 +90,12 @@ export const suggestionsCreate = <AuxdibotSubcommand>{
                if (thread) suggestion.discussion_thread_id = thread.id;
             }
             if (
-               testLimit(interaction.data.guildData.suggestions, Limits.ACTIVE_SUGGESTIONS_DEFAULT_LIMIT, true) ==
-               'spliced'
+               (await auxdibot.testLimit(
+                  interaction.data.guildData.suggestions,
+                  Limits.ACTIVE_SUGGESTIONS_DEFAULT_LIMIT,
+                  interaction.guild.ownerId,
+                  true,
+               )) == 'spliced'
             ) {
                await auxdibot.database.servers.update({
                   where: { serverID: interaction.data.guildData.serverID },

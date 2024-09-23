@@ -1,7 +1,6 @@
 import Limits from '@/constants/database/Limits';
 import { Auxdibot } from '@/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
-import { testLimit } from '@/util/testLimit';
 import { APIEmbed, Guild } from 'discord.js';
 
 export async function storeEmbed(
@@ -13,7 +12,7 @@ export async function storeEmbed(
    webhook_url?: string,
 ) {
    const server = await findOrCreateServer(auxdibot, guild.id);
-   if (!testLimit(server.stored_embeds, Limits.STORED_EMBED_LIMIT)) {
+   if (!(await auxdibot.testLimit(server.stored_embeds, Limits.STORED_EMBED_LIMIT, guild.ownerId))) {
       throw new Error('You have reached the maximum number of stored embeds');
    }
    if (embed) {

@@ -1,8 +1,6 @@
 import Limits from '@/constants/database/Limits';
 import { Auxdibot } from '@/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
-
-import { testLimit } from '@/util/testLimit';
 import { LogAction } from '@prisma/client';
 import { Guild } from 'discord.js';
 
@@ -16,7 +14,7 @@ export default async function addBlacklistedPhrase(
    if (server.automod_banned_phrases.find((i) => i == blacklisted_phrase)) {
       throw new Error('You already have this blacklisted phrase added!');
    }
-   if (!testLimit(server.automod_banned_phrases, Limits.AUTOMOD_BLACKLIST_LIMIT)) {
+   if (!(await auxdibot.testLimit(server.automod_banned_phrases, Limits.AUTOMOD_BLACKLIST_LIMIT, guild.ownerId))) {
       throw new Error('You have too many blacklisted phrases!');
    }
    return auxdibot.database.servers

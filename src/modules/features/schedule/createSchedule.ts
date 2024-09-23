@@ -1,7 +1,6 @@
 import Limits from '@/constants/database/Limits';
 import { Auxdibot } from '@/Auxdibot';
 
-import { testLimit } from '@/util/testLimit';
 import { LogAction, ScheduledMessage } from '@prisma/client';
 import { Channel, Guild } from 'discord.js';
 
@@ -15,7 +14,7 @@ export default async function createSchedule(
    return auxdibot.database.servers
       .findFirst({ where: { serverID: guild.id }, select: { serverID: true, scheduled_messages: true } })
       .then(async (data) => {
-         if (!testLimit(data.scheduled_messages, Limits.SCHEDULE_LIMIT)) {
+         if (!(await auxdibot.testLimit(data.scheduled_messages, Limits.SCHEDULE_LIMIT, guild.ownerId))) {
             throw new Error('schedules limit exceeded');
          }
          await auxdibot.database.servers.update({

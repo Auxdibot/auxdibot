@@ -2,8 +2,6 @@ import Limits from '@/constants/database/Limits';
 import { Auxdibot } from '@/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import { validateEmoji } from '@/util/validateEmoji';
-
-import { testLimit } from '@/util/testLimit';
 import { LogAction, StarboardBoardData } from '@prisma/client';
 import { Guild } from 'discord.js';
 
@@ -33,7 +31,7 @@ export default async function createStarboard(
    if (!(await guild.channels.fetch(starboard.channelID).catch(() => undefined)))
       throw new Error('Invalid channel provided.');
    if (starboard.star_levels.length > 5) throw new Error('Star levels must have a maximum of 5 levels.');
-   if (!testLimit(server.starboard_boards, Limits.STARBOARD_BOARD_LIMIT))
+   if (!(await auxdibot.testLimit(server.starboard_boards, Limits.STARBOARD_BOARD_LIMIT, guild.ownerId)))
       throw new Error('You have reached the maximum amount of starboards allowed on this server.');
    if (!starboard.channelID) throw new Error('Invalid channel provided.');
 

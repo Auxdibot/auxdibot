@@ -4,7 +4,6 @@ import { DEFAULT_STARBOARD_MESSAGE_EMBED } from '@/constants/embeds/DefaultEmbed
 import { Auxdibot } from '@/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import parsePlaceholders from '@/util/parsePlaceholder';
-import { testLimit } from '@/util/testLimit';
 import { StarboardBoardData } from '@prisma/client';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, Guild, Message, PartialMessage } from 'discord.js';
 import awardXP from '../../levels/awardXP';
@@ -65,7 +64,12 @@ export default async function createStarredMessage(
             : undefined,
       );
 
-      testLimit(server.starred_messages, Limits.ACTIVE_STARRED_MESSAGES_DEFAULT_LIMIT, true);
+      await auxdibot.testLimit(
+         server.starred_messages,
+         Limits.ACTIVE_STARRED_MESSAGES_DEFAULT_LIMIT,
+         guild.ownerId,
+         true,
+      );
 
       const components = [
          new ActionRowBuilder<ButtonBuilder>()

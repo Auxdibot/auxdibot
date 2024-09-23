@@ -80,7 +80,7 @@ export const settingsView = <AuxdibotSubcommand>{
          .toJSON();
       return await auxdibot.createReply(interaction, {
          embeds: [SettingsEmbeds['general'](auxdibot, server, card)],
-         components: [modulesRow, promoRow],
+         components: [modulesRow, await promoRow(auxdibot, interaction.guild.ownerId)],
       });
    },
 };

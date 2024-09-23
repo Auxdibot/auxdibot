@@ -6,7 +6,6 @@ import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInt
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 import { addAutoModException } from '@/modules/features/moderation/exceptions/addAutoModException';
 import handleError from '@/util/handleError';
-import { testLimit } from '@/util/testLimit';
 import { EmbedBuilder } from '@discordjs/builders';
 import { PermissionsBitField } from 'discord.js';
 
@@ -57,7 +56,7 @@ export const exceptionsAdd = <AuxdibotSubcommand>{
             interaction,
          );
       }
-      if (!testLimit(server.join_roles, Limits.AUTOMOD_EXCEPTION_LIMIT)) {
+      if (!(await auxdibot.testLimit(server.join_roles, Limits.AUTOMOD_EXCEPTION_LIMIT, interaction.guild.ownerId))) {
          return await handleError(
             auxdibot,
             'AUTOMOD_EXCEPTION_LIMIT_EXCEEDED',
