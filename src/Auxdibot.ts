@@ -437,7 +437,7 @@ export class Auxdibot extends Client {
       const value = (await this.hasVoted(ownerID).catch(() => false)) ? limit.voted : limit.default;
       if (v.length < value) return true;
       if (purgePrior) {
-         v.splice(0, v.length - value);
+         v.splice(0, 1);
          return 'spliced';
       }
       return false;
