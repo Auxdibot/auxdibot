@@ -9,6 +9,9 @@ export default async function guildCreate(auxdibot: Auxdibot, guild: Guild) {
    if (!channel) return;
    await findOrCreateServer(auxdibot, guild.id).catch(() => undefined);
    await channel
-      .send({ embeds: [auxdibot.embeds.welcome.toJSON()], components: [promoRow.toJSON()] })
+      .send({
+         embeds: [auxdibot.embeds.welcome.toJSON()],
+         components: [(await promoRow(auxdibot, guild.ownerId)).toJSON()],
+      })
       .catch(() => undefined);
 }

@@ -1,13 +1,20 @@
 import { Auxdibot } from '@/Auxdibot';
 import { Suggestion } from '@prisma/client';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
-import { testLimit } from '@/util/testLimit';
 import Limits from '@/constants/database/Limits';
 
 export default async function createSuggestion(auxdibot: Auxdibot, serverID: string, suggestion: Suggestion) {
    const server = await findOrCreateServer(auxdibot, serverID);
+   const guild = await auxdibot.guilds.fetch(serverID).catch(() => undefined);
    if (server.suggestions.find((i) => i.suggestionID == suggestion.suggestionID)) return undefined;
-   if (testLimit(server.suggestions, Limits.ACTIVE_SUGGESTIONS_DEFAULT_LIMIT, true) == 'spliced') {
+   if (
+      (await auxdibot.testLimit(
+         server.suggestions,
+         Limits.ACTIVE_SUGGESTIONS_DEFAULT_LIMIT,
+         guild && guild.ownerId,
+         true,
+      )) == 'spliced'
+   ) {
       await auxdibot.database.servers.update({
          where: { serverID: server.serverID },
          data: { suggestions: server.suggestions },

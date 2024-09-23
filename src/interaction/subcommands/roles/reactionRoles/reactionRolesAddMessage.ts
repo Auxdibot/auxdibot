@@ -7,8 +7,6 @@ import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 import { applyReactionsToMessages } from '@/modules/features/roles/reaction_roles/applyReactionsToMessage';
 import { getMessage } from '@/util/getMessage';
 import handleError from '@/util/handleError';
-
-import { testLimit } from '@/util/testLimit';
 import { EmbedBuilder } from '@discordjs/builders';
 import { LogAction, ReactionRoleType } from '@prisma/client';
 
@@ -27,7 +25,13 @@ export const reactionRolesAddMessage = <AuxdibotSubcommand>{
       const split = roles.split(' ');
       const builder = [];
       const server = interaction.data.guildData;
-      if (!testLimit(interaction.data.guildData.reaction_roles, Limits.REACTION_ROLE_DEFAULT_LIMIT)) {
+      if (
+         !(await auxdibot.testLimit(
+            interaction.data.guildData.reaction_roles,
+            Limits.REACTION_ROLE_DEFAULT_LIMIT,
+            interaction.guild.ownerId,
+         ))
+      ) {
          return await handleError(
             auxdibot,
             'REACTION_ROLES_LIMIT_EXCEEDED',

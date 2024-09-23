@@ -25,7 +25,13 @@ export const scheduleMessage = <AuxdibotSubcommand>{
          times_to_run = interaction.options.getNumber('times_to_run'),
          id = interaction.options.getString('id', true),
          start_date = interaction.options.getString('start_date');
-      if (interaction.data.guildData.scheduled_messages.length >= Limits.SCHEDULE_LIMIT) {
+      if (
+         !(await auxdibot.testLimit(
+            interaction.data.guildData.scheduled_messages,
+            Limits.SCHEDULE_LIMIT,
+            interaction.guild.ownerId,
+         ))
+      ) {
          return await handleError(
             auxdibot,
             'SCHEDULE_LIMIT_REACHED',

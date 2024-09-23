@@ -46,7 +46,7 @@ export const modulesList = <AuxdibotSubcommand>{
       ];
       return await auxdibot.createReply(interaction, {
          embeds: [embed],
-         components: [promoRow.toJSON()],
+         components: [(await promoRow(auxdibot, interaction.guild?.ownerId ?? interaction.user.id)).toJSON()],
          ephemeral: true,
       });
    },

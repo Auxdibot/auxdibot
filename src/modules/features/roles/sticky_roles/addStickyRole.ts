@@ -2,7 +2,6 @@ import Limits from '@/constants/database/Limits';
 import { Auxdibot } from '@/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 
-import { testLimit } from '@/util/testLimit';
 import { LogAction } from '@prisma/client';
 import { APIRole, Guild, Role, User } from 'discord.js';
 
@@ -19,7 +18,7 @@ export default async function addStickyRole(
       throw new Error(`You already have ${role.name} added as a sticky role!`);
    if (guild.members.me.roles.highest.position <= role.position)
       throw new Error("This role is higher than Auxdibot's highest role!");
-   if (!testLimit(server.sticky_roles, Limits.STICKY_ROLE_DEFAULT_LIMIT))
+   if (!(await auxdibot.testLimit(server.sticky_roles, Limits.STICKY_ROLE_DEFAULT_LIMIT, guild.ownerId)))
       throw new Error('You have too many existing sticky roles!');
    return auxdibot.database.servers
       .update({

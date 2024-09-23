@@ -184,7 +184,11 @@ export class Auxdibot extends Client {
          .setTitle('Vote Received - Top.GG')
          .setDescription(
             'Thank you for supporting Auxdibot on Top.GG! You have received temporary benefits for voting.',
-         ),
+         )
+         .setFields({
+            name: 'What Benefits?',
+            value: 'You have received\n\n* Expanded storage for servers you own (25%+ more storage!)\n* A fancy check mark on the Bot dashboard! 😳',
+         }),
    };
    /**
     * Creates an instance of Auxdibot, and initializes the instance, using the DISCORD_BOT_TOKEN and DISCORD_BOT_CLIENT_ID
@@ -409,5 +413,33 @@ export class Auxdibot extends Client {
             return log;
          })
          .catch(() => undefined);
+   }
+   async hasVoted(userID: string) {
+      return await this.database.users
+         .findFirst({ where: { userID }, select: { voted_date: true } })
+         .then(({ voted_date }) => {
+            const oneWeekAgo = new Date();
+            oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+            return voted_date && voted_date.valueOf() >= oneWeekAgo.valueOf();
+         });
+   }
+   /**
+    * Checks if the length of an array is less than a specified limit.
+    * Optionally, it can purge the prior elements of the array if the limit is exceeded.
+    *
+    * @param v - The array to be checked.
+    * @param limit - The maximum allowed length of the array.
+    * @param purgePrior - Optional. If true, removes the prior elements of the array if the limit is exceeded. Default is false.
+    * @returns True if the length of the array is less than the limit, false otherwise. If purgePrior is true and the limit is exceeded, returns 'spliced'.
+    */
+   async testLimit(v: unknown[], limit: { default: number; voted: number }, ownerID?: string, purgePrior?: boolean) {
+      const value = (await this.hasVoted(ownerID).catch(() => false)) ? limit.voted : limit.default;
+      if (v.length < value) return true;
+      if (purgePrior) {
+         v.splice(0, v.length - value);
+         return 'spliced';
+      }
+      return false;
    }
 }

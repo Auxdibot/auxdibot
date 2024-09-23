@@ -1,8 +1,6 @@
 import Limits from '@/constants/database/Limits';
 import { Auxdibot } from '@/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
-
-import { testLimit } from '@/util/testLimit';
 import { LogAction, Multiplier } from '@prisma/client';
 import { Guild } from 'discord.js';
 
@@ -13,7 +11,7 @@ export default async function createRoleMultiplier(
    multiplier: Multiplier,
 ) {
    const server = await findOrCreateServer(auxdibot, guild.id);
-   if (!testLimit(server.role_multipliers, Limits.MULTIPLIER_DEFAULT_LIMIT))
+   if (!(await auxdibot.testLimit(server.role_multipliers, Limits.MULTIPLIER_DEFAULT_LIMIT, guild.ownerId)))
       throw new Error('You have too many role multipliers!');
    if (isNaN(multiplier.multiplier)) throw new Error('You must provide a valid multiplier!');
    if (multiplier.multiplier < 0 || multiplier.multiplier > 999)

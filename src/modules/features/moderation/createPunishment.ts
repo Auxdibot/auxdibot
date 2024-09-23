@@ -1,7 +1,6 @@
 import { Auxdibot } from '@/Auxdibot';
 import { Punishment, PunishmentType } from '@prisma/client';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
-import { testLimit } from '@/util/testLimit';
 import Limits from '@/constants/database/Limits';
 import { BaseInteraction, EmbedBuilder, Guild, User } from 'discord.js';
 import { PunishmentValues } from '@/constants/bot/punishments/PunishmentValues';
@@ -20,7 +19,10 @@ export default async function createPunishment(
 ) {
    const server = await findOrCreateServer(auxdibot, guild.id);
    if (server.punishments.find((i) => i.punishmentID == punishment.punishmentID)) return undefined;
-   if (testLimit(server.punishments, Limits.ACTIVE_PUNISHMENTS_DEFAULT_LIMIT, true) == 'spliced') {
+   if (
+      (await auxdibot.testLimit(server.punishments, Limits.ACTIVE_PUNISHMENTS_DEFAULT_LIMIT, guild.ownerId, true)) ==
+      'spliced'
+   ) {
       await auxdibot.database.servers.update({
          where: { serverID: server.serverID },
          data: { punishments: server.punishments },
