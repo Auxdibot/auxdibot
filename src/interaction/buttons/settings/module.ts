@@ -1,7 +1,7 @@
 import AuxdibotButton from '@/interfaces/buttons/AuxdibotButton';
 import { MessageComponentInteraction } from 'discord.js';
 import Modules from '@/constants/bot/commands/Modules';
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import { HelpEmbeds } from '@/constants/bot/commands/HelpEmbeds';
 
 export default <AuxdibotButton>{

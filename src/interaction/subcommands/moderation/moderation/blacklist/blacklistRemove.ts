@@ -1,4 +1,4 @@
-import { Auxdibot } from '../../../../../interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import Modules from '@/constants/bot/commands/Modules';
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';

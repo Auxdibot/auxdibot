@@ -1,6 +1,6 @@
 import { Message, PartialMessage } from 'discord.js';
 
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import handleLog from '@/util/handleLog';
 import { Log, LogAction } from '@prisma/client';
 import checkBlacklistedWords from '@/modules/features/moderation/automod/checkBlacklistedWords';

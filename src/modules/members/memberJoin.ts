@@ -1,4 +1,4 @@
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import { GuildMember, PartialGuildMember } from 'discord.js';
 
 export default async function memberJoin(

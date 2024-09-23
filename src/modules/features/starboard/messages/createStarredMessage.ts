@@ -1,7 +1,7 @@
 import Limits from '@/constants/database/Limits';
 import { defaultStarLevels } from '@/constants/database/defaultStarLevels';
 import { DEFAULT_STARBOARD_MESSAGE_EMBED } from '@/constants/embeds/DefaultEmbeds';
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import parsePlaceholders from '@/util/parsePlaceholder';
 import { testLimit } from '@/util/testLimit';

@@ -1,5 +1,5 @@
 import { PlaceholdersData } from '@/constants/bot/placeholders/PlaceholdersData';
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import { EmbedBuilder } from 'discord.js';
 
 export function createPlaceholderList(auxdibot: Auxdibot) {

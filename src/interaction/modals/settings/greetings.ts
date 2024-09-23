@@ -1,6 +1,6 @@
 import { EmbedBuilder, ModalSubmitInteraction } from 'discord.js';
 import Modules from '@/constants/bot/commands/Modules';
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import AuxdibotModal from '@/interfaces/modals/AuxdibotModal';
 import handleError from '@/util/handleError';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';

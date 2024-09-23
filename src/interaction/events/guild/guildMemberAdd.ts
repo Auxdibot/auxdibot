@@ -1,7 +1,7 @@
 import { APIEmbed, GuildMember } from 'discord.js';
 import parsePlaceholders from '@/util/parsePlaceholder';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import memberJoin from '@/modules/members/memberJoin';
 import handleLog from '@/util/handleLog';
 import { LogAction } from '@prisma/client';

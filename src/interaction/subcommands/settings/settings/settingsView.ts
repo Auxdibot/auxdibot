@@ -2,7 +2,7 @@ import { CustomEmojis } from '@/constants/bot/CustomEmojis';
 import Modules from '@/constants/bot/commands/Modules';
 import { SettingsEmbeds } from '@/constants/bot/commands/SettingsEmbeds';
 import { promoRow } from '@/constants/bot/promoRow';
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';

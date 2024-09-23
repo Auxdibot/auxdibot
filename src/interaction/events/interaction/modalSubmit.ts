@@ -1,5 +1,5 @@
 import { EmbedBuilder, ModalSubmitInteraction } from 'discord.js';
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import { testCommandPermission } from '@/util/testCommandPermission';
 

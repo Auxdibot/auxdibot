@@ -1,4 +1,4 @@
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import { Channel, APIEmbed, Guild } from 'discord.js';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import { testLimit } from '@/util/testLimit';

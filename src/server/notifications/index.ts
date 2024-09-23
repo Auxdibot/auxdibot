@@ -1,6 +1,6 @@
 import express from 'express';
 import crypto from 'crypto';
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import { GenericFeed } from '@/interfaces/notifications/GenericFeed';
 import publishNotification from '@/modules/features/notifications/publishNotification';
 

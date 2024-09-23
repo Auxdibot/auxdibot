@@ -1,4 +1,4 @@
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import setJoinDMEmbed from '@/modules/features/greetings/setJoinDMEmbed';
 import setJoinEmbed from '@/modules/features/greetings/setJoinEmbed';
 import setJoinLeaveChannel from '@/modules/features/greetings/setJoinLeaveChannel';

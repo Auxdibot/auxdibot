@@ -1,6 +1,6 @@
 import { getMessage } from '@/util/getMessage';
 import parsePlaceholders from '@/util/parsePlaceholder';
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import addReactionRole from '@/modules/features/roles/reaction_roles/addReactionRole';
 import removeReactionRole from '@/modules/features/roles/reaction_roles/removeReactionRole';
 import checkAuthenticated from '@/server/checkAuthenticated';

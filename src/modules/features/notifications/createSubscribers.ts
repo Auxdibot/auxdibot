@@ -1,4 +1,4 @@
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 
 export default async function createSubscribers(auxdibot: Auxdibot) {
    const guilds = await auxdibot.database.servers.findMany();

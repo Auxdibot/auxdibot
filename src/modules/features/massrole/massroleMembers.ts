@@ -1,4 +1,4 @@
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import handleLog from '@/util/handleLog';
 import { LogAction } from '@prisma/client';
 import { APIRole, Guild, Role } from 'discord.js';

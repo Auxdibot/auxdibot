@@ -1,4 +1,4 @@
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import { UserBadge } from '@prisma/client';
 import { Channel } from 'discord.js';
 import { Express } from 'express';

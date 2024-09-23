@@ -1,4 +1,4 @@
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import { findCommand } from '@/modules/features/commands/findCommand';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import { BaseInteraction, ForumChannel, GuildTextBasedChannel } from 'discord.js';

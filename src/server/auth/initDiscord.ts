@@ -1,4 +1,4 @@
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import { UserBadge } from '@prisma/client';
 import passport from 'passport';
 import { Strategy as DiscordStrategy } from 'passport-discord';

@@ -1,4 +1,4 @@
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import { calculateLevel } from '@/modules/features/levels/calculateLevel';
 import { generateLeaderboardCount } from '@/modules/features/levels/generateLeaderboardCount';
 import generateLevelLeaderboard from '@/modules/features/levels/generateLevelLeaderboard';

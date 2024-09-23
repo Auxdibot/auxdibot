@@ -8,7 +8,7 @@ import {
    ButtonStyle,
 } from 'discord.js';
 import Modules from '@/constants/bot/commands/Modules';
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import handleError from '@/util/handleError';
 import { CustomEmojis } from '@/constants/bot/CustomEmojis';
 

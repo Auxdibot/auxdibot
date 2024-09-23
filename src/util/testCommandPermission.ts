@@ -1,5 +1,5 @@
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import { BaseInteraction, GuildMember, PermissionFlagsBits } from 'discord.js';
 import { findCommand } from '@/modules/features/commands/findCommand';
 import { CommandPermission } from '@prisma/client';

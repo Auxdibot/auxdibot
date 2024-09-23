@@ -1,4 +1,4 @@
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import { AuxdibotContextMenu } from '@/interfaces/contexts/AuxdibotContextMenu';
 import handleError from '@/util/handleError';
 import { ActionRowBuilder, TextInputBuilder } from '@discordjs/builders';

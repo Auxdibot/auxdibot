@@ -1,5 +1,5 @@
 import { ContextMenuCommandBuilder, ContextMenuCommandInteraction } from 'discord.js';
-import { Auxdibot } from '../Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import CommandInfo from '../commands/CommandInfo';
 
 export interface AuxdibotContextMenu {

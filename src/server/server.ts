@@ -1,4 +1,4 @@
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import express from 'express';
 import http from 'http';
 import https from 'https';
@@ -138,7 +138,7 @@ export default async function server(auxdibot: Auxdibot) {
    const server = http.createServer(app);
 
    server.listen(port, () => {
-      console.log(`-> Express server is up at port ${port}`);
+      console.log(`\x1b[32m-> Express server is up at port ${port}\x1b[0m`);
    });
    if (process.env.NODE_ENV == 'production') {
       const privkey = await readFile('/etc/letsencrypt/live/bot.auxdible.me/privkey.pem', 'utf8'),

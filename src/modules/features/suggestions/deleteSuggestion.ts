@@ -1,4 +1,4 @@
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 
 export default async function deleteSuggestion(auxdibot: Auxdibot, serverID: string, suggestionID: number) {

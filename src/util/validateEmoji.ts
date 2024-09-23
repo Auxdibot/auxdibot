@@ -1,4 +1,4 @@
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import { GuildEmoji } from 'discord.js';
 import emojiRegex from 'emoji-regex';
 

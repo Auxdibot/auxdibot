@@ -1,4 +1,4 @@
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 
 /**
  * Migrate data based off a flag in the environment variables, "MIGRATION"

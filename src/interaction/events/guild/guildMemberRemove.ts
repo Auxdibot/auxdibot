@@ -1,7 +1,7 @@
 import { APIEmbed, GuildMember, PartialGuildMember } from 'discord.js';
 import parsePlaceholders from '@/util/parsePlaceholder';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import memberLeave from '@/modules/members/memberLeave';
 import handleLog from '@/util/handleLog';
 import { LogAction } from '@prisma/client';

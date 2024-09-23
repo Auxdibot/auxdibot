@@ -1,4 +1,4 @@
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import { NextFunction, Request, Response } from 'express';
 
 export default function checkGuildOwnership(auxdibot: Auxdibot, req: Request, res: Response, next: NextFunction) {

@@ -1,4 +1,4 @@
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import { AsyncTask, SimpleIntervalJob } from 'toad-scheduler';
 export default function scheduleStarboardTimeoutClear(auxdibot: Auxdibot) {
    const task = new AsyncTask(

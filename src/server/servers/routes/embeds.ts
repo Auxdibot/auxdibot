@@ -1,5 +1,5 @@
 import parsePlaceholders from '@/util/parsePlaceholder';
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import sendEmbed from '@/modules/features/embeds/sendEmbed';
 import checkAuthenticated from '@/server/checkAuthenticated';
 import checkGuildOwnership from '@/server/checkGuildOwnership';

@@ -1,4 +1,4 @@
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import { APIRole, BaseInteraction, Role } from 'discord.js';
 import { checkPermissionBypassRole } from './checkPermissionBypassRole';
 

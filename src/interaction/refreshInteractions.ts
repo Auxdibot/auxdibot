@@ -1,4 +1,4 @@
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import { REST, Routes } from 'discord.js';
 import fs from 'fs';
 import path from 'path';

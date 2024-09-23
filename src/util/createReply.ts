@@ -1,7 +1,7 @@
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import { BaseInteraction, InteractionReplyOptions, InteractionResponse, Message, MessagePayload } from 'discord.js';
-import { AuxdibotReplyOptions } from '../interfaces/AuxdibotReplyOptions';
+import { AuxdibotReplyOptions } from '@/interfaces/AuxdibotReplyOptions';
 import handleLog from './handleLog';
 
 /**

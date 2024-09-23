@@ -1,4 +1,4 @@
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import addSuggestionsReaction from '@/modules/features/suggestions/addSuggestionsReaction';
 import deleteSuggestion from '@/modules/features/suggestions/deleteSuggestion';
 import deleteSuggestionsReaction from '@/modules/features/suggestions/deleteSuggestionsReaction';

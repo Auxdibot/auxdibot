@@ -1,4 +1,4 @@
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import { AsyncTask, SimpleIntervalJob } from 'toad-scheduler';
 import findOrCreateServer from '../server/findOrCreateServer';
 export default function scheduleClearMessageCache(auxdibot: Auxdibot) {

@@ -1,4 +1,4 @@
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import changeLeaderboardVisibility from '@/modules/features/levels/changeLeaderboardVisibility';
 import createLevelReward from '@/modules/features/levels/createLevelReward';
 import deleteLevelReward from '@/modules/features/levels/deleteLevelReward';

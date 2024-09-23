@@ -1,4 +1,4 @@
-import { Auxdibot } from './../../../interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { EmbedBuilder, GuildBasedChannel, SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';

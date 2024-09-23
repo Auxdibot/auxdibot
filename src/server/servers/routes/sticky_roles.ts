@@ -1,4 +1,4 @@
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import addStickyRole from '@/modules/features/roles/sticky_roles/addStickyRole';
 import removeStickyRole from '@/modules/features/roles/sticky_roles/removeStickyRole';
 import checkAuthenticated from '@/server/checkAuthenticated';

@@ -1,4 +1,4 @@
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import { Punishment, servers } from '@prisma/client';
 import { Message } from 'discord.js';
 import createPunishment from '../createPunishment';

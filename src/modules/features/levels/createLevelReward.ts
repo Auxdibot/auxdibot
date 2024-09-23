@@ -1,5 +1,5 @@
 import Limits from '@/constants/database/Limits';
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import handleLog from '@/util/handleLog';
 import { testLimit } from '@/util/testLimit';

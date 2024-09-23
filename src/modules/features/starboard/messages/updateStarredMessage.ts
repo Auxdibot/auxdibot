@@ -1,5 +1,5 @@
 import { DEFAULT_STARBOARD_MESSAGE_EMBED } from '@/constants/embeds/DefaultEmbeds';
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import parsePlaceholders from '@/util/parsePlaceholder';
 import { StarboardBoardData, StarredMessage } from '@prisma/client';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, Guild, GuildBasedChannel } from 'discord.js';

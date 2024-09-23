@@ -1,7 +1,7 @@
 import { Message } from 'discord.js';
 import Modules from '@/constants/bot/commands/Modules';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import awardXP from '@/modules/features/levels/awardXP';
 import checkBlacklistedWords from '@/modules/features/moderation/automod/checkBlacklistedWords';
 import { cacheMessage } from '@/modules/features/cacheMessage';

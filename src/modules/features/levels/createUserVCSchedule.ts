@@ -1,4 +1,4 @@
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import { GuildMember } from 'discord.js';
 import { AsyncTask, SimpleIntervalJob } from 'toad-scheduler';
 import awardXP from './awardXP';

@@ -1,4 +1,4 @@
-import { Auxdibot } from '@/interfaces/Auxdibot';
+import { Auxdibot } from '@/Auxdibot';
 import createNotification from '@/modules/features/notifications/createNotification';
 import deleteNotification from '@/modules/features/notifications/deleteNotification';
 import { getChannelId } from '@/modules/features/notifications/getChannelId';
