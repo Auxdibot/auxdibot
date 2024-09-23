@@ -1,6 +1,6 @@
 import { Auxdibot } from '@/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
-import handleLog from '@/util/handleLog';
+
 import { LogAction } from '@prisma/client';
 import { Guild } from 'discord.js';
 
@@ -21,7 +21,7 @@ export default async function deleteChannelMultiplier(
          select: { channel_multipliers: true },
       })
       .then((data) => {
-         handleLog(auxdibot, guild, {
+         auxdibot.log(guild, {
             type: LogAction.MULTIPLIER_DELETED,
             userID: user.id,
             date: new Date(),

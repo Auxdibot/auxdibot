@@ -2,7 +2,7 @@ import { Auxdibot } from '@/Auxdibot';
 import { LogAction, Punishment, PunishmentType, servers } from '@prisma/client';
 import { EmbedBuilder, Message } from 'discord.js';
 import createPunishment from '../createPunishment';
-import handleLog from '@/util/handleLog';
+
 import incrementPunishmentsTotal from '../incrementPunishmentsTotal';
 import { PunishmentValues } from '@/constants/bot/punishments/PunishmentValues';
 
@@ -30,8 +30,7 @@ export default async function checkBlacklistedWords(auxdibot: Auxdibot, server: 
                      .send({ embeds: [dmEmbed] })
                      .then(() => true)
                      .catch(() => false);
-                  await handleLog(
-                     auxdibot,
+                  await auxdibot.log(
                      message.guild,
                      {
                         type: LogAction.MESSAGE_DELETED_AUTOMOD,
@@ -41,13 +40,15 @@ export default async function checkBlacklistedWords(auxdibot: Auxdibot, server: 
                            !message.channel.isDMBased() ? message.channel.name : 'a channel'
                         } because it included the blacklisted phrase "${blacklist}"`,
                      },
-                     [
-                        {
-                           name: 'Deleted Message',
-                           value: `Deleted Content: \n\`\`\`${message.cleanContent}\`\`\``,
-                           inline: false,
-                        },
-                     ],
+                     {
+                        fields: [
+                           {
+                              name: 'Deleted Message',
+                              value: `Deleted Content: \n\`\`\`${message.cleanContent}\`\`\``,
+                              inline: false,
+                           },
+                        ],
+                     },
                   );
                })
                .catch(() => undefined);
@@ -65,8 +66,7 @@ export default async function checkBlacklistedWords(auxdibot: Auxdibot, server: 
             message
                .delete()
                .then(async () => {
-                  await handleLog(
-                     auxdibot,
+                  await auxdibot.log(
                      message.guild,
                      {
                         type: LogAction.MESSAGE_DELETED_AUTOMOD,
@@ -78,13 +78,15 @@ export default async function checkBlacklistedWords(auxdibot: Auxdibot, server: 
                            PunishmentValues[server.automod_banned_phrases_punishment].action
                         })`,
                      },
-                     [
-                        {
-                           name: 'Deleted Message',
-                           value: `Deleted Content: \n\`\`\`${message.cleanContent}\`\`\``,
-                           inline: false,
-                        },
-                     ],
+                     {
+                        fields: [
+                           {
+                              name: 'Deleted Message',
+                              value: `Deleted Content: \n\`\`\`${message.cleanContent}\`\`\``,
+                              inline: false,
+                           },
+                        ],
+                     },
                   );
                   await createPunishment(auxdibot, message.guild, punishment, undefined, message.author).catch(
                      () => undefined,

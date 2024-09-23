@@ -5,7 +5,7 @@ import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandD
 import Modules from '@/constants/bot/commands/Modules';
 import { EmbedBuilder, PermissionsBitField } from 'discord.js';
 import { deleteLock } from '@/modules/features/moderation/lock/deleteLock';
-import handleLog from '@/util/handleLog';
+
 import { Log, LogAction } from '@prisma/client';
 import { testDiscordPermission } from '@/util/testDiscordPermission';
 
@@ -36,7 +36,7 @@ export const unlockServer = <AuxdibotSubcommand>{
          date: new Date(),
          description: `The server is now unlocked.`,
       };
-      handleLog(auxdibot, interaction.guild, log);
+      auxdibot.log(interaction.guild, log);
       await auxdibot.createReply(interaction, { embeds: [embed] });
       for (const locked of server.locked_channels) {
          const channel = await interaction.guild.channels.fetch(locked.channelID).catch(() => undefined);

@@ -1,9 +1,8 @@
-import handleLog from '@/util/handleLog';
 import { assert } from 'chai';
 
-suite('handleLog', () => {
+suite('auxdibot.log', () => {
    test('is defined', () => {
-      assert.isDefined(handleLog, 'handleLog is defined');
-      assert.isFunction(handleLog, 'handleLog is a function');
+      assert.isDefined(auxdibot.log, 'auxdibot.log is defined');
+      assert.isFunction(auxdibot.log, 'auxdibot.log is a function');
    });
 });

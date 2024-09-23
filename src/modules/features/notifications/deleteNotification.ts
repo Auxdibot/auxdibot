@@ -1,6 +1,6 @@
 import { Auxdibot } from '@/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
-import handleLog from '@/util/handleLog';
+
 import { LogAction } from '@prisma/client';
 import { Guild } from 'discord.js';
 
@@ -21,7 +21,7 @@ export default async function deleteNotification(
          select: { notifications: true },
       })
       .then(async () => {
-         await handleLog(auxdibot, guild, {
+         await auxdibot.log(guild, {
             userID: user.id,
             description: `${user.username} deleted notification #${id + 1}.`,
             type: LogAction.NOTIFICATION_DELETED,

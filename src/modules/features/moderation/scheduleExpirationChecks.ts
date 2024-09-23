@@ -1,6 +1,6 @@
 import { Auxdibot } from '@/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
-import handleLog from '@/util/handleLog';
+
 import { LogAction, PunishmentType } from '@prisma/client';
 import { punishmentInfoField } from './punishmentInfoField';
 import { AsyncTask, SimpleIntervalJob } from 'toad-scheduler';
@@ -23,8 +23,7 @@ export default function scheduleExpirationChecks(auxdibot: Auxdibot) {
                });
                if (expired) {
                   for (const expiredPunishment of expired) {
-                     handleLog(
-                        auxdibot,
+                     auxdibot.log(
                         guild,
                         {
                            type: LogAction.PUNISHMENT_EXPIRED,
@@ -32,7 +31,7 @@ export default function scheduleExpirationChecks(auxdibot: Auxdibot) {
                            date: new Date(),
                            userID: auxdibot.user.id,
                         },
-                        [punishmentInfoField(expiredPunishment, true, true)],
+                        { fields: [punishmentInfoField(expiredPunishment, true, true)] },
                      );
                      switch (expiredPunishment.type) {
                         case PunishmentType.BAN:

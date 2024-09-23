@@ -15,7 +15,6 @@ export async function sendLevelMessage(
    newLevel: number,
    context: LevelMessageContext,
 ) {
-   console.log('new level ' + newLevel);
    const server = await findOrCreateServer(auxdibot, member.guild.id);
    const memberData = await auxdibot.database.servermembers
       .findFirst({

@@ -1,5 +1,5 @@
 import { Auxdibot } from '@/Auxdibot';
-import handleLog from '@/util/handleLog';
+
 import { LogAction } from '@prisma/client';
 import { Channel, Guild } from 'discord.js';
 
@@ -20,7 +20,7 @@ export default async function setSuggestionsChannel(
          data: { suggestions_channel: channel?.id || null },
       })
       .then(async (i) => {
-         await handleLog(auxdibot, guild, {
+         await auxdibot.log(guild, {
             type: LogAction.SUGGESTIONS_CHANNEL_CHANGED,
             userID: user.id,
             date: new Date(),

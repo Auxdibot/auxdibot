@@ -1,7 +1,7 @@
 import Limits from '@/constants/database/Limits';
 import { Auxdibot } from '@/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
-import handleLog from '@/util/handleLog';
+
 import { testLimit } from '@/util/testLimit';
 import { LogAction } from '@prisma/client';
 import { APIRole, Guild, Role } from 'discord.js';
@@ -18,7 +18,7 @@ export async function addAutoModException(auxdibot: Auxdibot, guild: Guild, role
          data: { automod_role_exceptions: { push: role.id } },
       })
       .then(async (i) => {
-         await handleLog(auxdibot, guild, {
+         await auxdibot.log(guild, {
             userID,
             description: `Added ${role.name} to the AutoMod exception roles.`,
             type: LogAction.AUTOMOD_SETTINGS_CHANGE,

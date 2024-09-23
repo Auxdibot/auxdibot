@@ -8,7 +8,7 @@ import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 import createSuggestion from '@/modules/features/suggestions/createSuggestion';
 import incrementSuggestionsTotal from '@/modules/features/suggestions/incrementSuggestionsTotal';
 import handleError from '@/util/handleError';
-import handleLog from '@/util/handleLog';
+
 import parsePlaceholders from '@/util/parsePlaceholder';
 import { testLimit } from '@/util/testLimit';
 import { EmbedBuilder } from '@discordjs/builders';
@@ -100,7 +100,7 @@ export const suggestionsCreate = <AuxdibotSubcommand>{
                });
             }
             createSuggestion(auxdibot, interaction.data.guild.id, suggestion);
-            await handleLog(auxdibot, interaction.data.guild, {
+            await auxdibot.log(interaction.data.guild, {
                userID: interaction.data.member.id,
                description: `${interaction.data.member.user.username} created Suggestion #${suggestion.suggestionID}`,
                type: LogAction.SUGGESTION_CREATED,

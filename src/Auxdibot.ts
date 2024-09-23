@@ -1,16 +1,18 @@
 import {
    ActivityType,
    BaseInteraction,
+   ChannelType,
    Client,
    Collection,
    EmbedBuilder,
+   Guild,
    InteractionReplyOptions,
    MessagePayload,
    REST,
 } from 'discord.js';
 import { AuxdibotIntents } from './constants/bot/AuxdibotIntents';
 import { AuxdibotPartials } from './constants/bot/AuxdibotPartials';
-import { PrismaClient } from '@prisma/client';
+import { Log, PrismaClient } from '@prisma/client';
 import { ToadScheduler } from 'toad-scheduler';
 import Subscriber from './modules/features/notifications/Subscriber';
 import { CustomEmojis } from './constants/bot/CustomEmojis';
@@ -35,7 +37,10 @@ import createSubscribers from './modules/features/notifications/createSubscriber
 import server from './server/server';
 import fetchAnalytics from './modules/analytics/fetchAnalytics';
 import { migrateData } from './util/migrateData';
-import handleLog from './util/handleLog';
+
+import { LogOptions } from './interfaces/log/LogOptions';
+import updateLog from './modules/logs/updateLog';
+import { LogData } from './constants/bot/log/LogData';
 
 const TOKEN = process.env.DISCORD_BOT_TOKEN;
 const CLIENT_ID = process.env.DISCORD_BOT_CLIENT_ID;
@@ -181,7 +186,9 @@ export class Auxdibot extends Client {
             'Thank you for supporting Auxdibot on Top.GG! You have received temporary benefits for voting.',
          ),
    };
-
+   /**
+    * Creates an instance of Auxdibot, and initializes the instance, using the DISCORD_BOT_TOKEN and DISCORD_BOT_CLIENT_ID
+    */
    constructor() {
       if (!TOKEN) throw new Error('You need to include a discord token in .env!');
       if (!CLIENT_ID) throw new Error('You need to include a client id in .env!');
@@ -201,7 +208,9 @@ export class Auxdibot extends Client {
       });
       this.init();
    }
-
+   /**
+    * Initializes the Auxdibot instance, connecting to the Prisma client, setting up interactions, and listening for events.
+    */
    async init() {
       console.log(`-> Connecting Prisma Client...`);
       await this.connectPrisma();
@@ -329,8 +338,7 @@ export class Auxdibot extends Client {
                      );
                   })
                   .catch(() => {
-                     handleLog(
-                        this,
+                     this.log(
                         interaction.guild,
                         {
                            type: 'ERROR',
@@ -338,13 +346,15 @@ export class Auxdibot extends Client {
                            userID: interaction.user.id,
                            date: new Date(),
                         },
-                        [
-                           {
-                              name: 'Error Message',
-                              value: `Failed to redirect command output to <#${channel.id}>`,
-                              inline: false,
-                           },
-                        ],
+                        {
+                           fields: [
+                              {
+                                 name: 'Error Message',
+                                 value: `Failed to redirect command output to <#${channel.id}>`,
+                                 inline: false,
+                              },
+                           ],
+                        },
                      );
                      this.createReply(interaction, data, { noOutputChannel: true });
                   });
@@ -362,5 +372,42 @@ export class Auxdibot extends Client {
          console.error(x);
          return null;
       });
+   }
+   async log(guild: Guild, log: Omit<Log, 'old_date_unix'>, { fields, user_avatar }: LogOptions = {}) {
+      const server = await findOrCreateServer(this, guild.id);
+      if (server.filtered_logs.indexOf(log.type) != -1) return;
+      return await updateLog(this, guild.id, log)
+         .then(async () => {
+            const user = log.userID ? await guild.client.users.fetch(log.userID) : undefined;
+            const logEmbed = new EmbedBuilder()
+               .setColor(LogData[log.type].color || this.colors.log)
+               .setAuthor({ name: user ? user.displayName : '', iconURL: user ? user.avatarURL() : undefined })
+               .setFooter({
+                  text: `Log Action: ${log.type
+                     .split('_')
+                     .map((i) => i[0] + i.slice(1).toLowerCase())
+                     .join(' ')}`,
+               })
+               .setTitle(LogData[log.type].name || null)
+               .setDescription(
+                  `${log.description}\n\n🕰️ Date: <t:${Math.round(log.date.valueOf() / 1000)}>${
+                     log.userID ? `\n🧍 User: <@${log.userID}>` : ''
+                  }`,
+               );
+            if (fields) {
+               logEmbed.setFields(...fields);
+            }
+            if (user_avatar && user) {
+               const avatar = user.avatarURL({ size: 128 });
+               if (avatar) {
+                  logEmbed.setThumbnail(avatar);
+               }
+            }
+            const logChannel = await guild.channels.fetch(server.log_channel).catch(() => undefined);
+            if (!logChannel || logChannel.type != ChannelType.GuildText) return log;
+            await logChannel.send({ embeds: [logEmbed] }).catch(() => undefined);
+            return log;
+         })
+         .catch(() => undefined);
    }
 }

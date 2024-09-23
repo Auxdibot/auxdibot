@@ -3,7 +3,7 @@ import { Auxdibot } from '@/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import deleteSuggestion from '@/modules/features/suggestions/deleteSuggestion';
 import { Log, LogAction } from '@prisma/client';
-import handleLog from '@/util/handleLog';
+
 import removeReactionRole from '@/modules/features/roles/reaction_roles/removeReactionRole';
 import deleteStarredMessage from '@/modules/features/starboard/messages/deleteStarredMessage';
 export default async function messageDelete(auxdibot: Auxdibot, message: Message<boolean> | PartialMessage) {
@@ -32,7 +32,7 @@ export default async function messageDelete(auxdibot: Auxdibot, message: Message
 
    if (suggestion) {
       await deleteSuggestion(auxdibot, message.guild.id, suggestion.suggestionID);
-      await handleLog(auxdibot, message.guild, <Log>{
+      await auxdibot.log(message.guild, <Log>{
          type: LogAction.SUGGESTION_DELETED,
          date: new Date(),
          description: `A suggestion message deletion deleted Suggestion #${suggestion.suggestionID}`,
@@ -55,8 +55,7 @@ export default async function messageDelete(auxdibot: Auxdibot, message: Message
                ?.executor,
       )
       .catch(() => undefined);
-   await handleLog(
-      auxdibot,
+   await auxdibot.log(
       message.guild,
       <Log>{
          type: LogAction.MESSAGE_DELETED,
@@ -64,17 +63,19 @@ export default async function messageDelete(auxdibot: Auxdibot, message: Message
          description: `A message by ${sender?.user?.username ?? auxdibot.user.username} in #${
             channel?.name ?? message.channel
          } was deleted${executorCheck ? ` by ${executorCheck.username}` : ''}.`,
-         userID: executorCheck?.id ?? auxdibot.user.id,
+         userID: executorCheck?.id ?? sender?.user?.id,
       },
-      [
-         {
-            name: 'Deleted Message',
-            value: `${executorCheck ? `Executor: ${executorCheck}` : ''}\nAuthor: ${message.author}\nChannel: ${
-               message.channel
-            }\n\n**Deleted Content** \n\`\`\`${message.cleanContent.replaceAll('`', '')}\`\`\``,
-            inline: false,
-         },
-      ],
+      {
+         fields: [
+            {
+               name: 'Deleted Message',
+               value: `${executorCheck ? `Executor: ${executorCheck}` : ''}\nAuthor: ${message.author}\nChannel: ${
+                  message.channel
+               }\n\n**Deleted Content** \n\`\`\`${message.cleanContent.replaceAll('`', '')}\`\`\``,
+               inline: false,
+            },
+         ],
+      },
    );
    return;
 }

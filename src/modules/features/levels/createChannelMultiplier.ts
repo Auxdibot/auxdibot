@@ -1,7 +1,7 @@
 import Limits from '@/constants/database/Limits';
 import { Auxdibot } from '@/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
-import handleLog from '@/util/handleLog';
+
 import { testLimit } from '@/util/testLimit';
 import { LogAction, Multiplier } from '@prisma/client';
 import { Guild } from 'discord.js';
@@ -27,7 +27,7 @@ export default async function createChannelMultiplier(
          data: { channel_multipliers: { push: multiplier } },
       })
       .then((data) => {
-         handleLog(auxdibot, guild, {
+         auxdibot.log(guild, {
             type: LogAction.MULTIPLIER_CREATED,
             userID: user.id,
             date: new Date(),

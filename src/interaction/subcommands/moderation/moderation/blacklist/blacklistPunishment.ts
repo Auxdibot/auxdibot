@@ -7,7 +7,6 @@ import handleError from '@/util/handleError';
 import { EmbedBuilder } from 'discord.js';
 import { LogAction, PunishmentType } from '@prisma/client';
 import { PunishmentValues } from '@/constants/bot/punishments/PunishmentValues';
-import handleLog from '@/util/handleLog';
 
 export const blacklistPunishment = <AuxdibotSubcommand>{
    name: 'punishment',
@@ -46,7 +45,7 @@ export const blacklistPunishment = <AuxdibotSubcommand>{
             const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.title = 'Success!';
             embed.description = `Successfully set \`${PunishmentValues[punishment].name}\` as the server blacklist punishment.`;
-            await handleLog(auxdibot, interaction.data.guild, {
+            await auxdibot.log(interaction.data.guild, {
                userID: interaction.data.member.id,
                description: `The Automod blacklist punishment has been set to ${punishment}`,
                type: LogAction.AUTOMOD_SETTINGS_CHANGE,

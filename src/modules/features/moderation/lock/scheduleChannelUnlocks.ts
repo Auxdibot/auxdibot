@@ -1,6 +1,6 @@
 import { Auxdibot } from '@/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
-import handleLog from '@/util/handleLog';
+
 import { LogAction } from '@prisma/client';
 import { AsyncTask, SimpleIntervalJob } from 'toad-scheduler';
 import { deleteLock } from './deleteLock';
@@ -40,7 +40,7 @@ export default function scheduleChannelUnlocks(auxdibot: Auxdibot) {
                            .catch(() => undefined);
                      }
 
-                     handleLog(auxdibot, guild, {
+                     auxdibot.log(guild, {
                         type: LogAction.CHANNEL_UNLOCKED,
                         description: `The channel #${channel.name} has been unlocked because the lock duration has been reached.`,
                         date: new Date(),

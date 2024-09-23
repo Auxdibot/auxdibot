@@ -1,6 +1,6 @@
 import { Auxdibot } from '@/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
-import handleLog from '@/util/handleLog';
+
 import { LogAction } from '@prisma/client';
 import { Guild } from 'discord.js';
 
@@ -26,7 +26,7 @@ export default async function setStarboardReactionCount(
          data: { starboard_boards: server.starboard_boards },
       })
       .then(async (i) => {
-         await handleLog(auxdibot, guild, {
+         await auxdibot.log(guild, {
             type: LogAction.STARBOARD_REACTION_COUNT_CHANGED,
             userID: user.id,
             date: new Date(),

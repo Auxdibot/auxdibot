@@ -1,6 +1,6 @@
 import { Auxdibot } from '@/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
-import handleLog from '@/util/handleLog';
+
 import { LogAction } from '@prisma/client';
 import { GuildMember } from 'discord.js';
 import deleteLevelReward from './deleteLevelReward';
@@ -21,7 +21,7 @@ export async function grantLevelRewards(auxdibot: Auxdibot, member: GuildMember,
                   server.level_rewards.findIndex((i) => i.roleID == reward.roleID),
                ).catch(() => undefined);
             } else {
-               handleLog(auxdibot, member.guild, {
+               auxdibot.log(member.guild, {
                   date: new Date(),
                   description: `Failed to grant role ${reward.roleID} to ${member.id} at level ${level}. Possibly an error with permissions?`,
                   type: LogAction.ERROR,

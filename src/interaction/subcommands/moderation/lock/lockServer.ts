@@ -7,7 +7,7 @@ import { EmbedBuilder, PermissionsBitField } from 'discord.js';
 import { createLock } from '@/modules/features/moderation/lock/createLock';
 import { ChannelLock, LogAction } from '@prisma/client';
 import timestampToDuration from '@/util/timestampToDuration';
-import handleLog from '@/util/handleLog';
+
 import handleError from '@/util/handleError';
 import { testDiscordPermission } from '@/util/testDiscordPermission';
 
@@ -52,7 +52,7 @@ export const lockServer = <AuxdibotSubcommand>{
             },
          ];
       }
-      handleLog(auxdibot, interaction.guild, {
+      auxdibot.log(interaction.guild, {
          type: LogAction.SERVER_LOCKED,
          userID: interaction.user.id,
          date: new Date(),

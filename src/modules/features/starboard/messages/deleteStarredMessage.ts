@@ -1,6 +1,6 @@
 import { Auxdibot } from '@/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
-import handleLog from '@/util/handleLog';
+
 import { Log, LogAction, StarredMessage } from '@prisma/client';
 import { Guild, GuildBasedChannel } from 'discord.js';
 
@@ -16,7 +16,7 @@ export default async function deleteStarredMessage(auxdibot: Auxdibot, guild: Gu
    try {
       if (message)
          await message.delete().then(async () => {
-            await handleLog(auxdibot, guild, <Log>{
+            await auxdibot.log(guild, <Log>{
                type: LogAction.STARBOARD_MESSAGE_DELETED,
                date: new Date(),
                description: `Deleted a starred message in the starboard \`${starredData.board}\`.`,

@@ -1,5 +1,5 @@
 import { Auxdibot } from '@/Auxdibot';
-import handleLog from '@/util/handleLog';
+
 import { LogAction } from '@prisma/client';
 import { APIRole, Guild, Role } from 'discord.js';
 
@@ -42,7 +42,7 @@ export default async function setMuteRole(
          data: { mute_role: role?.id || null },
       })
       .then(async (i) => {
-         await handleLog(auxdibot, guild, {
+         await auxdibot.log(guild, {
             type: LogAction.MUTE_ROLE_CHANGED,
             userID: user.id,
             date: new Date(),

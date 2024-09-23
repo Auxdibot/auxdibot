@@ -1,5 +1,5 @@
 import { Auxdibot } from '@/Auxdibot';
-import handleLog from '@/util/handleLog';
+
 import { LogAction } from '@prisma/client';
 import { Guild } from 'discord.js';
 
@@ -19,7 +19,7 @@ export default async function setSuggestionsDiscussionThreads(
                data: { suggestions_discussion_threads: discussion_threads || !data.suggestions_discussion_threads },
             })
             .then(async (i) => {
-               await handleLog(auxdibot, guild, {
+               await auxdibot.log(guild, {
                   type: LogAction.SUGGESTIONS_THREAD_CREATION_CHANGED,
                   userID: user.id,
                   date: new Date(),

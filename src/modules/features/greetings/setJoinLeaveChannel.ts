@@ -1,5 +1,5 @@
 import { Auxdibot } from '@/Auxdibot';
-import handleLog from '@/util/handleLog';
+
 import { LogAction } from '@prisma/client';
 import { Channel, Guild } from 'discord.js';
 
@@ -20,7 +20,7 @@ export default async function setJoinLeaveChannel(
          data: { join_leave_channel: channel.id },
       })
       .then(async (i) => {
-         await handleLog(auxdibot, guild, {
+         await auxdibot.log(guild, {
             type: LogAction.JOIN_LEAVE_CHANNEL_CHANGED,
             userID: user.id,
             date: new Date(),

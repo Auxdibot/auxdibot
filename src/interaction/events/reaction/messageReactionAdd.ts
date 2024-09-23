@@ -2,7 +2,7 @@ import { GuildMember, MessageReaction, PartialMessageReaction, PartialUser, User
 import Modules from '@/constants/bot/commands/Modules';
 import { Auxdibot } from '@/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
-import handleLog from '@/util/handleLog';
+
 import { LogAction } from '@prisma/client';
 import { starboardReaction } from '@/modules/features/starboard/starboardReaction';
 
@@ -31,7 +31,7 @@ export default async function messageReactionAdd(
             } else {
                await member.roles.add(rr.role).catch((x) => {
                   if (x.code == 50013) {
-                     handleLog(auxdibot, messageReaction.message.guild, {
+                     auxdibot.log(messageReaction.message.guild, {
                         type: LogAction.ERROR,
                         userID: user.id,
                         description: `Auxdibot does not have permission to assign the role <@&${rr.role}> to <@${member.id}>.`,

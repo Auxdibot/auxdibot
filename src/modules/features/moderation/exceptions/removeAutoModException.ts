@@ -1,5 +1,5 @@
 import { Auxdibot } from '@/Auxdibot';
-import handleLog from '@/util/handleLog';
+
 import { LogAction } from '@prisma/client';
 import { Guild } from 'discord.js';
 
@@ -23,7 +23,7 @@ export async function removeAutoModException(
                data: { automod_role_exceptions: server.automod_role_exceptions },
             })
             .then(async (i) => {
-               await handleLog(auxdibot, guild, {
+               await auxdibot.log(guild, {
                   userID,
                   description: `Removed role exception #${
                      roleIndex + 1

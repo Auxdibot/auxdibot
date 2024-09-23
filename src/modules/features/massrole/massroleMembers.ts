@@ -1,5 +1,5 @@
 import { Auxdibot } from '@/Auxdibot';
-import handleLog from '@/util/handleLog';
+
 import { LogAction } from '@prisma/client';
 import { APIRole, Guild, Role } from 'discord.js';
 
@@ -23,7 +23,7 @@ export default async function massroleMembers(
          give ? member.roles.add(role.id).catch(() => undefined) : member.roles.remove(role.id).catch(() => undefined);
       }
    });
-   handleLog(auxdibot, guild, {
+   auxdibot.log(guild, {
       userID: user.id,
       description: give
          ? `Massrole gave ${role.name} to anyone with lower role hiearchy than Auxdibot.`

@@ -3,7 +3,7 @@ import parsePlaceholders from '@/util/parsePlaceholder';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import { Auxdibot } from '@/Auxdibot';
 import memberLeave from '@/modules/members/memberLeave';
-import handleLog from '@/util/handleLog';
+
 import { LogAction } from '@prisma/client';
 
 export default async function guildMemberRemove(auxdibot: Auxdibot, member: GuildMember | PartialGuildMember) {
@@ -38,8 +38,7 @@ export default async function guildMemberRemove(auxdibot: Auxdibot, member: Guil
          .catch(() => undefined);
    }
    memberLeave(auxdibot, member.guild.id, member);
-   await handleLog(
-      auxdibot,
+   await auxdibot.log(
       member.guild,
       {
          userID: member.id,
@@ -47,7 +46,6 @@ export default async function guildMemberRemove(auxdibot: Auxdibot, member: Guil
          type: LogAction.MEMBER_LEAVE,
          date: new Date(),
       },
-      [],
-      true,
+      { user_avatar: true },
    );
 }

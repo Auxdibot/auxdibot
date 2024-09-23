@@ -1,6 +1,6 @@
 import Limits from '@/constants/database/Limits';
 import { Auxdibot } from '@/Auxdibot';
-import handleLog from '@/util/handleLog';
+
 import { testLimit } from '@/util/testLimit';
 import { LogAction, ScheduledMessage } from '@prisma/client';
 import { Channel, Guild } from 'discord.js';
@@ -22,7 +22,7 @@ export default async function createSchedule(
             where: { serverID: guild.id },
             data: { scheduled_messages: { push: scheduledMessage } },
          });
-         await handleLog(auxdibot, guild, {
+         await auxdibot.log(guild, {
             userID: user.id,
             description: `Scheduled a message for ${channel && !channel.isDMBased() ? channel.name : 'a channel'}.`,
             type: LogAction.SCHEDULED_MESSAGE_CREATED,

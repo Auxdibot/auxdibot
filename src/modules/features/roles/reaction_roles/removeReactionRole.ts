@@ -1,5 +1,5 @@
 import { Auxdibot } from '@/Auxdibot';
-import handleLog from '@/util/handleLog';
+
 import { LogAction, ReactionRole } from '@prisma/client';
 import { Guild, Message } from 'discord.js';
 
@@ -24,7 +24,7 @@ export default async function removeReactionRole(
                : undefined;
 
          data.reaction_roles.splice(Number(index), 1);
-         await handleLog(auxdibot, guild, {
+         await auxdibot.log(guild, {
             userID: user?.id ?? auxdibot.user.id,
             description: `Deleted a reaction role${
                channel && !channel.isDMBased() ? ` in ${channel.name || 'a channel'}` : ''

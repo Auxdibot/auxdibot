@@ -5,7 +5,7 @@ import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInt
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 import { punishmentInfoField } from '@/modules/features/moderation/punishmentInfoField';
 import handleError from '@/util/handleError';
-import handleLog from '@/util/handleLog';
+
 import { EmbedBuilder } from '@discordjs/builders';
 import { LogAction, PunishmentType } from '@prisma/client';
 import { PermissionFlagsBits } from 'discord.js';
@@ -20,6 +20,7 @@ export const punishUnban = <AuxdibotSubcommand>{
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;
+      await interaction.deferReply();
       const user = interaction.options.getUser('user', true);
       const server = interaction.data.guildData;
       const banned = server.punishments.find((p) => p.userID == user.id && p.type == PunishmentType.BAN && !p.expired);
@@ -36,8 +37,7 @@ export const punishUnban = <AuxdibotSubcommand>{
       embed.title = `📥 Unbanned ${user.username}`;
       embed.description = `User was unbanned.`;
       embed.fields = [punishmentInfoField(banned, true, true)];
-      await handleLog(
-         auxdibot,
+      await auxdibot.log(
          interaction.data.guild,
          {
             userID: user.id,
@@ -45,8 +45,7 @@ export const punishUnban = <AuxdibotSubcommand>{
             date: new Date(),
             type: LogAction.UNBAN,
          },
-         [punishmentInfoField(banned, true, true)],
-         true,
+         { fields: [punishmentInfoField(banned, true, true)], user_avatar: true },
       );
       await auxdibot.createReply(interaction, { embeds: [embed] });
    },

@@ -1,5 +1,5 @@
 import { Auxdibot } from '@/Auxdibot';
-import handleLog from '@/util/handleLog';
+
 import { LogAction } from '@prisma/client';
 import { Guild } from 'discord.js';
 
@@ -19,7 +19,7 @@ export default async function setStarboardSelfStar(
                data: { self_star: self_star || !data.self_star },
             })
             .then(async (i) => {
-               await handleLog(auxdibot, guild, {
+               await auxdibot.log(guild, {
                   type: LogAction.STARBOARD_SETTINGS_CHANGED,
                   userID: user.id,
                   date: new Date(),

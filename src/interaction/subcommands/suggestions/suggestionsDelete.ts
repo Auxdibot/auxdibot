@@ -6,7 +6,7 @@ import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 import deleteSuggestion from '@/modules/features/suggestions/deleteSuggestion';
 import { getMessage } from '@/util/getMessage';
 import handleError from '@/util/handleError';
-import handleLog from '@/util/handleLog';
+
 import { EmbedBuilder } from '@discordjs/builders';
 import { LogAction } from '@prisma/client';
 import { GuildBasedChannel } from 'discord.js';
@@ -41,7 +41,7 @@ export const suggestionsDelete = <AuxdibotSubcommand>{
             await thread.setArchived(true, 'Suggestion has been deleted.').catch(() => undefined);
          }
          await message.delete().catch(() => undefined);
-         await handleLog(auxdibot, interaction.data.guild, {
+         await auxdibot.log(interaction.data.guild, {
             userID: interaction.data.member.id,
             description: `${interaction.data.member.user.username} deleted Suggestion #${suggestion.suggestionID}`,
             type: LogAction.SUGGESTION_DELETED,

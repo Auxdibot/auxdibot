@@ -8,7 +8,7 @@ import handleError from '@/util/handleError';
 import { createLock } from '@/modules/features/moderation/lock/createLock';
 import { ChannelLock, Log, LogAction } from '@prisma/client';
 import timestampToDuration from '@/util/timestampToDuration';
-import handleLog from '@/util/handleLog';
+
 import { testDiscordPermission } from '@/util/testDiscordPermission';
 
 export const lockChannel = <AuxdibotSubcommand>{
@@ -84,7 +84,7 @@ export const lockChannel = <AuxdibotSubcommand>{
             .setLocked(true, reason)
             .then(async () => {
                return await createLock(auxdibot, interaction.data.guildData, lock).then(() => {
-                  handleLog(auxdibot, interaction.guild, log);
+                  auxdibot.log(interaction.guild, log);
                   auxdibot.createReply(interaction, { embeds: [embed] });
                });
             })
@@ -104,7 +104,7 @@ export const lockChannel = <AuxdibotSubcommand>{
          })
          .then(async () => {
             return await createLock(auxdibot, interaction.data.guildData, lock).then(() => {
-               handleLog(auxdibot, interaction.guild, log);
+               auxdibot.log(interaction.guild, log);
                auxdibot.createReply(interaction, { embeds: [embed] });
             });
          })

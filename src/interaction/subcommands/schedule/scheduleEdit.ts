@@ -4,7 +4,7 @@ import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandD
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 import handleError from '@/util/handleError';
-import handleLog from '@/util/handleLog';
+
 import timestampToDuration from '@/util/timestampToDuration';
 import { EmbedBuilder } from '@discordjs/builders';
 import { LogAction } from '@prisma/client';
@@ -68,7 +68,7 @@ export const scheduleEdit = <AuxdibotSubcommand>{
          where: { serverID: server.serverID },
          data: { scheduled_messages: server.scheduled_messages },
       });
-      await handleLog(auxdibot, interaction.data.guild, {
+      await auxdibot.log(interaction.data.guild, {
          userID: interaction.data.member.id,
          description: `Edited scheduled message #${index}.`,
          type: LogAction.SCHEDULED_MESSAGE_EDITED,

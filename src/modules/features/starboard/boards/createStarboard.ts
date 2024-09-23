@@ -2,7 +2,7 @@ import Limits from '@/constants/database/Limits';
 import { Auxdibot } from '@/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import { validateEmoji } from '@/util/validateEmoji';
-import handleLog from '@/util/handleLog';
+
 import { testLimit } from '@/util/testLimit';
 import { LogAction, StarboardBoardData } from '@prisma/client';
 import { Guild } from 'discord.js';
@@ -44,7 +44,7 @@ export default async function createStarboard(
          data: { starboard_boards: { push: starboard } },
       })
       .then(async (i) => {
-         await handleLog(auxdibot, guild, {
+         await auxdibot.log(guild, {
             type: LogAction.STARBOARD_CREATED,
             userID: user.id,
             date: new Date(),

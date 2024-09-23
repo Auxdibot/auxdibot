@@ -3,7 +3,7 @@ import createPunishment from '@/modules/features/moderation/createPunishment';
 import incrementPunishmentsTotal from '@/modules/features/moderation/incrementPunishmentsTotal';
 import { punishmentInfoField } from '@/modules/features/moderation/punishmentInfoField';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
-import handleLog from '@/util/handleLog';
+
 import { LogAction, PunishmentType } from '@prisma/client';
 import { AuditLogEvent, EmbedBuilder, GuildMember, PartialGuildMember } from 'discord.js';
 
@@ -58,8 +58,7 @@ export async function guildMemberUpdate(
             data: { punishments: server.punishments },
          })
          .then(async () => {
-            handleLog(
-               auxdibot,
+            auxdibot.log(
                newMember.guild,
                {
                   userID: newMember.id,
@@ -67,8 +66,7 @@ export async function guildMemberUpdate(
                   date: new Date(),
                   type: LogAction.UNMUTE,
                },
-               [punishmentInfoField(muted, true, true)],
-               true,
+               { fields: [punishmentInfoField(muted, true, true)], user_avatar: true },
             );
             const dmEmbed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             dmEmbed.title = '🔊 Unmuted';

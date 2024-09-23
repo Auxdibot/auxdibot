@@ -1,10 +1,10 @@
 import Modules from '@/constants/bot/commands/Modules';
-import { LogNames } from '@/constants/bot/log/LogNames';
 import { Auxdibot } from '@/Auxdibot';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 import { EmbedBuilder } from '@discordjs/builders';
+import { LogData } from '@/constants/bot/log/LogData';
 
 export const logsLatest = <AuxdibotSubcommand>{
    name: 'latest',
@@ -19,7 +19,7 @@ export const logsLatest = <AuxdibotSubcommand>{
       const embed = new EmbedBuilder().setColor(auxdibot.colors.default).toJSON();
       embed.title = '📜 Latest Logs';
       embed.description = server.logs.reverse().reduce((str, log) => {
-         const name = LogNames[log.type];
+         const name = LogData[log.type].name;
          return (
             str +
             `\n**${name}**\n${log.description}\n🕰️ Date: <t:${Math.round(log.date.valueOf() / 1000)}>\n🧍 User: <@${

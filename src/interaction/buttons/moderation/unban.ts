@@ -5,7 +5,7 @@ import { Auxdibot } from '@/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import { LogAction, PunishmentType } from '@prisma/client';
 import { punishmentInfoField } from '@/modules/features/moderation/punishmentInfoField';
-import handleLog from '@/util/handleLog';
+
 import handleError from '@/util/handleError';
 import { createUserEmbed } from '@/modules/features/moderation/createUserEmbed';
 
@@ -39,8 +39,7 @@ export default <AuxdibotButton>{
       embed.title = `📥 Unbanned ${user ? user.username : `<@${user_id}>`}`;
       embed.description = `User was unbanned.`;
       embed.fields = [punishmentInfoField(banned, true, true)];
-      await handleLog(
-         auxdibot,
+      await auxdibot.log(
          interaction.guild,
          {
             userID: user.id,
@@ -48,8 +47,7 @@ export default <AuxdibotButton>{
             date: new Date(),
             type: LogAction.UNBAN,
          },
-         [punishmentInfoField(banned, true, true)],
-         true,
+         { fields: [punishmentInfoField(banned, true, true)], user_avatar: true },
       );
       return await auxdibot.createReply(interaction, { embeds: [embed] });
    },
