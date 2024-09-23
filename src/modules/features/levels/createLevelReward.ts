@@ -1,7 +1,7 @@
 import Limits from '@/constants/database/Limits';
 import { Auxdibot } from '@/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
-import handleLog from '@/util/handleLog';
+
 import { testLimit } from '@/util/testLimit';
 import { LevelReward, LogAction } from '@prisma/client';
 import { Guild } from 'discord.js';
@@ -23,7 +23,7 @@ export default async function createLevelReward(
          data: { level_rewards: { push: levelReward } },
       })
       .then((data) => {
-         handleLog(auxdibot, guild, {
+         auxdibot.log(guild, {
             type: LogAction.LEVEL_REWARD_CREATED,
             userID: user.id,
             date: new Date(),

@@ -1,7 +1,7 @@
 import Limits from '@/constants/database/Limits';
 import { Auxdibot } from '@/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
-import handleLog from '@/util/handleLog';
+
 import { testLimit } from '@/util/testLimit';
 import { LogAction } from '@prisma/client';
 import { Guild } from 'discord.js';
@@ -26,7 +26,7 @@ export default async function addBlacklistedPhrase(
          select: { serverID: true, automod_banned_phrases: true },
       })
       .then((i) => {
-         handleLog(auxdibot, guild, {
+         auxdibot.log(guild, {
             userID: user.id,
             description: `Added "${blacklisted_phrase}" as a blacklisted phrase.`,
             type: LogAction.AUTOMOD_SETTINGS_CHANGE,

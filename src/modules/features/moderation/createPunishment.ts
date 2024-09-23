@@ -6,7 +6,7 @@ import Limits from '@/constants/database/Limits';
 import { BaseInteraction, EmbedBuilder, Guild, User } from 'discord.js';
 import { PunishmentValues } from '@/constants/bot/punishments/PunishmentValues';
 import { punishmentInfoField } from './punishmentInfoField';
-import handleLog from '@/util/handleLog';
+
 import incrementPunishmentsTotal from './incrementPunishmentsTotal';
 
 export default async function createPunishment(
@@ -81,8 +81,7 @@ export default async function createPunishment(
          embed.footer = {
             text: `Punishment ID: ${punishment.punishmentID}`,
          };
-         await handleLog(
-            auxdibot,
+         await auxdibot.log(
             guild,
             {
                userID: punishment.userID,
@@ -90,8 +89,7 @@ export default async function createPunishment(
                date: new Date(),
                type: PunishmentValues[punishment.type].log,
             },
-            [punishmentInfoField(punishment, true, true)],
-            true,
+            { fields: [punishmentInfoField(punishment, true, true)], user_avatar: true },
          );
          if (interaction) auxdibot.createReply(interaction, { embeds: [embed] });
          if (punishment.type == PunishmentType.WARN) {

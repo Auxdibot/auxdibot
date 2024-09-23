@@ -1,5 +1,5 @@
 import { Auxdibot } from '@/Auxdibot';
-import handleLog from '@/util/handleLog';
+
 import { LogAction } from '@prisma/client';
 import { APIRole, Guild, Role } from 'discord.js';
 
@@ -16,7 +16,7 @@ export default async function setReportRole(
          data: { report_role: role?.id || null },
       })
       .then(async (i) => {
-         await handleLog(auxdibot, guild, {
+         await auxdibot.log(guild, {
             type: LogAction.REPORTS_ROLE_CHANGED,
             userID: user.id,
             date: new Date(),

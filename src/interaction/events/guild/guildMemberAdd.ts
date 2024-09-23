@@ -3,7 +3,7 @@ import parsePlaceholders from '@/util/parsePlaceholder';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import { Auxdibot } from '@/Auxdibot';
 import memberJoin from '@/modules/members/memberJoin';
-import handleLog from '@/util/handleLog';
+
 import { LogAction } from '@prisma/client';
 
 export default async function guildMemberAdd(auxdibot: Auxdibot, member: GuildMember) {
@@ -63,8 +63,7 @@ export default async function guildMemberAdd(auxdibot: Auxdibot, member: GuildMe
       memberJoin(auxdibot, member.guild.id, member);
    }
 
-   await handleLog(
-      auxdibot,
+   await auxdibot.log(
       member.guild,
       {
          userID: member.id,
@@ -72,7 +71,6 @@ export default async function guildMemberAdd(auxdibot: Auxdibot, member: GuildMe
          type: LogAction.MEMBER_JOIN,
          date: new Date(),
       },
-      [],
-      true,
+      { user_avatar: true },
    );
 }

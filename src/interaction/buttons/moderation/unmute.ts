@@ -8,7 +8,6 @@ import { LogAction, PunishmentType } from '@prisma/client';
 import { punishmentInfoField } from '@/modules/features/moderation/punishmentInfoField';
 import handleError from '@/util/handleError';
 import { createUserEmbed } from '@/modules/features/moderation/createUserEmbed';
-import handleLog from '@/util/handleLog';
 
 export default <AuxdibotButton>{
    module: Modules['Moderation'],
@@ -56,8 +55,7 @@ export default <AuxdibotButton>{
          dmEmbed.fields = [punishmentInfoField(muted, true, true)];
          await member.user.send({ embeds: [dmEmbed] });
       }
-      handleLog(
-         auxdibot,
+      auxdibot.log(
          interaction.guild,
          {
             userID: member.id,
@@ -65,8 +63,7 @@ export default <AuxdibotButton>{
             date: new Date(),
             type: LogAction.UNMUTE,
          },
-         [punishmentInfoField(muted, true, true)],
-         true,
+         { fields: [punishmentInfoField(muted, true, true)], user_avatar: true },
       );
       embed.title = `🔊 Unmuted ${user ? user.username : `<@${user_id}>`}`;
       embed.description = `User was unmuted.`;

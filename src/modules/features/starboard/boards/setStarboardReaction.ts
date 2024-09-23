@@ -1,7 +1,7 @@
 import { defaultStarLevels } from '@/constants/database/defaultStarLevels';
 import { Auxdibot } from '@/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
-import handleLog from '@/util/handleLog';
+
 import { validateEmoji } from '@/util/validateEmoji';
 import { LogAction } from '@prisma/client';
 import { Guild } from 'discord.js';
@@ -31,7 +31,7 @@ export default async function setStarboardReaction(
          data: { starboard_boards: server.starboard_boards },
       })
       .then(async (i) => {
-         await handleLog(auxdibot, guild, {
+         await auxdibot.log(guild, {
             type: LogAction.STARBOARD_REACTION_CHANGED,
             userID: user.id,
             date: new Date(),

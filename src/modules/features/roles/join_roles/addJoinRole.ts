@@ -1,7 +1,7 @@
 import Limits from '@/constants/database/Limits';
 import { Auxdibot } from '@/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
-import handleLog from '@/util/handleLog';
+
 import { testLimit } from '@/util/testLimit';
 import { LogAction } from '@prisma/client';
 import { APIRole, Guild, Role, User } from 'discord.js';
@@ -25,7 +25,7 @@ export default async function addJoinRole(
       .update({ where: { serverID: guild.id }, data: { join_roles: { push: role.id } }, select: { join_roles: true } })
       .then(async (data) => {
          if (user)
-            await handleLog(auxdibot, guild, {
+            await auxdibot.log(guild, {
                userID: user.id,
                description: `Added ${role.name} to the join roles.`,
                type: LogAction.JOIN_ROLE_ADDED,

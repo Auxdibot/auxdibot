@@ -5,7 +5,7 @@ import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInt
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 import purgeMessages from '@/modules/features/moderation/purgeMessages';
 import handleError from '@/util/handleError';
-import handleLog from '@/util/handleLog';
+
 import { LogAction } from '@prisma/client';
 import { EmbedBuilder, PermissionsBitField } from 'discord.js';
 
@@ -49,8 +49,7 @@ export const purgeFilter = <AuxdibotSubcommand>{
             }
             embed.color = auxdibot.colors.punishment;
             embed.description = `🗑️ Messages Purged: ${i.totalDeleted}\n🚫 Failed Deletions: ${i.failedDeletions}`;
-            await handleLog(
-               auxdibot,
+            await auxdibot.log(
                interaction.guild,
                {
                   type: LogAction.MESSAGES_PURGED,
@@ -58,13 +57,15 @@ export const purgeFilter = <AuxdibotSubcommand>{
                   description: `${interaction.user.username} purged ${i.totalDeleted} messages in #${interaction.channel.name}.`,
                   date: new Date(),
                },
-               [
-                  {
-                     name: '💥 Message Purge Results (Filter Purge)',
-                     value: `🗑️ Messages Purged: ${i.totalDeleted}\n🚫 Failed Deletions: ${i.failedDeletions}`,
-                     inline: false,
-                  },
-               ],
+               {
+                  fields: [
+                     {
+                        name: '💥 Message Purge Results (Filter Purge)',
+                        value: `🗑️ Messages Purged: ${i.totalDeleted}\n🚫 Failed Deletions: ${i.failedDeletions}`,
+                        inline: false,
+                     },
+                  ],
+               },
             );
             return await interaction.channel.send({ embeds: [embed] });
          })

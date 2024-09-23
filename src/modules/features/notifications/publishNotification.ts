@@ -1,6 +1,6 @@
 import { Auxdibot } from '@/Auxdibot';
 import { GenericFeed } from '@/interfaces/notifications/GenericFeed';
-import handleLog from '@/util/handleLog';
+
 import parsePlaceholders from '@/util/parsePlaceholder';
 import { LogAction, Notification } from '@prisma/client';
 import { Channel, ChannelType, Guild } from 'discord.js';
@@ -28,7 +28,7 @@ export default async function publishNotification(
             : undefined,
       })
       .catch(() => {
-         handleLog(auxdibot, guild, {
+         auxdibot.log(guild, {
             date: new Date(),
             description: `Failed to send notification to ${channel.id} for feed topic${notification.topicURL}.`,
             type: LogAction.ERROR,

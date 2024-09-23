@@ -6,6 +6,7 @@ import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 import setGlobalMultiplier from '@/modules/features/levels/setGlobalMultiplier';
 import handleError from '@/util/handleError';
 import { EmbedBuilder } from '@discordjs/builders';
+import { LogAction } from '@prisma/client';
 
 export const levelsSetGlobalMultiplier = <AuxdibotSubcommand>{
    name: 'set_global',
@@ -32,6 +33,12 @@ export const levelsSetGlobalMultiplier = <AuxdibotSubcommand>{
             const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             embed.description = `The global XP multiplier has been set to \`x${multiplier}\``;
             embed.title = 'Success!';
+            auxdibot.log(interaction.guild, {
+               type: LogAction.MULTIPLIER_SET,
+               description: `The global XP multiplier has been set to x${multiplier}`,
+               date: new Date(),
+               userID: interaction.user.id,
+            });
             return await auxdibot.createReply(interaction, { embeds: [embed] });
          })
          .catch((x) => {

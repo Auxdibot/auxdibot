@@ -1,6 +1,6 @@
 import { Auxdibot } from '@/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
-import handleLog from '@/util/handleLog';
+
 import { Guild } from 'discord.js';
 import { punishmentInfoField } from './punishmentInfoField';
 import { LogAction } from '@prisma/client';
@@ -19,8 +19,7 @@ export default async function deletePunishment(
    return await auxdibot.database.servers
       .update({ where: { serverID: guild.id }, data: { punishments: server.punishments } })
       .then(async () => {
-         await handleLog(
-            auxdibot,
+         await auxdibot.log(
             guild,
             {
                type: LogAction.PUNISHMENT_DELETED,
@@ -28,7 +27,7 @@ export default async function deletePunishment(
                userID: user.id,
                description: `${user.username} deleted a punishment. (PID: ${punishment.punishmentID})`,
             },
-            [punishmentInfoField(punishment, true, true)],
+            { fields: [punishmentInfoField(punishment, true, true)] },
          );
          return punishment;
       })

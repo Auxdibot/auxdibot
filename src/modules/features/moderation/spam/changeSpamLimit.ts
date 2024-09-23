@@ -1,5 +1,5 @@
 import { Auxdibot } from '@/Auxdibot';
-import handleLog from '@/util/handleLog';
+
 import { AutomodLimit, LogAction } from '@prisma/client';
 import { Guild } from 'discord.js';
 
@@ -16,7 +16,7 @@ export default async function changeSpamLimit(
          select: { automod_spam_limit: true },
       })
       .then(async (i) => {
-         await handleLog(auxdibot, guild, {
+         await auxdibot.log(guild, {
             userID: user.id,
             description:
                spam.messages == 0 || spam.duration == 0

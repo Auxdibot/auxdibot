@@ -1,7 +1,7 @@
 import { Auxdibot } from '@/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import { getMessage } from '@/util/getMessage';
-import handleLog from '@/util/handleLog';
+
 import { LogAction, StarboardBoardData, StarredMessage } from '@prisma/client';
 import { Guild } from 'discord.js';
 
@@ -37,7 +37,7 @@ export async function calculateTotalStars(
       return [...new Set(users_starred)].filter((i) => i).length;
    } catch (e) {
       console.error(e);
-      handleLog(auxdibot, guild, {
+      auxdibot.log(guild, {
          type: LogAction.ERROR,
          userID: auxdibot.user.id,
          description: `An error occurred while calculating total stars for ${board.board_name}.`,

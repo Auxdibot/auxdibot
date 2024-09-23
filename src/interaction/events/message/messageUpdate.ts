@@ -1,7 +1,7 @@
 import { Message, PartialMessage } from 'discord.js';
 
 import { Auxdibot } from '@/Auxdibot';
-import handleLog from '@/util/handleLog';
+
 import { Log, LogAction } from '@prisma/client';
 import checkBlacklistedWords from '@/modules/features/moderation/automod/checkBlacklistedWords';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
@@ -21,8 +21,7 @@ export default async function messageUpdate(
    */
    if (oldMessage.content != newMessage.content && oldMessage.content && newMessage.content) {
       const channel = await newMessage.channel.fetch().catch(() => undefined);
-      await handleLog(
-         auxdibot,
+      await auxdibot.log(
          newMessage.guild,
          <Log>{
             type: LogAction.MESSAGE_EDITED,
@@ -30,21 +29,23 @@ export default async function messageUpdate(
             description: `A message by ${sender.user.username} in #${channel?.name ?? newMessage.channel} was edited.`,
             userID: sender.id,
          },
-         [
-            {
-               name: 'Edited Message',
-               value: `Author: ${newMessage.author}\nChannel: ${
-                  newMessage.channel
-               } ([Original Message](https://discord.com/channels/${newMessage.guildId}/${newMessage.channelId}/${
-                  newMessage.id
-               }))${
-                  oldMessage.content
-                     ? `\n\n**Old Message** \n\`\`\`${oldMessage.content.replaceAll('`', '')}\`\`\``
-                     : ''
-               }\n\n**New Message** \n\`\`\`${newMessage.cleanContent.replaceAll('`', '')}\`\`\``,
-               inline: false,
-            },
-         ],
+         {
+            fields: [
+               {
+                  name: 'Edited Message',
+                  value: `Author: ${newMessage.author}\nChannel: ${
+                     newMessage.channel
+                  } ([Original Message](https://discord.com/channels/${newMessage.guildId}/${newMessage.channelId}/${
+                     newMessage.id
+                  }))${
+                     oldMessage.content
+                        ? `\n\n**Old Message** \n\`\`\`${oldMessage.content.replaceAll('`', '')}\`\`\``
+                        : ''
+                  }\n\n**New Message** \n\`\`\`${newMessage.cleanContent.replaceAll('`', '')}\`\`\``,
+                  inline: false,
+               },
+            ],
+         },
       );
    }
 

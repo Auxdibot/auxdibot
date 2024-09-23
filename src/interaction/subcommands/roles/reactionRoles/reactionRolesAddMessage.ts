@@ -7,7 +7,7 @@ import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 import { applyReactionsToMessages } from '@/modules/features/roles/reaction_roles/applyReactionsToMessage';
 import { getMessage } from '@/util/getMessage';
 import handleError from '@/util/handleError';
-import handleLog from '@/util/handleLog';
+
 import { testLimit } from '@/util/testLimit';
 import { EmbedBuilder } from '@discordjs/builders';
 import { LogAction, ReactionRoleType } from '@prisma/client';
@@ -62,7 +62,7 @@ export const reactionRolesAddMessage = <AuxdibotSubcommand>{
             const resEmbed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             resEmbed.title = '👈 Applied Reaction Role';
             resEmbed.description = `Applied your reaction role to your message in ${message.channel}!`;
-            handleLog(auxdibot, interaction.data.guild, {
+            auxdibot.log(interaction.data.guild, {
                userID: interaction.data.member.id,
                description: `Applied a reaction role to a message in ${message.channel}`,
                type: LogAction.REACTION_ROLE_ADDED,

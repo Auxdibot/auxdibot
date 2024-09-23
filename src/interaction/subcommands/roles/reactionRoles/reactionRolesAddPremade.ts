@@ -6,7 +6,7 @@ import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInt
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 import addReactionRole from '@/modules/features/roles/reaction_roles/addReactionRole';
 import handleError from '@/util/handleError';
-import handleLog from '@/util/handleLog';
+
 import { testLimit } from '@/util/testLimit';
 import { EmbedBuilder } from '@discordjs/builders';
 import { LogAction, ReactionRoleType } from '@prisma/client';
@@ -66,7 +66,7 @@ export const reactionRolesAddPremade = <AuxdibotSubcommand>{
             const resEmbed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
             resEmbed.title = '👈 Created Reaction Role';
             resEmbed.description = `Created a reaction role in ${channel}`;
-            handleLog(auxdibot, interaction.data.guild, {
+            auxdibot.log(interaction.data.guild, {
                userID: interaction.data.member.id,
                description: `Created a reaction role in ${channel.name}`,
                type: LogAction.REACTION_ROLE_ADDED,

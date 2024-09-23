@@ -1,5 +1,5 @@
 import { Auxdibot } from '@/Auxdibot';
-import handleLog from '@/util/handleLog';
+
 import { LogAction } from '@prisma/client';
 import express from 'express';
 
@@ -22,30 +22,33 @@ export const announceRoute = (auxdibot: Auxdibot) => {
             return res.status(400).json({ error: 'no announcement' });
          }
          auxdibot.guilds.cache.forEach(async (guild) => {
-            handleLog(
-               auxdibot,
-               guild,
-               {
-                  date: new Date(),
-                  description: headline ?? 'Official update message from Auxdibot.',
-                  type: LogAction.AUXDIBOT_ANNOUNCEMENT,
-                  userID: auxdibot.user.id,
-               },
-               [
+            auxdibot
+               .log(
+                  guild,
                   {
-                     name: 'Announcement',
-                     value: announcement ? announcement.replaceAll('\\n', '\n') : 'No announcement',
-                     inline: false,
+                     date: new Date(),
+                     description: headline ?? 'Official update message from Auxdibot.',
+                     type: LogAction.AUXDIBOT_ANNOUNCEMENT,
+                     userID: auxdibot.user.id,
                   },
                   {
-                     name: 'Want to disable announcements?',
-                     value: ' You can disable these by running the `/logs filter action:AUXDIBOT_ANNOUNCEMENT` command or filtering the "Auxdibot Announcement" log on the dashboard.',
-                     inline: false,
+                     fields: [
+                        {
+                           name: 'Announcement',
+                           value: announcement ? announcement.replaceAll('\\n', '\n') : 'No announcement',
+                           inline: false,
+                        },
+                        {
+                           name: 'Want to disable announcements?',
+                           value: ' You can disable these by running the `/logs filter action:AUXDIBOT_ANNOUNCEMENT` command or filtering the "Auxdibot Announcement" log on the dashboard.',
+                           inline: false,
+                        },
+                     ],
                   },
-               ],
-            ).catch((x) => {
-               console.error(x);
-            });
+               )
+               .catch((x) => {
+                  console.error(x);
+               });
          });
          return res.status(200).json({ success: true });
       },

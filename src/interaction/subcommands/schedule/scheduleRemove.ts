@@ -4,7 +4,7 @@ import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandD
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 import handleError from '@/util/handleError';
-import handleLog from '@/util/handleLog';
+
 import { EmbedBuilder } from '@discordjs/builders';
 import { LogAction } from '@prisma/client';
 
@@ -33,7 +33,7 @@ export const scheduleRemove = <AuxdibotSubcommand>{
       const successEmbed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
       successEmbed.title = '⏲️ Deleted Scheduled Message';
       successEmbed.description = `Deleted a scheduled message ${channel ? `in ${channel}` : ''}.`;
-      await handleLog(auxdibot, interaction.data.guild, {
+      await auxdibot.log(interaction.data.guild, {
          userID: interaction.data.member.id,
          description: `Deleted scheduled message #${index}.`,
          type: LogAction.SCHEDULED_MESSAGE_REMOVED,

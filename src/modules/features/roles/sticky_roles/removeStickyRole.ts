@@ -1,6 +1,6 @@
 import { Auxdibot } from '@/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
-import handleLog from '@/util/handleLog';
+
 import { LogAction } from '@prisma/client';
 import { APIRole, Guild, Role, User } from 'discord.js';
 
@@ -27,7 +27,7 @@ export default async function removeStickyRole(
       })
       .then(async (data) => {
          if (user)
-            await handleLog(auxdibot, guild, {
+            await auxdibot.log(guild, {
                userID: user.id,
                description: `Removed role ${role?.name ?? `<@&${roleID}>`} from the sticky roles.`,
                type: LogAction.STICKY_ROLE_REMOVED,

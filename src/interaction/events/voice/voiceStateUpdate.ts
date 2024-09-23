@@ -1,6 +1,6 @@
 import { VoiceState } from 'discord.js';
 import { Auxdibot } from '@/Auxdibot';
-import handleLog from '@/util/handleLog';
+
 import { LogAction } from '@prisma/client';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import awardXP from '@/modules/features/levels/awardXP';
@@ -11,7 +11,7 @@ import { calculateLevel } from '@/modules/features/levels/calculateLevel';
 
 export default async function voiceStateUpdate(auxdibot: Auxdibot, oldState: VoiceState, newState: VoiceState) {
    if (!oldState.serverDeaf && newState.serverDeaf) {
-      await handleLog(auxdibot, newState.guild, {
+      await auxdibot.log(newState.guild, {
          type: LogAction.MEMBER_DEAFENED,
          date: new Date(),
          description: `${newState.member.user.username} was server deafened.`,
@@ -19,7 +19,7 @@ export default async function voiceStateUpdate(auxdibot: Auxdibot, oldState: Voi
       });
    }
    if (!oldState.serverMute && newState.serverMute) {
-      await handleLog(auxdibot, newState.guild, {
+      await auxdibot.log(newState.guild, {
          type: LogAction.MEMBER_MUTED,
          date: new Date(),
          description: `${newState.member.user.username} was server muted.`,
@@ -80,7 +80,7 @@ export default async function voiceStateUpdate(auxdibot: Auxdibot, oldState: Voi
                }
             }
          } catch (x) {
-            handleLog(auxdibot, guild, {
+            auxdibot.log(guild, {
                type: LogAction.ERROR,
                date: new Date(),
                description: `An unknown error ocurred attempting to award event XP to the member ${newState.member.user.username}. Please contact support if this issue persists.`,
@@ -91,7 +91,7 @@ export default async function voiceStateUpdate(auxdibot: Auxdibot, oldState: Voi
             if (!(server.voice_xp_range[0] == 0 && !server.voice_xp_range[1]))
                createUserVCSchedule(auxdibot, newState.member);
          } catch (x) {
-            handleLog(auxdibot, guild, {
+            auxdibot.log(guild, {
                type: LogAction.ERROR,
                date: new Date(),
                description: `An unknown error ocurred attempting to award voice channel XP to the member ${newState.member.user.username}. Please contact support if this issue persists.`,

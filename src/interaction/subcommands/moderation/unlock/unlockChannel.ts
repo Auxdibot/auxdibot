@@ -6,7 +6,7 @@ import Modules from '@/constants/bot/commands/Modules';
 import { Channel, ChannelType, EmbedBuilder, PermissionsBitField } from 'discord.js';
 import handleError from '@/util/handleError';
 import { deleteLock } from '@/modules/features/moderation/lock/deleteLock';
-import handleLog from '@/util/handleLog';
+
 import { Log, LogAction } from '@prisma/client';
 import { testDiscordPermission } from '@/util/testDiscordPermission';
 
@@ -59,7 +59,7 @@ export const unlockChannel = <AuxdibotSubcommand>{
             .setLocked(false)
             .then(async () => {
                return await deleteLock(auxdibot, interaction.data.guildData, channel.id).then(() => {
-                  handleLog(auxdibot, interaction.guild, log);
+                  auxdibot.log(interaction.guild, log);
                   auxdibot.createReply(interaction, { embeds: [embed] });
                });
             })
@@ -84,7 +84,7 @@ export const unlockChannel = <AuxdibotSubcommand>{
          })
          .then(async () => {
             return await deleteLock(auxdibot, interaction.data.guildData, channel.id).then(() => {
-               handleLog(auxdibot, interaction.guild, log);
+               auxdibot.log(interaction.guild, log);
                auxdibot.createReply(interaction, { embeds: [embed] });
             });
          })

@@ -9,7 +9,7 @@ import deleteSuggestion from '@/modules/features/suggestions/deleteSuggestion';
 import updateSuggestion from '@/modules/features/suggestions/updateSuggestion';
 import { getMessage } from '@/util/getMessage';
 import handleError from '@/util/handleError';
-import handleLog from '@/util/handleLog';
+
 import parsePlaceholders from '@/util/parsePlaceholder';
 import { EmbedBuilder } from '@discordjs/builders';
 import { LogAction, SuggestionState } from '@prisma/client';
@@ -62,7 +62,7 @@ export const suggestionsRespond = <AuxdibotSubcommand>{
                if (message.hasThread) await message.thread.delete().catch(() => undefined);
             })
             .catch(() => undefined);
-         await handleLog(auxdibot, interaction.data.guild, {
+         await auxdibot.log(interaction.data.guild, {
             userID: interaction.data.member.id,
             description: `${interaction.data.member.user.username} deleted Suggestion #${suggestion.suggestionID}`,
             type: LogAction.SUGGESTION_DELETED,

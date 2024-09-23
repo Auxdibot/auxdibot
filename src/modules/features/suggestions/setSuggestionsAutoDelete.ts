@@ -1,5 +1,5 @@
 import { Auxdibot } from '@/Auxdibot';
-import handleLog from '@/util/handleLog';
+
 import { LogAction } from '@prisma/client';
 import { Guild } from 'discord.js';
 
@@ -19,7 +19,7 @@ export default async function setSuggestionsAutoDelete(
                data: { suggestions_auto_delete: auto_delete || !data.suggestions_auto_delete },
             })
             .then(async (i) => {
-               await handleLog(auxdibot, guild, {
+               await auxdibot.log(guild, {
                   type: LogAction.SUGGESTIONS_AUTO_DELETE_CHANGED,
                   userID: user.id,
                   date: new Date(),

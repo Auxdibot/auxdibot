@@ -4,7 +4,6 @@ import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import { testLimit } from '@/util/testLimit';
 import Limits from '@/constants/database/Limits';
 import { FeedType, LogAction } from '@prisma/client';
-import handleLog from '@/util/handleLog';
 
 export default async function createNotification(
    auxdibot: Auxdibot,
@@ -40,7 +39,7 @@ export default async function createNotification(
          select: { notifications: true },
       })
       .then(async (data) => {
-         handleLog(auxdibot, guild, {
+         auxdibot.log(guild, {
             userID: userID,
             description: `A notification has been created for ${topicUrl}.`,
             type: LogAction.NOTIFICATION_CREATED,
