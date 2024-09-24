@@ -1,7 +1,8 @@
-import { Channel, APIEmbed, WebhookClient } from 'discord.js';
+import { Channel, APIEmbed, WebhookClient, ChannelType } from 'discord.js';
 
 export default async function sendEmbed(channel: Channel, content?: string, embed?: APIEmbed, webhook_url?: string) {
-   if (!channel || !channel.isTextBased()) throw new Error("Can't send an embed to a non-text-based channel!");
+   if (!channel || !channel.isTextBased() || channel.type == ChannelType.GroupDM)
+      throw new Error("Can't send an embed to a non-text-based channel!");
 
    if (webhook_url && !channel.isDMBased() && !channel.isThread()) {
       if (!webhook_url.startsWith('https://discord.com/api/webhooks/')) throw new Error('Invalid Webhook URL!');

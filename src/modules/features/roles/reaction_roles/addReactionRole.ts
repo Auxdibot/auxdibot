@@ -1,6 +1,6 @@
 import { Auxdibot } from '@/Auxdibot';
 import { ReactionRoleType } from '@prisma/client';
-import { Channel, EmbedBuilder, Guild, APIEmbed, WebhookClient } from 'discord.js';
+import { Channel, EmbedBuilder, Guild, APIEmbed, WebhookClient, ChannelType } from 'discord.js';
 import { parseReactionsAndRoles } from './parseReactionsAndRoles';
 import applyReactionRoles from './applyReactionRoles';
 
@@ -28,7 +28,7 @@ export default async function addReactionRole(
       if (!reaction.role) throw new Error('invalid role given for reaction role');
       if (!reaction.emoji) throw new Error('invalid emoji given for reaction role');
    }
-   if (!channel || !channel.isTextBased()) throw new Error('invalid channel');
+   if (!channel || !channel.isTextBased() || channel.type == ChannelType.GroupDM) throw new Error('invalid channel');
    let message = null;
    if (webhook_url && !channel.isDMBased() && !channel.isThread()) {
       if (!webhook_url.startsWith('https://discord.com/api/webhooks/')) throw new Error('Invalid Webhook URL!');
