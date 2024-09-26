@@ -5,7 +5,7 @@ import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInt
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 import { getMessage } from '@/util/getMessage';
 import handleError from '@/util/handleError';
-import { AttachmentBuilder } from 'discord.js';
+import { createEmbedsFile } from '@/modules/features/embeds/createEmbedsFile';
 
 export const getEmbedJSON = <AuxdibotSubcommand>{
    name: 'json',
@@ -24,17 +24,8 @@ export const getEmbedJSON = <AuxdibotSubcommand>{
       if (message.embeds.length <= 0)
          return await handleError(auxdibot, 'NO_EMBEDS_FOUND', 'No embeds exist on this message!', interaction);
 
-      const attachment = new AttachmentBuilder(
-         Buffer.from(
-            message.embeds
-               .map((embed) => {
-                  return JSON.stringify(embed.toJSON(), null, 2);
-               })
-               .join('\n\n'),
-            'utf-8',
-         ),
-         { name: 'embeds.json' },
-      );
+      const attachment = createEmbedsFile(message.embeds);
+
       return await auxdibot
          .createReply(interaction, { content: 'Embed JSON as a File:', files: [attachment] })
          .catch(() => {

@@ -17,6 +17,20 @@ export const HelpEmbeds: { [k: string]: (auxdibot: Auxdibot) => APIEmbed } = {
                .reduce((acc, i) => acc + ` **/${i.data.name}**\n> ${i.info.description}\n\n`, ''),
          })
          .toJSON(),
+   user: (auxdibot) =>
+      new EmbedBuilder()
+         .setTitle(`${CustomEmojis.USER} User Commands Help`)
+         .setDescription(
+            `Auxdibot allows users to install Auxdibot as a user-based application! You can install Auxdibot by choosing the "Try it Now" option when clicking the "Add Bot" button on the bot's Discord profile.`,
+         )
+         .setColor(auxdibot.colors.default)
+         .addFields({
+            name: 'Commands',
+            value: auxdibot.commands
+               .filter((i) => i.info.module == Modules.User)
+               .reduce((acc, i) => acc + ` **/${i.data.name}**\n> ${i.info.description}\n\n`, ''),
+         })
+         .toJSON(),
    settings: (auxdibot) =>
       new EmbedBuilder()
          .setTitle(`${CustomEmojis.SETTINGS} Settings Help`)

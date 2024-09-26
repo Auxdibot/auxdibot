@@ -18,9 +18,9 @@ export default async function generateLevelLeaderboard(auxdibot: Auxdibot, guild
          const remove = [];
          for (const i of m) {
             const member = await guild.members.fetch(i.userID).catch(() => undefined);
-            if (!member || member.user.bot) {
+            if (!member || member?.user?.bot) {
                remove.push(i.userID);
-               if (member.user.bot) {
+               if (member?.user?.bot) {
                   auxdibot.database.servermembers.deleteMany({ where: { userID: i.userID } }).catch(() => undefined);
                } else {
                   auxdibot.database.servermembers

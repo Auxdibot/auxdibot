@@ -57,6 +57,12 @@ export const helpAll = <AuxdibotSubcommand>{
                      emoji: CustomEmojis.AUXDIBOT,
                   },
                   {
+                     value: 'user',
+                     label: 'User',
+                     description: 'Commands to utilize on the user-installed variant of Auxdibot.',
+                     emoji: CustomEmojis.USER,
+                  },
+                  {
                      value: 'settings',
                      label: 'Settings',
                      description: "Commands to modify settings for Auxdibot's modules.",
