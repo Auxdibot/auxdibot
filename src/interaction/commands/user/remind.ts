@@ -4,7 +4,7 @@ import remindOnce from '@/interaction/subcommands/remind/remindOnce';
 import { remindRemove } from '@/interaction/subcommands/remind/remindRemove';
 import remindRepeat from '@/interaction/subcommands/remind/remindRepeat';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
-import { ApplicationIntegrationType, SlashCommandBuilder } from 'discord.js';
+import { SlashCommandBuilder } from 'discord.js';
 
 export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -61,7 +61,7 @@ export default <AuxdibotCommand>{
       )
 
       .setContexts(0, 1, 2)
-      .setIntegrationTypes(ApplicationIntegrationType.UserInstall),
+      .setIntegrationTypes(1),
    info: {
       module: Modules['User'],
       description: 'Create reminders based off various parameters.',

@@ -1,5 +1,5 @@
 import { helpAll } from './../../subcommands/help/helpAll';
-import { APIApplicationCommandOptionChoice, ApplicationIntegrationType, SlashCommandBuilder } from 'discord.js';
+import { APIApplicationCommandOptionChoice, SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import Modules from '@/constants/bot/commands/Modules';
 import { placeholdersList } from '../../subcommands/help/placeholdersList';
@@ -49,7 +49,7 @@ export default <AuxdibotCommand>{
             ),
       )
       .setContexts(0, 1, 2)
-      .setIntegrationTypes(ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall),
+      .setIntegrationTypes(0, 1),
    info: {
       module: Modules['General'],
       description: "View Auxdibot's modules, view information about a module or view information about a command.",

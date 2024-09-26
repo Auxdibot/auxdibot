@@ -1,11 +1,4 @@
-import {
-   ActionRowBuilder,
-   ApplicationIntegrationType,
-   ButtonBuilder,
-   ButtonStyle,
-   EmbedBuilder,
-   SlashCommandBuilder,
-} from 'discord.js';
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import Modules from '@/constants/bot/commands/Modules';
 import { CustomEmojis } from '@/constants/bot/CustomEmojis';
@@ -18,7 +11,7 @@ export default <AuxdibotCommand>{
          builder.setName('user').setDescription('The user to view more information about.').setRequired(false),
       )
       .setContexts(0, 1, 2)
-      .setIntegrationTypes(ApplicationIntegrationType.UserInstall),
+      .setIntegrationTypes(1),
    info: {
       module: Modules['User'],
       description: "Get a user's avatar and user ID using Auxdibot.",
