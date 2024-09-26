@@ -41,6 +41,7 @@ import { migrateData } from './util/migrateData';
 import { LogOptions } from './interfaces/log/LogOptions';
 import updateLog from './modules/logs/updateLog';
 import { LogData } from './constants/bot/log/LogData';
+import scheduleRunReminders from './modules/features/reminders/scheduleRunReminders';
 
 const TOKEN = process.env.DISCORD_BOT_TOKEN;
 const CLIENT_ID = process.env.DISCORD_BOT_CLIENT_ID;
@@ -233,6 +234,7 @@ export class Auxdibot extends Client {
       scheduleClearMessageCache(this);
       scheduleStarboardTimeoutClear(this);
       createBuildSessionSchedule(this);
+      scheduleRunReminders(this);
       this.subscriber.twitchInit().then(() => createSubscribers(this));
 
       console.log('-> Logging into client...');
@@ -427,14 +429,13 @@ export class Auxdibot extends Client {
     * @returns A boolean indicating if the user has voted in the last week.
     */
    async hasVoted(userID: string) {
-      return await this.database.users
-         .findFirst({ where: { userID }, select: { voted_date: true } })
-         .then(({ voted_date }) => {
-            const oneWeekAgo = new Date();
-            oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+      return await this.database.users.findFirst({ where: { userID }, select: { voted_date: true } }).then((data) => {
+         if (!data?.voted_date) return false;
+         const oneWeekAgo = new Date();
+         oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
 
-            return voted_date && voted_date.valueOf() >= oneWeekAgo.valueOf();
-         });
+         return data.voted_date.valueOf() >= oneWeekAgo.valueOf();
+      });
    }
    /**
     * Checks if the length of an array is less than a specified limit.

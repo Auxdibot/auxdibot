@@ -291,6 +291,16 @@ type CommandPermission {
   admin_only              Boolean
 }
 
+type Reminder {
+  interval_timestamp String?   @default("1d")
+  last_run           DateTime? @default(now())
+  times_run          Int?
+  embed              APIEmbed?
+  date_to_run        DateTime?
+  message            String?
+  times_to_run       Int?
+}
+
 enum Fonts {
   MONTSERRAT
   RALEWAY
@@ -442,10 +452,12 @@ model totals {
 }
 
 model users {
-  id         String      @id @default(auto()) @map("_id") @db.ObjectId
-  userID     String
-  voted_date DateTime?
-  badges     UserBadge[]
+  id           String      @id @default(auto()) @map("_id") @db.ObjectId
+  userID       String
+  voted_date   DateTime?
+  badges       UserBadge[]
+  reminders    Reminder[]
+  created_date DateTime?   @default(now())
 
   @@unique([userID])
 }

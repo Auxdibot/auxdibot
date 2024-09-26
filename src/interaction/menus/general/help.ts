@@ -12,14 +12,19 @@ export default <AuxdibotSelectMenu>{
    async execute(auxdibot: Auxdibot, interaction: AnySelectMenuInteraction) {
       const module = interaction.values[0];
       if (!(module in HelpEmbeds)) return;
+      await interaction.deferReply();
       interaction.message
          .edit({
             embeds: [HelpEmbeds[module](auxdibot)],
          })
          .catch((x) => console.error(x));
-      return interaction
-         .deferReply()
+      return interaction.message
+         .edit({
+            embeds: [HelpEmbeds[module](auxdibot)],
+         })
          .then(() => interaction.deleteReply())
-         .catch((x) => console.error(x));
+         .catch(() => {
+            return interaction.editReply({ embeds: [HelpEmbeds[module](auxdibot)] }).catch((x) => console.error(x));
+         });
    },
 };

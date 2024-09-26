@@ -43,9 +43,10 @@ export default async function parsePlaceholders(
    }
    const latest_punishment =
       server && member ? server.punishments.filter((p) => p.userID == member.id).reverse()[0] : undefined;
-   const memberData = member
-      ? await auxdibot.database.servermembers.findFirst({ where: { serverID: guild.id, userID: member.id } })
-      : undefined;
+   const memberData =
+      member && guild
+         ? await auxdibot.database.servermembers.findFirst({ where: { serverID: guild.id, userID: member.id } })
+         : undefined;
    const memberLevel = memberData ? calculateLevel(memberData.xp) : 0;
    const board = starred_data && server.starboard_boards.find((i) => i.board_name == starred_data?.board);
    const PLACEHOLDERS: Partial<Record<Placeholders, unknown>> = {

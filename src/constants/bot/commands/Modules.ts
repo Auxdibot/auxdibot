@@ -7,6 +7,11 @@ const Modules = {
       description: 'General purpose module, containing essential information about Auxdibot.',
       emoji: CustomEmojis.AUXDIBOT,
    },
+   User: <AuxdibotFeatureModule>{
+      name: 'User',
+      description: 'Module for commands that can be used when Auxdibot is installed on a user.',
+      emoji: CustomEmojis.USER,
+   },
    Settings: <AuxdibotFeatureModule>{
       name: 'Settings',
       description:

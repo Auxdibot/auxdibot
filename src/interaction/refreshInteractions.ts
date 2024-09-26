@@ -10,6 +10,7 @@ export default async function refreshInteractions(auxdibot: Auxdibot, rest: REST
    const commands = [];
    const PACKAGES = [
       'general',
+      'user',
       'moderation',
       'settings',
       'messages',
