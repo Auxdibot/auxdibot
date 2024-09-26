@@ -1,10 +1,5 @@
 import { helpAll } from './../../subcommands/help/helpAll';
-import {
-   APIApplicationCommandOptionChoice,
-   ApplicationIntegrationType,
-   InteractionContextType,
-   SlashCommandBuilder,
-} from 'discord.js';
+import { APIApplicationCommandOptionChoice, ApplicationIntegrationType, SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import Modules from '@/constants/bot/commands/Modules';
 import { placeholdersList } from '../../subcommands/help/placeholdersList';
@@ -53,7 +48,7 @@ export default <AuxdibotCommand>{
                argBuilder.setName('subcommand').setDescription('The subcommand you want to learn more about.'),
             ),
       )
-      .setContexts(InteractionContextType.Guild, InteractionContextType.BotDM, InteractionContextType.PrivateChannel)
+      .setContexts(0, 1, 2)
       .setIntegrationTypes(ApplicationIntegrationType.GuildInstall, ApplicationIntegrationType.UserInstall),
    info: {
       module: Modules['General'],
