@@ -4,7 +4,7 @@ import remindOnce from '@/interaction/subcommands/remind/remindOnce';
 import { remindRemove } from '@/interaction/subcommands/remind/remindRemove';
 import remindRepeat from '@/interaction/subcommands/remind/remindRepeat';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
-import { ApplicationIntegrationType, InteractionContextType, SlashCommandBuilder } from 'discord.js';
+import { ApplicationIntegrationType, SlashCommandBuilder } from 'discord.js';
 
 export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -60,7 +60,7 @@ export default <AuxdibotCommand>{
             ),
       )
 
-      .setContexts(InteractionContextType.Guild, InteractionContextType.BotDM, InteractionContextType.PrivateChannel)
+      .setContexts(0, 1, 2)
       .setIntegrationTypes(ApplicationIntegrationType.UserInstall),
    info: {
       module: Modules['User'],

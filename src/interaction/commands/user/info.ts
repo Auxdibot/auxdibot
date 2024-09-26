@@ -4,7 +4,6 @@ import {
    ButtonBuilder,
    ButtonStyle,
    EmbedBuilder,
-   InteractionContextType,
    SlashCommandBuilder,
 } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
@@ -18,7 +17,7 @@ export default <AuxdibotCommand>{
       .addUserOption((builder) =>
          builder.setName('user').setDescription('The user to view more information about.').setRequired(false),
       )
-      .setContexts(InteractionContextType.Guild, InteractionContextType.BotDM, InteractionContextType.PrivateChannel)
+      .setContexts(0, 1, 2)
       .setIntegrationTypes(ApplicationIntegrationType.UserInstall),
    info: {
       module: Modules['User'],
