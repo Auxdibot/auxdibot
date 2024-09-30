@@ -25,7 +25,7 @@ export const promoRow = async (auxdibot: Auxdibot, userID?: string) => {
          new ButtonBuilder()
             .setStyle(ButtonStyle.Link)
             .setLabel('Vote for Auxdibot')
-            .setEmoji(CustomEmojis.PREMIUM)
+            .setEmoji(CustomEmojis.TOPGG)
             .setURL(process.env.TOPGG_VOTE_URL ?? 'https://top.gg/bot/776496457867591711/vote'),
       );
    }
