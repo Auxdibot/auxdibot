@@ -63,7 +63,7 @@ export default async function server(auxdibot: Auxdibot) {
                      })
                      .toJSON(),
                ],
-               content: `# ${CustomEmojis.PREMIUM} Vote Received`,
+               content: `# ${CustomEmojis.TOPGG} Vote Received`,
             });
          } catch (x) {
             console.log('!!!! VOTE ERROR !!!!');
