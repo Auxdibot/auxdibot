@@ -26,4 +26,5 @@ export const CustomEmojis = {
    PREMIUM: '<:premium:1281638815542280242>',
    STORAGE: '<:storage:1282069928068775946>',
    SETTINGS: '<:settings:1282069952651853956>',
+   TOPGG: '<:topgg:1288241604217405451>',
 };
