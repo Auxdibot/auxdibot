@@ -29,5 +29,9 @@ export const promoRow = async (auxdibot: Auxdibot, userID?: string) => {
             .setURL(process.env.TOPGG_VOTE_URL ?? 'https://top.gg/bot/776496457867591711/vote'),
       );
    }
+   const premium = userID ? await auxdibot.fetchPremiumSubscription(userID).catch(() => undefined) : undefined;
+   if (userID && (!premium || !premium.isActive()) && process.env.PREMIUM_SKU_ID) {
+      row.addComponents(new ButtonBuilder().setStyle(ButtonStyle.Premium).setSKUId(process.env.PREMIUM_SKU_ID));
+   }
    return row;
 };

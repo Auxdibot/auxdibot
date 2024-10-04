@@ -239,7 +239,7 @@ export class Auxdibot extends Client {
 
       console.log('-> Logging into client...');
       this.login(TOKEN)
-         .then(() => {
+         .then(async () => {
             server(this);
             fetchAnalytics(this);
             migrateData(this);
@@ -454,5 +454,21 @@ export class Auxdibot extends Client {
          return 'spliced';
       }
       return false;
+   }
+   /**
+    * Fetches the premium subscription entitlement of a user.
+    * @param userID The ID of the user to fetch the premium subscription status of.
+    * @returns A promise that resolves to the premium subscription entitlement of the user.
+    */
+   async fetchPremiumSubscription(userID: string) {
+      try {
+         const entitlement = await this.application.entitlements.fetch({
+            user: userID,
+            skus: [process.env.PREMIUM_SKU_ID],
+         });
+         return entitlement.find((val) => val.isActive());
+      } catch (x) {
+         return undefined;
+      }
    }
 }
