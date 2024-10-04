@@ -10,6 +10,7 @@
       "build-watch": "tsc -w",
       "lint": "eslint --ignore-path .eslintignore --ext .js,.ts . --quiet --fix",
       "test": "ts-mocha -p ./tsconfig.json -u tdd ./test/**/*.test.ts --recursive --paths",
+      "prepare": "npx husky install",
       "prod": "npm ci && npm run build && npm run start"
    },
    "author": "Auxdible",
