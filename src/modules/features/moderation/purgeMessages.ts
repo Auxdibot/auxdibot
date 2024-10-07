@@ -3,6 +3,7 @@ import { GuildTextBasedChannel } from 'discord.js';
 export default async function purgeMessages(
    channel: GuildTextBasedChannel,
    amount: number,
+   delete_bot: boolean,
    userID?: string,
    filter?: string,
    attachments?: boolean,
@@ -12,6 +13,7 @@ export default async function purgeMessages(
    const messages = await channel.messages.fetch({ limit: amount });
    const filtered = messages.filter(
       (i) =>
+         (delete_bot || !i.author.bot) &&
          (userID ? i.author.id == userID : true) &&
          (filter ? new RegExp(filter, 'g').test(i.content) : true) &&
          (attachments ? i.attachments.size > 0 : true) &&

@@ -18,6 +18,12 @@ export default <AuxdibotCommand>{
             .setDescription('Purge messages regardless of content or user.')
             .addNumberOption((builder) =>
                builder.setName('amount').setDescription('The total amount of messages to purge.').setRequired(true),
+            )
+            .addBooleanOption((builder) =>
+               builder
+                  .setName('delete_bot')
+                  .setDescription('Whether to delete bot messages. (default: True)')
+                  .setRequired(false),
             ),
       )
       .addSubcommand((subcommand) =>
@@ -29,6 +35,12 @@ export default <AuxdibotCommand>{
             )
             .addUserOption((builder) =>
                builder.setName('user').setDescription('The user whose messages are to be deleted.').setRequired(true),
+            )
+            .addBooleanOption((builder) =>
+               builder
+                  .setName('delete_bot')
+                  .setDescription('Whether to delete bot messages. (default: True)')
+                  .setRequired(false),
             ),
       )
       .addSubcommand((subcommand) =>
@@ -43,6 +55,12 @@ export default <AuxdibotCommand>{
                   .setName('filter')
                   .setDescription('The filter to use to delete messages (Supports RegEx!)')
                   .setRequired(true),
+            )
+            .addBooleanOption((builder) =>
+               builder
+                  .setName('delete_bot')
+                  .setDescription('Whether to delete bot messages. (default: True)')
+                  .setRequired(false),
             ),
       )
       .addSubcommand((subcommand) =>
@@ -51,6 +69,12 @@ export default <AuxdibotCommand>{
             .setDescription('Purge messages based on whether they have attachments.')
             .addNumberOption((builder) =>
                builder.setName('amount').setDescription('The amount of messages to search.').setRequired(true),
+            )
+            .addBooleanOption((builder) =>
+               builder
+                  .setName('delete_bot')
+                  .setDescription('Whether to delete bot messages. (default: True)')
+                  .setRequired(false),
             ),
       )
       .addSubcommand((subcommand) =>
@@ -59,6 +83,12 @@ export default <AuxdibotCommand>{
             .setDescription('Purge messages based on whether they have invites.')
             .addNumberOption((builder) =>
                builder.setName('amount').setDescription('The amount of messages to search.').setRequired(true),
+            )
+            .addBooleanOption((builder) =>
+               builder
+                  .setName('delete_bot')
+                  .setDescription('Whether to delete bot messages. (default: True)')
+                  .setRequired(false),
             ),
       )
       .addSubcommand((subcommand) =>
@@ -67,6 +97,12 @@ export default <AuxdibotCommand>{
             .setDescription('Purge messages based on whether they have embeds.')
             .addNumberOption((builder) =>
                builder.setName('amount').setDescription('The amount of messages to search.').setRequired(true),
+            )
+            .addBooleanOption((builder) =>
+               builder
+                  .setName('delete_bot')
+                  .setDescription('Whether to delete bot messages. (default: True)')
+                  .setRequired(false),
             ),
       ),
    info: {

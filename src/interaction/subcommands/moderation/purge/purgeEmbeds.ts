@@ -14,11 +14,12 @@ export const purgeEmbeds = <AuxdibotSubcommand>{
    info: {
       module: Modules['Moderation'],
       description: 'Purge messages based on whether they have embeds.',
-      usageExample: '/purge embeds (amount)',
+      usageExample: '/purge embeds (amount) [delete_bot]',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;
-      const amount = interaction.options.getNumber('amount', true);
+      const amount = interaction.options.getNumber('amount', true),
+         delete_bot = interaction.options.getBoolean('delete_bot') ?? true;
       if (
          !interaction.channel.permissionsFor(interaction.guild.members.me).has(PermissionsBitField.Flags.ManageMessages)
       ) {
@@ -38,7 +39,7 @@ export const purgeEmbeds = <AuxdibotSubcommand>{
          );
       }
       await auxdibot.createReply(interaction, { ephemeral: true, content: 'Currently purging messages...' });
-      return await purgeMessages(interaction.channel, amount, undefined, undefined, false, false, true)
+      return await purgeMessages(interaction.channel, amount, delete_bot, undefined, undefined, false, false, true)
          .then(async (i) => {
             const embed = new EmbedBuilder().setColor(auxdibot.colors.default).toJSON();
             embed.title = `💥 Message Purge Results (Embeds Purge)`;

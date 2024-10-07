@@ -14,11 +14,12 @@ export const purgeAll = <AuxdibotSubcommand>{
    info: {
       module: Modules['Moderation'],
       description: 'Purge messages regardless of content or user.',
-      usageExample: '/purge all (amount)',
+      usageExample: '/purge all (amount) [delete_bot]',
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;
-      const amount = interaction.options.getNumber('amount', true);
+      const amount = interaction.options.getNumber('amount', true),
+         delete_bot = interaction.options.getBoolean('delete_bot') ?? true;
       if (
          !interaction.channel.permissionsFor(interaction.guild.members.me).has(PermissionsBitField.Flags.ManageMessages)
       ) {
@@ -38,7 +39,7 @@ export const purgeAll = <AuxdibotSubcommand>{
          );
       }
       await auxdibot.createReply(interaction, { ephemeral: true, content: 'Currently purging messages...' });
-      return await purgeMessages(interaction.channel, amount)
+      return await purgeMessages(interaction.channel, amount, delete_bot)
          .then(async (i) => {
             const embed = new EmbedBuilder().setColor(auxdibot.colors.default).toJSON();
             embed.title = `💥 Message Purge Results (All Purge)`;
