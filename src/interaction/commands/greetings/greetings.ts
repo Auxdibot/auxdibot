@@ -76,7 +76,7 @@ export default <AuxdibotCommand>{
       module: Modules['Greetings'],
       description: 'Change settings for greetings on the server.',
       usageExample: '/greetings (channel|join|join_dm|leave)',
-      permissionsRequired: [PermissionFlagsBits.Administrator],
+      permissionsRequired: [PermissionFlagsBits.ManageGuild],
    },
    subcommands: [greetingsChannel, joinMessage, joinPreview, leaveMessage, leavePreview, joinDMMessage, joinDMPreview],
    async execute() {

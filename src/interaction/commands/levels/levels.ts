@@ -347,7 +347,7 @@ export default <AuxdibotCommand>{
       module: Modules['Levels'],
       description: 'Change settings for leveling on this server.',
       usageExample: '/levels (settings|message|multipliers|data|rewards|xp|stats|disable_messages)',
-      permissionsRequired: [PermissionFlagsBits.Administrator],
+      permissionsRequired: [PermissionFlagsBits.ManageGuild],
    },
    subcommands: [
       addLevelReward,

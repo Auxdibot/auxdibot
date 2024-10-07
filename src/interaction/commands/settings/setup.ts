@@ -45,7 +45,7 @@ export default <AuxdibotCommand>{
       module: Modules['Settings'],
       description: "Setup one or all of Auxdibot's features.",
       usageExample: '/setup (auto|starboard|levels|suggestions|moderation|greetings)',
-      permissionsRequired: [PermissionFlagsBits.Administrator],
+      permissionsRequired: [PermissionFlagsBits.ManageGuild],
    },
    subcommands: [setupAuto, setupStarboard, setupLevels, setupSuggestions, setupModeration, setupGreetings],
    async execute() {

@@ -16,7 +16,7 @@ export default <AuxdibotCommand>{
       module: Modules['Settings'],
       description: 'Change settings for the server.',
       usageExample: '/settings (view|reset)',
-      permissionsRequired: [PermissionFlagsBits.Administrator],
+      permissionsRequired: [PermissionFlagsBits.ManageGuild],
    },
    subcommands: [settingsView, settingsReset],
    async execute() {
