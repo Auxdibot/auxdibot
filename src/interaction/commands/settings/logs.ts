@@ -40,7 +40,7 @@ export default <AuxdibotCommand>{
       module: Modules['Settings'],
       description: 'Manage how Auxdibot logs events on your server.',
       usageExample: '/logs (latest|filter|list_filtered|channel|actions)',
-      permissionsRequired: [PermissionFlagsBits.Administrator],
+      permissionsRequired: [PermissionFlagsBits.ManageGuild],
    },
    subcommands: [logsLogChannel, logsLatest, logsActions, logsListFiltered, logsFilter],
    async execute() {

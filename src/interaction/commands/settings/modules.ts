@@ -45,7 +45,7 @@ export default <AuxdibotCommand>{
       module: Modules['Settings'],
       description: "Manage Auxdibot's modules. (/help modules)",
       usageExample: '/modules (disable|enable) (module)',
-      permissionsRequired: [PermissionFlagsBits.Administrator],
+      permissionsRequired: [PermissionFlagsBits.ManageGuild],
    },
    subcommands: [moduleDisable, moduleEnable],
    async execute() {

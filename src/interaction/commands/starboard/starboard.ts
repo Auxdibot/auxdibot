@@ -144,7 +144,7 @@ export default <AuxdibotCommand>{
       module: Modules['Starboard'],
       description: 'Change the starboard settings for this server.',
       usageExample: '/starboard (board|settings)',
-      permissionsRequired: [PermissionFlagsBits.Administrator],
+      permissionsRequired: [PermissionFlagsBits.ManageGuild],
    },
    subcommands: [
       starboardBoardCreate,
