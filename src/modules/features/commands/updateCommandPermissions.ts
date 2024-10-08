@@ -36,6 +36,7 @@ export async function updateCommandPermissions(
          blacklist_roles: [],
          permission_bypass_roles: permissions.permission_bypass_roles || [],
          channels: [],
+         discord_permissions: [],
          channel_output: undefined,
          disabled: false,
          old_admin_only: null,
@@ -75,6 +76,10 @@ export async function updateCommandPermissions(
             (remove && permissions.blacklist_roles
                ? commandPermissions.blacklist_roles.filter((i) => !permissions.blacklist_roles.includes(i))
                : commandPermissions.blacklist_roles.concat(permissions.blacklist_roles ?? [])) ?? [],
+         discord_permissions:
+            (remove && permissions.discord_permissions
+               ? commandPermissions.discord_permissions.filter((i) => !permissions.discord_permissions.includes(i))
+               : commandPermissions.discord_permissions.concat(permissions.discord_permissions ?? [])) ?? [],
       });
       if (
          Object.keys(commandPermissions).filter(
@@ -98,6 +103,14 @@ export async function updateCommandPermissions(
       ))
    )
       throw new Error('Blacklist channels limit reached.');
+   if (
+      !(await auxdibot.testLimit(
+         commandPermissions.discord_permissions,
+         Limits.COMMAND_PERMISSIONS_ITEM_LIMIT,
+         guild?.ownerId,
+      ))
+   )
+      throw new Error('Discord permissions required limit reached.');
    if (!(await auxdibot.testLimit(commandPermissions.roles, Limits.COMMAND_PERMISSIONS_ITEM_LIMIT, guild?.ownerId)))
       throw new Error('Roles limit reached.');
    if (

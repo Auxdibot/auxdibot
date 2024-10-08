@@ -8,6 +8,8 @@ import channelRequireRemove from '@/interaction/subcommands/commands/channel/cha
 import commandsOutputSet from '@/interaction/subcommands/commands/commandsOutputSet';
 import commandsRulesDelete from '@/interaction/subcommands/commands/commandsRulesDelete';
 import commandsRulesView from '@/interaction/subcommands/commands/commandsRulesView';
+import permissionsRemove from '@/interaction/subcommands/commands/permissions/permissionsRemove';
+import permissionsRequire from '@/interaction/subcommands/commands/permissions/permissionsRequire';
 import roleBlacklistAdd from '@/interaction/subcommands/commands/role/roleBlacklistAdd';
 import roleBlacklistRemove from '@/interaction/subcommands/commands/role/roleBlacklistRemove';
 import roleRequireAdd from '@/interaction/subcommands/commands/role/roleRequireAdd';
@@ -22,6 +24,47 @@ export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
       .setName('commands')
       .setDescription("Manage access for all of Auxdibot's commands.")
+      .addSubcommandGroup((builder) =>
+         builder
+            .setName('permissions')
+            .setDescription('Manage Discord permissions for commands.')
+            .addSubcommand((builder) =>
+               builder
+                  .setName('require')
+                  .setDescription('Require a Discord permission to use a command.')
+                  .addStringOption((option) =>
+                     option
+                        .setName('command')
+                        .setDescription('The command to apply the requirement to.')
+                        .setRequired(true),
+                  )
+                  .addStringOption((option) =>
+                     option
+                        .setName('permission')
+                        .setDescription('The Discord permission required to execute the command.')
+                        .setAutocomplete(true)
+                        .setRequired(true),
+                  ),
+            )
+            .addSubcommand((builder) =>
+               builder
+                  .setName('remove')
+                  .setDescription('Remove a Discord permission requirement from a command.')
+                  .addStringOption((option) =>
+                     option
+                        .setName('command')
+                        .setDescription('The command to remove the requirement from.')
+                        .setRequired(true),
+                  )
+                  .addStringOption((option) =>
+                     option
+                        .setName('permission')
+                        .setDescription('The Discord permission to remove from the command.')
+                        .setAutocomplete(true)
+                        .setRequired(true),
+                  ),
+            ),
+      )
       .addSubcommandGroup((builder) =>
          builder
             .setName('role')
@@ -283,6 +326,8 @@ export default <AuxdibotCommand>{
       commandsUsageDisable,
       commandsRulesDelete,
       commandsUsageChannel,
+      permissionsRequire,
+      permissionsRemove,
    ],
    async execute() {
       return;

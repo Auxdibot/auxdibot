@@ -1,4 +1,4 @@
-import { SlashCommandBuilder, SlashCommandSubcommandsOnlyBuilder } from 'discord.js';
+import { AutocompleteInteraction, SlashCommandBuilder, SlashCommandSubcommandsOnlyBuilder } from 'discord.js';
 
 import CommandInfo from './CommandInfo';
 import { AuxdibotSubcommand } from './AuxdibotSubcommand';
@@ -13,6 +13,7 @@ interface AuxdibotCommand {
       | Omit<SlashCommandBuilder, 'addSubcommandGroup' | 'addSubcommand'>;
    execute?(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<BaseAuxdibotCommandData>): unknown;
    info: CommandInfo;
+   autocomplete?: { [k: string]: (auxdibot: Auxdibot, interaction: AutocompleteInteraction) => void };
    subcommands?: AuxdibotSubcommand[];
 }
 
