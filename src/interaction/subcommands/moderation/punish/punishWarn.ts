@@ -22,7 +22,7 @@ export const punishWarn = <AuxdibotSubcommand>{
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;
-      await interaction.deferReply();
+      await interaction.deferReply({ ephemeral: true });
       const user = interaction.options.getUser('user', true),
          reason = interaction.options.getString('reason') || 'No reason specified.';
       const member = interaction.data.guild.members.resolve(user.id);

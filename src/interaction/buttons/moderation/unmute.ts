@@ -18,7 +18,7 @@ export default <AuxdibotButton>{
       const [, user_id] = interaction.customId.split('-');
       const server = await findOrCreateServer(auxdibot, interaction.guild.id);
       if (!server) return;
-      await interaction.deferReply();
+      await interaction.deferReply({ ephemeral: true });
       const user = interaction.client.users.resolve(user_id);
       if (!user) return;
       const muted = server.punishments.find((p) => p.userID == user.id && p.type == PunishmentType.MUTE && !p.expired);

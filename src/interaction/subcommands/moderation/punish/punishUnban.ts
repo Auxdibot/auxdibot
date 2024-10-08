@@ -20,7 +20,7 @@ export const punishUnban = <AuxdibotSubcommand>{
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;
-      await interaction.deferReply();
+      await interaction.deferReply({ ephemeral: true });
       const user = interaction.options.getUser('user', true);
       const server = interaction.data.guildData;
       const banned = server.punishments.find((p) => p.userID == user.id && p.type == PunishmentType.BAN && !p.expired);
