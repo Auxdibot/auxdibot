@@ -3,6 +3,7 @@ import { findCommand } from '@/modules/features/commands/findCommand';
 import { updateCommandPermissions } from '@/modules/features/commands/updateCommandPermissions';
 import checkAuthenticated from '@/server/checkAuthenticated';
 import checkGuildOwnership from '@/server/checkGuildOwnership';
+import { PermissionFlagsBits } from 'discord.js';
 
 import { NextFunction, Request, Response, Router } from 'express';
 /*
@@ -351,6 +352,59 @@ const commands = (auxdibot: Auxdibot, router: Router) => {
                req.subcommand,
                {
                   blacklist_channels: channel?.id ? [channel.id] : [],
+               },
+               true,
+            )
+               .then((i) => res.json({ data: i }))
+               .catch((x) => {
+                  return res
+                     .status(500)
+                     .json({ error: typeof x.message == 'string' ? x.message : 'an error occurred' });
+               });
+         },
+      );
+   router
+      .route('/:serverID/commands/discord_permissions')
+      .patch(
+         (req, res, next) => checkAuthenticated(req, res, next),
+         (req, res, next) => checkGuildOwnership(auxdibot, req, res, next),
+         (req, res, next) => checkCommand(auxdibot, req, res, next),
+         (req, res) => {
+            const permission = req.body['permission'];
+            if (!permission) return res.status(400).json({ error: 'Please provide a permission.' });
+            const permissionKey = Object.keys(PermissionFlagsBits).find(
+               (i) => i.toLowerCase() === permission.toLowerCase(),
+            );
+            if (!permissionKey) return res.status(404).json({ error: 'Invalid permission.' });
+            return updateCommandPermissions(auxdibot, req.guild.id, req.command, req.subcommand, {
+               discord_permissions: [permissionKey],
+            })
+               .then((i) => res.json({ data: i }))
+               .catch((x) => {
+                  return res
+                     .status(500)
+                     .json({ error: typeof x.message == 'string' ? x.message : 'an error occurred' });
+               });
+         },
+      )
+      .delete(
+         (req, res, next) => checkAuthenticated(req, res, next),
+         (req, res, next) => checkGuildOwnership(auxdibot, req, res, next),
+         (req, res, next) => checkCommand(auxdibot, req, res, next),
+         (req, res) => {
+            const permission = req.body['permission'];
+            if (!permission) return res.status(400).json({ error: 'Please provide a permission.' });
+            const permissionKey = Object.keys(PermissionFlagsBits).find(
+               (i) => i.toLowerCase() === permission.toLowerCase(),
+            );
+            if (!permissionKey) return res.status(404).json({ error: 'Invalid permission.' });
+            return updateCommandPermissions(
+               auxdibot,
+               req.guild.id,
+               req.command,
+               req.subcommand,
+               {
+                  discord_permissions: [permissionKey],
                },
                true,
             )
