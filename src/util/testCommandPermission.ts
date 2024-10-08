@@ -6,6 +6,7 @@ import { CommandPermission } from '@prisma/client';
 import { checkPermissionBypassRole } from './checkPermissionBypassRole';
 
 export function testDiscordCommandPermissions(permissions: bigint[], member: GuildMember) {
+   console.log(permissions);
    for (const permission of permissions) {
       if (!member.permissions.has(permission))
          return `noperm-${Object.keys(PermissionFlagsBits).find((i) => PermissionFlagsBits[i] == permission)}`;
@@ -66,10 +67,16 @@ export async function testCommandPermission(
 
    const allowedDefault = subcommandData ? subcommandData.info.allowedDefault : commandData.info.allowedDefault;
 
-   const permissions =
-      subcommandData?.info?.permissionsRequired !== undefined
+   let permissions =
+      (subcommandData?.info?.permissionsRequired !== undefined
          ? subcommandData.info.permissionsRequired
-         : commandData.info.permissionsRequired;
+         : commandData.info.permissionsRequired) ?? [];
+   if (commandPermission?.discord_permissions)
+      permissions = permissions.concat(commandPermission.discord_permissions.map((i) => PermissionFlagsBits[i]));
+   if (groupPermission?.discord_permissions)
+      permissions = permissions.concat(groupPermission.discord_permissions.map((i) => PermissionFlagsBits[i]));
+   if (subcommandPermission?.discord_permissions)
+      permissions = permissions.concat(subcommandPermission.discord_permissions.map((i) => PermissionFlagsBits[i]));
    const checkPermissionBypass = await checkPermissionBypassRole(
       auxdibot,
       member,

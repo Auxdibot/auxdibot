@@ -24,6 +24,7 @@ import { eventDelete } from './events/eventDelete';
 import { guildAuditLogEntryCreate } from './guild/guildAuditLogEntryCreate';
 import { guildMemberUpdate } from './guild/guildMemberUpdate';
 import contextCreate from './interaction/contextCreate';
+import { autocomplete } from './interaction/autocomplete';
 
 export default function listenEvents(auxdibot: Auxdibot) {
    auxdibot.once('ready', () => onReady(auxdibot));
@@ -33,6 +34,7 @@ export default function listenEvents(auxdibot: Auxdibot) {
       else if (interaction.isChatInputCommand()) slashCreate(auxdibot, interaction);
       else if (interaction.isAnySelectMenu()) selectMenuCreate(auxdibot, interaction);
       else if (interaction.isModalSubmit()) modalSubmit(auxdibot, interaction);
+      else if (interaction.isAutocomplete()) autocomplete(auxdibot, interaction);
    });
    auxdibot.on('guildCreate', (guild) => guildCreate(auxdibot, guild));
    auxdibot.on('guildDelete', (guild) => guildDelete(auxdibot, guild));

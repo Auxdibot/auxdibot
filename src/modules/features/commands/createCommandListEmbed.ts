@@ -11,7 +11,7 @@ export function createCommandListEmbed(auxdibot: Auxdibot, commands: CommandPerm
             command.command +
             (command.group ? ` ${command.group}` : '') +
             (command.subcommand ? ` ${command.subcommand}` : '')
-         }**\n${
+         }**${
             command.disabled
                ? '❌ *Disabled*'
                : `${
@@ -35,6 +35,12 @@ export function createCommandListEmbed(auxdibot: Auxdibot, commands: CommandPerm
                  }${
                     command.permission_bypass_roles.length
                        ? `\nBypass Roles: ${command.permission_bypass_roles.map((role) => `<@&${role}>`).join(', ')}`
+                       : ''
+                 }${
+                    command.discord_permissions.length
+                       ? `\nDiscord Permission Requirements: ${command.discord_permissions
+                            .map((permission) => `\`${permission}\``)
+                            .join(', ')}`
                        : ''
                  }${command.channel_output ? `\nOutput Channel: <#${command.channel_output}>` : ''}`
          }`;
