@@ -17,7 +17,7 @@ export default <AuxdibotModal>{
       if (!member) {
          return handleError(auxdibot, 'MEMBER_NOT_IN_SERVER', 'This user is not in the server!', interaction);
       }
-      await interaction.deferReply();
+      await interaction.deferReply({ ephemeral: true });
       const reason = interaction.fields.getTextInputValue('reason');
       const warnData = <Punishment>{
          moderatorID: interaction.user.id,

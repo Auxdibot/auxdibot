@@ -18,7 +18,7 @@ export default <AuxdibotButton>{
       const [, user_id] = interaction.customId.split('-');
       const server = await findOrCreateServer(auxdibot, interaction.guild.id);
       if (!server) return;
-      await interaction.deferReply();
+      await interaction.deferReply({ ephemeral: true });
       const banned = server.punishments.find((p) => p.userID == user_id && p.type == PunishmentType.BAN && !p.expired);
       if (!banned) return await handleError(auxdibot, 'USER_NOT_BANNED', "This user isn't banned!", interaction);
 
