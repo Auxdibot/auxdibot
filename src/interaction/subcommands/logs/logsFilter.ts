@@ -7,9 +7,13 @@ import toggleLogFilter from '@/modules/features/settings/toggleLogFilter';
 import handleError from '@/util/handleError';
 import { LogAction } from '@prisma/client';
 import { EmbedBuilder } from 'discord.js';
+import { logAutocomplete } from '@/interaction/autocomplete/log';
 
 export const logsFilter = <AuxdibotSubcommand>{
    name: 'filter',
+   autocomplete: {
+      action: logAutocomplete,
+   },
    info: {
       module: Modules['Settings'],
       description: 'Toggle a log action from being logged on your server.',

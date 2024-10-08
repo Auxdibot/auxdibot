@@ -33,7 +33,11 @@ export default <AuxdibotCommand>{
             .setName('filter')
             .setDescription('Toggle a log action from being logged on your server.')
             .addStringOption((argBuilder) =>
-               argBuilder.setName('action').setDescription('The action to be disabled.').setRequired(true),
+               argBuilder
+                  .setName('action')
+                  .setDescription('The action to be disabled.')
+                  .setAutocomplete(true)
+                  .setRequired(true),
             ),
       ),
    info: {
