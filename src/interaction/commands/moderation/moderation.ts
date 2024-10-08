@@ -1,4 +1,4 @@
-import { ChannelType, SlashCommandBuilder } from 'discord.js';
+import { ChannelType, PermissionFlagsBits, SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import Modules from '@/constants/bot/commands/Modules';
 import { moderationMuteRole } from '@/interaction/subcommands/moderation/moderation/moderationMuteRole';
@@ -348,6 +348,7 @@ export default <AuxdibotCommand>{
       module: Modules['Moderation'],
       description: "Command for managing Auxdibot's moderation settings.",
       usageExample: '/moderation (settings|blacklist|attachments|invites|warns|spam|exceptions)',
+      permissionsRequired: [PermissionFlagsBits.ManageGuild],
    },
    subcommands: [
       moderationMuteRole,

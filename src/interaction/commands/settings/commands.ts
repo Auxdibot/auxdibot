@@ -5,7 +5,6 @@ import channelBlacklistAdd from '@/interaction/subcommands/commands/channel/chan
 import channelBlacklistRemove from '@/interaction/subcommands/commands/channel/channelBlacklistRemove';
 import channelRequireAdd from '@/interaction/subcommands/commands/channel/channelRequireAdd';
 import channelRequireRemove from '@/interaction/subcommands/commands/channel/channelRequireRemove';
-import commandsAdminSet from '@/interaction/subcommands/commands/commandsAdminSet';
 import commandsOutputSet from '@/interaction/subcommands/commands/commandsOutputSet';
 import commandsRulesDelete from '@/interaction/subcommands/commands/commandsRulesDelete';
 import commandsRulesView from '@/interaction/subcommands/commands/commandsRulesView';
@@ -193,25 +192,6 @@ export default <AuxdibotCommand>{
       )
       .addSubcommandGroup((builder) =>
          builder
-            .setName('admin')
-            .setDescription('Set whether a command is allowed exclusively for Discord Administrators.')
-            .addSubcommand((builder) =>
-               builder
-                  .setName('set')
-                  .setDescription('Set whether a command is allowed exclusively for Discord Administrators.')
-                  .addStringOption((option) =>
-                     option.setName('command').setDescription('The command to toggle.').setRequired(true),
-                  )
-                  .addBooleanOption((option) =>
-                     option
-                        .setName('admin_only')
-                        .setDescription('Whether the command is allowed for exclusively Discord Administrators.')
-                        .setRequired(true),
-                  ),
-            ),
-      )
-      .addSubcommandGroup((builder) =>
-         builder
             .setName('output')
             .setDescription("Set the channel that a command's output is broadcast to.")
             .addSubcommand((builder) =>
@@ -287,7 +267,6 @@ export default <AuxdibotCommand>{
       permissionsRequired: [PermissionFlagsBits.ManageGuild],
    },
    subcommands: [
-      commandsAdminSet,
       commandsOutputSet,
       bypassRolesAdd,
       bypassRolesRemove,

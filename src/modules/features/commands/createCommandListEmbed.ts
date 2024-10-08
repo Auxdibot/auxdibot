@@ -14,7 +14,7 @@ export function createCommandListEmbed(auxdibot: Auxdibot, commands: CommandPerm
          }**\n${
             command.disabled
                ? '❌ *Disabled*'
-               : `${command.admin_only ? '🛡️ Admin Only' : '👥 Everyone'}${
+               : `${
                     command.blacklist_channels.length
                        ? `\nBlacklisted Channels: ${command.blacklist_channels
                             .map((channel) => `<#${channel}>`)

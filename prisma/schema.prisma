@@ -287,8 +287,10 @@ type CommandPermission {
   roles                   String[]
   channels                String[]
   permission_bypass_roles String[]
+  discord_permissions     String[]
   channel_output          String?
-  admin_only              Boolean
+  // Deprecated, will be removed in next non-patch update
+  old_admin_only          Boolean? @default(false) @map("admin_only")
 }
 
 type Reminder {

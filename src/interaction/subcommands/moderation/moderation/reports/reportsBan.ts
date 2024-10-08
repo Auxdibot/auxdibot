@@ -6,6 +6,7 @@ import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 import canExecute from '@/util/canExecute';
 import handleError from '@/util/handleError';
 import { EmbedBuilder } from '@discordjs/builders';
+import { PermissionFlagsBits } from 'discord.js';
 
 export const reportsBan = <AuxdibotSubcommand>{
    name: 'ban',
@@ -14,6 +15,7 @@ export const reportsBan = <AuxdibotSubcommand>{
       module: Modules['Moderation'],
       description: 'Ban a user from making reports.',
       usageExample: '/moderation reports ban (user)',
+      permissionsRequired: [PermissionFlagsBits.BanMembers],
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;

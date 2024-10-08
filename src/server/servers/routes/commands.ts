@@ -99,22 +99,6 @@ const commands = (auxdibot: Auxdibot, router: Router) => {
       },
    );
    router.post(
-      '/:serverID/commands/admin_only',
-      (req, res, next) => checkAuthenticated(req, res, next),
-      (req, res, next) => checkGuildOwnership(auxdibot, req, res, next),
-      (req, res, next) => checkCommand(auxdibot, req, res, next),
-      (req, res) => {
-         const admin_only = req.body['admin_only'];
-         return updateCommandPermissions(auxdibot, req.guild.id, req.command, req.subcommand, {
-            admin_only: admin_only === 'true',
-         })
-            .then((i) => res.json({ data: i }))
-            .catch((x) => {
-               return res.status(500).json({ error: typeof x.message == 'string' ? x.message : 'an error occurred' });
-            });
-      },
-   );
-   router.post(
       '/:serverID/commands/output_channel',
       (req, res, next) => checkAuthenticated(req, res, next),
       (req, res, next) => checkGuildOwnership(auxdibot, req, res, next),
@@ -122,6 +106,7 @@ const commands = (auxdibot: Auxdibot, router: Router) => {
       (req, res) => {
          const outputChannel = req.body['output_channel'];
          const channel = outputChannel ? req.guild.channels.cache.get(outputChannel) : null;
+
          return updateCommandPermissions(auxdibot, req.guild.id, req.command, req.subcommand, {
             channel_output: channel?.id ?? null,
          })

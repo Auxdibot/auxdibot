@@ -1,4 +1,4 @@
-import { ChannelType, SlashCommandBuilder } from 'discord.js';
+import { ChannelType, PermissionFlagsBits, SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import dotenv from 'dotenv';
 import Modules from '@/constants/bot/commands/Modules';
@@ -87,6 +87,7 @@ export default <AuxdibotCommand>{
       module: Modules['Messages'],
       description: 'Create notifications for your favorite social media/RSS feeds.',
       usageExample: '/notifications (youtube|twitch|rss|delete|list)',
+      permissionsRequired: [PermissionFlagsBits.ManageGuild],
    },
    subcommands: [notificationsYoutube, notificationsDelete, notificationsList, notificationsTwitch, notificationsRSS],
    async execute() {
