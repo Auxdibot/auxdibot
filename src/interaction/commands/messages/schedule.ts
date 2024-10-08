@@ -1,4 +1,4 @@
-import { ChannelType, SlashCommandBuilder } from 'discord.js';
+import { ChannelType, PermissionFlagsBits, SlashCommandBuilder } from 'discord.js';
 import AuxdibotCommand from '@/interfaces/commands/AuxdibotCommand';
 import dotenv from 'dotenv';
 import Modules from '@/constants/bot/commands/Modules';
@@ -86,6 +86,7 @@ export default <AuxdibotCommand>{
       module: Modules['Messages'],
       description: 'Schedule embeds, cancel schedules, and list schedules with Auxdibot.',
       usageExample: '/schedule (message|remove|list|preview|edit)',
+      permissionsRequired: [PermissionFlagsBits.ManageGuild],
    },
    subcommands: [scheduleMessage, scheduleList, scheduleRemove, schedulePreview, scheduleEdit],
    async execute() {

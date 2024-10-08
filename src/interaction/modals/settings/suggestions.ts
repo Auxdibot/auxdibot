@@ -44,17 +44,14 @@ export default <AuxdibotModal>{
          if (role) {
             await updateCommandPermissions(auxdibot, interaction.guildId, 'suggestions', ['respond'], {
                roles: [role.id],
-               admin_only: false,
                permission_bypass_roles: [role.id],
             }).catch(() => undefined);
             await updateCommandPermissions(auxdibot, interaction.guildId, 'suggestions', ['ban'], {
                roles: [role.id],
-               admin_only: false,
                permission_bypass_roles: [role.id],
             }).catch(() => undefined);
             await updateCommandPermissions(auxdibot, interaction.guildId, 'suggestions', ['unban'], {
                roles: [role.id],
-               admin_only: false,
                permission_bypass_roles: [role.id],
             }).catch(() => undefined);
          }

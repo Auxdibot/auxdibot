@@ -18,7 +18,6 @@ export async function updateCommandPermissions(
    const cmd = findCommand(auxdibot, command, subcommand);
    if (!cmd) return undefined;
 
-   const { commandData, subcommandData } = cmd;
    let commandPermissions = server?.command_permissions.find(
       (i) =>
          i.command == command &&
@@ -39,10 +38,7 @@ export async function updateCommandPermissions(
          channels: [],
          channel_output: undefined,
          disabled: false,
-         admin_only:
-            subcommandData?.info?.allowedDefault != undefined
-               ? !subcommandData.info.allowedDefault
-               : !commandData.info.allowedDefault,
+         old_admin_only: null,
          ...permissions,
       };
       server?.command_permissions.push(commandPermissions);
@@ -87,7 +83,6 @@ export async function updateCommandPermissions(
                commandPermissions[i] &&
                (Array.isArray(commandPermissions[i]) ? commandPermissions[i].length > 0 : true),
          ).length <= 0 &&
-         commandPermissions.admin_only == !(subcommandData?.info?.allowedDefault ?? commandData.info.allowedDefault) &&
          !commandPermissions.disabled
       ) {
          await removeCommandPermission(auxdibot, guildId, command, subcommand).catch(() => undefined);

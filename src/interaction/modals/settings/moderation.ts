@@ -94,17 +94,14 @@ export default <AuxdibotModal>{
          if (modRole) {
             await updateCommandPermissions(auxdibot, interaction.guildId, 'punish', [], {
                roles: [modRole.id],
-               admin_only: false,
                permission_bypass_roles: [modRole.id],
             }).catch(() => undefined);
             await updateCommandPermissions(auxdibot, interaction.guildId, 'punishment', [], {
                roles: [modRole.id],
-               admin_only: false,
                permission_bypass_roles: [modRole.id],
             }).catch(() => undefined);
             await updateCommandPermissions(auxdibot, interaction.guildId, 'user', [], {
                roles: [modRole.id],
-               admin_only: false,
                permission_bypass_roles: [modRole.id],
             }).catch(() => undefined);
          }

@@ -22,8 +22,6 @@ export function testDiscordCommandPermissions(permissions: bigint[], member: Gui
  * 'disabled' if the command is disabled, or `true` if the user has permission.
  */
 export function testPermission(permission: CommandPermission, interaction: BaseInteraction, member: GuildMember) {
-   if (permission.admin_only && !member.permissions.has(PermissionFlagsBits.Administrator)) return 'noperm';
-
    if (permission.blacklist_channels.includes(interaction.channel.id)) return 'noperm-channel';
    if (permission.channels.length > 0 && !permission.channels.includes(interaction.channel.id)) return 'noperm-channel';
    if (member.roles.cache.find((i) => permission.blacklist_roles.includes(i.id))) return 'noperm';
