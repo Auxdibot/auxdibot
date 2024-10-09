@@ -205,7 +205,7 @@ export class Auxdibot extends Client {
                {
                   type: ActivityType.Custom,
                   name: 'Auxdibot',
-                  url: 'https://bot.auxdible.me',
+                  url: 'https://auxdibot.xyz',
                   state: `⌚ Loading...`,
                },
             ],
@@ -389,7 +389,7 @@ export class Auxdibot extends Client {
    async log(guild: Guild, log: Omit<Log, 'old_date_unix'>, { fields, user_avatar }: LogOptions = {}) {
       const server = await findOrCreateServer(this, guild.id);
       if (server.filtered_logs.indexOf(log.type) != -1) return;
-      return await updateLog(this, guild.id, log)
+      return await updateLog(this, guild, log)
          .then(async () => {
             const user = log.userID ? await guild.client.users.fetch(log.userID) : undefined;
             const logEmbed = new EmbedBuilder()
@@ -446,8 +446,17 @@ export class Auxdibot extends Client {
     * @param purgePrior - Optional. If true, removes the prior elements of the array if the limit is exceeded. Default is false.
     * @returns True if the length of the array is less than the limit, false otherwise. If purgePrior is true and the limit is exceeded, returns 'spliced'.
     */
-   async testLimit(v: unknown[], limit: { default: number; voted: number }, ownerID?: string, purgePrior?: boolean) {
-      const value = (await this.hasVoted(ownerID).catch(() => false)) ? limit.voted : limit.default;
+   async testLimit(
+      v: unknown[],
+      limit: { default: number; voted: number },
+      guild?: Guild,
+      purgePrior?: boolean,
+      user?: string,
+   ) {
+      const premium = await this.fetchPremiumSubscriptionUser(guild?.id);
+      if (premium) return true;
+
+      const value = (await this.hasVoted(guild?.ownerId ?? user).catch(() => false)) ? limit.voted : limit.default;
       if (v.length < value) return true;
       if (purgePrior) {
          v.splice(0, 1);
@@ -467,6 +476,19 @@ export class Auxdibot extends Client {
             skus: [process.env.PREMIUM_SKU_ID],
          });
          return entitlement.find((val) => val.isActive());
+      } catch (x) {
+         return undefined;
+      }
+   }
+   async fetchPremiumSubscriptionUser(guildID: string) {
+      try {
+         const premium_users = await this.database.users.findMany({ where: { premium_servers: { has: guildID } } });
+         for (const user of premium_users) {
+            if (await this.fetchPremiumSubscription(user.userID)) {
+               return user.userID;
+            }
+         }
+         return undefined;
       } catch (x) {
          return undefined;
       }

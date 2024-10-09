@@ -29,7 +29,7 @@ export const reactionRolesAddMessage = <AuxdibotSubcommand>{
          !(await auxdibot.testLimit(
             interaction.data.guildData.reaction_roles,
             Limits.REACTION_ROLE_DEFAULT_LIMIT,
-            interaction.guild.ownerId,
+            interaction.guild,
          ))
       ) {
          return await handleError(

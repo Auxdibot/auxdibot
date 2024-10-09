@@ -29,7 +29,7 @@ export const scheduleMessage = <AuxdibotSubcommand>{
          !(await auxdibot.testLimit(
             interaction.data.guildData.scheduled_messages,
             Limits.SCHEDULE_LIMIT,
-            interaction.guild.ownerId,
+            interaction.guild,
          ))
       ) {
          return await handleError(

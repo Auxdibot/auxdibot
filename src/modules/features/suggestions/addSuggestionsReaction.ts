@@ -16,13 +16,7 @@ export default async function addSuggestionsReaction(
    return auxdibot.database.servers
       .findFirst({ where: { serverID: guild.id }, select: { suggestions_reactions: true } })
       .then(async (i) => {
-         if (
-            !(await auxdibot.testLimit(
-               i.suggestions_reactions,
-               Limits.SUGGESTIONS_REACTIONS_DEFAULT_LIMIT,
-               guild.ownerId,
-            ))
-         )
+         if (!(await auxdibot.testLimit(i.suggestions_reactions, Limits.SUGGESTIONS_REACTIONS_DEFAULT_LIMIT, guild)))
             throw new Error('you have too many suggestions reactions');
          return await auxdibot.database.servers.update({
             where: { serverID: guild.id },

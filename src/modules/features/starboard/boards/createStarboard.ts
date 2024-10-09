@@ -31,7 +31,7 @@ export default async function createStarboard(
    if (!(await guild.channels.fetch(starboard.channelID).catch(() => undefined)))
       throw new Error('Invalid channel provided.');
    if (starboard.star_levels.length > 5) throw new Error('Star levels must have a maximum of 5 levels.');
-   if (!(await auxdibot.testLimit(server.starboard_boards, Limits.STARBOARD_BOARD_LIMIT, guild.ownerId)))
+   if (!(await auxdibot.testLimit(server.starboard_boards, Limits.STARBOARD_BOARD_LIMIT, guild)))
       throw new Error('You have reached the maximum amount of starboards allowed on this server.');
    if (!starboard.channelID) throw new Error('Invalid channel provided.');
 
