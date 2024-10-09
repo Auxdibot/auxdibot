@@ -14,7 +14,7 @@ export default async function addBlacklistedPhrase(
    if (server.automod_banned_phrases.find((i) => i == blacklisted_phrase)) {
       throw new Error('You already have this blacklisted phrase added!');
    }
-   if (!(await auxdibot.testLimit(server.automod_banned_phrases, Limits.AUTOMOD_BLACKLIST_LIMIT, guild.ownerId))) {
+   if (!(await auxdibot.testLimit(server.automod_banned_phrases, Limits.AUTOMOD_BLACKLIST_LIMIT, guild))) {
       throw new Error('You have too many blacklisted phrases!');
    }
    return auxdibot.database.servers

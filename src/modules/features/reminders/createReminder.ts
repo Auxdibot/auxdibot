@@ -28,7 +28,7 @@ export default async function createReminder(
          select: { userID: true, reminders: true },
       })
       .then(async (data) => {
-         if (!(await auxdibot.testLimit(data.reminders, Limits.USER_REMINDER_LIMIT, user.id))) {
+         if (!(await auxdibot.testLimit(data.reminders, Limits.USER_REMINDER_LIMIT, undefined, undefined, user.id))) {
             throw new Error('reminders limit exceeded');
          }
          await auxdibot.database.users.update({

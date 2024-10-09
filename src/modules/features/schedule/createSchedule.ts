@@ -14,7 +14,7 @@ export default async function createSchedule(
    return auxdibot.database.servers
       .findFirst({ where: { serverID: guild.id }, select: { serverID: true, scheduled_messages: true } })
       .then(async (data) => {
-         if (!(await auxdibot.testLimit(data.scheduled_messages, Limits.SCHEDULE_LIMIT, guild.ownerId))) {
+         if (!(await auxdibot.testLimit(data.scheduled_messages, Limits.SCHEDULE_LIMIT, guild))) {
             throw new Error('schedules limit exceeded');
          }
          await auxdibot.database.servers.update({

@@ -18,7 +18,7 @@ export default async function addJoinRole(
       throw new Error(`You already have ${role.name} added as a join role!`);
    if (guild.members.me.roles.highest.position <= role.position)
       throw new Error("This role is higher than Auxdibot's highest role!");
-   if (!(await auxdibot.testLimit(server.join_roles, Limits.JOIN_ROLE_DEFAULT_LIMIT, guild.ownerId)))
+   if (!(await auxdibot.testLimit(server.join_roles, Limits.JOIN_ROLE_DEFAULT_LIMIT, guild)))
       throw new Error('You have too many existing join roles!');
    return auxdibot.database.servers
       .update({ where: { serverID: guild.id }, data: { join_roles: { push: role.id } }, select: { join_roles: true } })

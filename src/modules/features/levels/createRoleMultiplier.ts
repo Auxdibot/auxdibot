@@ -11,7 +11,7 @@ export default async function createRoleMultiplier(
    multiplier: Multiplier,
 ) {
    const server = await findOrCreateServer(auxdibot, guild.id);
-   if (!(await auxdibot.testLimit(server.role_multipliers, Limits.MULTIPLIER_DEFAULT_LIMIT, guild.ownerId)))
+   if (!(await auxdibot.testLimit(server.role_multipliers, Limits.MULTIPLIER_DEFAULT_LIMIT, guild)))
       throw new Error('You have too many role multipliers!');
    if (isNaN(multiplier.multiplier)) throw new Error('You must provide a valid multiplier!');
    if (multiplier.multiplier < 0 || multiplier.multiplier > 999)

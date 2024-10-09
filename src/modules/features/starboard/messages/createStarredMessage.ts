@@ -64,12 +64,7 @@ export default async function createStarredMessage(
             : undefined,
       );
 
-      await auxdibot.testLimit(
-         server.starred_messages,
-         Limits.ACTIVE_STARRED_MESSAGES_DEFAULT_LIMIT,
-         guild.ownerId,
-         true,
-      );
+      await auxdibot.testLimit(server.starred_messages, Limits.ACTIVE_STARRED_MESSAGES_DEFAULT_LIMIT, guild, true);
 
       const components = [
          new ActionRowBuilder<ButtonBuilder>()

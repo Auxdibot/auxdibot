@@ -6,7 +6,7 @@ import { APIRole, Guild, Role } from 'discord.js';
 
 export async function addAutoModException(auxdibot: Auxdibot, guild: Guild, role: Role | APIRole, userID?: string) {
    const server = await findOrCreateServer(auxdibot, guild.id);
-   if (!(await auxdibot.testLimit(server.automod_role_exceptions, Limits.AUTOMOD_EXCEPTION_LIMIT, guild.ownerId)))
+   if (!(await auxdibot.testLimit(server.automod_role_exceptions, Limits.AUTOMOD_EXCEPTION_LIMIT, guild)))
       throw new Error('You have too many role exceptions!');
    if (server.automod_role_exceptions.includes(role.id))
       throw new Error('You have already added this role as an exception!');

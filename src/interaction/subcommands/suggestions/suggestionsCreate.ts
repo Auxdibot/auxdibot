@@ -93,7 +93,7 @@ export const suggestionsCreate = <AuxdibotSubcommand>{
                (await auxdibot.testLimit(
                   interaction.data.guildData.suggestions,
                   Limits.ACTIVE_SUGGESTIONS_DEFAULT_LIMIT,
-                  interaction.guild.ownerId,
+                  interaction.guild,
                   true,
                )) == 'spliced'
             ) {

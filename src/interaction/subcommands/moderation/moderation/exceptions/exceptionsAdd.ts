@@ -56,7 +56,7 @@ export const exceptionsAdd = <AuxdibotSubcommand>{
             interaction,
          );
       }
-      if (!(await auxdibot.testLimit(server.join_roles, Limits.AUTOMOD_EXCEPTION_LIMIT, interaction.guild.ownerId))) {
+      if (!(await auxdibot.testLimit(server.join_roles, Limits.AUTOMOD_EXCEPTION_LIMIT, interaction.guild))) {
          return await handleError(
             auxdibot,
             'AUTOMOD_EXCEPTION_LIMIT_EXCEEDED',

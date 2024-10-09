@@ -454,12 +454,13 @@ model totals {
 }
 
 model users {
-  id           String      @id @default(auto()) @map("_id") @db.ObjectId
-  userID       String
-  voted_date   DateTime?
-  badges       UserBadge[]
-  reminders    Reminder[]
-  created_date DateTime?   @default(now())
+  id              String      @id @default(auto()) @map("_id") @db.ObjectId
+  userID          String
+  voted_date      DateTime?
+  badges          UserBadge[]
+  reminders       Reminder[]
+  created_date    DateTime?   @default(now())
+  premium_servers String[]    @default([])
 
   @@unique([userID])
 }

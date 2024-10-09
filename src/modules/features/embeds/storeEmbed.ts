@@ -12,7 +12,7 @@ export async function storeEmbed(
    webhook_url?: string,
 ) {
    const server = await findOrCreateServer(auxdibot, guild.id);
-   if (!(await auxdibot.testLimit(server.stored_embeds, Limits.STORED_EMBED_LIMIT, guild.ownerId))) {
+   if (!(await auxdibot.testLimit(server.stored_embeds, Limits.STORED_EMBED_LIMIT, guild))) {
       throw new Error('You have reached the maximum number of stored embeds');
    }
    if (embed) {
