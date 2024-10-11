@@ -42,6 +42,7 @@ export default <AuxdibotButton>{
          moderatorID: interaction.user.id,
          punishmentID: await incrementPunishmentsTotal(auxdibot, interaction.guild.id),
       };
+
       await createPunishment(auxdibot, interaction.guild, banData, interaction, member.user)
          .then(async () => {
             if (interaction.message.editable) {

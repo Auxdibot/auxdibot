@@ -19,6 +19,13 @@ export default async function createPunishment(
 ) {
    const server = await findOrCreateServer(auxdibot, guild.id);
    if (server.punishments.find((i) => i.punishmentID == punishment.punishmentID)) return undefined;
+   auxdibot.database.analytics
+      .upsert({
+         where: { botID: auxdibot.user.id },
+         create: { botID: auxdibot.user.id },
+         update: { punishments: { increment: 1 } },
+      })
+      .catch(() => undefined);
    if (
       (await auxdibot.testLimit(server.punishments, Limits.ACTIVE_PUNISHMENTS_DEFAULT_LIMIT, guild, true)) == 'spliced'
    ) {

@@ -10,6 +10,13 @@ export default async function guildMemberRemove(auxdibot: Auxdibot, member: Guil
    if (!member) return;
    const server = await findOrCreateServer(auxdibot, member.guild.id);
    if (server.join_leave_channel && server.disabled_modules.indexOf('Greetings') == -1) {
+      auxdibot.database.analytics
+         .upsert({
+            where: { botID: auxdibot.user.id },
+            create: { botID: auxdibot.user.id },
+            update: { greetings: { increment: 1 } },
+         })
+         .catch(() => undefined);
       member.guild.channels
          .fetch(server.join_leave_channel)
          .then(async (channel) => {

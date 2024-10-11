@@ -53,7 +53,13 @@ export async function storeEmbed(
    if (webhook_url && !/https:\/\/discord.com\/api\/webhooks\/[^\s\/]+?(?=\b)/.test(webhook_url)) {
       throw new Error('Invalid webhook url');
    }
-
+   auxdibot.database.analytics
+      .upsert({
+         where: { botID: auxdibot.user.id },
+         create: { botID: auxdibot.user.id },
+         update: { embeds: { increment: 1 } },
+      })
+      .catch(() => undefined);
    return await auxdibot.database.servers.update({
       where: {
          serverID: guild.id,

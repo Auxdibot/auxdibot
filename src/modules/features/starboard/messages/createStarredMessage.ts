@@ -96,7 +96,13 @@ export default async function createStarredMessage(
             data: { starred_messages: { push: starredData } },
          })
          .catch(() => message.delete());
-
+      auxdibot.database.analytics
+         .upsert({
+            where: { botID: auxdibot.user.id },
+            create: { botID: auxdibot.user.id },
+            update: { starred_messages: { increment: 1 } },
+         })
+         .catch(() => undefined);
       if (
          !(server.starboard_xp_range[0] == 0 && !server.starboard_xp_range[1]) &&
          starredMessage.member &&

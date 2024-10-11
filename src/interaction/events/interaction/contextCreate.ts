@@ -8,6 +8,13 @@ export default async function contextCreate(auxdibot: Auxdibot, interaction: Con
    if (!auxdibot.context_menus) return;
    const command = auxdibot.context_menus.get(interaction.commandName);
    if (!command) return;
+   auxdibot.database.analytics
+      .upsert({
+         where: { botID: auxdibot.user.id },
+         create: { botID: auxdibot.user.id },
+         update: { commands: { increment: 1 } },
+      })
+      .catch(() => undefined);
    if (!interaction.guild && !command.info.dmableCommand) {
       const discordServerOnlyEmbed = new EmbedBuilder().setColor(auxdibot.colors.denied).toJSON();
       discordServerOnlyEmbed.title = '⛔ Nope!';

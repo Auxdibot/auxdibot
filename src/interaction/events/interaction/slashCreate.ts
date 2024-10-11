@@ -19,7 +19,13 @@ export default async function slashCreate(auxdibot: Auxdibot, interaction: ChatI
    if (!auxdibot.commands) return;
    const command = auxdibot.commands.get(interaction.commandName);
    if (!command) return;
-
+   auxdibot.database.analytics
+      .upsert({
+         where: { botID: auxdibot.user.id },
+         create: { botID: auxdibot.user.id },
+         update: { commands: { increment: 1 } },
+      })
+      .catch(() => undefined);
    const interactionData: AuxdibotCommandInteraction<GuildAuxdibotCommandData | DMAuxdibotCommandData> = interaction;
    const server = interaction.guild ? await findOrCreateServer(auxdibot, interaction.guild.id) : undefined;
 
