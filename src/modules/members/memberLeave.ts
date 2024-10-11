@@ -20,4 +20,18 @@ export default async function memberLeave(
          },
       })
       .catch(() => undefined);
+   try {
+      const user = await auxdibot.database.users.findFirst({
+         where: { userID: member.id, premium_servers: { has: serverID } },
+      });
+      if (user) {
+         user.premium_servers.splice(user.premium_servers.indexOf(serverID), 1);
+         await auxdibot.database.users.update({
+            where: { userID: member.id },
+            data: { premium_servers: user.premium_servers },
+         });
+      }
+   } catch (x) {
+      return undefined;
+   }
 }

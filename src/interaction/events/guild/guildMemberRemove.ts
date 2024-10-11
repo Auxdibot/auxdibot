@@ -37,6 +37,7 @@ export default async function guildMemberRemove(auxdibot: Auxdibot, member: Guil
          })
          .catch(() => undefined);
    }
+
    memberLeave(auxdibot, member.guild.id, member);
    await auxdibot.log(
       member.guild,

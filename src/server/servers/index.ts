@@ -48,7 +48,15 @@ export const serversRoute = (auxdibot: Auxdibot) => {
          if (typeof guildData != 'object') return res.status(404).json(null);
          return auxdibot.database.servers
             .findFirst({ where: { serverID }, ...(check ? { select: { serverID: true } } : {}) })
-            .then((i) => (i ? res.json({ ...guildData, data: i }) : res.status(404).json(null)))
+            .then(async (i) =>
+               i
+                  ? res.json({
+                       ...guildData,
+                       premium: await auxdibot.fetchPremiumSubscriptionUser(guild.id).catch(() => undefined),
+                       data: i,
+                    })
+                  : res.status(404).json(null),
+            )
             .catch((x) => {
                console.error(x);
                return res.status(500).json({ error: 'an error occurred' });
