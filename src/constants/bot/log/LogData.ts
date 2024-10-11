@@ -73,4 +73,6 @@ export const LogData: { [k in LogAction]?: { name: string; color?: number } } = 
    EMBED_STORED: { name: '📝 Embed Created', color: 0x8bc34a },
    EMBED_DELETED: { name: '🗑️ Embed Deleted', color: 0xf44336 },
    AUXDIBOT_ANNOUNCEMENT: { name: `${CustomEmojis.AUXDIBOT} Auxdibot Announcement`, color: 0xfe8a00 },
+   PREMIUM_ADDED: { name: `${CustomEmojis.PREMIUM} Premium Added`, color: 0xeab308 },
+   PREMIUM_REMOVED: { name: `${CustomEmojis.AUXDIBOT} Premium Removed`, color: 0xfe8a00 },
 };

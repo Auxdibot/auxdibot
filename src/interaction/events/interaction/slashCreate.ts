@@ -1,4 +1,12 @@
-import { EmbedBuilder, ChatInputCommandInteraction, GuildMember, PermissionsBitField } from 'discord.js';
+import {
+   EmbedBuilder,
+   ChatInputCommandInteraction,
+   GuildMember,
+   PermissionsBitField,
+   ActionRowBuilder,
+   ButtonBuilder,
+   ButtonStyle,
+} from 'discord.js';
 import { Auxdibot } from '@/Auxdibot';
 import { DMAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
@@ -26,6 +34,26 @@ export default async function slashCreate(auxdibot: Auxdibot, interaction: ChatI
             ? subcommand.name == subcommandArgs[1] && subcommand.group == subcommandArgs[0]
             : subcommand.name == subcommandArgs[0] && subcommand.group == null,
       ) || command;
+   const premiumTest = commandData.info.premium === undefined ? command.info.premium : commandData.info.premium;
+   if (
+      process.env.PREMIUM_SKU_ID &&
+      premiumTest &&
+      !(premiumTest == 'user'
+         ? await auxdibot.fetchPremiumSubscription(interaction.user.id)
+         : interaction.guildId
+         ? await auxdibot.fetchPremiumSubscriptionUser(interaction.guild.id)
+         : false)
+   ) {
+      return await auxdibot.createReply(interaction, {
+         embeds: [auxdibot.embeds.premium_required.toJSON()],
+         components: [
+            new ActionRowBuilder<ButtonBuilder>().addComponents(
+               new ButtonBuilder().setStyle(ButtonStyle.Premium).setSKUId(process.env.PREMIUM_SKU_ID),
+            ),
+         ],
+         ephemeral: true,
+      });
+   }
    if (!interaction.guild) {
       if (!command.info.dmableCommand && !commandData.info.dmableCommand) {
          const discordServerOnlyEmbed = new EmbedBuilder().setColor(auxdibot.colors.denied).toJSON();

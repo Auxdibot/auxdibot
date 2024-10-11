@@ -190,6 +190,12 @@ export class Auxdibot extends Client {
             name: 'What Benefits?',
             value: 'You have received\n\n* Expanded storage for servers you own (25%+ more storage!)\n* A fancy check mark on the Bot dashboard! 😳',
          }),
+      premium_required: new EmbedBuilder()
+         .setColor(this.colors.premium)
+         .setTitle(`${CustomEmojis.PREMIUM} Auxdibot Premium Required`)
+         .setDescription(
+            'You need to be a premium user to use this feature! Consider supporting Auxdibot by purchasing Auxdibot Premium.',
+         ),
    };
    /**
     * Creates an instance of Auxdibot, and initializes the instance, using the DISCORD_BOT_TOKEN and DISCORD_BOT_CLIENT_ID
@@ -243,6 +249,9 @@ export class Auxdibot extends Client {
             server(this);
             fetchAnalytics(this);
             migrateData(this);
+            this.application.entitlements
+               .createTest({ sku: process.env.PREMIUM_SKU_ID, user: '684762447399354433' })
+               .catch(() => undefined);
          })
          .catch((reason) => {
             console.error('\x1b[31m! -> Error signing into into Auxdibot!\x1b[0m');

@@ -5,6 +5,7 @@ export default interface CommandInfo {
    usageExample: string;
    description: string;
    allowedDefault?: boolean;
+   premium?: 'user' | 'guild';
    permissionsRequired?: bigint[];
    dmableCommand?: boolean;
 }
