@@ -20,6 +20,13 @@ export default async function createSuggestion(auxdibot: Auxdibot, serverID: str
          data: { suggestions: server.suggestions },
       });
    }
+   auxdibot.database.analytics
+      .upsert({
+         where: { botID: auxdibot.user.id },
+         create: { botID: auxdibot.user.id },
+         update: { suggestions: { increment: 1 } },
+      })
+      .catch(() => undefined);
    return await auxdibot.database.servers
       .update({ where: { serverID }, data: { suggestions: { push: suggestion } } })
       .then(() => suggestion)

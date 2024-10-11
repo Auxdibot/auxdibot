@@ -398,6 +398,13 @@ export class Auxdibot extends Client {
    async log(guild: Guild, log: Omit<Log, 'old_date_unix'>, { fields, user_avatar }: LogOptions = {}) {
       const server = await findOrCreateServer(this, guild.id);
       if (server.filtered_logs.indexOf(log.type) != -1) return;
+      this.database.analytics
+         .upsert({
+            where: { botID: this.user.id },
+            create: { botID: this.user.id },
+            update: { logs: { increment: 1 } },
+         })
+         .catch(() => undefined);
       return await updateLog(this, guild, log)
          .then(async () => {
             const user = log.userID ? await guild.client.users.fetch(log.userID) : undefined;

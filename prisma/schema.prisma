@@ -466,3 +466,16 @@ model users {
 
   @@unique([userID])
 }
+
+model analytics {
+  id               String @id @default(auto()) @map("_id") @db.ObjectId
+  botID            String @unique
+  starred_messages Int    @default(0)
+  levelups         Int    @default(0)
+  commands         Int    @default(0)
+  logs             Int    @default(0)
+  punishments      Int    @default(0)
+  embeds           Int    @default(0)
+  suggestions      Int    @default(0)
+  greetings        Int    @default(0)
+}

@@ -23,7 +23,13 @@ export async function sendLevelMessage(
       })
       .catch(() => undefined);
    if (server.disabled_modules.includes(Modules['Levels'].name) || memberData?.level_message_disabled) return;
-
+   auxdibot.database.analytics
+      .upsert({
+         where: { botID: auxdibot.user.id },
+         create: { botID: auxdibot.user.id },
+         update: { levelups: { increment: 1 } },
+      })
+      .catch(() => undefined);
    try {
       if (server.level_embed) {
          const embed =

@@ -68,6 +68,7 @@ export default async function messageCreate(auxdibot: Auxdibot, message: Message
       );
       if (newLevel && level && newLevel > level) {
          if (!message.member) return;
+
          await sendLevelMessage(auxdibot, message.member, level, newLevel, {
             message: message,
             textChannel: message.channel,
