@@ -11,7 +11,7 @@ import { PlaceholderData } from '@/constants/embeds/PlaceholderData';
 export default <AuxdibotButton>{
    module: Modules['Messages'],
    name: 'embedsubmit',
-   command: 'embed build',
+   command: 'embed builder',
    async execute(auxdibot: Auxdibot, interaction: MessageComponentInteraction) {
       const [, id] = interaction.customId.split('-');
       const session = auxdibot.build_sessions.get(
@@ -21,7 +21,7 @@ export default <AuxdibotButton>{
          return handleError(
             auxdibot,
             'SESSION_INACTIVE',
-            'This session has gone inactive! Run the /embed build command to start a new session.\n\n*By default, sessions will go inactive after 5 minutes.*',
+            'This session has gone inactive! Run the /embed builder command to start a new session.\n\n*By default, sessions will go inactive after 5 minutes.*',
             interaction,
          );
       }

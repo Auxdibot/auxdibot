@@ -17,7 +17,7 @@ const labels = {
 export default <AuxdibotSelectMenu>{
    module: Modules['Messages'],
    name: 'embedmodify',
-   command: 'embed build',
+   command: 'embed builder',
    async execute(auxdibot: Auxdibot, interaction: AnySelectMenuInteraction) {
       if (!interaction.guild || !interaction.member || !interaction.channel) return;
       const [, id] = interaction.customId.split('-');
@@ -28,7 +28,7 @@ export default <AuxdibotSelectMenu>{
          return handleError(
             auxdibot,
             'SESSION_INACTIVE',
-            'This session has gone inactive! Run the /embed build command to start a new session.\n\n*By default, sessions will go inactive after 5 minutes.*',
+            'This session has gone inactive! Run the /embed builder command to start a new session.\n\n*By default, sessions will go inactive after 5 minutes.*',
             interaction,
          );
       }

@@ -10,7 +10,7 @@ import parsePlaceholders from '@/util/parsePlaceholder';
 export default <AuxdibotSelectMenu>{
    module: Modules['Messages'],
    name: 'post',
-   command: 'embed build',
+   command: 'embed builder',
    async execute(auxdibot: Auxdibot, interaction: AnySelectMenuInteraction) {
       if (!interaction.guild || !interaction.member || !interaction.channel) return;
       if (!interaction.isChannelSelectMenu()) return;
@@ -22,7 +22,7 @@ export default <AuxdibotSelectMenu>{
          return handleError(
             auxdibot,
             'SESSION_INACTIVE',
-            'This session has gone inactive! Run the /embed build command to start a new session.\n\n*By default, sessions will go inactive after 5 minutes.*',
+            'This session has gone inactive! Run the /embed builder command to start a new session.\n\n*By default, sessions will go inactive after 5 minutes.*',
             interaction,
          );
       }
