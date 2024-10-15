@@ -9,7 +9,7 @@ import { APIEmbed } from '@prisma/client';
 export default <AuxdibotModal>{
    module: Modules['Messages'],
    name: 'embedfetch',
-   command: 'embed build',
+   command: 'embed builder',
    async execute(auxdibot: Auxdibot, interaction: ModalSubmitInteraction) {
       const [, id] = interaction.customId.split('-');
       const session = auxdibot.build_sessions.get(
@@ -19,7 +19,7 @@ export default <AuxdibotModal>{
          return handleError(
             auxdibot,
             'SESSION_INACTIVE',
-            'This session has gone inactive! Run the /embed build command to start a new session.\n\n*By default, sessions will go inactive after 5 minutes.*',
+            'This session has gone inactive! Run the /embed builder command to start a new session.\n\n*By default, sessions will go inactive after 5 minutes.*',
             interaction,
          );
       }

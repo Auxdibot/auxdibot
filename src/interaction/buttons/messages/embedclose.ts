@@ -7,7 +7,7 @@ import handleError from '@/util/handleError';
 export default <AuxdibotButton>{
    module: Modules['Messages'],
    name: 'embedclose',
-   command: 'embed build',
+   command: 'embed builder',
    async execute(auxdibot: Auxdibot, interaction: MessageComponentInteraction) {
       const session = auxdibot.build_sessions.get(
          `${interaction.guildId}:${interaction.channelId}:${interaction.message.id}`,
@@ -16,7 +16,7 @@ export default <AuxdibotButton>{
          return handleError(
             auxdibot,
             'SESSION_INACTIVE',
-            'This session has gone inactive! Run the /embed build command to start a new session.\n\n*By default, sessions will go inactive after 5 minutes.*',
+            'This session has gone inactive! Run the /embed builder command to start a new session.\n\n*By default, sessions will go inactive after 5 minutes.*',
             interaction,
          );
       }
