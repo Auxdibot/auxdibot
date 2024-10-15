@@ -6,6 +6,7 @@ import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, Guild, Guil
 import { defaultStarLevels } from '@/constants/database/defaultStarLevels';
 import { getMessage } from '@/util/getMessage';
 import deleteStarredMessage from './deleteStarredMessage';
+import findOrCreateServer from '@/modules/server/findOrCreateServer';
 export default async function updateStarredMessage(
    auxdibot: Auxdibot,
    guild: Guild,
@@ -29,6 +30,22 @@ export default async function updateStarredMessage(
       : await getMessage(guild, starredData.starred_message_id);
    if (!starredMessage) return;
 
+   // Add channel to starred message if it does not exist
+   if (!starredData.starred_channel_id) {
+      starredData.starred_channel_id = starredMessage.channel.id;
+      const server = await findOrCreateServer(auxdibot, guild.id);
+      if (server) {
+         const starredMessages = server.starred_messages;
+         const index = starredMessages.findIndex((i) => i.starred_message_id == starredData.starred_message_id);
+         if (index != -1) {
+            starredMessages[index].starred_channel_id = starredMessage.channel.id;
+            auxdibot.database.servers.update({
+               where: { serverID: guild.id },
+               data: { starred_messages: starredMessages },
+            });
+         }
+      }
+   }
    // Fetch starboard channel
    const starboard_channel: GuildBasedChannel | undefined = await guild.channels
       .fetch(board.channelID)
