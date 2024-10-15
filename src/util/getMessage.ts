@@ -7,6 +7,7 @@ import { Guild, Message, TextChannel } from 'discord.js';
  * @returns A Promise that resolves to the retrieved message, or undefined if the message is not found.
  */
 export async function getMessage(guild: Guild, message_id: string) {
+   console.log('GETTING MESSAGE');
    return await guild.channels.cache.reduce(async (accumulator: Promise<Message<boolean> | undefined>, channel) => {
       const msg = await accumulator;
       if (channel.isTextBased() && !msg) {

@@ -1,4 +1,13 @@
-import { Guild, GuildMember, Message, PartialGuildMember, PartialUser, PermissionsBitField, User } from 'discord.js';
+import {
+   Guild,
+   GuildBasedChannel,
+   GuildMember,
+   Message,
+   PartialGuildMember,
+   PartialUser,
+   PermissionsBitField,
+   User,
+} from 'discord.js';
 import { PunishmentValues } from '@/constants/bot/punishments/PunishmentValues';
 import { SuggestionStateName } from '@/constants/bot/suggestions/SuggestionStateName';
 import { StarredMessage, Suggestion } from '@prisma/client';
@@ -35,8 +44,15 @@ export default async function parsePlaceholders(
    const server = guild ? await findOrCreateServer(auxdibot, guild.id) : undefined;
    if (suggestion?.creatorID && guild && guild.members.cache.get(suggestion.creatorID))
       member = guild.members.cache.get(suggestion.creatorID);
+   const starred_channel: GuildBasedChannel | undefined = starred_data
+      ? await guild.channels.fetch(starred_data.starred_channel_id).catch(() => undefined)
+      : undefined;
    const starred_message: Message<boolean> | undefined = starred_data
-      ? await getMessage(guild, starred_data?.starred_message_id).catch(() => undefined)
+      ? starred_channel && starred_channel.isTextBased()
+         ? await starred_channel.messages.fetch(starred_data?.starred_message_id).catch(() => undefined)
+         : starred_channel
+         ? await getMessage(guild, starred_data?.starred_message_id).catch(() => undefined)
+         : undefined
       : undefined;
    if (starred_message && guild) {
       member = (await guild.members.fetch(starred_message.author.id).catch(() => undefined)) ?? starred_message.author;

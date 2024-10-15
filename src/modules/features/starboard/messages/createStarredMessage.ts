@@ -18,27 +18,48 @@ export default async function createStarredMessage(
    starredMessage: Message<boolean> | PartialMessage,
    count: number,
 ) {
+   // Check if the message is already starred and fetch server data
    const server = await findOrCreateServer(auxdibot, guild.id);
    if (
       server &&
       server.starred_messages.find((i) => i.starred_message_id == starredMessage.id && board.board_name == i.board)
    )
       return;
-   const starboard_channel = guild.channels.cache.get(board.channelID);
+
+   // Get starboard channel
+   const starboard_channel = await guild.channels.fetch(board.channelID);
    if (!starboard_channel || !starboard_channel.isTextBased()) return;
+
+   // Get starboard level to use for starboard message
    const starLevelsSorted = board.star_levels.sort((a, b) => b.stars - a.stars);
    const starLevel = starLevelsSorted.find((i) => count >= board.count * i.stars) ??
       starLevelsSorted[0] ?? { ...defaultStarLevels[defaultStarLevels.length - 1], message_reaction: board.reaction };
 
+   // Create original starboard message
+   const starredData = {
+      starboard_message_id: null,
+      starred_message_id: starredMessage.id,
+      starred_channel_id: starredMessage.channel.id,
+      board: board.board_name,
+   };
+
    try {
+      // Test limit, splice if necessary
+      await auxdibot.testLimit(server.starred_messages, Limits.ACTIVE_STARRED_MESSAGES_DEFAULT_LIMIT, guild, true);
+      server.starred_messages.push(starredData);
+
+      // Add starboard message
+      const updated = await auxdibot.database.servers.update({
+         where: { serverID: guild.id },
+         data: { starred_messages: server.starred_messages },
+         select: { serverID: true, starred_messages: true },
+      });
+      // Create starboard message
       starredMessage = await starredMessage.fetch();
       const jsonEmbed = structuredClone(DEFAULT_STARBOARD_MESSAGE_EMBED);
       jsonEmbed.color = starLevel.color;
-      const starredData = {
-         starboard_message_id: undefined,
-         starred_message_id: starredMessage.id,
-         board: board.board_name,
-      };
+
+      // Create embed message
       const embed = JSON.parse(
          await parsePlaceholders(auxdibot, JSON.stringify(jsonEmbed), {
             guild,
@@ -47,6 +68,7 @@ export default async function createStarredMessage(
          }),
       );
 
+      // Handle references, quotes, attachments.
       const reference = await starredMessage.fetchReference().catch(() => undefined);
       const quoteEmbed = reference
          ? new EmbedBuilder()
@@ -64,8 +86,7 @@ export default async function createStarredMessage(
             : undefined,
       );
 
-      await auxdibot.testLimit(server.starred_messages, Limits.ACTIVE_STARRED_MESSAGES_DEFAULT_LIMIT, guild, true);
-
+      // Provide link to original message
       const components = [
          new ActionRowBuilder<ButtonBuilder>()
             .addComponents(
@@ -80,7 +101,10 @@ export default async function createStarredMessage(
             .toJSON(),
       ];
 
+      // add attachments to components
       if (attachmentsComponent.components.length > 0) components.push(attachmentsComponent.toJSON());
+
+      // Send starboard message
       const reaction = auxdibot.emojis.cache.get(starLevel.message_reaction) ?? starLevel.message_reaction;
       const message = await starboard_channel.send({
          content: `**${count} ${reaction ?? ''}** | ${starredMessage.channel}`,
@@ -89,13 +113,32 @@ export default async function createStarredMessage(
          files: Array.from(starredMessage.attachments.values()),
       });
 
-      starredData.starboard_message_id = message.id;
-      await auxdibot.database.servers
+      // Update starred message with starboard message ID
+      updated.starred_messages.splice(
+         updated.starred_messages.findIndex((i) => i.starred_message_id == starredMessage.id),
+         1,
+      );
+      updated.starred_messages.push({ ...starredData, starboard_message_id: message.id });
+      const result = await auxdibot.database.servers
          .update({
             where: { serverID: guild.id },
-            data: { starred_messages: { push: starredData } },
+            data: { starred_messages: updated.starred_messages },
+            select: { serverID: true, starred_messages: true },
          })
-         .catch(() => message.delete());
+         .catch(() => {
+            // If the update fails, delete the starboard message
+            updated.starred_messages.splice(
+               updated.starred_messages.findIndex((i) => i.starred_message_id == starredMessage.id),
+               1,
+            );
+            auxdibot.database.servers.update({
+               where: { serverID: guild.id },
+               data: { starred_messages: server.starred_messages },
+               select: { serverID: true, starred_messages: true },
+            });
+            return undefined;
+         });
+      if (!result) return;
       auxdibot.database.analytics
          .upsert({
             where: { botID: auxdibot.user.id },
@@ -103,6 +146,7 @@ export default async function createStarredMessage(
             update: { starred_messages: { increment: 1 } },
          })
          .catch(() => undefined);
+      // Award XP to the user who posted the message if applicable
       if (
          !(server.starboard_xp_range[0] == 0 && !server.starboard_xp_range[1]) &&
          starredMessage.member &&

@@ -23,12 +23,14 @@ export default async function deleteStarredMessage(auxdibot: Auxdibot, guild: Gu
                userID: message?.member?.id ?? auxdibot.user.id,
             });
          });
+
       server.starred_messages.splice(
          server.starred_messages.findIndex(
             (i) => starredData.board == i.board && starredData.starred_message_id == i.starred_message_id,
          ),
          1,
       );
+
       await auxdibot.database.servers.update({
          where: { serverID: guild.id },
          data: { starred_messages: server.starred_messages },
