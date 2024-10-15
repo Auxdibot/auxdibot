@@ -30,13 +30,14 @@ export default <AuxdibotModal>{
             interaction,
          );
       }
+      if (!session.embed.fields) {
+         return handleError(auxdibot, 'NO_FIELDS', 'There are no fields in this embed!', interaction);
+      }
       await interaction.deferReply();
       const fieldPosition = interaction.fields.getTextInputValue('field_index');
       if (!Number.isInteger(Number(fieldPosition) || Number(fieldPosition) >= (session?.embed?.fields?.length ?? 0))) {
          return handleError(auxdibot, 'INVALID_FIELD_POSITION', 'The field position provided is invalid!', interaction);
       }
-
-      session.embed.fields.splice(Number(fieldPosition) - 1, 1);
       await createEmbedBuilder(auxdibot, interaction, id, interaction.message, session)
          .then(() => interaction.deleteReply().catch(() => undefined))
          .catch(() => undefined);
