@@ -186,8 +186,9 @@ type Log {
 }
 
 type StarredMessage {
-  starboard_message_id String
+  starboard_message_id String?
   starred_message_id   String
+  starred_channel_id   String?
   board                String?
 }
 
