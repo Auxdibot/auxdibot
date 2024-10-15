@@ -20,7 +20,7 @@ export async function calculateTotalStars(
       const channel = starredData.starred_channel_id
          ? await guild.channels.fetch(starredData.starred_channel_id)
          : undefined;
-      if ((starredData.starred_channel_id && !channel) || !channel.isTextBased()) return -1;
+      if ((starredData.starred_channel_id && !channel) || !channel?.isTextBased()) return -1;
 
       // Fetch starboard channel from context
       const board_channel: GuildBasedChannel | undefined = await guild.channels
