@@ -21,6 +21,7 @@ export async function guildMemberUpdate(
       if (newMember.communicationDisabledUntilTimestamp) {
          const logs = await newMember.guild.fetchAuditLogs({ type: AuditLogEvent.MemberUpdate, limit: 1 });
          if (
+            logs.entries.first() &&
             logs.entries.first().targetId === newMember.id &&
             logs.entries.first().createdTimestamp > Date.now() - 5000
          ) {
