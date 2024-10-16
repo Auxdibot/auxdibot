@@ -457,13 +457,14 @@ model totals {
 }
 
 model users {
-  id              String      @id @default(auto()) @map("_id") @db.ObjectId
-  userID          String
-  voted_date      DateTime?
-  badges          UserBadge[]
-  reminders       Reminder[]
-  created_date    DateTime?   @default(now())
-  premium_servers String[]    @default([])
+  id                String      @id @default(auto()) @map("_id") @db.ObjectId
+  userID            String
+  voted_date        DateTime?
+  badges            UserBadge[]
+  reminders         Reminder[]
+  created_date      DateTime?   @default(now())
+  premium_servers   String[]    @default([])
+  level_card_border String?     @default("#FF0000:#FFA500")
 
   @@unique([userID])
 }
