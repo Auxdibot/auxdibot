@@ -4,9 +4,17 @@ import { join } from 'path';
 import { abbreviateNumber } from '../../../util/abbreviateNumber';
 import { calculateLevel } from './calculateLevel';
 import calcXP from '@/util/calcXP';
+
+type CardOptions = { border: { color1: string; color2: string }; premium?: boolean };
+
 GlobalFonts.registerFromPath(join(__dirname, '..', '..', '..', '..', 'fonts', 'Montserrat-Light.ttf'), 'Montserrat');
 GlobalFonts.registerFromPath(join(__dirname, '..', '..', '..', '..', 'fonts', 'Raleway-Medium.ttf'), 'Raleway');
-export async function generateLevelCard(user: User, xp: number, leaderboard: number): Promise<Buffer> {
+export async function generateLevelCard(
+   user: User,
+   xp: number,
+   leaderboard: number,
+   opts: CardOptions = { border: { color1: '#FF0000', color2: '#FFA500' }, premium: false },
+): Promise<Buffer> {
    const level = calculateLevel(xp);
    const nextLevelXP = Math.round(calcXP(level + 1)) - calcXP(level);
    const xpTill = xp - calcXP(level);
@@ -31,8 +39,8 @@ export async function generateLevelCard(user: User, xp: number, leaderboard: num
    ctx.clip();
 
    const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-   gradient.addColorStop(0, '#FF0000');
-   gradient.addColorStop(1, '#FFA500');
+   gradient.addColorStop(0, opts.border.color1);
+   gradient.addColorStop(1, opts.border.color2);
    ctx.fillStyle = gradient;
 
    ctx.lineWidth = 20;
@@ -79,8 +87,8 @@ export async function generateLevelCard(user: User, xp: number, leaderboard: num
    ctx.arc(avatarX + 256 / 2, avatarY + 256 / 2, 256 / 2, 0, Math.PI * 2, true);
    ctx.closePath();
    ctx.clip();
-   ctx.strokeStyle = '#dddddd';
-   ctx.lineWidth = 7;
+   ctx.strokeStyle = opts.premium ? '#eab308' : '#dddddd';
+   ctx.lineWidth = opts.premium ? 12 : 7;
    ctx.drawImage(avatar, avatarX, avatarY, 256, 256);
    ctx.stroke();
    ctx.restore();
@@ -244,7 +252,16 @@ export async function generateLevelCard(user: User, xp: number, leaderboard: num
          break;
    }
    ctx.fillText(`#${leaderboard.toString()}`, canvas.width - 246, 125);
-
+   if (opts.premium) {
+      ctx.restore();
+      ctx.save();
+      ctx.font = 'bold 2rem Montserrat';
+      ctx.fillStyle = '#dddddd';
+      ctx.textAlign = 'left';
+      ctx.fillText('Premium User', 65, canvas.height - 30, 256);
+      ctx.restore();
+      ctx.save();
+   }
    const pngData = await canvas.encode('png');
    return pngData;
 }

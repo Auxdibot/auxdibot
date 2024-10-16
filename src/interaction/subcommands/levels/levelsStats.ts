@@ -23,8 +23,13 @@ export const levelsStats = <AuxdibotSubcommand>{
       await interaction.deferReply();
       const user = interaction.options.getUser('user') ?? interaction.user;
       const data = await auxdibot.database.servermembers.findFirst({
-         where: { userID: user.id, serverID: interaction.data.guild.id },
-      });
+            where: { userID: user.id, serverID: interaction.data.guild.id },
+         }),
+         userData = await auxdibot.database.users
+            .findFirst({
+               where: { userID: user.id },
+            })
+            .catch(() => undefined);
       if (!data)
          return await handleError(auxdibot, 'MEMBER_DATA_NOT_FOUND', 'Member data could not be found!', interaction);
       const leaderboard =
@@ -33,7 +38,13 @@ export const levelsStats = <AuxdibotSubcommand>{
                where: { serverID: interaction.data.guild.id, xp: { gt: data.xp } },
             })
             .catch(() => 0)) + 1;
-      const image = await generateLevelCard(user, data.xp, leaderboard);
+      const image = await generateLevelCard(user, data.xp, leaderboard, {
+         border: {
+            color1: userData.level_card_border.split(':')[0],
+            color2: userData.level_card_border.split(':')[1],
+         },
+         premium: !!(await auxdibot.fetchPremiumSubscription(interaction.user.id).catch(() => false)),
+      });
       const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
          new ButtonBuilder()
             .setURL(`${process.env.BOT_HOMEPAGE}/leaderboard/${interaction.data.guild.id}`)

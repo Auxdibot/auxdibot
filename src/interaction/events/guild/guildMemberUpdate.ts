@@ -23,7 +23,8 @@ export async function guildMemberUpdate(
          if (
             logs.entries.first() &&
             logs.entries.first().targetId === newMember.id &&
-            logs.entries.first().createdTimestamp > Date.now() - 5000
+            logs.entries.first().createdTimestamp > Date.now() - 5000 &&
+            logs.entries.first().executorId !== auxdibot.user.id
          ) {
             createPunishment(
                auxdibot,
