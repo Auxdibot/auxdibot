@@ -41,7 +41,15 @@ export default async function messageUpdate(
                      oldMessage.content
                         ? `\n\n**Old Message** \n\`\`\`${oldMessage.content.replaceAll('`', '')}\`\`\``
                         : ''
-                  }\n\n**New Message** \n\`\`\`${newMessage.cleanContent.replaceAll('`', '')}\`\`\``,
+                  }\n${
+                     oldMessage.attachments && oldMessage.attachments.size > 0
+                        ? `Attachments: ${oldMessage.attachments.map((i) => `[${i.name}](${i.proxyURL})`).join(', ')}`
+                        : ''
+                  }\n\n**New Message** \n\`\`\`${newMessage.cleanContent.replaceAll('`', '')}\`\`\`\n${
+                     newMessage.attachments && newMessage.attachments.size > 0
+                        ? `Attachments: ${newMessage.attachments.map((i) => `[${i.name}](${i.proxyURL})`).join(', ')}`
+                        : ''
+                  }`,
                   inline: false,
                },
             ],

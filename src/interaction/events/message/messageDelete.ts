@@ -6,9 +6,12 @@ import { Log, LogAction } from '@prisma/client';
 
 import removeReactionRole from '@/modules/features/roles/reaction_roles/removeReactionRole';
 import deleteStarredMessage from '@/modules/features/starboard/messages/deleteStarredMessage';
-export default async function messageDelete(auxdibot: Auxdibot, message: Message<boolean> | PartialMessage) {
+export default async function messageDelete(auxdibot: Auxdibot, data: Message<boolean> | PartialMessage) {
+   const message = await data.fetch().catch(() => data);
    if (!message.guild) return;
-   const sender = message.member;
+
+   const sender = message.author;
+
    // weird bandaid for checking if it's the bot deleting messages
    const deletionEntryCheck: GuildAuditLogs<AuditLogEvent.MessageDelete> | undefined = await message.guild
       ?.fetchAuditLogs({ limit: 10, type: AuditLogEvent.MessageDelete })
@@ -22,6 +25,7 @@ export default async function messageDelete(auxdibot: Auxdibot, message: Message
       )
       .catch(() => undefined);
    if (deletionEntryCheck && deletionEntryCheck?.entries?.size > 0) return;
+
    const server = await findOrCreateServer(auxdibot, message.guild.id);
    const rr = server.reaction_roles.find((rr) => rr.messageID == message.id);
    if (rr) {
@@ -45,36 +49,51 @@ export default async function messageDelete(auxdibot: Auxdibot, message: Message
    )) {
       deleteStarredMessage(auxdibot, message.guild, starboard);
    }
-   if (!sender || sender?.user.bot || sender?.id == auxdibot.user.id) return;
+
+   if (sender?.bot || sender?.id == auxdibot.user.id) return;
+
    const channel = await message.channel.fetch().catch(() => undefined);
-   const executorCheck: User | undefined = await message.guild
-      ?.fetchAuditLogs({ limit: 1, type: AuditLogEvent.MessageDelete })
-      .then(
-         (a) =>
-            a.entries.find((i) => i.targetId == message.author?.id && i.extra.channel.id == message.channel.id)
-               ?.executor,
-      )
-      .catch(() => undefined);
+   const executorCheck: User | undefined = message.author
+      ? await message.guild
+           ?.fetchAuditLogs({ limit: 1, type: AuditLogEvent.MessageDelete })
+           .then(
+              (a) =>
+                 a.entries.find(
+                    (i) =>
+                       i.targetId == message.author?.id &&
+                       i.extra.channel.id == message.channel.id &&
+                       Date.now() - i.createdTimestamp < 100000,
+                 )?.executor,
+           )
+           .catch(() => undefined)
+      : undefined;
+   const messageFields = [
+      {
+         name: 'Deleted Message',
+         value: `${executorCheck ? `Executor: ${executorCheck}` : ''}\nAuthor: ${
+            message.author ?? 'Author Not Found (message was old, could not fetch author)'
+         }\nChannel: ${message.channel}\n\n**Deleted Content** \n\`\`\`${
+            message.cleanContent?.replaceAll('`', '') ?? 'Content could not be found. Message is old.'
+         }\`\`\`\n${
+            message.attachments && message.attachments.size > 0
+               ? `Attachments: ${message.attachments.map((i) => `[${i.name}](${i.proxyURL})`).join(', ')}`
+               : ''
+         }`,
+         inline: false,
+      },
+   ];
    await auxdibot.log(
       message.guild,
       <Log>{
          type: LogAction.MESSAGE_DELETED,
          date: new Date(),
-         description: `A message by ${sender?.user?.username ?? auxdibot.user.username} in #${
+         description: `A message by ${sender?.username ?? 'an author'} in #${
             channel?.name ?? message.channel
          } was deleted${executorCheck ? ` by ${executorCheck.username}` : ''}.`,
-         userID: executorCheck?.id ?? sender?.user?.id,
+         userID: executorCheck?.id ?? sender?.id ?? auxdibot.user.id,
       },
       {
-         fields: [
-            {
-               name: 'Deleted Message',
-               value: `${executorCheck ? `Executor: ${executorCheck}` : ''}\nAuthor: ${message.author}\nChannel: ${
-                  message.channel
-               }\n\n**Deleted Content** \n\`\`\`${message.cleanContent.replaceAll('`', '')}\`\`\``,
-               inline: false,
-            },
-         ],
+         fields: messageFields,
       },
    );
    return;
