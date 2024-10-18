@@ -18,12 +18,12 @@ export default <AuxdibotSubcommand>{
 
       const preview = await generateLevelCard(interaction.user, 255, 1, {
          border: {
-            color1: userData.level_card_border.split(':')[0],
-            color2: userData.level_card_border.split(':')[1],
+            color1: userData.level_card_border?.split(':')[0],
+            color2: userData.level_card_border?.split(':')[1],
          },
          bar: {
-            color1: userData.level_card_bar.split(':')[0],
-            color2: userData.level_card_bar.split(':')[1],
+            color1: userData.level_card_bar?.split(':')[0],
+            color2: userData.level_card_bar?.split(':')[1],
          },
          premium: true,
       });
