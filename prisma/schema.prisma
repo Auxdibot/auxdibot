@@ -465,6 +465,7 @@ model users {
   created_date      DateTime?   @default(now())
   premium_servers   String[]    @default([])
   level_card_border String?     @default("#FF0000:#FFA500")
+  level_card_bar    String?     @default("#FF0000:#FFA500")
 
   @@unique([userID])
 }
