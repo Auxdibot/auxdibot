@@ -38,13 +38,25 @@ export const levelsStats = <AuxdibotSubcommand>{
                where: { serverID: interaction.data.guild.id, xp: { gt: data.xp } },
             })
             .catch(() => 0)) + 1;
-      const image = await generateLevelCard(user, data.xp, leaderboard, {
-         border: {
-            color1: userData.level_card_border.split(':')[0],
-            color2: userData.level_card_border.split(':')[1],
-         },
-         premium: !!(await auxdibot.fetchPremiumSubscription(interaction.user.id).catch(() => false)),
-      });
+      const premium = !!(await auxdibot.fetchPremiumSubscription(interaction.user.id).catch(() => false));
+      const image = await generateLevelCard(
+         user,
+         data.xp,
+         leaderboard,
+         premium
+            ? {
+                 border: {
+                    color1: userData.level_card_border?.split(':')[0],
+                    color2: userData.level_card_border?.split(':')[1],
+                 },
+                 bar: {
+                    color1: userData.level_card_bar?.split(':')[0],
+                    color2: userData.level_card_bar?.split(':')[1],
+                 },
+                 premium: true,
+              }
+            : undefined,
+      );
       const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
          new ButtonBuilder()
             .setURL(`${process.env.BOT_HOMEPAGE}/leaderboard/${interaction.data.guild.id}`)

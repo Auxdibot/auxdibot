@@ -5,7 +5,11 @@ import { abbreviateNumber } from '../../../util/abbreviateNumber';
 import { calculateLevel } from './calculateLevel';
 import calcXP from '@/util/calcXP';
 
-type CardOptions = { border: { color1: string; color2: string }; premium?: boolean };
+type CardOptions = {
+   border?: { color1?: string; color2?: string };
+   bar?: { color1?: string; color2?: string };
+   premium?: boolean;
+};
 
 GlobalFonts.registerFromPath(join(__dirname, '..', '..', '..', '..', 'fonts', 'Montserrat-Light.ttf'), 'Montserrat');
 GlobalFonts.registerFromPath(join(__dirname, '..', '..', '..', '..', 'fonts', 'Raleway-Medium.ttf'), 'Raleway');
@@ -13,7 +17,11 @@ export async function generateLevelCard(
    user: User,
    xp: number,
    leaderboard: number,
-   opts: CardOptions = { border: { color1: '#FF0000', color2: '#FFA500' }, premium: false },
+   opts: CardOptions = {
+      border: { color1: '#FF0000', color2: '#FFA500' },
+      bar: { color1: '#FF0000', color2: '#FFA500' },
+      premium: false,
+   },
 ): Promise<Buffer> {
    const level = calculateLevel(xp);
    const nextLevelXP = Math.round(calcXP(level + 1)) - calcXP(level);
@@ -39,8 +47,8 @@ export async function generateLevelCard(
    ctx.clip();
 
    const gradient = ctx.createLinearGradient(0, 0, canvas.width, canvas.height);
-   gradient.addColorStop(0, opts.border.color1);
-   gradient.addColorStop(1, opts.border.color2);
+   gradient.addColorStop(0, opts?.border?.color1 ?? '#FF0000');
+   gradient.addColorStop(1, opts?.border?.color2 ?? '#FFA500');
    ctx.fillStyle = gradient;
 
    ctx.lineWidth = 20;
@@ -148,9 +156,8 @@ export async function generateLevelCard(
 
    ctx.fillRect(progressBarX, progressBarY, progressBarWidth, progressBarHeight);
    const barGradient = ctx.createLinearGradient(progressBarX, progressBarY, progressBarWidth, progressBarHeight);
-   barGradient.addColorStop(0, '#FF0000');
-   barGradient.addColorStop(0.8, '#C87D48');
-   barGradient.addColorStop(1, '#FFA500');
+   barGradient.addColorStop(0, opts?.bar?.color1 ?? '#FF0000');
+   barGradient.addColorStop(1, opts?.bar?.color2 ?? '#FFA500');
    ctx.beginPath();
    ctx.moveTo(progressBarX + borderRadius, progressBarY);
    ctx.lineTo(progressBarX + progressWidth - borderRadius, progressBarY);
