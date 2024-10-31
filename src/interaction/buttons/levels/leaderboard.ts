@@ -14,6 +14,7 @@ export default <AuxdibotButton>{
    async execute(auxdibot: Auxdibot, interaction: MessageComponentInteraction) {
       if (!interaction.guild || !interaction.user || !interaction.channel) return;
       const [, location, startVal] = interaction.customId.split('-');
+      await interaction.deferReply({ ephemeral: true });
       const total = await generateLeaderboardCount(auxdibot, interaction.guild);
       let start = startVal ? parseInt(startVal) : 0;
       switch (location) {
@@ -29,7 +30,7 @@ export default <AuxdibotButton>{
          default:
             break;
       }
-      await interaction.deferReply({ ephemeral: true });
+
       const content = await generateLeaderboardEmbed(auxdibot, interaction.guild, start);
 
       return interaction.message
