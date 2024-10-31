@@ -2,6 +2,7 @@ import { EmbedBuilder, ModalSubmitInteraction } from 'discord.js';
 import { Auxdibot } from '@/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import { testCommandPermission } from '@/util/testCommandPermission';
+import handleError from '@/util/handleError';
 
 export default async function modalSubmit(auxdibot: Auxdibot, interaction: ModalSubmitInteraction) {
    const server = interaction.guild ? await findOrCreateServer(auxdibot, interaction.guild.id) : undefined;
@@ -36,7 +37,17 @@ export default async function modalSubmit(auxdibot: Auxdibot, interaction: Modal
                });
             }
          }
-         await modal.execute(auxdibot, interaction);
+         try {
+            await modal.execute(auxdibot, interaction);
+         } catch (x) {
+            console.error(x);
+            return handleError(
+               auxdibot,
+               'COMMAND_ERROR',
+               'This command has produced an uncaught error! Please report this to our support server.',
+               interaction,
+            );
+         }
       }
    }
 }

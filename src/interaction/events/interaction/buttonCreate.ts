@@ -2,6 +2,7 @@ import { ButtonInteraction, EmbedBuilder } from 'discord.js';
 import { Auxdibot } from '@/Auxdibot';
 import { testCommandPermission } from '@/util/testCommandPermission';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
+import handleError from '@/util/handleError';
 
 export default async function buttonCreate(auxdibot: Auxdibot, interaction: ButtonInteraction) {
    const server = interaction.guild ? await findOrCreateServer(auxdibot, interaction.guild.id) : undefined;
@@ -37,8 +38,17 @@ export default async function buttonCreate(auxdibot: Auxdibot, interaction: Butt
                });
             }
          }
-
-         await button.execute(auxdibot, interaction);
+         try {
+            await button.execute(auxdibot, interaction);
+         } catch (x) {
+            console.error(x);
+            return handleError(
+               auxdibot,
+               'COMMAND_ERROR',
+               'This command has produced an uncaught error! Please report this to our support server.',
+               interaction,
+            );
+         }
       }
    }
 }

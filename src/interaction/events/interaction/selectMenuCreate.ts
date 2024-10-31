@@ -2,6 +2,7 @@ import { AnySelectMenuInteraction, EmbedBuilder } from 'discord.js';
 import { Auxdibot } from '@/Auxdibot';
 import { testCommandPermission } from '@/util/testCommandPermission';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
+import handleError from '@/util/handleError';
 
 export default async function selectMenuCreate(auxdibot: Auxdibot, interaction: AnySelectMenuInteraction) {
    const server = interaction.guild ? await findOrCreateServer(auxdibot, interaction.guild.id) : undefined;
@@ -37,7 +38,17 @@ export default async function selectMenuCreate(auxdibot: Auxdibot, interaction: 
                });
             }
          }
-         await select_menu.execute(auxdibot, interaction);
+         try {
+            await select_menu.execute(auxdibot, interaction);
+         } catch (x) {
+            console.error(x);
+            return handleError(
+               auxdibot,
+               'COMMAND_ERROR',
+               'This command has produced an uncaught error! Please report this to our support server.',
+               interaction,
+            );
+         }
       }
    }
 }
