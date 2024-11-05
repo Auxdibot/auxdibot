@@ -17,6 +17,7 @@ export const levelsLeaderboard = <AuxdibotSubcommand>{
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;
+      await interaction.deferReply();
       const content = await generateLeaderboardEmbed(auxdibot, interaction.guild);
       return await auxdibot.createReply(interaction, { embeds: [content.embed], components: content.row });
    },
