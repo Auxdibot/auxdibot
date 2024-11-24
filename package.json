@@ -11,7 +11,7 @@
       "lint": "eslint --ignore-path .eslintignore --ext .js,.ts . --quiet --fix",
       "test": "ts-mocha -p ./tsconfig.json -u tdd ./test/**/*.test.ts --recursive --paths",
       "prepare": "npx husky install",
-      "prod": "npm ci && npm run build && npm run start"
+      "prod": "npm run build && npm run start"
    },
    "author": "Auxdible",
    "license": "MPL-2.0",
@@ -39,6 +39,8 @@
       "passport": "^0.6.0",
       "passport-discord": "^0.1.4",
       "rss-parser": "^3.13.0",
+      "dotenv": "^16.4.5",
+      "prisma": "^5.14.0",
       "toad-scheduler": "^2.3.0"
    },
    "devDependencies": {
@@ -50,7 +52,6 @@
       "@typescript-eslint/eslint-plugin": "^5.62.0",
       "@typescript-eslint/parser": "^5.62.0",
       "chai": "^4.4.1",
-      "dotenv": "^16.4.5",
       "eslint": "^8.57.0",
       "eslint-config-prettier": "^8.10.0",
       "eslint-plugin-prettier": "^4.2.1",
@@ -59,7 +60,6 @@
       "mocha": "^10.4.0",
       "module-alias": "^2.2.3",
       "prettier": "^2.8.8",
-      "prisma": "^5.14.0",
       "ts-mocha": "^10.0.0",
       "ts-node": "^10.9.2",
       "ts-node-dev": "^2.0.0",
