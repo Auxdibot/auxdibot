@@ -41,6 +41,7 @@ export default async function slashCreate(auxdibot: Auxdibot, interaction: ChatI
             : subcommand.name == subcommandArgs[0] && subcommand.group == null,
       ) || command;
    const premiumTest = commandData.info.premium === undefined ? command.info.premium : commandData.info.premium;
+
    if (
       process.env.PREMIUM_SKU_ID &&
       premiumTest &&
@@ -104,7 +105,7 @@ export default async function slashCreate(auxdibot: Auxdibot, interaction: ChatI
       const permissionTest = await testCommandPermission(
          auxdibot,
          interaction,
-         interaction.guildId,
+         server,
          interaction.commandName,
          subcommandArgs,
       );

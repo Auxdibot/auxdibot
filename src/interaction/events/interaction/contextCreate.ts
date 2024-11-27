@@ -40,7 +40,7 @@ export default async function contextCreate(auxdibot: Auxdibot, interaction: Con
          const permissionTest = await testCommandPermission(
             auxdibot,
             interaction,
-            interaction.guildId,
+            server,
             command.command.split(' ')[0],
             command.command.split(' ').slice(1),
          );

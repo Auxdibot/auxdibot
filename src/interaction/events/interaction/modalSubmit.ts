@@ -16,7 +16,7 @@ export default async function modalSubmit(auxdibot: Auxdibot, interaction: Modal
             const permissionTest = await testCommandPermission(
                auxdibot,
                interaction,
-               interaction.guildId,
+               server,
                splitCommand[0],
                splitCommand[1] ? splitCommand.slice(1) : [],
             );

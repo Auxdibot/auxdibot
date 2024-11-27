@@ -1,8 +1,7 @@
-import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import { Auxdibot } from '@/Auxdibot';
 import { BaseInteraction, GuildMember, PermissionFlagsBits } from 'discord.js';
 import { findCommand } from '@/modules/features/commands/findCommand';
-import { CommandPermission } from '@prisma/client';
+import { CommandPermission, servers } from '@prisma/client';
 import { checkPermissionBypassRole } from './checkPermissionBypassRole';
 
 export function testDiscordCommandPermissions(permissions: bigint[], member: GuildMember) {
@@ -42,12 +41,11 @@ export function testPermission(permission: CommandPermission, interaction: BaseI
 export async function testCommandPermission(
    auxdibot: Auxdibot,
    interaction: BaseInteraction,
-   guildID: string,
+   server: servers,
    command: string,
    subcommand?: string[],
 ) {
-   const server = await findOrCreateServer(auxdibot, guildID),
-      member = interaction.guild ? interaction.guild.members.resolve(interaction.user.id) : null;
+   const member = interaction.guild ? interaction.guild.members.resolve(interaction.user.id) : null;
    if (!server || !member) return false;
    if (member.id == member.guild.ownerId || member.permissions.has(PermissionFlagsBits.Administrator)) return true;
    const data = findCommand(auxdibot, command, subcommand);
@@ -80,6 +78,7 @@ export async function testCommandPermission(
    const checkPermissionBypass = await checkPermissionBypassRole(
       auxdibot,
       member,
+      server,
       command,
       subcommand.length > 1 ? subcommand[0] : undefined,
       subcommand.length > 1 ? subcommand[1] : subcommand[0],

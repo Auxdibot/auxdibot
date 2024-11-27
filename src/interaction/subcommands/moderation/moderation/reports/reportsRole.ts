@@ -22,7 +22,7 @@ export const reportsRole = <AuxdibotSubcommand>{
       const server = interaction.data.guildData;
       if (
          interaction.data.member.id != interaction.data.guild.ownerId &&
-         (await testDiscordRolePermission(auxdibot, interaction, role)) == false
+         (await testDiscordRolePermission(auxdibot, interaction, interaction.data.guildData, role)) == false
       ) {
          const noPermissionEmbed = new EmbedBuilder().setColor(auxdibot.colors.denied).toJSON();
          noPermissionEmbed.title = '⛔ No Permission!';
