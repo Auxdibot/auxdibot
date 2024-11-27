@@ -23,7 +23,7 @@ export const moderationMuteRole = <AuxdibotSubcommand>{
       const server = interaction.data.guildData;
       if (
          interaction.data.member.id != interaction.data.guild.ownerId &&
-         !(await testDiscordRolePermission(auxdibot, interaction, role))
+         !(await testDiscordRolePermission(auxdibot, interaction, interaction.data.guildData, role))
       ) {
          const noPermissionEmbed = new EmbedBuilder().setColor(auxdibot.colors.denied).toJSON();
          noPermissionEmbed.title = '⛔ No Permission!';

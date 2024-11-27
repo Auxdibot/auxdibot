@@ -1,17 +1,16 @@
 import { Auxdibot } from '@/Auxdibot';
 import { findCommand } from '@/modules/features/commands/findCommand';
-import findOrCreateServer from '@/modules/server/findOrCreateServer';
+import { servers } from '@prisma/client';
 import { GuildMember } from 'discord.js';
 
 export async function checkPermissionBypassRole(
    auxdibot: Auxdibot,
    member: GuildMember,
+   data: servers,
    commandName: string,
    groupName?: string,
    subcommandName?: string,
 ) {
-   const data = await findOrCreateServer(auxdibot, member.guild.id);
-
    const commandData = findCommand(
       auxdibot,
       commandName,

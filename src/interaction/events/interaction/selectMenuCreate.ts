@@ -17,7 +17,7 @@ export default async function selectMenuCreate(auxdibot: Auxdibot, interaction: 
             const permissionTest = await testCommandPermission(
                auxdibot,
                interaction,
-               interaction.guildId,
+               server,
                splitCommand[0],
                splitCommand[1] ? splitCommand.slice(1) : [],
             );

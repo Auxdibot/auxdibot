@@ -1,6 +1,7 @@
 import { Auxdibot } from '@/Auxdibot';
 import { APIRole, BaseInteraction, Role } from 'discord.js';
 import { checkPermissionBypassRole } from './checkPermissionBypassRole';
+import { servers } from '@prisma/client';
 
 /**
  * Tests the Discord role permission for a given interaction and role by checking the server's command permissions.
@@ -12,6 +13,7 @@ import { checkPermissionBypassRole } from './checkPermissionBypassRole';
 export async function testDiscordRolePermission(
    auxdibot: Auxdibot,
    interaction: BaseInteraction,
+   server: servers,
    role?: Role | APIRole,
 ): Promise<boolean> {
    if (!interaction.guild) return false;
@@ -22,6 +24,7 @@ export async function testDiscordRolePermission(
       const bypassCheck = await checkPermissionBypassRole(
          auxdibot,
          member,
+         server,
          interaction.commandName,
          interaction.options.getSubcommandGroup(false),
          interaction.options.getSubcommand(false),

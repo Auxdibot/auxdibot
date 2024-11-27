@@ -23,7 +23,7 @@ export const stickyRoleAdd = <AuxdibotSubcommand>{
          role &&
          interaction.data.member.id != interaction.data.guild.ownerId &&
          !interaction.memberPermissions.has(PermissionsBitField.Flags.Administrator) &&
-         (await testDiscordRolePermission(auxdibot, interaction, role)) == false
+         (await testDiscordRolePermission(auxdibot, interaction, interaction.data.guildData, role)) == false
       ) {
          return await handleError(
             auxdibot,
