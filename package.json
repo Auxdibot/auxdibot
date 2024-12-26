@@ -11,7 +11,7 @@
       "build-watch": "tsc -w",
       "lint": "eslint --ignore-path .eslintignore --ext .js,.ts . --quiet --fix",
       "test": "ts-mocha -p ./tsconfig.json -u tdd ./test/**/*.test.ts --recursive --paths",
-      "prepare": "pnpx husky install",
+      "prepare": "pnpx husky install && ts-patch install -s",
       "prod": "pnpm run build && pnpm run start"
    },
    "author": "Auxdible",
@@ -65,9 +65,11 @@
       "nodemon": "^3.1.9",
       "prettier": "^2.8.8",
       "ts-node": "^10.9.2",
+      "ts-patch": "^3.3.0",
       "tsconfig-paths": "^4.2.0",
       "tslib": "^2.6.3",
-      "typescript": "^5.4.5"
+      "typescript": "^5.4.5",
+      "typescript-transform-paths": "^3.5.3"
    },
    "lint-staged": {
       "**/*.{js,ts,tsx}": [
