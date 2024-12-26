@@ -464,9 +464,12 @@ export class Auxdibot extends Client {
       user?: string,
    ) {
       const premium = await this.fetchPremiumSubscriptionUser(guild?.id);
-      if (premium) return true;
 
-      const value = (await this.hasVoted(guild?.ownerId ?? user).catch(() => false)) ? limit.voted : limit.default;
+      const value = premium
+         ? 500
+         : (await this.hasVoted(guild?.ownerId ?? user).catch(() => false))
+         ? limit.voted
+         : limit.default;
       if (v.length < value) return true;
       if (purgePrior) {
          v.splice(0, 1);
