@@ -1,2 +1,2 @@
 #!/bin/bash
-npm ci
+pnpm install
