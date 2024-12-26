@@ -25,7 +25,10 @@
       "paths": {
          "@/*": ["*"]
       },
-      "plugins": [{ "transform": "typescript-transform-paths", "afterDeclarations": true }]
+      "plugins": [
+        { "transform": "typescript-transform-paths" },
+        { "transform": "typescript-transform-paths", "afterDeclarations": true }
+      ]
    },
    "include": ["src", "global.d.ts"],
    "exclude": ["test"]
