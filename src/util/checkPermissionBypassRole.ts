@@ -1,12 +1,12 @@
 import { Auxdibot } from '@/Auxdibot';
 import { findCommand } from '@/modules/features/commands/findCommand';
-import { servers } from '@prisma/client';
+import { CommandPermission } from '@prisma/client';
 import { GuildMember } from 'discord.js';
 
-export async function checkPermissionBypassRole(
+export function checkPermissionBypassRole(
    auxdibot: Auxdibot,
    member: GuildMember,
-   data: servers,
+   command_permissions: CommandPermission[],
    commandName: string,
    groupName?: string,
    subcommandName?: string,
@@ -17,7 +17,7 @@ export async function checkPermissionBypassRole(
       [groupName, subcommandName].filter((i) => i),
    );
    if (!commandData) return false;
-   const permission = data.command_permissions.filter((cp) => cp.command == commandName),
+   const permission = command_permissions.filter((cp) => cp.command == commandName),
       commandPermission = permission.find((i) => !i.subcommand && !i.group),
       groupPermission = permission.find((i) => i.group == groupName && !i.subcommand),
       subcommandPermission = permission.find((i) => i.group == groupName && i.subcommand == subcommandName);

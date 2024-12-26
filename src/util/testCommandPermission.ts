@@ -38,7 +38,7 @@ export function testPermission(permission: CommandPermission, interaction: BaseI
  * @param subcommand - Optional. An array of subcommand names, if applicable.
  * @returns A boolean indicating whether the user has permission to execute the command, or a string indicating the reason for lack of permission (notfound, noperm, disabled, noperm-channel).
  */
-export async function testCommandPermission(
+export function testCommandPermission(
    auxdibot: Auxdibot,
    interaction: BaseInteraction,
    server: servers,
@@ -75,10 +75,10 @@ export async function testCommandPermission(
       permissions = permissions.concat(groupPermission.discord_permissions.map((i) => PermissionFlagsBits[i]));
    if (subcommandPermission?.discord_permissions)
       permissions = permissions.concat(subcommandPermission.discord_permissions.map((i) => PermissionFlagsBits[i]));
-   const checkPermissionBypass = await checkPermissionBypassRole(
+   const checkPermissionBypass = checkPermissionBypassRole(
       auxdibot,
       member,
-      server,
+      server.command_permissions,
       command,
       subcommand.length > 1 ? subcommand[0] : undefined,
       subcommand.length > 1 ? subcommand[1] : subcommand[0],

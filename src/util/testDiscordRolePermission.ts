@@ -17,14 +17,14 @@ export async function testDiscordRolePermission(
    role?: Role | APIRole,
 ): Promise<boolean> {
    if (!interaction.guild) return false;
-   const member = await interaction.guild.members.fetch(interaction.user.id).catch(() => undefined);
+   const member = interaction.guild.members.resolve(interaction.user.id) ?? null;
    if (!member) return false;
 
    if (interaction.isChatInputCommand()) {
-      const bypassCheck = await checkPermissionBypassRole(
+      const bypassCheck = checkPermissionBypassRole(
          auxdibot,
          member,
-         server,
+         server.command_permissions,
          interaction.commandName,
          interaction.options.getSubcommandGroup(false),
          interaction.options.getSubcommand(false),

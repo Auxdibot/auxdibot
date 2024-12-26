@@ -102,7 +102,7 @@ export default async function slashCreate(auxdibot: Auxdibot, interaction: ChatI
          member,
          guildData: server,
       };
-      const permissionTest = await testCommandPermission(
+      const permissionTest = testCommandPermission(
          auxdibot,
          interaction,
          server,
