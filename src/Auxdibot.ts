@@ -23,13 +23,11 @@ import AuxdibotSelectMenu from './interfaces/menus/AuxdibotSelectMenu';
 import AuxdibotButton from './interfaces/buttons/AuxdibotButton';
 import AuxdibotModal from './interfaces/modals/AuxdibotModal';
 import { AuxdibotContextMenu } from './interfaces/contexts/AuxdibotContextMenu';
-import { CachedMessage } from './interfaces/messages/CachedMessage';
 import { BuildSession } from './interfaces/messages/BuildSession';
 import refreshInteractions from './interaction/refreshInteractions';
 import listenEvents from './interaction/events/listenEvents';
 import createBuildSessionSchedule from './modules/features/embeds/createBuildSessionSchedule';
 import scheduleStarboardTimeoutClear from './modules/features/starboard/scheduleStarboardTimeoutClear';
-import scheduleClearMessageCache from './modules/features/scheduleClearMessageCache';
 import scheduleChannelUnlocks from './modules/features/moderation/lock/scheduleChannelUnlocks';
 import scheduleRunSchedules from './modules/features/schedule/scheduleRunSchedules';
 import scheduleExpirationChecks from './modules/features/moderation/scheduleExpirationChecks';
@@ -42,10 +40,12 @@ import { LogOptions } from './interfaces/log/LogOptions';
 import updateLog from './modules/logs/updateLog';
 import { LogData } from './constants/bot/log/LogData';
 import scheduleRunReminders from './modules/features/reminders/scheduleRunReminders';
+import { LRUCache } from 'lru-cache';
 
 const TOKEN = process.env.DISCORD_BOT_TOKEN;
 const CLIENT_ID = process.env.DISCORD_BOT_CLIENT_ID;
 
+const DETECTION_CACHE_OPTIONS = { ttl: 1000 * 120, ttlAutopurge: true };
 /**
  * Represents the Auxdibot class.
  * @class Auxdibot
@@ -83,24 +83,19 @@ export class Auxdibot extends Client {
    context_menus: Collection<string, AuxdibotContextMenu> = new Collection();
 
    /**
-    * Collection of cached messages in Auxdibot.
+    * Cache of spam detections in Auxdibot.
     */
-   messages: Collection<bigint, CachedMessage> = new Collection();
+   spam_detections = new LRUCache<[string, bigint], string[]>(DETECTION_CACHE_OPTIONS);
 
    /**
-    * Collection of spam detections in Auxdibot.
+    * Cache of invites detections in Auxdibot.
     */
-   spam_detections: Collection<[string, bigint], Collection<bigint, CachedMessage>> = new Collection();
+   invites_detections = new LRUCache<[string, bigint], string[]>(DETECTION_CACHE_OPTIONS);
 
    /**
-    * Collection of invites detections in Auxdibot.
+    * Cache of attachments detections in Auxdibot.
     */
-   invites_detections: Collection<[string, bigint], Collection<bigint, CachedMessage>> = new Collection();
-
-   /**
-    * Collection of attachments detections in Auxdibot.
-    */
-   attachments_detections: Collection<[string, bigint], Collection<bigint, CachedMessage>> = new Collection();
+   attachments_detections = new LRUCache<[string, bigint], string[]>(DETECTION_CACHE_OPTIONS);
 
    /**
     * Collection of starboard timeouts in Auxdibot.
@@ -237,7 +232,6 @@ export class Auxdibot extends Client {
       scheduleExpirationChecks(this);
       scheduleRunSchedules(this);
       scheduleChannelUnlocks(this);
-      scheduleClearMessageCache(this);
       scheduleStarboardTimeoutClear(this);
       createBuildSessionSchedule(this);
       scheduleRunReminders(this);

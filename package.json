@@ -4,14 +4,15 @@
    "description": "Main repo for the Auxdibot discord.js bot, utilizing TypeScript and express for endpoints.",
    "main": "./dist/index.js",
    "scripts": {
+      "preinstall": "npx only-allow pnpm",
       "start": "node ./dist/index.js",
-      "dev": "ts-node-dev --no-notify --transpile-only --exit-child src/",
+      "dev": "nodemon -r tsconfig-paths/register src/index.ts",
       "build": "tsc",
       "build-watch": "tsc -w",
       "lint": "eslint --ignore-path .eslintignore --ext .js,.ts . --quiet --fix",
       "test": "ts-mocha -p ./tsconfig.json -u tdd ./test/**/*.test.ts --recursive --paths",
-      "prepare": "npx husky install",
-      "prod": "npm run build && npm run start"
+      "prepare": "pnpx husky install",
+      "prod": "pnpm run build && pnpm run start"
    },
    "author": "Auxdible",
    "license": "MPL-2.0",
@@ -21,48 +22,50 @@
    },
    "homepage": "https://github.com/Auxdibot/auxdibot#readme",
    "dependencies": {
+      "@discordjs/builders": "^1.9.0",
       "@napi-rs/canvas": "^0.1.53",
-      "@prisma/client": "^5.14.0",
+      "@prisma/client": "^6.1.0",
       "@top-gg/sdk": "^3.1.6",
       "@types/lodash": "^4.17.4",
       "@types/passport": "^1.0.16",
       "@types/passport-discord": "^0.1.13",
       "axios": "^1.7.2",
+      "body-parser": "^1.20.3",
       "cors": "^2.8.5",
       "discord.js": "^14.16.2",
+      "dotenv": "^16.4.5",
       "emoji-regex": "^10.3.0",
       "express": "^4.19.2",
       "express-rate-limit": "^7.2.0",
       "express-session": "^1.18.0",
       "helmet": "^7.1.0",
       "lodash": "^4.17.21",
+      "lru-cache": "^11.0.2",
       "passport": "^0.6.0",
       "passport-discord": "^0.1.4",
-      "rss-parser": "^3.13.0",
-      "dotenv": "^16.4.5",
       "prisma": "^5.14.0",
+      "rss-parser": "^3.13.0",
       "toad-scheduler": "^2.3.0"
    },
    "devDependencies": {
       "@types/chai": "^4.3.16",
-      "@types/emoji-regex": "^9.2.0",
+      "@types/express-serve-static-core": "^5.0.2",
       "@types/express-session": "^1.18.0",
       "@types/mocha": "^10.0.6",
       "@types/node-schedule": "^2.1.7",
-      "@typescript-eslint/eslint-plugin": "^5.62.0",
-      "@typescript-eslint/parser": "^5.62.0",
+      "@typescript-eslint/eslint-plugin": "^8.18.2",
+      "@typescript-eslint/parser": "^8.18.2",
       "chai": "^4.4.1",
-      "eslint": "^8.57.0",
+      "eslint": "^9.17.0",
       "eslint-config-prettier": "^8.10.0",
       "eslint-plugin-prettier": "^4.2.1",
       "husky": "^8.0.0",
       "lint-staged": "^13.3.0",
-      "mocha": "^10.4.0",
       "module-alias": "^2.2.3",
+      "nodemon": "^3.1.9",
       "prettier": "^2.8.8",
-      "ts-mocha": "^10.0.0",
       "ts-node": "^10.9.2",
-      "ts-node-dev": "^2.0.0",
+      "tsconfig-paths": "^4.2.0",
       "tslib": "^2.6.3",
       "typescript": "^5.4.5"
    },
@@ -70,8 +73,5 @@
       "**/*.{js,ts,tsx}": [
          "eslint --fix"
       ]
-   },
-   "_moduleAliases": {
-      "@": "dist/"
    }
 }

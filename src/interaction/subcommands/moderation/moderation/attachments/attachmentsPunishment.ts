@@ -40,7 +40,7 @@ export const attachmentsPunishment = <AuxdibotSubcommand>{
             interaction,
          );
       }
-      if (reason.length > 500) {
+      if (reason?.length > 500) {
          return await handleError(
             auxdibot,
             'REASON_TOO_LONG',
@@ -56,8 +56,8 @@ export const attachmentsPunishment = <AuxdibotSubcommand>{
                   punishment: PunishmentType[punishment],
                   reason:
                      reason ??
-                     server.automod_spam_punishment.reason ??
-                     'You have broken the spam limit for this server.',
+                     server.automod_attachments_punishment?.reason ??
+                     'You have broken the attachments spam limit for this server.',
                },
             },
          })
