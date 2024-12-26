@@ -113,12 +113,16 @@ export const helpAll = <AuxdibotSubcommand>{
                ),
          )
          .toJSON();
-      return await auxdibot.createReply(interaction, {
-         embeds: [embed],
-         components: [
-            modulesRow,
-            (await promoRow(auxdibot, interaction.guild?.ownerId ?? interaction.user.id)).toJSON(),
-         ],
-      });
+      return await auxdibot.createReply(
+         interaction,
+         {
+            embeds: [embed],
+            components: [
+               modulesRow,
+               (await promoRow(auxdibot, interaction.guild?.ownerId ?? interaction.user.id)).toJSON(),
+            ],
+         },
+         { data: 'guildData' in interaction.data ? interaction.data.guildData : undefined },
+      );
    },
 };

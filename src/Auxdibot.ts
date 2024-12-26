@@ -309,7 +309,7 @@ export class Auxdibot extends Client {
     */
    async createReply(interaction: BaseInteraction, data: InteractionReplyOptions, options?: AuxdibotReplyOptions) {
       if (interaction.guildId && interaction.isChatInputCommand() && !options?.noOutputChannel) {
-         const server = await findOrCreateServer(this, interaction.guildId);
+         const server = options?.data || (await findOrCreateServer(this, interaction.guildId));
          if (!server) return;
          const permission = server.command_permissions.filter((cp) => cp.command == interaction.commandName),
             commandPermission = permission.find((i) => !i.subcommand && !i.group),
