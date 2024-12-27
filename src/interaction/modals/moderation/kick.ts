@@ -9,8 +9,8 @@ import createPunishment from '@/modules/features/moderation/createPunishment';
 
 export default <AuxdibotModal>{
    module: Modules['Moderation'],
-   name: 'warn',
-   command: 'punish warn',
+   name: 'kick',
+   command: 'punish kick',
    async execute(auxdibot: Auxdibot, interaction: ModalSubmitInteraction) {
       const [, id] = interaction.customId.split('-');
       const member = await interaction.guild?.members.fetch(id);
@@ -19,7 +19,7 @@ export default <AuxdibotModal>{
       }
       await interaction.deferReply({ ephemeral: true });
       const reason = interaction.fields.getTextInputValue('reason') ?? 'No reason specified.';
-      const warnData = <Punishment>{
+      const kickData = <Punishment>{
          moderatorID: interaction.user.id,
          userID: id,
          reason,
@@ -27,11 +27,11 @@ export default <AuxdibotModal>{
          dmed: false,
          expires_date: undefined,
          expired: true,
-         type: PunishmentType.WARN,
+         type: PunishmentType.KICK,
          punishmentID: await incrementPunishmentsTotal(auxdibot, interaction.guild.id),
       };
 
-      await createPunishment(auxdibot, interaction.guild, warnData, interaction, member.user).catch(async (x) => {
+      await createPunishment(auxdibot, interaction.guild, kickData, interaction, member.user).catch(async (x) => {
          await handleError(
             auxdibot,
             'PUNISHMENT_CREATION_ERROR',
