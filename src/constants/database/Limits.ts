@@ -1,7 +1,7 @@
 const Limits = {
    USER_REMINDER_LIMIT: { default: 1, voted: 5 },
    ACTIVE_SUGGESTIONS_DEFAULT_LIMIT: { default: 30, voted: 45 },
-   ACTIVE_PUNISHMENTS_DEFAULT_LIMIT: { default: 3, voted: 3 },
+   ACTIVE_PUNISHMENTS_DEFAULT_LIMIT: { default: 100, voted: 150 },
    ACTIVE_STARRED_MESSAGES_DEFAULT_LIMIT: { default: 250, voted: 375 },
    LEVEL_REWARDS_DEFAULT_LIMIT: { default: 10, voted: 15 },
    MULTIPLIER_DEFAULT_LIMIT: { default: 20, voted: 30 },
