@@ -4,7 +4,7 @@ import canExecute from '@/util/canExecute';
 import Modules from '@/constants/bot/commands/Modules';
 import { Auxdibot } from '@/Auxdibot';
 import incrementPunishmentsTotal from '@/modules/features/moderation/incrementPunishmentsTotal';
-import { Punishment, PunishmentType } from '@prisma/client';
+import { punishments, PunishmentType } from '@prisma/client';
 import createPunishment from '@/modules/features/moderation/createPunishment';
 import handleError from '@/util/handleError';
 import { createUserEmbed } from '@/modules/features/moderation/createUserEmbed';
@@ -27,7 +27,7 @@ export default <AuxdibotButton>{
          noPermissionEmbed.description = `This user has a higher role than you or owns this server!`;
          return await auxdibot.createReply(interaction, { embeds: [noPermissionEmbed] });
       }
-      const kickData = <Punishment>{
+      const kickData = <punishments>{
          type: PunishmentType.KICK,
          reason: 'No reason given.',
          date: new Date(),
@@ -35,6 +35,7 @@ export default <AuxdibotButton>{
          expired: false,
          expires_date: undefined,
          userID: user_id,
+         serverID: interaction.guild.id,
          moderatorID: interaction.user.id,
          punishmentID: await incrementPunishmentsTotal(auxdibot, interaction.guild.id),
       };

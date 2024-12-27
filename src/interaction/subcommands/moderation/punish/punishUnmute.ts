@@ -10,6 +10,7 @@ import handleError from '@/util/handleError';
 import { EmbedBuilder } from '@discordjs/builders';
 import { LogAction, PunishmentType } from '@prisma/client';
 import { PermissionFlagsBits } from 'discord.js';
+import { getServerPunishments } from '@/modules/features/moderation/getServerPunishments';
 
 export const punishUnmute = <AuxdibotSubcommand>{
    name: 'unmute',
@@ -24,9 +25,14 @@ export const punishUnmute = <AuxdibotSubcommand>{
       await interaction.deferReply({ ephemeral: true });
       const user = interaction.options.getUser('user', true);
       const server = interaction.data.guildData;
-      const muted = server.punishments.find((p) => p.userID == user.id && p.type == PunishmentType.MUTE && !p.expired);
+      const muted = await getServerPunishments(auxdibot, interaction.guildId, {
+         userID: user.id,
+         type: PunishmentType.MUTE,
+         expired: false,
+      });
 
-      if (!muted) return await handleError(auxdibot, 'USER_NOT_MUTED', "This user isn't muted!", interaction);
+      if (muted.length == 0)
+         return await handleError(auxdibot, 'USER_NOT_MUTED', "This user isn't muted!", interaction);
 
       const member = interaction.data.guild.members.resolve(user.id);
       if (member) {
@@ -42,20 +48,19 @@ export const punishUnmute = <AuxdibotSubcommand>{
             member.timeout(null, 'Unmuted').catch(() => undefined);
          }
       }
-      muted.expired = true;
-      await auxdibot.database.servers.update({
-         where: { serverID: server.serverID },
-         data: { punishments: server.punishments },
+      await auxdibot.database.punishments.updateMany({
+         where: { userID: user.id, type: PunishmentType.MUTE, expired: false },
+         data: { expired: true },
       });
       const dmEmbed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
       dmEmbed.title = '🔊 Unmuted';
       dmEmbed.description = `You were unmuted on ${interaction.data.guild.name}.`;
-      dmEmbed.fields = [punishmentInfoField(muted, true, true)];
+      dmEmbed.fields = muted.map((punishment) => punishmentInfoField(punishment, true, true));
       await user.send({ embeds: [dmEmbed] });
       const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
       embed.title = `🔊 Unmuted ${user.username}`;
       embed.description = `User was unmuted.`;
-      embed.fields = [punishmentInfoField(muted, true, true)];
+      embed.fields = muted.map((punishment) => punishmentInfoField(punishment, true, true));
       await auxdibot.log(
          interaction.data.guild,
          {
@@ -64,7 +69,7 @@ export const punishUnmute = <AuxdibotSubcommand>{
             date: new Date(),
             type: LogAction.UNMUTE,
          },
-         { fields: [punishmentInfoField(muted, true, true)], user_avatar: true },
+         { fields: muted.map((punishment) => punishmentInfoField(punishment, true, true)), user_avatar: true },
       );
       await auxdibot.createReply(interaction, { embeds: [embed] });
    },

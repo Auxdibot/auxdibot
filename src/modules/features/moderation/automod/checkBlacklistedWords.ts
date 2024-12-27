@@ -1,5 +1,5 @@
 import { Auxdibot } from '@/Auxdibot';
-import { LogAction, Punishment, PunishmentType, servers } from '@prisma/client';
+import { LogAction, punishments, PunishmentType, servers } from '@prisma/client';
 import { EmbedBuilder, Message } from 'discord.js';
 import createPunishment from '../createPunishment';
 
@@ -53,11 +53,12 @@ export default async function checkBlacklistedWords(auxdibot: Auxdibot, server: 
                })
                .catch(() => undefined);
          } else {
-            const punishment = <Punishment>{
+            const punishment = <punishments>{
                punishmentID: await incrementPunishmentsTotal(auxdibot, server.serverID),
                type: server.automod_banned_phrases_punishment,
                date: new Date(),
                reason: `Usage of blacklisted phrase "${blacklist}"`,
+               serverID: server.serverID,
                userID: message.author.id,
                expired: false,
                moderatorID: '',

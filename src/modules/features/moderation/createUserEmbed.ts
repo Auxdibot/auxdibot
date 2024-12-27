@@ -14,17 +14,18 @@ import {
    PermissionsBitField,
 } from 'discord.js';
 import { calculateLevel } from '../levels/calculateLevel';
+import { getServerPunishments } from './getServerPunishments';
 
 export async function createUserEmbed(auxdibot: Auxdibot, guild: Guild, userID: string): Promise<BaseMessageOptions> {
    const server = await findOrCreateServer(auxdibot, guild.id);
    const data = await auxdibot.database.servermembers.findFirst({
       where: { userID: userID, serverID: guild.id },
    });
+   const record = await getServerPunishments(auxdibot, guild.id, { userID });
    const user = auxdibot.users.cache.get(userID),
       member = await guild.members.fetch(userID).catch(() => undefined);
-   const record = server.punishments.filter((p) => p.userID == userID),
-      banned = server.punishments.find((p) => p.userID == userID && p.type == PunishmentType.BAN && !p.expired),
-      muted = server.punishments.find((p) => p.userID == userID && p.type == PunishmentType.MUTE && !p.expired);
+   const banned = record.find((p) => p.type == PunishmentType.BAN && !p.expired),
+      muted = record.find((p) => p.type == PunishmentType.MUTE && !p.expired);
 
    const embed = new EmbedBuilder().setColor(auxdibot.colors.info).toJSON();
    embed.title = `${CustomEmojis.USER} ${user.username} | User Info`;

@@ -5,6 +5,7 @@ import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandD
 import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInteraction';
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 import { EmbedBuilder } from '@discordjs/builders';
+import { getServerPunishments } from '@/modules/features/moderation/getServerPunishments';
 
 export const punishmentLatest = <AuxdibotSubcommand>{
    name: 'latest',
@@ -15,8 +16,7 @@ export const punishmentLatest = <AuxdibotSubcommand>{
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;
-      const server = interaction.data.guildData;
-      const punishments = server.punishments.reverse().slice(0, 10);
+      const punishments = await getServerPunishments(auxdibot, interaction.guild.id, {}, 10);
       const embed = new EmbedBuilder().setColor(auxdibot.colors.default).toJSON();
       embed.title = '🔨 Latest Punishments';
       embed.fields = [

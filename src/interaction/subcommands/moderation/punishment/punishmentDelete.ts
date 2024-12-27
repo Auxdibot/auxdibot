@@ -8,6 +8,7 @@ import deletePunishment from '@/modules/features/moderation/deletePunishment';
 import { punishmentInfoField } from '@/modules/features/moderation/punishmentInfoField';
 import handleError from '@/util/handleError';
 import { EmbedBuilder } from '@discordjs/builders';
+import { getServerPunishments } from '@/modules/features/moderation/getServerPunishments';
 
 export const punishmentDelete = <AuxdibotSubcommand>{
    name: 'delete',
@@ -19,8 +20,13 @@ export const punishmentDelete = <AuxdibotSubcommand>{
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;
       const punishment_id = interaction.options.getNumber('punishment_id', true);
-      const server = interaction.data.guildData;
-      const punishment = server.punishments.filter((val) => val.punishmentID == punishment_id)[0];
+      const punishments = await getServerPunishments(
+         auxdibot,
+         interaction.guild.id,
+         { punishmentID: punishment_id },
+         1,
+      );
+      const punishment = punishments[0];
       if (!punishment) {
          return await handleError(auxdibot, 'PUNISHMENT_NOT_FOUND', 'This punishment does not exist!', interaction);
       }

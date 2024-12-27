@@ -1,5 +1,6 @@
 import { Auxdibot } from '@/Auxdibot';
 import deletePunishment from '@/modules/features/moderation/deletePunishment';
+import { getServerPunishments } from '@/modules/features/moderation/getServerPunishments';
 import checkAuthenticated from '@/server/checkAuthenticated';
 import checkGuildOwnership from '@/server/checkGuildOwnership';
 import { Router } from 'express';
@@ -14,14 +15,13 @@ const punishments = (auxdibot: Auxdibot, router: Router) => {
       (req, res) => {
          const limit = req.query['limit'];
 
-         return auxdibot.database.servers
-            .findFirst({ where: { serverID: req.guild.id }, select: { serverID: true, punishments: true } })
+         return getServerPunishments(auxdibot, req.guild.id)
             .then(async (data) =>
                data
                   ? res.json({
                        data: {
-                          serverID: data.serverID,
-                          punishments: data.punishments.reverse().slice(0, Number(limit) || data.punishments.length),
+                          serverID: req.guild.id,
+                          punishments: data.reverse().slice(0, Number(limit) || data.length),
                        },
                     })
                   : res.status(404).json({ error: "couldn't find that server" }),

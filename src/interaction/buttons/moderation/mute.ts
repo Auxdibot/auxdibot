@@ -3,12 +3,13 @@ import { EmbedBuilder, GuildMember, MessageComponentInteraction } from 'discord.
 import canExecute from '@/util/canExecute';
 import Modules from '@/constants/bot/commands/Modules';
 import { Auxdibot } from '@/Auxdibot';
-import { Punishment, PunishmentType } from '@prisma/client';
+import { punishments, PunishmentType } from '@prisma/client';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import incrementPunishmentsTotal from '@/modules/features/moderation/incrementPunishmentsTotal';
 import createPunishment from '@/modules/features/moderation/createPunishment';
 import handleError from '@/util/handleError';
 import { createUserEmbed } from '@/modules/features/moderation/createUserEmbed';
+import { getServerPunishments } from '@/modules/features/moderation/getServerPunishments';
 
 export default <AuxdibotButton>{
    module: Modules['Moderation'],
@@ -37,15 +38,21 @@ export default <AuxdibotButton>{
             interaction,
          );
       }
-      if (server.punishments.find((p) => p.userID == user_id && p.type == PunishmentType.BAN))
+      const muted = await getServerPunishments(auxdibot, interaction.guild.id, {
+         userID: user_id,
+         type: PunishmentType.MUTE,
+         expired: false,
+      });
+      if (muted.length > 0)
          return await handleError(auxdibot, 'USER_ALREADY_MUTED', 'This user is already muted!', interaction);
-      const muteData = <Punishment>{
+      const muteData = <punishments>{
          type: PunishmentType.MUTE,
          reason: 'No reason given.',
          date: new Date(),
          dmed: false,
          expired: false,
          expires_date: undefined,
+         serverID: interaction.guild.id,
          userID: user_id,
          moderatorID: interaction.user.id,
          punishmentID: await incrementPunishmentsTotal(auxdibot, interaction.guild.id),

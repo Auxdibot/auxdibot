@@ -1,7 +1,7 @@
 import { Auxdibot } from '@/Auxdibot';
 import createPunishment from '@/modules/features/moderation/createPunishment';
+import { getServerPunishments } from '@/modules/features/moderation/getServerPunishments';
 import incrementPunishmentsTotal from '@/modules/features/moderation/incrementPunishmentsTotal';
-import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import { LogAction, PunishmentType } from '@prisma/client';
 import {
    AuditLogEvent,
@@ -16,17 +16,17 @@ export async function guildAuditLogEntryCreate(
    entry: GuildAuditLogsEntry<AuditLogEvent, GuildAuditLogsActionType, GuildAuditLogsTargetType, AuditLogEvent>,
    guild: Guild,
 ) {
-   const server = await findOrCreateServer(auxdibot, guild.id);
    const { action } = entry;
    if (
       (action == AuditLogEvent.MemberKick || action == AuditLogEvent.MemberBanAdd) &&
       entry.executorId != auxdibot.user.id
    ) {
       const { targetId, executorId } = entry;
-      const punishment = server.punishments.find(
-         (i) => i.userID == targetId && i.date.valueOf() < Date.now() + 5000 && i.date.valueOf() > Date.now() - 5000,
-      );
-      if (!punishment) {
+      const punishments = await getServerPunishments(auxdibot, guild.id, {
+         date: { gt: new Date(Date.now() - 5000), lt: new Date(Date.now() + 5000) },
+         userID: targetId,
+      });
+      if (!punishments) {
          const user = await auxdibot.users.fetch(targetId).catch(() => undefined);
          createPunishment(
             auxdibot,
@@ -40,9 +40,8 @@ export async function guildAuditLogEntryCreate(
                expired: false,
                expires_date: null,
                moderatorID: executorId,
+               serverID: guild.id,
                punishmentID: await incrementPunishmentsTotal(auxdibot, guild.id),
-               old_date_unix: null,
-               old_expires_date_unix: null,
             },
             null,
             user,

@@ -3,7 +3,7 @@ import Modules from '@/constants/bot/commands/Modules';
 import { Auxdibot } from '@/Auxdibot';
 import AuxdibotModal from '@/interfaces/modals/AuxdibotModal';
 import handleError from '@/util/handleError';
-import { Punishment, PunishmentType } from '@prisma/client';
+import { punishments, PunishmentType } from '@prisma/client';
 import incrementPunishmentsTotal from '@/modules/features/moderation/incrementPunishmentsTotal';
 import createPunishment from '@/modules/features/moderation/createPunishment';
 
@@ -19,7 +19,7 @@ export default <AuxdibotModal>{
       }
       await interaction.deferReply({ ephemeral: true });
       const reason = interaction.fields.getTextInputValue('reason') ?? 'No reason specified.';
-      const kickData = <Punishment>{
+      const kickData = <punishments>{
          moderatorID: interaction.user.id,
          userID: id,
          reason,
@@ -27,6 +27,7 @@ export default <AuxdibotModal>{
          dmed: false,
          expires_date: undefined,
          expired: true,
+         serverID: interaction.guildId,
          type: PunishmentType.KICK,
          punishmentID: await incrementPunishmentsTotal(auxdibot, interaction.guild.id),
       };

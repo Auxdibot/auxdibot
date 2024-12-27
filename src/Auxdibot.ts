@@ -34,7 +34,6 @@ import scheduleExpirationChecks from './modules/features/moderation/scheduleExpi
 import createSubscribers from './modules/features/notifications/createSubscribers';
 import server from './server/server';
 import fetchAnalytics from './modules/analytics/fetchAnalytics';
-import { migrateData } from './util/migrateData';
 
 import { LogOptions } from './interfaces/log/LogOptions';
 import updateLog from './modules/logs/updateLog';
@@ -242,7 +241,6 @@ export class Auxdibot extends Client {
          .then(async () => {
             server(this);
             fetchAnalytics(this);
-            migrateData(this);
             this.application.entitlements
                .createTest({ sku: process.env.PREMIUM_SKU_ID, user: '684762447399354433' })
                .catch(() => undefined);
@@ -447,6 +445,15 @@ export class Auxdibot extends Client {
          return data.voted_date.valueOf() >= oneWeekAgo.valueOf();
       });
    }
+   async getLimit(limit: { default: number; voted: number }, guild?: Guild, user?: string) {
+      if (!guild && !user) return limit.default;
+      const premium = await this.fetchPremiumSubscriptionUser(guild.id);
+      return premium
+         ? 500
+         : (await this.hasVoted(guild.ownerId ?? user).catch(() => false))
+         ? limit.voted
+         : limit.default;
+   }
    /**
     * Checks if the length of an array is less than a specified limit.
     * Optionally, it can purge the prior elements of the array if the limit is exceeded.
@@ -463,13 +470,7 @@ export class Auxdibot extends Client {
       purgePrior?: boolean,
       user?: string,
    ) {
-      const premium = await this.fetchPremiumSubscriptionUser(guild?.id);
-
-      const value = premium
-         ? 500
-         : (await this.hasVoted(guild?.ownerId ?? user).catch(() => false))
-         ? limit.voted
-         : limit.default;
+      const value = await this.getLimit(limit, guild, user);
       if (v.length < value) return true;
       if (purgePrior) {
          v.splice(0, 1);

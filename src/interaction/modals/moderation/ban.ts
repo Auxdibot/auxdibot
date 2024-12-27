@@ -3,11 +3,12 @@ import Modules from '@/constants/bot/commands/Modules';
 import { Auxdibot } from '@/Auxdibot';
 import AuxdibotModal from '@/interfaces/modals/AuxdibotModal';
 import handleError from '@/util/handleError';
-import { Punishment, PunishmentType } from '@prisma/client';
+import { punishments, PunishmentType } from '@prisma/client';
 import incrementPunishmentsTotal from '@/modules/features/moderation/incrementPunishmentsTotal';
 import createPunishment from '@/modules/features/moderation/createPunishment';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import timestampToDuration from '@/util/timestampToDuration';
+import { getServerPunishments } from '@/modules/features/moderation/getServerPunishments';
 
 export default <AuxdibotModal>{
    module: Modules['Moderation'],
@@ -20,7 +21,12 @@ export default <AuxdibotModal>{
          return handleError(auxdibot, 'MEMBER_NOT_IN_SERVER', 'This user is not in the server!', interaction);
       }
       const server = await findOrCreateServer(auxdibot, interaction.guildId);
-      if (server.punishments.find((p) => p.userID == member.id && p.type == PunishmentType.BAN && !p.expired))
+      const previous = await getServerPunishments(auxdibot, interaction.guildId, {
+         userID: member.id,
+         type: PunishmentType.BAN,
+         expired: false,
+      });
+      if (previous.length > 0)
          return await handleError(auxdibot, 'USER_ALREADY_MUTED', 'This user is already banned!', interaction);
       await interaction.deferReply({ ephemeral: true });
       const reason = interaction.fields.getTextInputValue('reason') ?? 'No reason specified.';
@@ -55,8 +61,9 @@ export default <AuxdibotModal>{
          }
       }
       const expires = duration == 'permanent' || !duration ? 'permanent' : duration + Date.now();
-      const banData = <Punishment>{
+      const banData = <punishments>{
          moderatorID: interaction.user.id,
+         serverID: interaction.guildId,
          userID: id,
          reason,
          date: new Date(),

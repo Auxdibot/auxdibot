@@ -5,6 +5,7 @@ generator client {
 datasource db {
   provider = "mongodb"
   url      = env("MONGO_URI")
+
 }
 
 type APIEmbedAuthor {
@@ -132,21 +133,6 @@ enum LogAction {
   PREMIUM_REMOVED
 }
 
-type Punishment {
-  type                  PunishmentType
-  expired               Boolean        @default(false)
-  // Deprecated
-  old_date_unix         Int?           @default(0) @map("date_unix") @db.Long
-  old_expires_date_unix Int?           @map("expires_date_unix") @db.Long
-  // Deprecated
-  date                  DateTime       @default(now())
-  expires_date          DateTime?
-  reason                String         @default("")
-  dmed                  Boolean        @default(false)
-  userID                String
-  moderatorID           String?
-  punishmentID          Int
-}
 
 type LevelReward {
   level  Int
@@ -403,7 +389,6 @@ model servers {
   filtered_logs                     LogAction[]
   commands_channel                  String?
   command_permissions               CommandPermission[]
-  punishments                       Punishment[]
   suggestions                       Suggestion[]
   scheduled_messages                ScheduledMessage[]
   punishment_send_reason            Boolean              @default(true)
@@ -426,6 +411,22 @@ model servers {
   stored_embeds                     StoredEmbed[]
 
   @@unique([serverID])
+}
+model punishments {
+  id                    String         @id @default(auto()) @map("_id") @db.ObjectId
+  v                     Int?           @map("__v")
+  serverID              String
+  date                  DateTime       @default(now())
+  expires_date          DateTime?
+  reason                String         @default("")
+  dmed                  Boolean        @default(false)
+  userID                String
+  moderatorID           String?
+  punishmentID          Int
+  type                  PunishmentType
+  expired               Boolean        @default(false)
+
+  @@unique([serverID, punishmentID])
 }
 
 model servercards {

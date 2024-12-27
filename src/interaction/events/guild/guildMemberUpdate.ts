@@ -1,5 +1,6 @@
 import { Auxdibot } from '@/Auxdibot';
 import createPunishment from '@/modules/features/moderation/createPunishment';
+import { getServerPunishments } from '@/modules/features/moderation/getServerPunishments';
 import incrementPunishmentsTotal from '@/modules/features/moderation/incrementPunishmentsTotal';
 import { punishmentInfoField } from '@/modules/features/moderation/punishmentInfoField';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
@@ -38,9 +39,8 @@ export async function guildMemberUpdate(
                   expired: false,
                   expires_date: new Date(newMember.communicationDisabledUntilTimestamp),
                   moderatorID: logs.entries.first().executorId,
+                  serverID: newMember.guild.id,
                   punishmentID: await incrementPunishmentsTotal(auxdibot, newMember.guild.id),
-                  old_date_unix: null,
-                  old_expires_date_unix: null,
                },
                undefined,
                newMember.user,
@@ -62,17 +62,21 @@ export async function guildMemberUpdate(
          }
       }
    } else if (!server.mute_role) {
-      const muted = server.punishments.find(
-         (p) => p.userID == newMember.id && p.type == PunishmentType.MUTE && !p.expired,
-      );
-      if (!muted) return;
-      muted.expired = true;
-      await auxdibot.database.servers
+      const mutedPunishments = await getServerPunishments(auxdibot, newMember.guild.id, {
+         userID: newMember.id,
+         type: PunishmentType.MUTE,
+         expired: false,
+      });
+
+      if (mutedPunishments.length == 0) return;
+      await auxdibot.database.punishments
          .update({
-            where: { serverID: newMember.guild.id },
-            data: { punishments: server.punishments },
+            where: {
+               serverID_punishmentID: { serverID: newMember.guild.id, punishmentID: mutedPunishments[0].punishmentID },
+            },
+            data: { expired: true },
          })
-         .then(async () => {
+         .then(async (muted) => {
             auxdibot.log(
                newMember.guild,
                {
