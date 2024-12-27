@@ -30,7 +30,7 @@ export const punishmentLatest = <AuxdibotSubcommand>{
                      punishment.date.valueOf() / 1000,
                   )}> (<@${punishment.userID}>)`
                );
-            }, '\u2800'),
+            }, ''),
          },
       ];
       return await auxdibot.createReply(interaction, { embeds: [embed] });
