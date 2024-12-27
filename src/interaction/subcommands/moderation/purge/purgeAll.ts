@@ -38,7 +38,7 @@ export const purgeAll = <AuxdibotSubcommand>{
             interaction,
          );
       }
-      await auxdibot.createReply(interaction, { ephemeral: true, content: 'Currently purging messages...' });
+      await interaction.deferReply({ ephemeral: true });
       return await purgeMessages(interaction.channel, amount, delete_bot)
          .then(async (i) => {
             const embed = new EmbedBuilder().setColor(auxdibot.colors.default).toJSON();
@@ -67,7 +67,7 @@ export const purgeAll = <AuxdibotSubcommand>{
                   ],
                },
             );
-            return await interaction.channel.send({ embeds: [embed] });
+            return await auxdibot.createReply(interaction, { embeds: [embed] });
          })
          .catch(async () => {
             return await handleError(
