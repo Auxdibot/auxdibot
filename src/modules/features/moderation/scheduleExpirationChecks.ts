@@ -35,15 +35,15 @@ export default function scheduleExpirationChecks(auxdibot: Auxdibot) {
                      );
                      switch (expiredPunishment.type) {
                         case PunishmentType.BAN:
-                           guild.bans.remove(expiredPunishment.userID, 'Punishment expired.');
+                           guild.bans.remove(expiredPunishment.userID, 'Punishment expired.').catch(() => undefined);
                            break;
                         case PunishmentType.MUTE:
                            const member = guild.members.resolve(expiredPunishment.userID);
                            if (!member) break;
                            if (server.mute_role) {
-                              member.roles.remove(server.mute_role);
+                              member.roles.remove(server.mute_role).catch(() => undefined);
                            } else {
-                              member.timeout(null, 'Unmuted');
+                              member.timeout(null, 'Unmuted').catch(() => undefined);
                            }
                            break;
                      }
