@@ -7,6 +7,7 @@ import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 import { punishmentInfoField } from '@/modules/features/moderation/punishmentInfoField';
 import handleError from '@/util/handleError';
 import { EmbedBuilder } from '@discordjs/builders';
+import { getServerPunishments } from '@/modules/features/moderation/getServerPunishments';
 
 export const punishmentView = <AuxdibotSubcommand>{
    name: 'view',
@@ -18,8 +19,8 @@ export const punishmentView = <AuxdibotSubcommand>{
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;
       const punishmentID = interaction.options.getNumber('punishment_id', true);
-      const server = interaction.data.guildData;
-      const punishment = server.punishments.filter((val) => val.punishmentID == punishmentID)[0];
+      const punishments = await getServerPunishments(auxdibot, interaction.guild.id, { punishmentID }, 1);
+      const punishment = punishments[0];
       if (!punishment) {
          return await handleError(auxdibot, 'PUNISHMENT_NOT_FOUND', 'This punishment does not exist!', interaction);
       }

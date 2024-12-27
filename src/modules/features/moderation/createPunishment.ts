@@ -1,5 +1,5 @@
 import { Auxdibot } from '@/Auxdibot';
-import { Punishment, PunishmentType } from '@prisma/client';
+import { punishments, PunishmentType } from '@prisma/client';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import Limits from '@/constants/database/Limits';
 import { BaseInteraction, EmbedBuilder, Guild, User } from 'discord.js';
@@ -7,18 +7,20 @@ import { PunishmentValues } from '@/constants/bot/punishments/PunishmentValues';
 import { punishmentInfoField } from './punishmentInfoField';
 
 import incrementPunishmentsTotal from './incrementPunishmentsTotal';
+import { getServerPunishments } from './getServerPunishments';
 
 export default async function createPunishment(
    auxdibot: Auxdibot,
    guild: Guild,
-   punishment: Punishment,
+   punishment: Omit<punishments, 'v' | 'id'>,
    interaction?: BaseInteraction,
    user?: User,
    duration?: number | 'permanent',
    deleteMessageDays?: number,
 ) {
    const server = await findOrCreateServer(auxdibot, guild.id);
-   if (server.punishments.find((i) => i.punishmentID == punishment.punishmentID)) return undefined;
+   const punishments = await getServerPunishments(auxdibot, guild.id);
+   if (punishments.find((i) => i.punishmentID == punishment.punishmentID)) return undefined;
    auxdibot.database.analytics
       .upsert({
          where: { botID: auxdibot.user.id },
@@ -26,13 +28,14 @@ export default async function createPunishment(
          update: { punishments: { increment: 1 } },
       })
       .catch(() => undefined);
-   if (
-      (await auxdibot.testLimit(server.punishments, Limits.ACTIVE_PUNISHMENTS_DEFAULT_LIMIT, guild, true)) == 'spliced'
-   ) {
-      await auxdibot.database.servers.update({
-         where: { serverID: server.serverID },
-         data: { punishments: server.punishments },
-      });
+   const limit = await auxdibot.getLimit(Limits.ACTIVE_PUNISHMENTS_DEFAULT_LIMIT, guild);
+   // trim oldest punishments if limit is reached
+   if (punishments.length >= limit) {
+      // remove all elements past limit
+      const sorted = punishments.sort((a, b) => b.punishmentID - a.punishmentID).slice(limit);
+      await auxdibot.database.punishments
+         .deleteMany({ where: { serverID: guild.id, punishmentID: { in: sorted.map((i) => i.punishmentID) } } })
+         .catch(() => undefined);
    }
    if (punishment.reason?.length > 500) throw new Error('Your punishment reason is too long!');
    const dmEmbed = new EmbedBuilder().setColor(auxdibot.colors.punishment).toJSON();
@@ -79,8 +82,8 @@ export default async function createPunishment(
          }
          break;
    }
-   return await auxdibot.database.servers
-      .update({ where: { serverID: guild.id }, data: { punishments: { push: punishment } } })
+   return await auxdibot.database.punishments
+      .create({ data: punishment })
       .then(async () => {
          const embed = new EmbedBuilder().setColor(0x9c0e11).toJSON();
          embed.title = PunishmentValues[punishment.type].name;
@@ -118,8 +121,9 @@ export default async function createPunishment(
                      data.warns >= server.automod_punish_threshold_warns &&
                      server.automod_punish_threshold_warns > 0
                   ) {
-                     const thresholdPunishment = <Punishment>{
+                     const thresholdPunishment = <punishments>{
                         type: server.automod_threshold_punishment,
+                        serverID: guild.id,
                         reason: 'You have met the warns threshold for this server.',
                         date: new Date(),
                         dmed: false,

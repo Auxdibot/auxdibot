@@ -3,12 +3,12 @@ import { EmbedBuilder, GuildMember, MessageComponentInteraction } from 'discord.
 import canExecute from '@/util/canExecute';
 import Modules from '@/constants/bot/commands/Modules';
 import { Auxdibot } from '@/Auxdibot';
-import findOrCreateServer from '@/modules/server/findOrCreateServer';
-import { Punishment, PunishmentType } from '@prisma/client';
+import { punishments, PunishmentType } from '@prisma/client';
 import incrementPunishmentsTotal from '@/modules/features/moderation/incrementPunishmentsTotal';
 import createPunishment from '@/modules/features/moderation/createPunishment';
 import handleError from '@/util/handleError';
 import { createUserEmbed } from '@/modules/features/moderation/createUserEmbed';
+import { getServerPunishments } from '@/modules/features/moderation/getServerPunishments';
 
 export default <AuxdibotButton>{
    module: Modules['Moderation'],
@@ -28,10 +28,14 @@ export default <AuxdibotButton>{
          noPermissionEmbed.description = `This user has a higher role than you or owns this server!`;
          return await auxdibot.createReply(interaction, { embeds: [noPermissionEmbed] });
       }
-      const server = await findOrCreateServer(auxdibot, interaction.guild.id);
-      if (server.punishments.find((p) => p.userID == user_id && p.type == PunishmentType.BAN))
+      const banned = await getServerPunishments(auxdibot, interaction.guild.id, {
+         userID: user_id,
+         type: PunishmentType.BAN,
+         expired: false,
+      });
+      if (banned.length > 0)
          return await handleError(auxdibot, 'USER_ALREADY_BANNED', 'This user is already banned!', interaction);
-      const banData = <Punishment>{
+      const banData = <punishments>{
          type: PunishmentType.BAN,
          reason: 'No reason given.',
          date: new Date(),
@@ -39,6 +43,7 @@ export default <AuxdibotButton>{
          expired: false,
          expires_date: undefined,
          userID: user_id,
+         serverID: interaction.guild.id,
          moderatorID: interaction.user.id,
          punishmentID: await incrementPunishmentsTotal(auxdibot, interaction.guild.id),
       };

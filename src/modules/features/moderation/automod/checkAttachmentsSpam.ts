@@ -1,5 +1,5 @@
 import { Auxdibot } from '@/Auxdibot';
-import { LogAction, Punishment, servers } from '@prisma/client';
+import { LogAction, punishments, servers } from '@prisma/client';
 import { Guild, Message } from 'discord.js';
 import createPunishment from '../createPunishment';
 import incrementPunishmentsTotal from '../incrementPunishmentsTotal';
@@ -23,7 +23,7 @@ export default async function checkAttachmentsSpam(
          return acc.concat(Array.from(messages.values()));
       }, new Array<Message>());
       if (previousMessages.length > server.automod_attachments_limit.messages) {
-         const punishment = <Punishment>{
+         const punishment = <punishments>{
             punishmentID: await incrementPunishmentsTotal(auxdibot, server.serverID),
             type: server.automod_attachments_punishment.punishment,
             date: new Date(),
@@ -32,6 +32,7 @@ export default async function checkAttachmentsSpam(
                'You have exceeded the attachments limit for this server!',
             userID: message.author.id,
             expired: false,
+            serverID: server.serverID,
             moderatorID: '',
             dmed: false,
          };

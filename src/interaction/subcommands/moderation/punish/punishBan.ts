@@ -9,8 +9,9 @@ import canExecute from '@/util/canExecute';
 import handleError from '@/util/handleError';
 import timestampToDuration from '@/util/timestampToDuration';
 import { EmbedBuilder } from '@discordjs/builders';
-import { Punishment, PunishmentType } from '@prisma/client';
+import { punishments, PunishmentType } from '@prisma/client';
 import { PermissionFlagsBits } from 'discord.js';
+import { getServerPunishments } from '@/modules/features/moderation/getServerPunishments';
 
 export const punishBan = <AuxdibotSubcommand>{
    name: 'ban',
@@ -38,11 +39,12 @@ export const punishBan = <AuxdibotSubcommand>{
          noPermissionEmbed.description = `This user has a higher role than you or owns this server!`;
          return await auxdibot.createReply(interaction, { embeds: [noPermissionEmbed] });
       }
-      if (
-         interaction.data.guildData.punishments.find(
-            (p) => p.userID == user.id && p.type == PunishmentType.BAN && !p.expired,
-         )
-      )
+      const banned = await getServerPunishments(auxdibot, interaction.guildId, {
+         userID: user.id,
+         type: PunishmentType.BAN,
+         expired: false,
+      });
+      if (banned)
          return await handleError(auxdibot, 'USER_ALREADY_BANNED', 'This user is already banned!', interaction);
 
       const duration = timestampToDuration(durationOption);
@@ -64,7 +66,7 @@ export const punishBan = <AuxdibotSubcommand>{
          );
       }
       const expires = duration == 'permanent' ? 'permanent' : duration + Date.now();
-      const banData = <Punishment>{
+      const banData = <punishments>{
          type: PunishmentType.BAN,
          reason,
          date: new Date(),
@@ -72,6 +74,7 @@ export const punishBan = <AuxdibotSubcommand>{
          expired: false,
          expires_date: expires && typeof expires != 'string' ? new Date(expires) : undefined,
          userID: user.id,
+         serverID: interaction.guildId,
          moderatorID: interaction.user.id,
          punishmentID: await incrementPunishmentsTotal(auxdibot, interaction.data.guildData.serverID),
       };

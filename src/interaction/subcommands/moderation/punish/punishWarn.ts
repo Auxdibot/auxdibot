@@ -8,7 +8,7 @@ import incrementPunishmentsTotal from '@/modules/features/moderation/incrementPu
 import canExecute from '@/util/canExecute';
 import handleError from '@/util/handleError';
 import { EmbedBuilder } from '@discordjs/builders';
-import { Punishment, PunishmentType } from '@prisma/client';
+import { punishments, PunishmentType } from '@prisma/client';
 import { PermissionFlagsBits } from 'discord.js';
 
 export const punishWarn = <AuxdibotSubcommand>{
@@ -35,13 +35,14 @@ export const punishWarn = <AuxdibotSubcommand>{
          noPermissionEmbed.description = `This user has a higher role than you or owns this server!`;
          return await auxdibot.createReply(interaction, { embeds: [noPermissionEmbed] });
       }
-      const warnData = <Punishment>{
+      const warnData = <punishments>{
          moderatorID: interaction.user.id,
          userID: user.id,
          reason,
          date: new Date(),
          dmed: false,
          expires_date: undefined,
+         serverID: interaction.guild.id,
          expired: true,
          type: PunishmentType.WARN,
          punishmentID: await incrementPunishmentsTotal(auxdibot, interaction.data.guild.id),

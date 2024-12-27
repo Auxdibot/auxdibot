@@ -4,6 +4,7 @@ import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import { LogAction, PunishmentType } from '@prisma/client';
 import { punishmentInfoField } from './punishmentInfoField';
 import { AsyncTask, SimpleIntervalJob } from 'toad-scheduler';
+import { getServerPunishments } from './getServerPunishments';
 export default function scheduleExpirationChecks(auxdibot: Auxdibot) {
    const task = new AsyncTask(
       'punishment expiration',
@@ -11,18 +12,17 @@ export default function scheduleExpirationChecks(auxdibot: Auxdibot) {
          for (const guild of auxdibot.guilds.cache.values()) {
             const server = await findOrCreateServer(auxdibot, guild.id);
             if (server) {
-               const expired = server.punishments.filter((punishment) => {
-                  if (
-                     !punishment.expired &&
-                     punishment.expires_date &&
-                     punishment.expires_date.valueOf() <= Date.now()
-                  ) {
-                     punishment.expired = true;
-                     return punishment;
-                  }
+               const expiringPunishments = await getServerPunishments(auxdibot, guild.id, {
+                  expired: false,
+                  expires_date: { lte: new Date() },
                });
-               if (expired) {
-                  for (const expiredPunishment of expired) {
+
+               if (expiringPunishments.length > 0) {
+                  await auxdibot.database.punishments.updateMany({
+                     where: { serverID: guild.id, expired: false, expires_date: { lte: new Date() } },
+                     data: { expired: true },
+                  });
+                  for (const expiredPunishment of expiringPunishments) {
                      auxdibot.log(
                         guild,
                         {
@@ -48,12 +48,6 @@ export default function scheduleExpirationChecks(auxdibot: Auxdibot) {
                            break;
                      }
                   }
-                  await auxdibot.database.servers
-                     .update({
-                        where: { serverID: server.serverID },
-                        data: { punishments: server.punishments },
-                     })
-                     .catch(() => undefined);
                }
             }
          }

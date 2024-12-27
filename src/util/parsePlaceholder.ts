@@ -19,6 +19,7 @@ import { getMessage } from './getMessage';
 import { calculateTotalStars } from '@/modules/features/starboard/calculateTotalStars';
 import { calculateLevel } from '@/modules/features/levels/calculateLevel';
 import calcXP from './calcXP';
+import { getServerPunishments } from '@/modules/features/moderation/getServerPunishments';
 
 /**
  * Parses placeholders in a given message and replaces them with corresponding values.
@@ -42,6 +43,7 @@ export default async function parsePlaceholders(
 ) {
    if (!msg) return msg;
    const server = guild ? await findOrCreateServer(auxdibot, guild.id) : undefined;
+   const punishments = server ? await getServerPunishments(auxdibot, guild.id) : undefined;
    if (suggestion?.creatorID && guild && guild.members.cache.get(suggestion.creatorID))
       member = guild.members.cache.get(suggestion.creatorID);
    const starred_channel: GuildBasedChannel | undefined = starred_data
@@ -58,7 +60,7 @@ export default async function parsePlaceholders(
       member = (await guild.members.fetch(starred_message.author.id).catch(() => undefined)) ?? starred_message.author;
    }
    const latest_punishment =
-      server && member ? server.punishments.filter((p) => p.userID == member.id).reverse()[0] : undefined;
+      server && member ? punishments.filter((p) => p.userID == member.id).reverse()[0] : undefined;
    const memberData =
       member && guild
          ? await auxdibot.database.servermembers.findFirst({ where: { serverID: guild.id, userID: member.id } })
@@ -83,7 +85,7 @@ export default async function parsePlaceholders(
          : {}),
       ...(server
          ? {
-              [Placeholders.SERVER_TOTAL_PUNISHMENTS]: server.punishments.length,
+              [Placeholders.SERVER_TOTAL_PUNISHMENTS]: punishments.length,
            }
          : undefined),
       ...(member && member instanceof GuildMember
@@ -121,8 +123,7 @@ export default async function parsePlaceholders(
                  : {}),
               ...(server
                  ? {
-                      [Placeholders.MEMBER_TOTAL_PUNISHMENTS]: server.punishments.filter((p) => p.userID == member.id)
-                         .length,
+                      [Placeholders.MEMBER_TOTAL_PUNISHMENTS]: punishments.filter((p) => p.userID == member.id).length,
                       [Placeholders.MEMBER_LATEST_PUNISHMENT]: latest_punishment
                          ? PunishmentValues[latest_punishment.type as 'warn' | 'kick' | 'mute' | 'ban'].name
                          : 'None',

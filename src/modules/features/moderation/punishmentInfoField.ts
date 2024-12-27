@@ -1,7 +1,11 @@
-import { Punishment } from '@prisma/client';
+import { punishments } from '@prisma/client';
 import { EmbedField } from 'discord.js';
 
-export function punishmentInfoField(punishment: Punishment, sendModerator?: boolean, sendReason?: boolean): EmbedField {
+export function punishmentInfoField(
+   punishment: Omit<punishments, 'v' | 'id'>,
+   sendModerator?: boolean,
+   sendReason?: boolean,
+): EmbedField {
    return <EmbedField>{
       name: 'Punishment Info',
       value: `🪪 Punishment ID: \`${punishment.punishmentID}\`\n🕰️ Date: <t:${Math.round(

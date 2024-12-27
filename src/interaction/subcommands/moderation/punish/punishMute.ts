@@ -9,8 +9,9 @@ import canExecute from '@/util/canExecute';
 import handleError from '@/util/handleError';
 import timestampToDuration from '@/util/timestampToDuration';
 import { EmbedBuilder } from '@discordjs/builders';
-import { Punishment, PunishmentType } from '@prisma/client';
+import { punishments, PunishmentType } from '@prisma/client';
 import { PermissionFlagsBits } from 'discord.js';
+import { getServerPunishments } from '@/modules/features/moderation/getServerPunishments';
 
 export const punishMute = <AuxdibotSubcommand>{
    name: 'mute',
@@ -28,7 +29,12 @@ export const punishMute = <AuxdibotSubcommand>{
          reason = interaction.options.getString('reason') || 'No reason specified.',
          durationOption = interaction.options.getString('duration') || 'permanent';
       const server = interaction.data.guildData;
-      if (server.punishments.find((p) => p.userID == user.id && p.type == PunishmentType.MUTE && !p.expired))
+      const muted = await getServerPunishments(auxdibot, interaction.guildId, {
+         userID: user.id,
+         type: PunishmentType.MUTE,
+         expired: false,
+      });
+      if (muted.length > 0)
          return await handleError(auxdibot, 'USER_ALREADY_MUTED', 'This user is already muted!', interaction);
 
       const member = interaction.data.guild.members.resolve(user.id);
@@ -71,7 +77,7 @@ export const punishMute = <AuxdibotSubcommand>{
          }
       }
       const expires = duration == 'permanent' || !duration ? 'permanent' : duration + Date.now();
-      const muteData = <Punishment>{
+      const muteData = <punishments>{
          type: PunishmentType.MUTE,
          reason,
          date: new Date(),
@@ -79,6 +85,7 @@ export const punishMute = <AuxdibotSubcommand>{
          expired: false,
          expires_date: expires && typeof expires != 'string' ? new Date(expires) : undefined,
          userID: user.id,
+         serverID: interaction.guildId,
          moderatorID: interaction.user.id,
          punishmentID: await incrementPunishmentsTotal(auxdibot, server.serverID),
       };

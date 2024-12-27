@@ -1,5 +1,5 @@
 import { Auxdibot } from '@/Auxdibot';
-import { LogAction, Punishment, servers } from '@prisma/client';
+import { LogAction, punishments, servers } from '@prisma/client';
 import { Guild, Message } from 'discord.js';
 import createPunishment from '../createPunishment';
 import incrementPunishmentsTotal from '../incrementPunishmentsTotal';
@@ -19,13 +19,14 @@ export default async function checkInvitesSpam(auxdibot: Auxdibot, guild: Guild,
          return acc.concat(Array.from(messages.values()));
       }, new Array<Message>());
       if (previousMessages.length > server.automod_invites_limit.messages) {
-         const punishment = <Punishment>{
+         const punishment = <punishments>{
             punishmentID: await incrementPunishmentsTotal(auxdibot, server.serverID),
             type: server.automod_invites_punishment.punishment,
             date: new Date(),
             reason: server.automod_invites_punishment.reason || 'You have exceeded the invites limit for this server!',
             userID: message.author.id,
             expired: false,
+            serverID: server.serverID,
             moderatorID: '',
             dmed: false,
          };

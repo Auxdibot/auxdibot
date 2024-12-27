@@ -1,18 +1,18 @@
 import { Auxdibot } from '@/Auxdibot';
-import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import { PunishmentValues } from '@/constants/bot/punishments/PunishmentValues';
-import { Punishment } from '@prisma/client';
+import { punishments } from '@prisma/client';
 import { EmbedBuilder } from 'discord.js';
+import { getServerPunishments } from './getServerPunishments';
 
 export default async function userRecordAsEmbed(auxdibot: Auxdibot, serverID: string, userID: string) {
    const embed = new EmbedBuilder().setColor(auxdibot.colors.info).toJSON();
-   const record = (await findOrCreateServer(auxdibot, serverID)).punishments.filter((p) => p.userID == userID);
+   const record = await getServerPunishments(auxdibot, serverID, { userID });
    embed.title = '📜 Record';
    embed.description = `This is the record for <@${userID}>.\nWant to check more info about a punishment? Do \`/punishment view (id)\`.`;
    embed.fields = [
       {
          name: `Punishments`,
-         value: record.reverse().reduce((str: string, punishment: Punishment) => {
+         value: record.reverse().reduce((str: string, punishment: punishments) => {
             const type = PunishmentValues[punishment.type];
             return (
                str +

@@ -8,7 +8,7 @@ import incrementPunishmentsTotal from '@/modules/features/moderation/incrementPu
 import canExecute from '@/util/canExecute';
 import handleError from '@/util/handleError';
 import { EmbedBuilder } from '@discordjs/builders';
-import { Punishment, PunishmentType } from '@prisma/client';
+import { punishments, PunishmentType } from '@prisma/client';
 import { PermissionFlagsBits } from 'discord.js';
 
 export const punishKick = <AuxdibotSubcommand>{
@@ -35,7 +35,7 @@ export const punishKick = <AuxdibotSubcommand>{
          return await auxdibot.createReply(interaction, { embeds: [noPermissionEmbed] });
       }
 
-      const kickData = <Punishment>{
+      const kickData = <punishments>{
          type: PunishmentType.KICK,
          reason,
          date: new Date(),
@@ -43,6 +43,7 @@ export const punishKick = <AuxdibotSubcommand>{
          expired: true,
          expires_date: undefined,
          userID: user.id,
+         serverID: interaction.guildId,
          moderatorID: interaction.user.id,
          punishmentID: await incrementPunishmentsTotal(auxdibot, interaction.data.guildData.serverID),
       };

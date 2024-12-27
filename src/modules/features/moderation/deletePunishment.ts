@@ -1,6 +1,4 @@
 import { Auxdibot } from '@/Auxdibot';
-import findOrCreateServer from '@/modules/server/findOrCreateServer';
-
 import { Guild } from 'discord.js';
 import { punishmentInfoField } from './punishmentInfoField';
 import { LogAction } from '@prisma/client';
@@ -11,25 +9,20 @@ export default async function deletePunishment(
    punishmentID: number,
    user?: { id: string; username: string },
 ) {
-   const server = await findOrCreateServer(auxdibot, guild.id);
-   const punishment = server.punishments.find((punishment) => punishment.punishmentID == punishmentID);
-   server.punishments.splice(server.punishments.indexOf(punishment), 1);
+   const punishment = await auxdibot.database.punishments.delete({
+      where: { serverID_punishmentID: { serverID: guild.id, punishmentID } },
+   });
 
    if (!punishment) return undefined;
-   return await auxdibot.database.servers
-      .update({ where: { serverID: guild.id }, data: { punishments: server.punishments } })
-      .then(async () => {
-         await auxdibot.log(
-            guild,
-            {
-               type: LogAction.PUNISHMENT_DELETED,
-               date: new Date(),
-               userID: user.id,
-               description: `${user.username} deleted a punishment. (PID: ${punishment.punishmentID})`,
-            },
-            { fields: [punishmentInfoField(punishment, true, true)] },
-         );
-         return punishment;
-      })
-      .catch(() => undefined);
+   await auxdibot.log(
+      guild,
+      {
+         type: LogAction.PUNISHMENT_DELETED,
+         date: new Date(),
+         userID: user.id,
+         description: `${user.username} deleted a punishment. (PID: ${punishment.punishmentID})`,
+      },
+      { fields: [punishmentInfoField(punishment, true, true)] },
+   );
+   return punishment;
 }
