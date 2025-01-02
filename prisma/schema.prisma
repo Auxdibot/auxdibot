@@ -133,6 +133,7 @@ enum LogAction {
   APPEAL_CREATED
   APPEAL_ACCEPTED
   APPEAL_DENIED
+  APPEAL_CHANNEL_CHANGED
 }
 
 type LevelReward {

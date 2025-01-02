@@ -17,9 +17,11 @@ export function punishmentInfoField(
                  !punishment.expires_date
                     ? 'Never'
                     : `<t:${Math.round(Number(punishment.expires_date.valueOf()) / 1000)}>`
-              }\n${
+              }\n${sendReason ? `💬 Reason: ${punishment.reason}\n` : ''}⛓️ User: <@${punishment.userID}>\n${
+                 sendModerator && punishment.moderatorID ? `🧍 Moderator: <@${punishment.moderatorID}>` : ''
+              }${
                  punishment.appeal
-                    ? `${
+                    ? `\n${
                          punishment.appeal.accepted
                             ? '✅ Appealed'
                             : punishment.appeal.accepted === false
@@ -28,8 +30,6 @@ export function punishmentInfoField(
                       }\n*${punishment.appeal.accepted ? punishment.appeal.appeal_reason : punishment.appeal.content}*`
                     : ''
               }`
-      }\n${sendReason ? `💬 Reason: ${punishment.reason}\n` : ''}⛓️ User: <@${punishment.userID}>\n${
-         sendModerator && punishment.moderatorID ? `🧍 Moderator: <@${punishment.moderatorID}>` : ''
       }`,
    };
 }

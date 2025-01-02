@@ -77,4 +77,5 @@ export const LogData: { [k in LogAction]?: { name: string; color?: number } } = 
    APPEAL_CREATED: { name: '📝 Appeal Created' },
    APPEAL_ACCEPTED: { name: '✅ Appeal Accepted', color: 0x8bc34a },
    APPEAL_DENIED: { name: '❌ Appeal Denied', color: 0xf44336 },
+   APPEAL_CHANNEL_CHANGED: { name: '📝 Appeals Channel Changed' },
 };
