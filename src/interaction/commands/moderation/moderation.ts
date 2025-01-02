@@ -24,6 +24,7 @@ import { exceptionsRemove } from '@/interaction/subcommands/moderation/moderatio
 import { exceptionsAdd } from '@/interaction/subcommands/moderation/moderation/exceptions/exceptionsAdd';
 import { reportsBan } from '@/interaction/subcommands/moderation/moderation/reports/reportsBan';
 import { reportsUnban } from '@/interaction/subcommands/moderation/moderation/reports/reportsUnban';
+import { moderationAppealsChannel } from '@/interaction/subcommands/moderation/moderation/appeals/moderationAppealsChannel';
 
 export default <AuxdibotCommand>{
    data: new SlashCommandBuilder()
@@ -99,6 +100,22 @@ export default <AuxdibotCommand>{
                   .setDescription('Unban a user from making reports.')
                   .addUserOption((builder) =>
                      builder.setName('user').setDescription('The user to unban from making reports.').setRequired(true),
+                  ),
+            ),
+      )
+      .addSubcommandGroup((builder) =>
+         builder
+            .setName('appeals')
+            .setDescription('Settings for appeals on this server.')
+            .addSubcommand((builder) =>
+               builder
+                  .setName('channel')
+                  .setDescription('Change the appeals channel for this server.')
+                  .addChannelOption((builder) =>
+                     builder
+                        .setName('channel')
+                        .setDescription('The channel to set as the appeals channel.')
+                        .addChannelTypes(ChannelType.GuildText),
                   ),
             ),
       )
@@ -359,6 +376,7 @@ export default <AuxdibotCommand>{
       warnsThreshold,
       moderationSendReason,
       moderationSendModerator,
+      moderationAppealsChannel,
       reportsChannel,
       reportsRole,
       reportsBan,

@@ -89,12 +89,12 @@ export default <AuxdibotCommand>{
                .setCustomId(`appeal-${punishment_id}`)
                .setLabel('Appeal')
                .setStyle(ButtonStyle.Success)
-               .setEmoji(auxdibot.emojis.cache.get('✅')),
+               .setEmoji({ name: '✅' }),
             new ButtonBuilder()
                .setCustomId(`deny-${punishment_id}`)
                .setLabel('Deny')
                .setStyle(ButtonStyle.Danger)
-               .setEmoji(auxdibot.emojis.cache.get('🚫')),
+               .setEmoji({ name: '⛔' }),
          );
          await channel.send({ embeds: [embed], components: [components] });
          await auxdibot.database.punishments.update({
@@ -123,6 +123,7 @@ export default <AuxdibotCommand>{
             .setColor(auxdibot.colors.accept);
          return await auxdibot.createReply(interaction, { embeds: [success] });
       } catch (x) {
+         console.error(x);
          return handleError(
             auxdibot,
             'APPEAL_ERROR',

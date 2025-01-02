@@ -17,7 +17,11 @@ export const premiumAdd = <AuxdibotSubcommand>{
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       try {
-         const user = await auxdibot.database.users.findFirst({ where: { userID: interaction.user.id } }),
+         const user = await auxdibot.database.users.upsert({
+               where: { userID: interaction.user.id },
+               update: {},
+               create: { userID: interaction.user.id },
+            }),
             premium = await auxdibot.fetchPremiumSubscriptionUser(interaction.guild.id);
          if (premium) {
             return handleError(auxdibot, 'PREMIUM_ALREADY', 'This server is already a premium server!', interaction);

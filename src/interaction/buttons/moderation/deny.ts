@@ -24,7 +24,7 @@ export default <AuxdibotButton>{
          return await handleError(auxdibot, 'PUNISHMENT_NOT_FOUND', 'I could not find that punishment!', interaction);
       }
       const [punishmentData] = punishment;
-      if (punishmentData.appeal) {
+      if (punishmentData.appeal.accepted !== null) {
          interaction.message.delete().catch(() => undefined);
          return await handleError(
             auxdibot,
