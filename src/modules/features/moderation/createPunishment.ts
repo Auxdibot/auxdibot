@@ -1,5 +1,5 @@
 import { Auxdibot } from '@/Auxdibot';
-import { punishments, PunishmentType } from '@prisma/client';
+import { Prisma, punishments, PunishmentType } from '@prisma/client';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import Limits from '@/constants/database/Limits';
 import { BaseInteraction, EmbedBuilder, Guild, User } from 'discord.js';
@@ -12,7 +12,7 @@ import { getServerPunishments } from './getServerPunishments';
 export default async function createPunishment(
    auxdibot: Auxdibot,
    guild: Guild,
-   punishment: Omit<punishments, 'v' | 'id'>,
+   punishment: Prisma.punishmentsCreateInput,
    interaction?: BaseInteraction,
    user?: User,
    duration?: number | 'permanent',
