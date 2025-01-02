@@ -1,6 +1,5 @@
 import { LogAction } from '@prisma/client';
 import { CustomEmojis } from '../CustomEmojis';
-
 export const LogData: { [k in LogAction]?: { name: string; color?: number } } = {
    ERROR: { name: '⛔ Error', color: 0x4d0000 },
    LOG_CHANNEL_CHANGED: { name: '🗒️ Log Channel Changed' },
@@ -75,4 +74,7 @@ export const LogData: { [k in LogAction]?: { name: string; color?: number } } = 
    AUXDIBOT_ANNOUNCEMENT: { name: `${CustomEmojis.AUXDIBOT} Auxdibot Announcement`, color: 0xfe8a00 },
    PREMIUM_ADDED: { name: `${CustomEmojis.PREMIUM} Premium Added`, color: 0xeab308 },
    PREMIUM_REMOVED: { name: `${CustomEmojis.AUXDIBOT} Premium Removed`, color: 0xfe8a00 },
+   APPEAL_CREATED: { name: '📝 Appeal Created' },
+   APPEAL_ACCEPTED: { name: '✅ Appeal Accepted', color: 0x8bc34a },
+   APPEAL_DENIED: { name: '❌ Appeal Denied', color: 0xf44336 },
 };
