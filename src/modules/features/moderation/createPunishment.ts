@@ -2,12 +2,13 @@ import { Auxdibot } from '@/Auxdibot';
 import { Prisma, punishments, PunishmentType } from '@prisma/client';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import Limits from '@/constants/database/Limits';
-import { BaseInteraction, EmbedBuilder, Guild, User } from 'discord.js';
+import { BaseInteraction, ButtonStyle, EmbedBuilder, Guild, User } from 'discord.js';
 import { PunishmentValues } from '@/constants/bot/punishments/PunishmentValues';
 import { punishmentInfoField } from './punishmentInfoField';
 
 import incrementPunishmentsTotal from './incrementPunishmentsTotal';
 import { getServerPunishments } from './getServerPunishments';
+import { ActionRowBuilder, ButtonBuilder } from '@discordjs/builders';
 
 export default async function createPunishment(
    auxdibot: Auxdibot,
@@ -19,6 +20,7 @@ export default async function createPunishment(
    deleteMessageDays?: number,
 ) {
    const server = await findOrCreateServer(auxdibot, guild.id);
+   const premium = await auxdibot.fetchPremiumSubscriptionUser(guild.id).catch(() => undefined);
    const punishments = await getServerPunishments(auxdibot, guild.id);
    if (punishments.find((i) => i.punishmentID == punishment.punishmentID)) return undefined;
    auxdibot.database.analytics
@@ -42,14 +44,28 @@ export default async function createPunishment(
    dmEmbed.title = PunishmentValues[punishment.type].name;
    dmEmbed.description = `You were ${PunishmentValues[punishment.type].action} on ${guild ? guild.name : 'Server'}.`;
    dmEmbed.fields = [punishmentInfoField(punishment, server.punishment_send_moderator, server.punishment_send_reason)];
-   punishment.dmed = await user
-      ?.send({ embeds: [dmEmbed] })
-      .then(() => true)
-      .catch(() => false);
+
+   const appealButton =
+      premium && server.appeal_channel && !['WARN', 'DELETE_MESSAGE', 'KICK'].includes(punishment.type)
+         ? [
+              new ActionRowBuilder<ButtonBuilder>().addComponents(
+                 new ButtonBuilder()
+                    .setStyle(ButtonStyle.Secondary)
+                    .setEmoji({ name: '📝' })
+                    .setCustomId(`createappeal-${guild.id}$${punishment.punishmentID}`)
+                    .setLabel('Appeal Punishment'),
+              ),
+           ]
+         : [];
+   const dmedMessage = await user?.send({ embeds: [dmEmbed], components: appealButton }).catch(() => undefined);
+   punishment.dmed = !!dmedMessage;
    switch (punishment.type) {
       case PunishmentType.KICK:
          await guild.members.kick(user, punishment.reason || 'No reason specified.').catch((x) => {
-            if (x.code == '50013') throw new Error('Auxdibot does not have permission to Kick Members!');
+            if (x.code == '50013') {
+               dmedMessage?.delete().catch(() => undefined);
+               throw new Error('Auxdibot does not have permission to Kick Members!');
+            }
          });
          break;
       case PunishmentType.BAN:
@@ -59,24 +75,33 @@ export default async function createPunishment(
                deleteMessageSeconds: deleteMessageDays * 24 * 60 * 60,
             })
             .catch((x) => {
-               if (x.code == '50013') throw new Error('Auxdibot does not have permission to Ban Members!');
+               if (x.code == '50013') {
+                  dmedMessage?.delete().catch(() => undefined);
+                  throw new Error('Auxdibot does not have permission to Ban Members!');
+               }
             });
          break;
       case PunishmentType.MUTE:
          const role = await guild.roles.fetch(server.mute_role).catch(() => undefined);
          const member = await guild.members.fetch({ user: user.id }).catch(() => undefined);
          if (!member) {
+            dmedMessage?.delete().catch(() => undefined);
             throw new Error('Member is not in server!');
          }
          if (role && server.mute_role) {
             await member.roles.add(role).catch((x) => {
-               if (x.code == '50013') throw new Error('Auxdibot does not have permission to Manage Roles!');
+               if (x.code == '50013') {
+                  dmedMessage?.delete().catch(() => undefined);
+                  throw new Error('Auxdibot does not have permission to Manage Roles!');
+               }
             });
          } else {
             if (!duration || !Number(duration)) {
+               dmedMessage?.delete().catch(() => undefined);
                throw new Error('Permanent punishment date with no mute role!');
             }
             await member.timeout(duration, punishment.reason).catch(() => {
+               dmedMessage?.delete().catch(() => undefined);
                throw new Error('Could not mute user, possibly due to lack of permission!');
             });
          }

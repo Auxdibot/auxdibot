@@ -1,11 +1,10 @@
 import AuxdibotButton from '@/interfaces/buttons/AuxdibotButton';
-import { MessageComponentInteraction, TextInputStyle } from 'discord.js';
+import { MessageComponentInteraction } from 'discord.js';
 import Modules from '@/constants/bot/commands/Modules';
 import { Auxdibot } from '@/Auxdibot';
-
 import handleError from '@/util/handleError';
 import { getServerPunishments } from '@/modules/features/moderation/getServerPunishments';
-import { ActionRowBuilder, ModalBuilder, TextInputBuilder } from '@discordjs/builders';
+import { denyModal } from '@/modules/features/moderation/appeals/modals';
 
 export default <AuxdibotButton>{
    module: Modules['Moderation'],
@@ -33,19 +32,7 @@ export default <AuxdibotButton>{
             interaction,
          );
       }
-      const modal = new ModalBuilder()
-         .setTitle('Deny Punishment Appeal')
-         .setCustomId(`deny-${punishment_id}`)
-         .addComponents(
-            new ActionRowBuilder<TextInputBuilder>().setComponents(
-               new TextInputBuilder()
-                  .setCustomId('reason')
-                  .setPlaceholder('The reason given for the denial.')
-                  .setLabel('What is the deny reason?')
-                  .setMaxLength(1000)
-                  .setStyle(TextInputStyle.Paragraph),
-            ),
-         );
+      const modal = denyModal(Number(punishment_id));
       await interaction.showModal(modal);
    },
 };
