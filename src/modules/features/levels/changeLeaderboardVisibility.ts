@@ -4,7 +4,7 @@ import { Guild } from 'discord.js';
 
 export default async function changeLeaderboardVisibility(auxdibot: Auxdibot, guild: Guild, visibility?: boolean) {
    if (visibility === undefined) {
-      visibility = !(await findOrCreateServer(auxdibot, guild.id))?.publicize_leaderboard ?? false;
+      visibility = !((await findOrCreateServer(auxdibot, guild.id))?.publicize_leaderboard ?? false);
    }
    return auxdibot.database.servers
       .update({

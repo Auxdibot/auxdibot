@@ -8,6 +8,7 @@ import { EmbedBuilder } from '@discordjs/builders';
 import { punishmentInfoField } from '@/modules/features/moderation/punishmentInfoField';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import { LogAction } from '@prisma/client';
+import { expirePunishment } from '@/modules/features/moderation/expirePunishment';
 
 export default <AuxdibotModal>{
    module: Modules['Moderation'],
@@ -37,7 +38,7 @@ export default <AuxdibotModal>{
       }
       const reason = interaction.fields.getTextInputValue('reason');
       try {
-         await auxdibot.database.punishments.update({
+         const newPunishment = await auxdibot.database.punishments.update({
             where: { id: punishmentData.id },
             data: {
                appeal: {
@@ -49,18 +50,19 @@ export default <AuxdibotModal>{
                },
             },
          });
+         await expirePunishment(auxdibot, interaction.guild, newPunishment, interaction).catch(() => undefined);
          const user = await auxdibot.users.fetch(punishmentData.userID).catch(() => undefined);
          if (user) {
             const appealed = new EmbedBuilder()
                .setTitle('✅ Punishment Appeal Accepted')
                .setColor(auxdibot.colors.accept)
                .setDescription(
-                  `Your appeal for punishment #${punishmentData.punishmentID} has been accepted!${
+                  `Your appeal for punishment #${newPunishment.punishmentID} has been accepted!${
                      server.punishment_send_moderator ? `\n\n🧍 Moderator: ${interaction.user}` : ''
                   }`,
                )
                .setFields(
-                  punishmentInfoField(punishmentData, server.punishment_send_moderator, server.punishment_send_reason),
+                  punishmentInfoField(newPunishment, server.punishment_send_moderator, server.punishment_send_reason),
                   {
                      name: 'Appeal Reason',
                      value: reason,
@@ -77,12 +79,12 @@ export default <AuxdibotModal>{
                description: `Punishment #${punishmentData.punishmentID} has been appealed by ${interaction.user.username} (${interaction.user.id})`,
                userID: interaction.user.id,
             },
-            { fields: [punishmentInfoField(punishmentData, true, true)], user_avatar: true },
+            { fields: [punishmentInfoField(newPunishment, true, true)], user_avatar: true },
          );
          const embed = new EmbedBuilder()
             .setTitle('✅ Appeal Accepted')
             .setColor(auxdibot.colors.accept)
-            .setDescription(`The appeal for punishment #${punishmentData.punishmentID} has been accepted!`)
+            .setDescription(`The appeal for punishment #${newPunishment.punishmentID} has been accepted!`)
             .addFields({
                name: 'Appeal Reason',
                value: reason,

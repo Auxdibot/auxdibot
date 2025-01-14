@@ -4,7 +4,7 @@ import { getServerPunishments } from '@/modules/features/moderation/getServerPun
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import handleError from '@/util/handleError';
 import { ActionRowBuilder, ModalBuilder, TextInputBuilder } from '@discordjs/builders';
-import { Guild, ModalActionRowComponentBuilder } from 'discord.js';
+import { Guild, ModalActionRowComponentBuilder, TextInputStyle } from 'discord.js';
 
 export default <AuxdibotButton>{
    name: 'createappeal',
@@ -12,10 +12,10 @@ export default <AuxdibotButton>{
    module: Modules['Moderation'],
    allowedDefault: true,
    async execute(auxdibot, interaction) {
-      const [, appeal_id] = interaction.customId.split('-');
-      const [serverID, punishment_id] = appeal_id;
+      const [, appealID] = interaction.customId.split('-');
+      const [serverID, punishmentID] = appealID.split('$');
       const punishment = await getServerPunishments(auxdibot, serverID, {
-         punishmentID: Number(punishment_id),
+         punishmentID: Number(punishmentID),
          userID: interaction.user.id,
          expired: false,
       });
@@ -39,11 +39,12 @@ export default <AuxdibotButton>{
       }
       const modal = new ModalBuilder()
          .setTitle('Appeal Punishment')
-         .setCustomId(`createappeal-${appeal_id}`)
+         .setCustomId(`createappeal-${appealID}`)
          .addComponents(
             new ActionRowBuilder<ModalActionRowComponentBuilder>().setComponents(
                new TextInputBuilder()
                   .setCustomId('reason')
+                  .setStyle(TextInputStyle.Paragraph)
                   .setPlaceholder('The reason given for the appeal.')
                   .setLabel('What is the appeal reason?')
                   .setMaxLength(1000),

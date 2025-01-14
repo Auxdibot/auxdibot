@@ -35,6 +35,6 @@ export const acceptAppeal = <AuxdibotSubcommand>{
          );
       }
       const modal = acceptModal(Number(punishment_id));
-      return modal;
+      return interaction.showModal(modal);
    },
 };

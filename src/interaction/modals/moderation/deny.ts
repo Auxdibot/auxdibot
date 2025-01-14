@@ -37,7 +37,7 @@ export default <AuxdibotModal>{
       }
       const reason = interaction.fields.getTextInputValue('reason');
       try {
-         await auxdibot.database.punishments.update({
+         const newPunishment = await auxdibot.database.punishments.update({
             where: { id: punishmentData.id },
             data: {
                appeal: {
@@ -49,18 +49,18 @@ export default <AuxdibotModal>{
                },
             },
          });
-         const user = await auxdibot.users.fetch(punishmentData.userID).catch(() => undefined);
+         const user = await auxdibot.users.fetch(newPunishment.userID).catch(() => undefined);
          if (user) {
             const appealed = new EmbedBuilder()
                .setTitle('❌ Punishment Appeal Denied')
                .setColor(auxdibot.colors.denied)
                .setDescription(
-                  `Your appeal for punishment #${punishmentData.punishmentID} has been denied!${
+                  `Your appeal for punishment #${newPunishment.punishmentID} has been denied!${
                      server.punishment_send_moderator ? `\n\n🧍 Moderator: ${interaction.user}` : ''
                   }`,
                )
                .setFields(
-                  punishmentInfoField(punishmentData, server.punishment_send_moderator, server.punishment_send_reason),
+                  punishmentInfoField(newPunishment, server.punishment_send_moderator, server.punishment_send_reason),
                   {
                      name: 'Appeal Reason',
                      value: reason,
@@ -74,15 +74,15 @@ export default <AuxdibotModal>{
             {
                date: new Date(),
                type: LogAction.APPEAL_DENIED,
-               description: `Appeal for punishment #${punishmentData.punishmentID} has been denied by ${interaction.user.username} (${interaction.user.id})`,
+               description: `Appeal for punishment #${newPunishment.punishmentID} has been denied by ${interaction.user.username} (${interaction.user.id})`,
                userID: interaction.user.id,
             },
-            { fields: [punishmentInfoField(punishmentData, true, true)], user_avatar: true },
+            { fields: [punishmentInfoField(newPunishment, true, true)], user_avatar: true },
          );
          const embed = new EmbedBuilder()
             .setTitle('❌ Appeal Denied')
             .setColor(auxdibot.colors.denied)
-            .setDescription(`The appeal for punishment #${punishmentData.punishmentID} has been denied!`)
+            .setDescription(`The appeal for punishment #${newPunishment.punishmentID} has been denied!`)
             .addFields({
                name: 'Appeal Reason',
                value: reason,

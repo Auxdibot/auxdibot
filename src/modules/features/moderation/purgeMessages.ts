@@ -1,3 +1,4 @@
+import { testInvite } from '@/util/testInvite';
 import { GuildTextBasedChannel } from 'discord.js';
 
 export default async function purgeMessages(
@@ -17,7 +18,7 @@ export default async function purgeMessages(
          (userID ? i.author.id == userID : true) &&
          (filter ? new RegExp(filter, 'g').test(i.content) : true) &&
          (attachments ? i.attachments.size > 0 : true) &&
-         (invites ? i.content.includes('discord.gg/' || 'discordapp.com/invite/' || 'discord.com/invite/') : true) &&
+         (invites ? testInvite(i.content) : true) &&
          (embeds ? i.embeds.length > 0 : true),
    );
    let totalDeleted = 0;
