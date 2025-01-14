@@ -22,6 +22,7 @@ export default async function createPunishment(
    const server = await findOrCreateServer(auxdibot, guild.id);
    const premium = await auxdibot.fetchPremiumSubscriptionUser(guild.id).catch(() => undefined);
    const punishments = await getServerPunishments(auxdibot, guild.id);
+   const appealable = premium && server.appeal_channel && !['WARN', 'DELETE_MESSAGE', 'KICK'].includes(punishment.type);
    if (punishments.find((i) => i.punishmentID == punishment.punishmentID)) return undefined;
    auxdibot.database.analytics
       .upsert({
@@ -42,21 +43,25 @@ export default async function createPunishment(
    if (punishment.reason?.length > 500) throw new Error('Your punishment reason is too long!');
    const dmEmbed = new EmbedBuilder().setColor(auxdibot.colors.punishment).toJSON();
    dmEmbed.title = PunishmentValues[punishment.type].name;
-   dmEmbed.description = `You were ${PunishmentValues[punishment.type].action} on ${guild ? guild.name : 'Server'}.`;
+   dmEmbed.description = `You were ${PunishmentValues[punishment.type].action} on ${guild ? guild.name : 'Server'}.${
+      appealable
+         ? `\n\n*You can appeal this punishment by running the command below*\n\`/appeal appeal_id:${guild.id}$${punishment.punishmentID}\``
+         : ''
+   }`;
    dmEmbed.fields = [punishmentInfoField(punishment, server.punishment_send_moderator, server.punishment_send_reason)];
 
-   const appealButton =
-      premium && server.appeal_channel && !['WARN', 'DELETE_MESSAGE', 'KICK'].includes(punishment.type)
-         ? [
-              new ActionRowBuilder<ButtonBuilder>().addComponents(
-                 new ButtonBuilder()
-                    .setStyle(ButtonStyle.Secondary)
-                    .setEmoji({ name: '📝' })
-                    .setCustomId(`createappeal-${guild.id}$${punishment.punishmentID}`)
-                    .setLabel('Appeal Punishment'),
-              ),
-           ]
-         : [];
+   const appealButton = appealable
+      ? [
+           new ActionRowBuilder<ButtonBuilder>().addComponents(
+              new ButtonBuilder()
+                 .setStyle(ButtonStyle.Secondary)
+                 .setEmoji({ name: '📝' })
+                 .setCustomId(`createappeal-${guild.id}$${punishment.punishmentID}`)
+                 .setLabel('Appeal Punishment'),
+           ),
+        ]
+      : [];
+
    const dmedMessage = await user?.send({ embeds: [dmEmbed], components: appealButton }).catch(() => undefined);
    punishment.dmed = !!dmedMessage;
    switch (punishment.type) {

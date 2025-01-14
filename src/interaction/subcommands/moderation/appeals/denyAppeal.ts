@@ -35,6 +35,6 @@ export const denyAppeal = <AuxdibotSubcommand>{
          );
       }
       const modal = denyModal(Number(punishment_id));
-      return modal;
+      return interaction.showModal(modal);
    },
 };

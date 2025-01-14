@@ -1,7 +1,9 @@
 import Modules from '@/constants/bot/commands/Modules';
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
+import { generateAppealsList } from '@/modules/features/moderation/appeals/generateAppealsList';
 import { getServerPunishments } from '@/modules/features/moderation/getServerPunishments';
-import { EmbedBuilder } from '@discordjs/builders';
+import handleError from '@/util/handleError';
+
 import { PermissionFlagsBits } from 'discord.js';
 
 export const viewAppeals = <AuxdibotSubcommand>{
@@ -17,38 +19,26 @@ export const viewAppeals = <AuxdibotSubcommand>{
    },
    async execute(auxdibot, interaction) {
       await interaction.deferReply();
-      const appeals = await getServerPunishments(auxdibot, interaction.guildId, {
-         expired: false,
-         appeal: { isNot: null },
-      });
+      const appeals = await getServerPunishments(
+         auxdibot,
+         interaction.guildId,
+         {
+            expired: false,
+            appeal: { isNot: null },
+         },
+         10,
+         {
+            appeal: { accepted: 'asc', date_appealed: 'desc' },
+         },
+      );
+      const { punishments } = await auxdibot.database.totals
+         .findFirst({ where: { serverID: interaction.guildId }, select: { punishments: true } })
+         .catch(() => ({ punishments: 0 }));
+
       if (appeals.length == 0) {
-         return interaction.editReply('There are no appeals to view.');
+         return handleError(auxdibot, 'NO_APPEALS_ERROR', 'There are no appeals to view.', interaction);
       }
-      const embed = new EmbedBuilder()
-         .setTitle('Appeals')
-         .setDescription('Here are all the appeals that are currently pending on the server.');
-      const shown = appeals.splice(0, 20);
-      embed.setFields({
-         name: 'Appeals',
-         value: shown
-            .map((appealedPunishment, index) => {
-               return `${
-                  appealedPunishment.appeal.accepted
-                     ? '✅ Appealed'
-                     : appealedPunishment.appeal.accepted === false
-                     ? '❌ Appeal Denied'
-                     : '🕰️ Waiting on Appeal'
-               }\n*${
-                  appealedPunishment.appeal.accepted
-                     ? appealedPunishment.appeal.appeal_reason
-                     : appealedPunishment.appeal.content
-               }*`;
-            })
-            .join('\n'),
-      });
-      if (appeals.length - shown.length > 0) {
-         embed.setFooter({ text: 'and ${appeals.length - shown.length} more...' });
-      }
+      const embed = generateAppealsList(auxdibot, appeals, punishments);
       return auxdibot.createReply(interaction, { embeds: [embed] });
    },
 };

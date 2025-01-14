@@ -7,9 +7,10 @@ import { punishmentInfoField } from '@/modules/features/moderation/punishmentInf
 import handleError from '@/util/handleError';
 
 import { EmbedBuilder } from '@discordjs/builders';
-import { LogAction, PunishmentType } from '@prisma/client';
+import { PunishmentType } from '@prisma/client';
 import { PermissionFlagsBits } from 'discord.js';
 import { getServerPunishments } from '@/modules/features/moderation/getServerPunishments';
+import expireAllPunishments from '@/modules/features/moderation/expireAllPunishments';
 
 export const punishUnban = <AuxdibotSubcommand>{
    name: 'unban',
@@ -32,25 +33,13 @@ export const punishUnban = <AuxdibotSubcommand>{
       if (banned.length == 0)
          return await handleError(auxdibot, 'USER_NOT_BANNED', "This user isn't banned!", interaction);
 
-      interaction.data.guild.bans.remove(user.id).catch(() => undefined);
-      await auxdibot.database.punishments.updateMany({
-         where: { userID: user.id, type: PunishmentType.BAN, expired: false },
-         data: { expired: true },
+      return await expireAllPunishments(auxdibot, interaction.guild, 'BAN', user).then(() => {
+         interaction.data.guild.bans.remove(user.id).catch(() => undefined);
+         const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
+         embed.title = `📥 Unbanned ${user.username}`;
+         embed.description = `User was unbanned.`;
+         embed.fields = banned.map((punishment) => punishmentInfoField(punishment, true, true));
+         return auxdibot.createReply(interaction, { embeds: [embed] });
       });
-      const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
-      embed.title = `📥 Unbanned ${user.username}`;
-      embed.description = `User was unbanned.`;
-      embed.fields = banned.map((punishment) => punishmentInfoField(punishment, true, true));
-      await auxdibot.log(
-         interaction.data.guild,
-         {
-            userID: user.id,
-            description: `${user.username} was unbanned.`,
-            date: new Date(),
-            type: LogAction.UNBAN,
-         },
-         { fields: banned.map((punishment) => punishmentInfoField(punishment, true, true)), user_avatar: true },
-      );
-      await auxdibot.createReply(interaction, { embeds: [embed] });
    },
 };
