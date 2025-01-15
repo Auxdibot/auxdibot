@@ -42,7 +42,7 @@ export default <AuxdibotCommand>{
          punishmentID: Number(punishment_id),
          userID: interaction.user.id,
          expired: false,
-      });
+      }).catch(() => []);
       if (punishment.length == 0) {
          return handleError(auxdibot, 'PUNISHMENT_NOT_FOUND', 'I could not find that punishment!', interaction);
       }

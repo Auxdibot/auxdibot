@@ -35,7 +35,7 @@ export const viewAppeals = <AuxdibotSubcommand>{
          .findFirst({ where: { serverID: interaction.guildId }, select: { punishments: true } })
          .catch(() => ({ punishments: 0 }));
 
-      if (appeals.length == 0) {
+      if (!appeals?.length) {
          return handleError(auxdibot, 'NO_APPEALS_ERROR', 'There are no appeals to view.', interaction);
       }
       const embed = generateAppealsList(auxdibot, appeals, punishments);
