@@ -6,7 +6,7 @@ import Modules from '@/constants/bot/commands/Modules';
 import { ChannelType, EmbedBuilder, PermissionsBitField } from 'discord.js';
 import handleError from '@/util/handleError';
 import { createLock } from '@/modules/features/moderation/lock/createLock';
-import { ChannelLock, Log, LogAction } from '@prisma/client';
+import { ChannelLock, LogAction } from '@prisma/client';
 import timestampToDuration from '@/util/timestampToDuration';
 
 import { testDiscordPermission } from '@/util/testDiscordPermission';
@@ -73,7 +73,7 @@ export const lockChannel = <AuxdibotSubcommand>{
             },
          ];
       }
-      const log = <Log>{
+      const log = {
          type: LogAction.CHANNEL_LOCKED,
          userID: interaction.user.id,
          date: new Date(),

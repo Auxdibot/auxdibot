@@ -2,6 +2,7 @@ import { Auxdibot } from '@/Auxdibot';
 import addSuggestionsReaction from '@/modules/features/suggestions/addSuggestionsReaction';
 import deleteSuggestion from '@/modules/features/suggestions/deleteSuggestion';
 import deleteSuggestionsReaction from '@/modules/features/suggestions/deleteSuggestionsReaction';
+import { getServerSuggestions } from '@/modules/features/suggestions/getServerSuggestions';
 import setSuggestionsAutoDelete from '@/modules/features/suggestions/setSuggestionsAutoDelete';
 import setSuggestionsChannel from '@/modules/features/suggestions/setSuggestionsChannel';
 import setSuggestionsDiscussionThreads from '@/modules/features/suggestions/setSuggestionsDiscussionThreads';
@@ -30,7 +31,6 @@ const suggestions = (auxdibot: Auxdibot, router: Router) => {
                   suggestions_auto_delete: true,
                   suggestions_reactions: true,
                   suggestions_updates_channel: true,
-                  suggestions: true,
                },
             })
             .then(async (data) =>
@@ -51,13 +51,14 @@ const suggestions = (auxdibot: Auxdibot, router: Router) => {
          if (!Number.isInteger(Number(suggestionID)))
             return res.status(400).json({ error: 'This is not a valid suggestion ID!' });
          const server = await findOrCreateServer(auxdibot, req.guild.id);
-         const suggestion = server.suggestions.find((sugg) => sugg.suggestionID == Number(suggestionID));
+         const suggestions = await getServerSuggestions(auxdibot, req.guild.id, { suggestionID: Number(suggestionID) });
+         const suggestion = suggestions[0];
          if (!suggestion) return res.status(404).json({ error: 'invalid suggestion' });
          const channel = req.guild.channels.cache.get(server.suggestions_channel);
          if (!channel) return res.status(404).json({ error: 'There is no suggestions channel!' });
          if (!channel.isTextBased())
             return res.status(400).json({ error: 'The suggestions channel is not a text channel!' });
-         const msg = await channel.messages.fetch(suggestion.messageID).catch(() => undefined);
+         const msg = await channel.messages.fetch(suggestion).catch(() => undefined);
          if (msg) await msg.delete().catch(() => undefined);
          return deleteSuggestion(auxdibot, req.guild.id, Number(suggestionID))
             .then((i) => res.json({ data: i }))

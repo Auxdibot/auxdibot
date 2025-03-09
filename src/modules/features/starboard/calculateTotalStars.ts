@@ -2,14 +2,14 @@ import { Auxdibot } from '@/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import { getMessage } from '@/util/getMessage';
 
-import { LogAction, StarboardBoardData, StarredMessage } from '@prisma/client';
+import { LogAction, Prisma, StarboardBoardData } from '@prisma/client';
 import { Guild, GuildBasedChannel } from 'discord.js';
 
 export async function calculateTotalStars(
    auxdibot: Auxdibot,
    guild: Guild,
    board: StarboardBoardData,
-   starredData: StarredMessage,
+   starredData: Prisma.starred_messagesCreateInput,
 ) {
    try {
       // Fetch server data
@@ -33,7 +33,7 @@ export async function calculateTotalStars(
             ? await channel.messages.fetch(starredData.starred_message_id)
             : await getMessage(guild, starredData.starred_message_id),
          starboard_message = board_channel
-            ? await board_channel.messages.fetch(starredData.starboard_message_id)
+            ? await board_channel.messages.fetch(starredData.starboard_message)
             : undefined;
       if (!starred_message) return -1;
       // Fetch users who have starred the original message

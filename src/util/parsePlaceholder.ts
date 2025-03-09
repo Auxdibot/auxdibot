@@ -10,7 +10,7 @@ import {
 } from 'discord.js';
 import { PunishmentValues } from '@/constants/bot/punishments/PunishmentValues';
 import { SuggestionStateName } from '@/constants/bot/suggestions/SuggestionStateName';
-import { StarredMessage, Suggestion } from '@prisma/client';
+import { Prisma, suggestions } from '@prisma/client';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import { Auxdibot } from '@/Auxdibot';
 import { GenericFeed } from '@/interfaces/notifications/GenericFeed';
@@ -31,8 +31,8 @@ import { getServerPunishments } from '@/modules/features/moderation/getServerPun
 type MessageContext = {
    guild: Guild;
    member: GuildMember | PartialGuildMember | User | PartialUser;
-   suggestion: Suggestion;
-   starred_data: StarredMessage;
+   suggestion: Omit<suggestions, 'id' | 'v'>;
+   starred_data: Prisma.starred_messagesCreateInput;
    feed_data: GenericFeed;
    levelup: { from: number; to: number };
 };

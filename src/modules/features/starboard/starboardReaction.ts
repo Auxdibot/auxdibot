@@ -14,6 +14,7 @@ import updateStarredMessage from './messages/updateStarredMessage';
 import createStarredMessage from './messages/createStarredMessage';
 import deleteStarredMessage from './messages/deleteStarredMessage';
 import { calculateTotalStars } from './calculateTotalStars';
+import { getServerStarboardMessages } from './getServerStarboardMessages';
 
 /**
  * Handles the starboard reaction event, and checks if the user has reacted with a valid starboard reaction.
@@ -50,22 +51,22 @@ export async function starboardReaction(
    }
 
    // Check if the message is already starred
-   const starred_message = server.starred_messages.find(
-      (i) =>
-         (i.starboard_message_id == reaction.message.id || i.starred_message_id == reaction.message.id) &&
-         i.board == board.board_name,
-   );
-
+   const starred_messages = await getServerStarboardMessages(auxdibot, server.serverID, board.board_name, {
+      OR: [{ starred_message_id: reaction.message.id }, { starboard_message: reaction.message.id }],
+   });
+   const starred_message = starred_messages[0];
+   const isStarred = await getServerStarboardMessages(auxdibot, server.serverID, board.board_name, {
+      starred_message_id: reaction.message.id,
+   });
    // Don't allow a message to be starred if starboard_star is disabled
-   if (server.starred_messages.some((i) => i.starboard_message_id == reaction.message.id) && !server.starboard_star)
-      return;
+   if (isStarred.length > 0 && !server.starboard_star) return;
 
    // Check if the user is the author of the message and self_star is disabled
    if (reaction.message.author.id == user.id && !server.self_star) return;
 
    // Try to fetch the starboard message
-   const starboard_message: Message<true> | undefined = starred_message?.starboard_message_id
-      ? await channel.messages.fetch(starred_message?.starboard_message_id).catch(() => undefined)
+   const starboard_message: Message<true> | undefined = starred_message?.starboard_message
+      ? await channel.messages.fetch(starred_message?.starboard_message).catch(() => undefined)
       : undefined;
 
    // If there is a starred message but no starboard message, delete the starred message
@@ -81,8 +82,12 @@ export async function starboardReaction(
       starred_message ?? {
          starred_message_id: reaction.message.id,
          starred_channel_id: reaction.message.channel.id,
-         starboard_message_id: undefined,
+         starboard_message: undefined,
          board: board.board_name,
+         id: '',
+         v: 0,
+         date: new Date(),
+         serverID: guild.id,
       },
    );
    // If it is less than count required, delete starred message

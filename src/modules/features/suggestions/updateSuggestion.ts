@@ -1,15 +1,17 @@
 import { Auxdibot } from '@/Auxdibot';
-import { Suggestion } from '@prisma/client';
-import findOrCreateServer from '@/modules/server/findOrCreateServer';
+import { Prisma } from '@prisma/client';
 
-export default async function updateSuggestion(auxdibot: Auxdibot, serverID: string, suggestion: Suggestion) {
-   const server = await findOrCreateServer(auxdibot, serverID);
-   const findSuggestion = server.suggestions.find((i) => i.suggestionID == suggestion.suggestionID);
-   if (!findSuggestion) return undefined;
-   server.suggestions[server.suggestions.indexOf(findSuggestion)] = suggestion;
-
-   return await auxdibot.database.servers
-      .update({ where: { serverID }, data: { suggestions: server.suggestions } })
+export default async function updateSuggestion(
+   auxdibot: Auxdibot,
+   serverID: string,
+   suggestionID: number,
+   suggestion: Prisma.suggestionsUpdateInput,
+) {
+   return await auxdibot.database.suggestions
+      .update({
+         where: { serverID_suggestionID: { serverID: serverID, suggestionID: suggestionID } },
+         data: suggestion,
+      })
       .then(() => suggestion)
       .catch(() => undefined);
 }

@@ -164,22 +164,6 @@ type ReactionRole {
   type      ReactionRoleType @default(DEFAULT)
 }
 
-type Log {
-  type          LogAction
-  userID        String
-  date          DateTime? @default(now())
-  // Deprecated.
-  old_date_unix Int?      @default(0) @map("date_unix") @db.Long
-  description   String    @default("")
-}
-
-type StarredMessage {
-  starboard_message_id String?
-  starred_message_id   String
-  starred_channel_id   String?
-  board                String?
-}
-
 enum FeedType {
   TWITCH
   YOUTUBE
@@ -205,21 +189,6 @@ enum SuggestionState {
   CONSIDERED
   APPROVED
   ADDED
-}
-
-type Suggestion {
-  suggestionID         Int             @default(-1)
-  messageID            String?
-  creatorID            String          @default("")
-  status               SuggestionState @default(WAITING)
-  // Deprecated
-  old_date_unix        Int?            @map("date_unix")
-  // Deprecated
-  date                 DateTime?       @default(now())
-  content              String          @default("")
-  handlerID            String?
-  handled_reason       String?
-  discussion_thread_id String?
 }
 
 type ScheduledMessage {
@@ -393,14 +362,11 @@ model servers {
   starboard_boards                  StarboardBoardData[]
   self_star                         Boolean              @default(true)
   starboard_star                    Boolean              @default(true)
-  starred_messages                  StarredMessage[]
   total_starred_messages            Int                  @default(0)
   total_stars                       Int                  @default(0)
-  logs                              Log[]
   filtered_logs                     LogAction[]
   commands_channel                  String?
   command_permissions               CommandPermission[]
-  suggestions                       Suggestion[]
   scheduled_messages                ScheduledMessage[]
   punishment_send_reason            Boolean              @default(true)
   punishment_send_moderator         Boolean              @default(false)
@@ -425,6 +391,48 @@ model servers {
   @@unique([serverID])
 }
 
+model suggestions {
+  id                   String          @id @default(auto()) @map("_id") @db.ObjectId
+  v                    Int?            @map("__v")
+  serverID             String
+  suggestionID         Int             @default(-1)
+  messageID            String?
+  creatorID            String          @default("")
+  status               SuggestionState @default(WAITING)
+  date                 DateTime?       @default(now())
+  content              String          @default("")
+  handlerID            String?
+  handled_reason       String?
+  discussion_thread_id String?
+
+  @@unique([serverID, suggestionID])
+}
+
+model starred_messages {
+  id                 String   @id @default(auto()) @map("_id") @db.ObjectId
+  v                  Int?     @map("__v")
+  serverID           String
+  starboard_message  String
+  starred_message_id String
+  starred_channel_id String
+  board              String
+  date               DateTime @default(now())
+
+  @@unique([serverID, board, starred_message_id])
+}
+
+model logs {
+  id          String    @id @default(auto()) @map("_id") @db.ObjectId
+  v           Int?      @map("__v")
+  serverID    String
+  type        LogAction
+  userID      String
+  date        DateTime? @default(now())
+  description String    @default("")
+
+  @@unique([serverID, id])
+}
+
 model punishments {
   id           String         @id @default(auto()) @map("_id") @db.ObjectId
   v            Int?           @map("__v")
@@ -446,7 +454,7 @@ model punishments {
 model servercards {
   id               String          @id @default(auto()) @map("_id") @db.ObjectId
   v                Int?            @map("__v")
-  serverID         String
+  serverID         String          @unique
   description      String?
   invite_url       String?
   background       CardBackground?
@@ -457,23 +465,19 @@ model servercards {
   featured         Boolean         @default(false)
   featured_channel String?
   dark             Boolean         @default(true)
-
-  @@unique([serverID])
 }
 
 model totals {
   id          String @id @default(auto()) @map("_id") @db.ObjectId
   v           Int?   @map("__v")
-  serverID    String
+  serverID    String @unique
   punishments Int    @default(0)
   suggestions Int    @default(0)
-
-  @@unique([serverID])
 }
 
 model users {
   id                String      @id @default(auto()) @map("_id") @db.ObjectId
-  userID            String
+  userID            String      @unique
   voted_date        DateTime?
   badges            UserBadge[]
   reminders         Reminder[]
@@ -481,8 +485,6 @@ model users {
   premium_servers   String[]    @default([])
   level_card_border String?     @default("#FF0000:#FFA500")
   level_card_bar    String?     @default("#FF0000:#FFA500")
-
-  @@unique([userID])
 }
 
 model analytics {

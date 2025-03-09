@@ -14,6 +14,7 @@ import parsePlaceholders from '@/util/parsePlaceholder';
 import { EmbedBuilder } from '@discordjs/builders';
 import { LogAction, SuggestionState } from '@prisma/client';
 import { GuildBasedChannel, Message } from 'discord.js';
+import { getServerSuggestions } from '@/modules/features/suggestions/getServerSuggestions';
 
 export const suggestionsRespond = <AuxdibotSubcommand>{
    name: 'respond',
@@ -28,15 +29,12 @@ export const suggestionsRespond = <AuxdibotSubcommand>{
       const id = interaction.options.getNumber('id'),
          reason = interaction.options.getString('reason'),
          stateInput = interaction.options.getString('response', true);
-      const suggestion = server.suggestions.find((sugg) => sugg.suggestionID == id);
-      await interaction.deferReply({ ephemeral: true });
+      const suggestions = await getServerSuggestions(auxdibot, interaction.data.guild.id, { suggestionID: id });
+      const suggestion = suggestions[0];
       if (!suggestion) {
          return await handleError(auxdibot, 'SUGGESTION_NOT_FOUND', "Couldn't find that suggestion!", interaction);
       }
-      const state = SuggestionState[stateInput];
-      suggestion.status = SuggestionState[state];
-      suggestion.handlerID = interaction.data.member.id;
-      suggestion.handled_reason = reason || undefined;
+
       const message_channel: GuildBasedChannel | undefined = server.suggestions_channel
          ? interaction.data.guild.channels.cache.get(server.suggestions_channel)
          : undefined;
@@ -69,7 +67,11 @@ export const suggestionsRespond = <AuxdibotSubcommand>{
             date: new Date(),
          });
       } else {
-         const update = await updateSuggestion(auxdibot, interaction.data.guild.id, suggestion);
+         const update = await updateSuggestion(auxdibot, interaction.data.guild.id, suggestion.suggestionID, {
+            status: SuggestionState[stateInput],
+            handlerID: interaction.data.member.id,
+            handled_reason: reason || undefined,
+         });
          if (!update) {
             return await handleError(auxdibot, 'SUGGESTION_EDIT_FAILED', "Couldn't edit that suggestion!", interaction);
          }

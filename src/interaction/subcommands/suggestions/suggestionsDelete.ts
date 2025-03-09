@@ -10,6 +10,7 @@ import handleError from '@/util/handleError';
 import { EmbedBuilder } from '@discordjs/builders';
 import { LogAction } from '@prisma/client';
 import { GuildBasedChannel } from 'discord.js';
+import { getServerSuggestions } from '@/modules/features/suggestions/getServerSuggestions';
 
 export const suggestionsDelete = <AuxdibotSubcommand>{
    name: 'delete',
@@ -22,7 +23,8 @@ export const suggestionsDelete = <AuxdibotSubcommand>{
       if (!interaction.data) return;
       const server = interaction.data.guildData;
       const id = interaction.options.getNumber('id', true);
-      const suggestion = server.suggestions.find((sugg) => sugg.suggestionID == id);
+      const suggestions = await getServerSuggestions(auxdibot, interaction.guild.id, { suggestionID: id });
+      const suggestion = suggestions[0];
       if (!suggestion) {
          return await handleError(auxdibot, 'SUGGESTION_NOT_FOUND', "Couldn't find that suggestion!", interaction);
       }
