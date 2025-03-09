@@ -12,7 +12,7 @@ import {
 } from 'discord.js';
 import { AuxdibotIntents } from './constants/bot/AuxdibotIntents';
 import { AuxdibotPartials } from './constants/bot/AuxdibotPartials';
-import { Log, PrismaClient } from '@prisma/client';
+import { Prisma, PrismaClient } from '@prisma/client';
 import { ToadScheduler } from 'toad-scheduler';
 import Subscriber from './modules/features/notifications/Subscriber';
 import { CustomEmojis } from './constants/bot/CustomEmojis';
@@ -36,7 +36,7 @@ import server from './server/server';
 import fetchAnalytics from './modules/analytics/fetchAnalytics';
 
 import { LogOptions } from './interfaces/log/LogOptions';
-import updateLog from './modules/logs/updateLog';
+import addLog from './modules/logs/updateLog';
 import { LogData } from './constants/bot/log/LogData';
 import scheduleRunReminders from './modules/features/reminders/scheduleRunReminders';
 import { LRUCache } from 'lru-cache';
@@ -387,7 +387,7 @@ export class Auxdibot extends Client {
     * @param options Additional options for the log.
     * @returns A promise that resolves to the log that was added to the server's log channel.
     */
-   async log(guild: Guild, log: Omit<Log, 'old_date_unix'>, { fields, user_avatar }: LogOptions = {}) {
+   async log(guild: Guild, log: Omit<Prisma.logsCreateInput, 'serverID'>, { fields, user_avatar }: LogOptions = {}) {
       const server = await findOrCreateServer(this, guild.id);
       if (server.filtered_logs.indexOf(log.type) != -1) return;
       this.database.analytics
@@ -397,7 +397,7 @@ export class Auxdibot extends Client {
             update: { logs: { increment: 1 } },
          })
          .catch(() => undefined);
-      return await updateLog(this, guild, log)
+      return await addLog(this, guild, { ...log, serverID: guild.id })
          .then(async () => {
             const user = log.userID ? await guild.client.users.fetch(log.userID) : undefined;
             const logEmbed = new EmbedBuilder()
@@ -411,7 +411,7 @@ export class Auxdibot extends Client {
                })
                .setTitle(LogData[log.type].name || null)
                .setDescription(
-                  `${log.description}\n\n🕰️ Date: <t:${Math.round(log.date.valueOf() / 1000)}>${
+                  `${log.description}\n\n🕰️ Date: <t:${Math.round(new Date(log.date).valueOf() / 1000)}>${
                      log.userID ? `\n🧍 User: <@${log.userID}>` : ''
                   }`,
                );

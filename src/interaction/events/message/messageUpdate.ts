@@ -2,7 +2,7 @@ import { Message, PartialMessage } from 'discord.js';
 
 import { Auxdibot } from '@/Auxdibot';
 
-import { Log, LogAction } from '@prisma/client';
+import { LogAction } from '@prisma/client';
 import checkBlacklistedWords from '@/modules/features/moderation/automod/checkBlacklistedWords';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 
@@ -23,7 +23,7 @@ export default async function messageUpdate(
       const channel = await newMessage.channel.fetch().catch(() => undefined);
       await auxdibot.log(
          newMessage.guild,
-         <Log>{
+         {
             type: LogAction.MESSAGE_EDITED,
             date: new Date(),
             description: `A message by ${sender.user.username} in #${channel?.name ?? newMessage.channel} was edited.`,

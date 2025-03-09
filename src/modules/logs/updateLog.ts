@@ -1,17 +1,19 @@
-import { Log } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { Auxdibot } from '@/Auxdibot';
-import findOrCreateServer from '../server/findOrCreateServer';
 import Limits from '@/constants/database/Limits';
 import { Guild } from 'discord.js';
+import { getServerLogs } from '../features/logging/getServerLogs';
 
-// TODO: this is terrible bandaid code but I need to account for old data to honor older log dates
-export default async function updateLog(auxdibot: Auxdibot, guild: Guild, log: Omit<Log, 'old_date_unix'>) {
-   return await findOrCreateServer(auxdibot, guild.id)
-      .then(async (data) => {
-         const logs = Array(...data.logs);
-         if (!(await auxdibot.testLimit(logs, Limits.LOGGING_LIMIT, guild, true))) return;
-         logs.push({ ...log, old_date_unix: null });
-         return auxdibot.database.servers.update({ where: { serverID: guild.id }, data: { logs } });
-      })
-      .catch(() => undefined);
+export default async function addLog(auxdibot: Auxdibot, guild: Guild, log: Prisma.logsCreateInput) {
+   const logs = await auxdibot.database.logs.count({ where: { serverID: guild.id } }).catch(() => 0);
+   const limit = await auxdibot.getLimit(Limits.LOGGING_LIMIT, guild);
+   if (logs >= limit) {
+      const toDelete = logs - limit + 1;
+      const sorted = await getServerLogs(auxdibot, guild.id, undefined, toDelete, { date: 'asc' });
+      if (sorted.length > 0)
+         await auxdibot.database.logs
+            .deleteMany({ where: { serverID: guild.id, id: { in: sorted.map((i) => i.id) } } })
+            .catch(() => undefined);
+   }
+   return auxdibot.database.logs.create({ data: log }).catch(() => undefined);
 }

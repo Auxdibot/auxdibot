@@ -1,5 +1,4 @@
 import Modules from '@/constants/bot/commands/Modules';
-import Limits from '@/constants/database/Limits';
 import { DEFAULT_SUGGESTION_EMBED } from '@/constants/embeds/DefaultEmbeds';
 import { Auxdibot } from '@/Auxdibot';
 import { GuildAuxdibotCommandData } from '@/interfaces/commands/AuxdibotCommandData';
@@ -11,7 +10,7 @@ import handleError from '@/util/handleError';
 
 import parsePlaceholders from '@/util/parsePlaceholder';
 import { EmbedBuilder } from '@discordjs/builders';
-import { LogAction, Suggestion, SuggestionState } from '@prisma/client';
+import { LogAction, SuggestionState } from '@prisma/client';
 
 export const suggestionsCreate = <AuxdibotSubcommand>{
    name: 'create',
@@ -48,7 +47,7 @@ export const suggestionsCreate = <AuxdibotSubcommand>{
             interaction,
          );
       }
-      const suggestion = <Suggestion>{
+      const suggestion = {
          suggestionID: await incrementSuggestionsTotal(auxdibot, interaction.data.guild.id),
          creatorID: interaction.data.member.id,
          content,
@@ -56,6 +55,7 @@ export const suggestionsCreate = <AuxdibotSubcommand>{
          handlerID: null,
          messageID: null,
          discussion_thread_id: null,
+         serverID: interaction.data.guild.id,
          handled_reason: null,
          date: new Date(),
       };
@@ -88,19 +88,6 @@ export const suggestionsCreate = <AuxdibotSubcommand>{
                   })
                   .catch(() => undefined);
                if (thread) suggestion.discussion_thread_id = thread.id;
-            }
-            if (
-               (await auxdibot.testLimit(
-                  interaction.data.guildData.suggestions,
-                  Limits.ACTIVE_SUGGESTIONS_DEFAULT_LIMIT,
-                  interaction.guild,
-                  true,
-               )) == 'spliced'
-            ) {
-               await auxdibot.database.servers.update({
-                  where: { serverID: interaction.data.guildData.serverID },
-                  data: { suggestions: interaction.data.guildData.suggestions },
-               });
             }
             createSuggestion(auxdibot, interaction.data.guild.id, suggestion);
             await auxdibot.log(interaction.data.guild, {

@@ -13,8 +13,6 @@ export const defaultServer: Partial<servers> = {
    leave_embed: DEFAULT_LEAVE_EMBED as APIEmbed,
    level_message: { content: '%MEMBER_MENTION%', embed: DEFAULT_LEVELUP_EMBED as APIEmbed },
    disabled_modules: ['Levels'],
-   suggestions: [],
-   starred_messages: [],
    message_xp_range: [20],
    voice_xp_range: [5],
    starboard_xp_range: [50],

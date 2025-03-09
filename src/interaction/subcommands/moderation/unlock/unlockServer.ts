@@ -6,7 +6,7 @@ import Modules from '@/constants/bot/commands/Modules';
 import { EmbedBuilder, PermissionsBitField } from 'discord.js';
 import { deleteLock } from '@/modules/features/moderation/lock/deleteLock';
 
-import { Log, LogAction } from '@prisma/client';
+import { LogAction } from '@prisma/client';
 import { testDiscordPermission } from '@/util/testDiscordPermission';
 
 export const unlockServer = <AuxdibotSubcommand>{
@@ -30,7 +30,7 @@ export const unlockServer = <AuxdibotSubcommand>{
       const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
       embed.title = `🔒 Server Unlocked`;
       embed.description = `Unlocking server...`;
-      const log = <Log>{
+      const log = {
          type: LogAction.SERVER_UNLOCKED,
          userID: interaction.user.id,
          date: new Date(),

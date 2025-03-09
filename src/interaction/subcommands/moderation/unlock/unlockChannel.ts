@@ -7,7 +7,7 @@ import { Channel, ChannelType, EmbedBuilder, PermissionsBitField } from 'discord
 import handleError from '@/util/handleError';
 import { deleteLock } from '@/modules/features/moderation/lock/deleteLock';
 
-import { Log, LogAction } from '@prisma/client';
+import { LogAction } from '@prisma/client';
 import { testDiscordPermission } from '@/util/testDiscordPermission';
 
 export const unlockChannel = <AuxdibotSubcommand>{
@@ -48,7 +48,7 @@ export const unlockChannel = <AuxdibotSubcommand>{
       const embed = new EmbedBuilder().setColor(auxdibot.colors.accept).toJSON();
       embed.title = `🔒 Channel Unlocked`;
       embed.description = `${channel} is now unlocked.`;
-      const log = <Log>{
+      const log = {
          type: LogAction.CHANNEL_UNLOCKED,
          userID: interaction.user.id,
          date: new Date(),

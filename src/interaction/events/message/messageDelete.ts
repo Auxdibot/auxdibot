@@ -2,10 +2,11 @@ import { AuditLogEvent, GuildAuditLogs, Message, PartialMessage, User } from 'di
 import { Auxdibot } from '@/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 import deleteSuggestion from '@/modules/features/suggestions/deleteSuggestion';
-import { Log, LogAction } from '@prisma/client';
+import { LogAction } from '@prisma/client';
 
 import removeReactionRole from '@/modules/features/roles/reaction_roles/removeReactionRole';
 import deleteStarredMessage from '@/modules/features/starboard/messages/deleteStarredMessage';
+import { getServerSuggestions } from '@/modules/features/suggestions/getServerSuggestions';
 export default async function messageDelete(auxdibot: Auxdibot, data: Message<boolean> | PartialMessage) {
    const message = await data.fetch().catch(() => data);
    if (!message.guild) return;
@@ -31,22 +32,25 @@ export default async function messageDelete(auxdibot: Auxdibot, data: Message<bo
    if (rr) {
       removeReactionRole(auxdibot, message.guild, server.reaction_roles.indexOf(rr), undefined);
    }
-
-   const suggestion = server.suggestions.find((suggestion) => suggestion.messageID == message.id);
+   const suggestions = await getServerSuggestions(auxdibot, server.serverID, { messageID: message.id });
+   const suggestion = suggestions[0];
 
    if (suggestion) {
       await deleteSuggestion(auxdibot, message.guild.id, suggestion.suggestionID);
-      await auxdibot.log(message.guild, <Log>{
+      await auxdibot.log(message.guild, {
          type: LogAction.SUGGESTION_DELETED,
          date: new Date(),
          description: `A suggestion message deletion deleted Suggestion #${suggestion.suggestionID}`,
          userID: message?.member?.id ?? auxdibot.user.id,
       });
    }
-
-   for (const starboard of server.starred_messages.filter(
-      (i) => i.starred_message_id == message.id || i.starboard_message_id == message.id,
-   )) {
+   const starred_messages = await auxdibot.database.starred_messages.findMany({
+      where: {
+         serverID: message.guild.id,
+         OR: [{ starred_message_id: message.id }, { starboard_message: message.id }],
+      },
+   });
+   for (const starboard of starred_messages) {
       deleteStarredMessage(auxdibot, message.guild, starboard);
    }
 
@@ -84,7 +88,7 @@ export default async function messageDelete(auxdibot: Auxdibot, data: Message<bo
    ];
    await auxdibot.log(
       message.guild,
-      <Log>{
+      {
          type: LogAction.MESSAGE_DELETED,
          date: new Date(),
          description: `A message by ${sender?.username ?? 'an author'} in #${

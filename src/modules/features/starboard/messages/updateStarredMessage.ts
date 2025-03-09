@@ -1,17 +1,16 @@
 import { DEFAULT_STARBOARD_MESSAGE_EMBED } from '@/constants/embeds/DefaultEmbeds';
 import { Auxdibot } from '@/Auxdibot';
 import parsePlaceholders from '@/util/parsePlaceholder';
-import { StarboardBoardData, StarredMessage } from '@prisma/client';
+import { StarboardBoardData, starred_messages } from '@prisma/client';
 import { ActionRowBuilder, ButtonBuilder, ButtonStyle, EmbedBuilder, Guild, GuildBasedChannel } from 'discord.js';
 import { defaultStarLevels } from '@/constants/database/defaultStarLevels';
 import { getMessage } from '@/util/getMessage';
 import deleteStarredMessage from './deleteStarredMessage';
-import findOrCreateServer from '@/modules/server/findOrCreateServer';
 export default async function updateStarredMessage(
    auxdibot: Auxdibot,
    guild: Guild,
    board: StarboardBoardData,
-   starredData: StarredMessage,
+   starredData: starred_messages,
    count: number,
 ) {
    // Fetch starred channel from context
@@ -32,19 +31,16 @@ export default async function updateStarredMessage(
 
    // Add channel to starred message if it does not exist
    if (!starredData.starred_channel_id) {
-      starredData.starred_channel_id = starredMessage.channel.id;
-      const server = await findOrCreateServer(auxdibot, guild.id);
-      if (server) {
-         const starredMessages = server.starred_messages;
-         const index = starredMessages.findIndex((i) => i.starred_message_id == starredData.starred_message_id);
-         if (index != -1) {
-            starredMessages[index].starred_channel_id = starredMessage.channel.id;
-            auxdibot.database.servers.update({
-               where: { serverID: guild.id },
-               data: { starred_messages: starredMessages },
-            });
-         }
-      }
+      starredData = await auxdibot.database.starred_messages.update({
+         where: {
+            serverID_board_starred_message_id: {
+               serverID: guild.id,
+               board: board.board_name,
+               starred_message_id: starredData.starred_message_id,
+            },
+         },
+         data: { starred_channel_id: starredMessage.channel.id },
+      });
    }
    // Fetch starboard channel
    const starboard_channel: GuildBasedChannel | undefined = await guild.channels
@@ -53,7 +49,7 @@ export default async function updateStarredMessage(
    if (!starboard_channel || !starboard_channel.isTextBased()) return;
 
    // Fetch starboard message
-   const message = await starboard_channel.messages.fetch(starredData.starboard_message_id).catch(() => undefined);
+   const message = await starboard_channel.messages.fetch(starredData.starboard_message).catch(() => undefined);
 
    // Get starboard level to use for starboard message
    const starLevelsSorted = board.star_levels.sort((a, b) => b.stars - a.stars);

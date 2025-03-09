@@ -5,6 +5,7 @@ import AuxdibotCommandInteraction from '@/interfaces/commands/AuxdibotCommandInt
 import { AuxdibotSubcommand } from '@/interfaces/commands/AuxdibotSubcommand';
 import { EmbedBuilder } from '@discordjs/builders';
 import { LogData } from '@/constants/bot/log/LogData';
+import { getServerLogs } from '@/modules/features/logging/getServerLogs';
 
 export const logsLatest = <AuxdibotSubcommand>{
    name: 'latest',
@@ -15,10 +16,10 @@ export const logsLatest = <AuxdibotSubcommand>{
    },
    async execute(auxdibot: Auxdibot, interaction: AuxdibotCommandInteraction<GuildAuxdibotCommandData>) {
       if (!interaction.data) return;
-      const server = interaction.data.guildData;
+      const logs = await getServerLogs(auxdibot, interaction.guild.id, {}, 20);
       const embed = new EmbedBuilder().setColor(auxdibot.colors.default).toJSON();
       embed.title = '📜 Latest Logs';
-      embed.description = server.logs.reverse().reduce((str, log) => {
+      embed.description = logs.reverse().reduce((str, log) => {
          const name = LogData[log.type].name;
          return (
             str +
