@@ -67,6 +67,10 @@ export default <AuxdibotModal>{
                   : [],
                deny: [PermissionsBitField.Flags.SendMessages],
             },
+            {
+               id: auxdibot.user.id,
+               allow: [PermissionsBitField.Flags.SendMessages, PermissionsBitField.Flags.ViewChannel],
+            },
          ];
          if (role)
             permissionOverwrites.push({

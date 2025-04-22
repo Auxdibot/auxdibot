@@ -410,11 +410,8 @@ export class Auxdibot extends Client {
                      .join(' ')}`,
                })
                .setTitle(LogData[log.type].name || null)
-               .setDescription(
-                  `${log.description}\n\n🕰️ Date: <t:${Math.round(new Date(log.date).valueOf() / 1000)}>${
-                     log.userID ? `\n🧍 User: <@${log.userID}>` : ''
-                  }`,
-               );
+               .setDescription(`${log.description}`)
+               .setTimestamp(new Date(log.date) || Date.now());
             if (fields) {
                logEmbed.setFields(...fields);
             }
