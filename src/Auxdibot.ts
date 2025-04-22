@@ -411,7 +411,7 @@ export class Auxdibot extends Client {
                })
                .setTitle(LogData[log.type].name || null)
                .setDescription(`${log.description}`)
-               .setTimestamp(new Date(log.date) || Date.now());
+               .setTimestamp(isNaN(new Date(log.date).getTime()) ? Date.now() : new Date(log.date));
             if (fields) {
                logEmbed.setFields(...fields);
             }
