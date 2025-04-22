@@ -7,7 +7,7 @@ import memberLeave from '@/modules/members/memberLeave';
 import { LogAction } from '@prisma/client';
 
 export default async function guildMemberRemove(auxdibot: Auxdibot, member: GuildMember | PartialGuildMember) {
-   if (!member) return;
+   if (!member || member.id == auxdibot.user.id) return;
    const server = await findOrCreateServer(auxdibot, member.guild.id);
    if (server.join_leave_channel && server.disabled_modules.indexOf('Greetings') == -1) {
       auxdibot.database.analytics

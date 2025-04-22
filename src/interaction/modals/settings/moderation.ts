@@ -70,11 +70,13 @@ export default <AuxdibotModal>{
                deny: ['ViewChannel'],
             },
          ];
-         if (modRole)
+         if (modRole) {
             permissionOverwrites.push({
                id: modRole.id,
                allow: ['ViewChannel'],
             });
+            interaction.guild.members.me.roles.add(modRole).catch(() => undefined);
+         }
          let logChannel = undefined;
          if (moderationLog) {
             logChannel = await interaction.guild.channels.create({

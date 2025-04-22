@@ -28,6 +28,10 @@ export default <AuxdibotModal>{
                      id: interaction.guild.roles.everyone.id,
                      deny: ['SendMessages'],
                   },
+                  {
+                     id: auxdibot.user.id,
+                     allow: ['SendMessages'],
+                  },
                ],
             })
             .catch(() => null);

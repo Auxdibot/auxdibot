@@ -2,6 +2,7 @@ import { Role } from 'discord.js';
 import { Auxdibot } from '@/Auxdibot';
 import findOrCreateServer from '@/modules/server/findOrCreateServer';
 export default async function roleDelete(auxdibot: Auxdibot, role: Role) {
+   if (!role || role.id == role.guild.roles.botRoleFor(auxdibot.user.id)?.id) return;
    const server = await findOrCreateServer(auxdibot, role.guild.id);
 
    await auxdibot.database.servers
